@@ -1,3 +1,5 @@
+import org.gradle.util.GradleVersion
+
 initscript {
     def pluginVersion = "3.6"
 
@@ -10,15 +12,38 @@ initscript {
     }
 }
 
-projectsEvaluated {
-    rootProject {
-       it.extensions["buildScan"].with {
-           buildScanPublished { scan ->
-               def port = (scan.buildScanUri.port != -1) ? ":" + scan.buildScanUri.port : ""
-               def baseUrl = "${scan.buildScanUri.scheme}://${scan.buildScanUri.host}${port}"
-               file("scans.csv").append("${baseUrl},${scan.buildScanId},${scan.buildScanUri}\n")
-           }
-       }
+def isTopLevelBuild = gradle.getParent() == null
+
+if (isTopLevelBuild) {
+    def version = GradleVersion.current().baseVersion
+    def atLeastGradle5 = version >= GradleVersion.version("5.0")
+    def atLeastGradle6 = version >= GradleVersion.version("6.0")
+    
+    if (atLeastGradle6) {
+        settingsEvaluated {
+            it.extensions["gradleEnterprise"].with {
+               buildScan {
+                   buildScanPublished { scan ->
+                       logScan(scan)
+                   }
+               }
+            }
+        }
+    } else if (atLeastGradle5) {
+        projectsEvaluated {
+            rootProject {
+               it.extensions["buildScan"].with {
+                   buildScanPublished { scan ->
+                       logScan(scan)
+                   }
+               }
+            }
+        }
     }
 }
 
+def logScan(scan) {
+    def port = (scan.buildScanUri.port != -1) ? ":" + scan.buildScanUri.port : ""
+    def baseUrl = "${scan.buildScanUri.scheme}://${scan.buildScanUri.host}${port}"
+    file("scans.csv").append("${baseUrl},${scan.buildScanId},${scan.buildScanUri}\n")
+}
