@@ -22,7 +22,7 @@ main() {
 }
 
 collect_gradle_task() {
-  read -p "What gradle task do you want to run (default: build)? " task
+  read -p "What gradle task do you want to run? (build) " task
   if [[ "$task" == "" ]]; then
     task=build
   fi
@@ -32,18 +32,28 @@ collect_gradle_task() {
 }
 
 execute_first_build() {
-  info "Running first build with build caching disabled"
-  invoke_gradle "./gradlew --no-build-cache -Dscan.tag.exp1 -Dscan.tag.${exp_id} clean ${task}"
+  info "Running first build (invoking clean)"
+  invoke_gradle "./gradlew \
+      --init-script ${script_dir_rel}/capture-build-scan-info.gradle \
+      --no-build-cache \
+      -Dscan.tag.exp1 \
+      -Dscan.tag.${exp_id} \
+      clean ${task}"
   echo
 }
 
 execute_second_build() {
-  info "Running 2nd build without invoking clean"
-  invoke_gradle "./gradlew --no-build-cache -Dscan.tag.exp1 -Dscan.tag.${exp_id} ${task}"
+  info "Running second build (without invoking clean)"
+  invoke_gradle "./gradlew --init-script ${script_dir_rel}/capture-build-scan-info.gradle --no-build-cache -Dscan.tag.exp1 -Dscan.tag.${exp_id} ${task}"
   echo
 }
 
 open_build_scan() {
+  scan_url=""
+  while IFS=, read -r base_url id url; do
+     scan_url=$url
+  done <<< "$(tail -n 1 scans.csv)"
+
   read -p "Press enter to to open the build scan in your default browser."
   OS=$(uname)
   case $OS in
@@ -51,18 +61,17 @@ open_build_scan() {
     'WindowsNT') browse=start ;;
     *) browse=xdg-open ;;
   esac
-  $browse "${build_scan_url}/timeline?outcomeFilter=SUCCESS"
+  $browse "${scan_url}/timeline?outcomeFilter=SUCCESS"
 }
 
 invoke_gradle() {
   cmd=$1
-  exec 5>&1
-  output=$($cmd | tee >(cat - >&5))
-  build_scan_url=$(echo -e "$output" | grep "Publishing build scan..." -A 1 | tail -n 1)
+  echo $cmd
+  $cmd
 }
 
 info () {
-  printf "\033[00;34m...\033[0m$1\n"
+  printf "\033[00;34m$1\033[0m\n"
 }
 
 

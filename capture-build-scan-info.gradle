@@ -1,0 +1,24 @@
+initscript {
+    def pluginVersion = "3.6"
+
+    repositories {
+        gradlePluginPortal()
+    }
+
+    dependencies {
+        classpath("com.gradle:gradle-enterprise-gradle-plugin:${pluginVersion}")
+    }
+}
+
+projectsEvaluated {
+    rootProject {
+       it.extensions["buildScan"].with {
+           buildScanPublished { scan ->
+               def port = (scan.buildScanUri.port != -1) ? ":" + scan.buildScanUri.port : ""
+               def baseUrl = "${scan.buildScanUri.scheme}://${scan.buildScanUri.host}${port}"
+               file("scans.csv").append("${baseUrl},${scan.buildScanId},${scan.buildScanUri}\n")
+           }
+       }
+    }
+}
+
