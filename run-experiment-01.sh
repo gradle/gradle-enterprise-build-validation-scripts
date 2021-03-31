@@ -5,7 +5,6 @@
 
 # ARG_OPTIONAL_SINGLE([task],[t],[Gradle task to invoke when running builds as part of the experiment])
 # ARG_OPTIONAL_SINGLE([branch],[b],[branch to checkout when cloning the repo before running the experiment])
-# ARG_OPTIONAL_SINGLE([extra-args],[a],[extra arguments to pass to Gradle when running builds])
 # ARG_OPTIONAL_BOOLEAN([wizard],[],[controls whether or not the wizard is run],[on])
 # ARG_HELP([Runs Gradle Enterprise Trial Experiment 1])
 # ARGBASH_GO()
@@ -27,7 +26,7 @@ die()
 
 begins_with_short_option()
 {
-	local first_option all_short_options='tbah'
+	local first_option all_short_options='tbh'
 	first_option="${1:0:1}"
 	test "$all_short_options" = "${all_short_options/$first_option/}" && return 1 || return 0
 }
@@ -35,7 +34,6 @@ begins_with_short_option()
 # THE DEFAULTS INITIALIZATION - OPTIONALS
 _arg_task=
 _arg_branch=
-_arg_extra_args=
 _arg_wizard="on"
 
 
@@ -45,7 +43,6 @@ print_help()
 	printf 'Usage: %s [-t|--task <arg>] [-b|--branch <arg>] [-a|--extra-args <arg>] [--(no-)wizard] [-h|--help]\n' "$(basename "$0")"
 	printf '\t%s\n' "-t, --task: Gradle task to invoke when running builds as part of the experiment (no default)"
 	printf '\t%s\n' "-b, --branch: branch to checkout when cloning the repo before running the experiment (no default)"
-	printf '\t%s\n' "-a, --extra-args: extra arguments to pass to Gradle when running builds (no default)"
 	printf '\t%s\n' "--wizard, --no-wizard: controls whether or not the wizard is run (on by default)"
 	printf '\t%s\n' "-h, --help: Prints help"
 }
@@ -78,17 +75,6 @@ parse_commandline()
 				;;
 			-b*)
 				_arg_branch="${_key##-b}"
-				;;
-			-a|--extra-args)
-				test $# -lt 2 && die "Missing value for the optional argument '$_key'." 1
-				_arg_extra_args="$2"
-				shift
-				;;
-			--extra-args=*)
-				_arg_extra_args="${_key##--extra-args=}"
-				;;
-			-a*)
-				_arg_extra_args="${_key##-a}"
 				;;
 			--no-wizard|--wizard)
 				_arg_wizard="on"
