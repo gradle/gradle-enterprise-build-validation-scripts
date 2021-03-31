@@ -148,15 +148,17 @@ runs of this experiment."
   info
   info "Experiment tag: exp1"
   info "Experiment Run ID: ${run_id}"
+  info
 }
 
 collect_gradle_task() {
-  echo "$_arg_task"
   if [ -z "$_arg_task" ]; then
-    wizard "Before we do anything else, we need to know what tasks to execute on each build."
+    wizard "Before we do anything else, we need to know what build task(s) to execute on each build."
 
     echo
     read -p "What Gradle task do you want to run? (build) " task
+    echo
+
     if [[ "${task}" == "" ]]; then
       task=build
     fi
@@ -167,7 +169,8 @@ collect_gradle_task() {
 
 make_experiment_dir() {
   mkdir -p "${experiment_dir}"
-  wizard "I just created ${experiment_dir} where we will do the work for this experiment."
+  wizard "I just created ${YELLOW}${experiment_dir}${BLUE} where we will do the work for this experiment."
+  wizard
 }
 
 clone_project() {
@@ -176,21 +179,27 @@ local changes will interfere with the experiment."
    wizard_pause "Press enter to continue."
 
    info "Creating a clean clone of the project."
+   info
 
    local clone_dir="${experiment_dir}/${project_name}"
 
    rm -rf "${clone_dir}"
    git clone "${project_dir}" "${clone_dir}"
    cd "${clone_dir}"
+   info
 }
 
 execute_first_build() {
+  info "Running first build (invoking clean)."
+  wizard 
   wizard "OK! We are ready to run our first build!"
+  wizard
   wizard "For this run, we'll execute 'clean ${task}'. We will also add a few more flags to \
 make sure build caching is disabled (since we are just focused on icremental building \
 for now), and to add the build scan tags we talked about before. I will use a Gradle \
 init script to capture the build scan information. That's for me though, you can totally \
 ignore that part."
+  wizard
   wizard "Effectively, this is what we are going to run (the actual command is a bit more complex):"
 
   info 
@@ -198,12 +207,12 @@ ignore that part."
 
   wizard_pause "Press enter to run the first build."
 
-  info "Running first build (invoking clean)."
   invoke_gradle --no-build-cache clean ${task}
-  echo
 }
 
 execute_second_build() {
+  info "Running second build (without invoking clean)."
+  wizard
   wizard "Now we are going to run the build again, but this time we will invoke it without \
 'clean'. This will let us see how well the build takes advantage of Gradle's incremental build."
 
@@ -212,17 +221,17 @@ execute_second_build() {
 
   wizard_pause "Press enter to run the second build."
 
-  info "Running second build (without invoking clean)."
   invoke_gradle --no-build-cache ${task}
-  echo
 }
 
 open_build_scan_comparison() {
   wizard "It is time to compare the build scans from both builds. \
 If you are unfamiliar with build scan comparisions then you might want to look this over with \
 a Gradle Solutions engineer (who can help you to interpret the data)."
+  wizard
   wizard "After you are done looking at the scan comparison, come back here and I will share with \
 you some final thoughts."
+  wizard
 
   read -p "Press enter to to open the build scan comparision in your default browser."
 
@@ -247,7 +256,7 @@ you some final thoughts."
 }
 
 print_done() {
- printf "\n\033[00;32mDONE\033[0m\n"
+ printf "\n${GREEN}DONE${RESTORE}\n"
 }
 
 invoke_gradle() {
@@ -258,29 +267,27 @@ invoke_gradle() {
 }
 
 info () {
-  printf "$1\n"
+  printf "${YELLOW}${BOLD}${1}${RESTORE}\n"
 }
 
 wizard () {
   if [ "$_arg_wizard" == "on" ]; then
-    echo
-    printf "\033[00;34m$1\033[0m\n" | fmt -w 80
+    printf "${BLUE}${BOLD}${1}${RESTORE}\n" | fmt -w 80
   fi
 }
 
 wizard_pause() {
   if [ "$_arg_wizard" == "on" ]; then
-    echo
+    echo "${YELLOW}"
     read -p "$1"
-    echo
+    echo "${RESTORE}"
   fi
 }
 
 print_introduction() {
   if [ "$_arg_wizard" == "on" ]; then
-    printf "\033[00;34m"
     cat <<EOF
-
+${CYAN}
                               ;x0K0d,
                              kXOxx0XXO,
                ....                '0XXc
@@ -296,7 +303,7 @@ KXXXXXXXXXXXXXXXXXXXXXXXXXXXXl            Optimize for Incremental Build
 XXXXXXklclkXXXXXXXklclxKXXXXK
 OXXXk.     .OXXX0'     .xXXXx
 oKKK'       ,KKK:       .KKKo
-
+${RESTORE}${BLUE}${BOLD}
 
 Wecome! This is the first of several experiments that are part of your Gradle
 Enterprise Trial. Each experiment will help you to make concrete improvements
@@ -323,30 +330,55 @@ The Gradle Solutions engineer will then work with you to figure out why some
 (if any) tasks ran on the second build, and how to optimize them so that all
 tasks participate in Gradle's incremental building feature.
 
-----------------------------------------------------------------------------
+----------------------------------------------------------------------------${RESTORE}
 EOF
-    printf "\033[0m\n"
-  
     wizard_pause "Press enter when you're ready to get started."
   fi
 }
 
 print_wrap_up() {
+  wizard
   wizard "Did you find any tasks to optimize? If so, great! You are one step \
 closer to a faster build and a more productive team."
+  wizard
   wizard "If you did find something to optimize, then you will want to run this \
 expirment again after you have implemented the optimizations (to validate the \
 optimizations were effective.)"
+  wizard
   wizard "You will not have to go through this wizard again (that would be annoying). \
 Instead, as long as you do not delete the experiment directory (${experiment_dir}), \
 then the wizard will be skipped (the experiment will run without interruption). If for some \
 reason the experiment directory does get deleted, then you can skip the wizard \
 by running the script with the --no-wizard flag:"
 
-  wizard "${script_name} --no-wizard --task ${task}"
+  wizard "${YELLOW}${script_name} --no-wizard --task ${task}"
 
   wizard "Cheers!"
 }
+
+# Color and text escape sequences
+RESTORE=$(echo -en '\033[0m')
+RED=$(echo -en '\033[00;31m')
+GREEN=$(echo -en '\033[00;32m')
+YELLOW=$(echo -en '\033[00;33m')
+BLUE=$(echo -en '\033[00;34m')
+MAGENTA=$(echo -en '\033[00;35m')
+PURPLE=$(echo -en '\033[00;35m')
+CYAN=$(echo -en '\033[00;36m')
+LIGHTGRAY=$(echo -en '\033[00;37m')
+LRED=$(echo -en '\033[01;31m')
+LGREEN=$(echo -en '\033[01;32m')
+LYELLOW=$(echo -en '\033[01;33m')
+LBLUE=$(echo -en '\033[01;34m')
+LMAGENTA=$(echo -en '\033[01;35m')
+LPURPLE=$(echo -en '\033[01;35m')
+LCYAN=$(echo -en '\033[01;36m')
+WHITE=$(echo -en '\033[01;37m')
+
+BOLD=$(echo -en '\033[1m')
+DIM=$(echo -en '\033[2m')
+UNDERLINE=$(echo -en '\033[4m')
+
 
 main
 
