@@ -20,7 +20,7 @@ main() {
  clone_project
  execute_first_build
  execute_second_build
- open_build_scan
+ open_build_scan_comparison
 
  cd ${project_dir}
  printf "\n\033[00;32mDONE\033[0m\n"
@@ -62,22 +62,26 @@ execute_second_build() {
   echo
 }
 
-open_build_scan() {
-  scan_url=""
+open_build_scan_comparison() {
+  local base_url=()
+  local scan_url=()
+  local scan_id=()
   # This isn't the most robust way to read a CSV,
   # but we control the CSV so we don't have to worry about various CSV edge cases
-  while IFS=, read -r base_url id url; do
-     scan_url=${url}
-  done <<< "$(tail -n 1 scans.csv)"
+  while IFS=, read -r field_1 field_2 field_3; do
+     base_url+=("$field_1")
+     scan_id+=("$field_2")
+     scan_url+=("$field_3")
+  done < scans.csv
 
   read -p "Press enter to to open the build scan in your default browser."
-  OS=$(uname)
+  local OS=$(uname)
   case $OS in
     'Darwin') browse=open ;;
     'WindowsNT') browse=start ;;
     *) browse=xdg-open ;;
   esac
-  $browse "${scan_url}/timeline?outcomeFilter=SUCCESS"
+  $browse "${base_url[0]}/c/${scan_id[0]}/${scan_id[1]}/task-inputs"
 }
 
 invoke_gradle() {
