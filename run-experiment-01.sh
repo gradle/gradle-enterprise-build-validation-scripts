@@ -27,7 +27,7 @@ main() {
 }
 
 collect_gradle_task() {
-  read -p "What gradle task do you want to run? (build) " task
+  read -p "What Gradle task do you want to run? (build) " task
   if [[ "${task}" == "" ]]; then
     task=build
   fi
@@ -98,4 +98,3 @@ info () {
 
 
 main
-
