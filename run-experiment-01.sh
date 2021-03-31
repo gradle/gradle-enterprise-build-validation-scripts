@@ -134,8 +134,8 @@ main() {
  execute_first_build
  execute_second_build
  open_build_scan_comparison
- print_done
  print_wrap_up
+ print_summary
 }
 
 print_scan_tags() {
@@ -145,9 +145,11 @@ makes it easy to find the build scans for each run of the experiment. We will al
 'exp1' tag to every build scan so that you can easily find all of the build scans for all \
 runs of this experiment."
 
+  local fmt="%-20s%-10s"
+
   info
-  info "Experiment tag: exp1"
-  info "Experiment Run ID: ${run_id}"
+  infof "$fmt" "Experiment Tag:" "exp1"
+  infof "$fmt" "Experiment Run ID:" "${run_id}"
   info
 }
 
@@ -224,6 +226,19 @@ execute_second_build() {
   invoke_gradle --no-build-cache ${task}
 }
 
+read_scan_info() {
+  base_url=()
+  scan_url=()
+  scan_id=()
+  # This isn't the most robust way to read a CSV,
+  # but we control the CSV so we don't have to worry about various CSV edge cases
+  while IFS=, read -r field_1 field_2 field_3; do
+     base_url+=("$field_1")
+     scan_id+=("$field_2")
+     scan_url+=("$field_3")
+  done < scans.csv
+}
+
 open_build_scan_comparison() {
   wizard "It is time to compare the build scans from both builds. \
 If you are unfamiliar with build scan comparisions then you might want to look this over with \
@@ -234,17 +249,7 @@ you some final thoughts."
   wizard
 
   read -p "Press enter to to open the build scan comparision in your default browser."
-
-  local base_url=()
-  local scan_url=()
-  local scan_id=()
-  # This isn't the most robust way to read a CSV,
-  # but we control the CSV so we don't have to worry about various CSV edge cases
-  while IFS=, read -r field_1 field_2 field_3; do
-     base_url+=("$field_1")
-     scan_id+=("$field_2")
-     scan_url+=("$field_3")
-  done < scans.csv
+  read_scan_info
 
   local OS=$(uname)
   case $OS in
@@ -255,8 +260,21 @@ you some final thoughts."
   $browse "${base_url[0]}/c/${scan_id[0]}/${scan_id[1]}/task-inputs"
 }
 
-print_done() {
- printf "\n${GREEN}DONE${RESTORE}\n"
+print_summary() {
+ read_scan_info
+
+ local fmt="%-20s%-10s"
+
+ info "${GREEN}DONE!${RESTORE}"
+ info
+ info "SUMMARY"
+ info "----------------------------"
+ infof "$fmt" "Experiment Tag:" "exp1"
+ infof "$fmt" "Experiment Run ID:" "${run_id}"
+ infof "$fmt" "First Build Scan:" "${scan_url[0]}"
+ infof "$fmt" "Second Build Scan:" "${scan_url[1]}"
+ infof "$fmt" "Scan Comparision:" "${base_url[0]}/c/${scan_id[0]}/${scan_id[1]}/task-inputs"
+ info
 }
 
 invoke_gradle() {
@@ -266,11 +284,17 @@ invoke_gradle() {
   $cmd
 }
 
-info () {
+info() {
   printf "${YELLOW}${BOLD}${1}${RESTORE}\n"
 }
 
-wizard () {
+infof() {
+  local format_string="$1"
+  shift
+  printf "${YELLOW}${BOLD}${format_string}${RESTORE}\n" "$@"
+}
+
+wizard() {
   if [ "$_arg_wizard" == "on" ]; then
     printf "${BLUE}${BOLD}${1}${RESTORE}\n" | fmt -w 80
   fi
