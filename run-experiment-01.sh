@@ -9,8 +9,9 @@ script_dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" > /dev/null && pwd )"
 current_dir="$( pwd )"
 script_dir_rel=$(realpath --relative-to="${current_dir}" "${script_dir}")
 
-exp_id=$(uuidgen)
-echo "Experiment 3: ${exp_id}"
+run_id=$(uuidgen)
+echo "Experiment 1: Optimize Incremental Building"
+echo "Experiment Run ID: ${run_id}"
 
 main() {
  collect_gradle_task
@@ -37,14 +38,14 @@ execute_first_build() {
       --init-script ${script_dir_rel}/capture-build-scan-info.gradle \
       --no-build-cache \
       -Dscan.tag.exp1 \
-      -Dscan.tag.${exp_id} \
+      -Dscan.tag.${run_id} \
       clean ${task}"
   echo
 }
 
 execute_second_build() {
   info "Running second build (without invoking clean)"
-  invoke_gradle "./gradlew --init-script ${script_dir_rel}/capture-build-scan-info.gradle --no-build-cache -Dscan.tag.exp1 -Dscan.tag.${exp_id} ${task}"
+  invoke_gradle "./gradlew --init-script ${script_dir_rel}/capture-build-scan-info.gradle --no-build-cache -Dscan.tag.exp1 -Dscan.tag.${run_id} ${task}"
   echo
 }
 
