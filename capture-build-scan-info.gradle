@@ -24,7 +24,7 @@ if (isTopLevelBuild) {
             settings.extensions["gradleEnterprise"].with {
                buildScan {
                    buildScanPublished { scan ->
-                       logScan(file("scans.csv"), scan)
+                       logScan(settings.file("scans.csv"), scan)
                    }
                }
             }
@@ -33,7 +33,7 @@ if (isTopLevelBuild) {
         projectsEvaluated { gradle ->
             gradle.rootProject.extensions["buildScan"].with {
                 buildScanPublished { scan ->
-                    logScan(file("scans.csv"), scan)
+                    logScan(gradle.rootProject.file("scans.csv"), scan)
                 }
             }
         }
