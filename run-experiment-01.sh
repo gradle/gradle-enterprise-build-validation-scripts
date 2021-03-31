@@ -171,8 +171,13 @@ local changes will interfere with the experiment."
 
    local clone_dir="${experiment_dir}/${project_name}"
 
+   local branch=""
+   if [ -n "$_arg_branch" ]; then
+      branch="--branch $_arg_branch"
+   fi
+
    rm -rf "${clone_dir}"
-   git clone "${project_dir}" "${clone_dir}"
+   git clone ${branch} "${project_dir}" "${clone_dir}"
    cd "${clone_dir}"
    info
 }
