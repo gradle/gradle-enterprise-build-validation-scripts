@@ -260,6 +260,7 @@ print_summary() {
  info
  info "SUMMARY"
  info "----------------------------"
+ infof "$fmt" "Experiment dir:" "${experiment_dir}"
  infof "$fmt" "Experiment Tag:" "exp1"
  infof "$fmt" "Experiment Run ID:" "${run_id}"
  infof "$fmt" "First Build Scan:" "${scan_url[0]}"
