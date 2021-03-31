@@ -256,11 +256,19 @@ print_summary() {
 
  local fmt="%-20s%-10s"
 
+ local branch=$(git branch)
+ if [ -n "$_arg_branch" ]; then
+   branch=${_arg_branch}
+ fi
+
  info "${GREEN}DONE!${RESTORE}"
  info
  info "SUMMARY"
  info "----------------------------"
- infof "$fmt" "Experiment dir:" "${experiment_dir}"
+ infof "$fmt" "Project:" "${project_name}"
+ infof "$fmt" "Branch:" "${branch}"
+ infof "$fmt" "Gradle Task(s):" "${task}"
+ infof "$fmt" "Experiment Dir:" "${experiment_dir}"
  infof "$fmt" "Experiment Tag:" "exp1"
  infof "$fmt" "Experiment Run ID:" "${run_id}"
  infof "$fmt" "First Build Scan:" "${scan_url[0]}"
