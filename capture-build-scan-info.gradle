@@ -18,10 +18,10 @@ if (isTopLevelBuild) {
     def version = GradleVersion.current().baseVersion
     def atLeastGradle5 = version >= GradleVersion.version("5.0")
     def atLeastGradle6 = version >= GradleVersion.version("6.0")
-    
+
     if (atLeastGradle6) {
-        settingsEvaluated {
-            it.extensions["gradleEnterprise"].with {
+        settingsEvaluated { settings ->
+            settings.extensions["gradleEnterprise"].with {
                buildScan {
                    buildScanPublished { scan ->
                        logScan(file("scans.csv"), scan)
@@ -30,13 +30,11 @@ if (isTopLevelBuild) {
             }
         }
     } else if (atLeastGradle5) {
-        projectsEvaluated {
-            rootProject {
-               it.extensions["buildScan"].with {
-                   buildScanPublished { scan ->
-                       logScan(file("scans.csv"), scan)
-                   }
-               }
+        projectsEvaluated { gradle ->
+            gradle.rootProject.extensions["buildScan"].with {
+                buildScanPublished { scan ->
+                    logScan(file("scans.csv"), scan)
+                }
             }
         }
     }
