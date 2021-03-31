@@ -24,7 +24,7 @@ if (isTopLevelBuild) {
             it.extensions["gradleEnterprise"].with {
                buildScan {
                    buildScanPublished { scan ->
-                       logScan(scan)
+                       logScan(file("scans.csv"), scan)
                    }
                }
             }
@@ -34,7 +34,7 @@ if (isTopLevelBuild) {
             rootProject {
                it.extensions["buildScan"].with {
                    buildScanPublished { scan ->
-                       logScan(scan)
+                       logScan(file("scans.csv"), scan)
                    }
                }
             }
@@ -42,8 +42,8 @@ if (isTopLevelBuild) {
     }
 }
 
-def logScan(scan) {
+def logScan(scanFile, scan) {
     def port = (scan.buildScanUri.port != -1) ? ":" + scan.buildScanUri.port : ""
     def baseUrl = "${scan.buildScanUri.scheme}://${scan.buildScanUri.host}${port}"
-    file("scans.csv").append("${baseUrl},${scan.buildScanId},${scan.buildScanUri}\n")
+    scanFile.append("${baseUrl},${scan.buildScanId},${scan.buildScanUri}\n")
 }
