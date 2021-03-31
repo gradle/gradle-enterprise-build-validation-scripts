@@ -127,7 +127,7 @@ run_id=$(uuidgen)
 
 main() {
  print_introduction
- print_run_id
+ print_scan_tags
  collect_gradle_task
  make_experiment_dir
  clone_project
@@ -138,7 +138,7 @@ main() {
  print_wrap_up
 }
 
-print_run_id() {
+print_scan_tags() {
   wizard "Below is the ID for this particular run of this experiment. Every time you run this script, \
 we'll generate a new unique ID. This ID is added as a tag on all of the build scans, which \
 makes it easy to find the build scans for each run of the experiment. We will also add an \
@@ -151,12 +151,17 @@ runs of this experiment."
 }
 
 collect_gradle_task() {
-  wizard "Before we do anything else, we need to know what tasks to execute on each build."
+  echo "$_arg_task"
+  if [ -z "$_arg_task" ]; then
+    wizard "Before we do anything else, we need to know what tasks to execute on each build."
 
-  echo
-  read -p "What Gradle task do you want to run? (build) " task
-  if [[ "${task}" == "" ]]; then
-    task=build
+    echo
+    read -p "What Gradle task do you want to run? (build) " task
+    if [[ "${task}" == "" ]]; then
+      task=build
+    fi
+  else
+    task=$_arg_task
   fi
 }
 
