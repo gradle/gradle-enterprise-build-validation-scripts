@@ -107,7 +107,7 @@ set -e
 script_name=$(basename "$0")
 script_dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" > /dev/null && pwd )"
 project_dir="$( pwd )"
-project_name=$( basename ${project_dir} )
+project_name=$( basename "${project_dir}" )
 experiment_dir="$project_dir/build/enterprise-trial-experiments/experiment-01"
 run_id=$(uuidgen)
 
@@ -144,7 +144,7 @@ collect_gradle_task() {
     wizard "Before we do anything else, we need to know what build task(s) to execute on each build."
 
     echo
-    read -p "What Gradle task do you want to run? (build) " task
+    read -r -p "What Gradle task do you want to run? (build) " task
     echo
 
     if [[ "${task}" == "" ]]; then
@@ -177,6 +177,7 @@ local changes will interfere with the experiment."
    fi
 
    rm -rf "${clone_dir}"
+   # shellcheck disable=SC2086  # we want $branch to expand into multiple arguments
    git clone ${branch} "${project_dir}" "${clone_dir}"
    cd "${clone_dir}"
    info
@@ -200,7 +201,7 @@ ignore that part."
 
   wizard_pause "Press enter to run the first build."
 
-  invoke_gradle --no-build-cache clean ${task}
+  invoke_gradle --no-build-cache clean "${task}"
 }
 
 execute_second_build() {
@@ -214,7 +215,7 @@ execute_second_build() {
 
   wizard_pause "Press enter to run the second build."
 
-  invoke_gradle --no-build-cache ${task}
+  invoke_gradle --no-build-cache "${task}"
 }
 
 read_scan_info() {
@@ -239,10 +240,11 @@ a Gradle Solutions engineer (who can help you to interpret the data)."
 you some final thoughts."
   wizard
 
-  read -p "Press enter to to open the build scan comparision in your default browser."
+  read -r -p "Press enter to to open the build scan comparision in your default browser."
   read_scan_info
 
-  local OS=$(uname)
+  local OS
+  OS=$(uname)
   case $OS in
     'Darwin') browse=open ;;
     'WindowsNT') browse=start ;;
@@ -256,7 +258,8 @@ print_summary() {
 
  local fmt="%-20s%-10s"
 
- local branch=$(git branch)
+ local branch
+ branch=$(git branch)
  if [ -n "$_arg_branch" ]; then
    branch=${_arg_branch}
  fi
@@ -279,13 +282,13 @@ print_summary() {
 
 invoke_gradle() {
   # The gradle --init-script flag only accepts a relative directory path. ¯\_(ツ)_/¯
-  local script_dir_rel=$(realpath --relative-to="$( pwd )" "${script_dir}")
-  local cmd="./gradlew --init-script ${script_dir_rel}/capture-build-scan-info.gradle -Dscan.tag.exp1 -Dscan.tag.${run_id} $@"
-  $cmd
+  local script_dir_rel
+  script_dir_rel=$(realpath --relative-to="$( pwd )" "${script_dir}")
+  ./gradlew --init-script "${script_dir_rel}/capture-build-scan-info.gradle" -Dscan.tag.exp1 -Dscan.tag."${run_id}" "$@"
 }
 
 info() {
-  printf "${YELLOW}${BOLD}${1}${RESTORE}\n"
+  printf "${YELLOW}${BOLD}%s${RESTORE}\n" "$1"
 }
 
 infof() {
@@ -303,7 +306,7 @@ wizard() {
 wizard_pause() {
   if [ "$_arg_wizard" == "on" ]; then
     echo "${YELLOW}"
-    read -p "$1"
+    read -r -p "$1"
     echo "${RESTORE}"
   fi
 }
