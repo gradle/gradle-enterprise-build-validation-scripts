@@ -130,7 +130,6 @@ main() {
  clone_project
  execute_first_build
  execute_second_build
- open_build_scan_comparison
  print_wrap_up
  print_summary
 }
@@ -263,32 +262,8 @@ read_scan_info() {
   done < scans.csv
 }
 
-open_build_scan_comparison() {
-  wizard "It is time to compare the build scans from both builds. \
-If you are unfamiliar with build scan comparisions then you might want to look this over with \
-a Gradle Solutions engineer (who can help you to interpret the data)."
-  wizard
-  wizard "After you are done looking at the scan comparison, come back here and I will share with \
-you some final thoughts."
-  wizard
-
-  read -r -p "Press enter to to open the build scan comparision in your default browser."
-  read_scan_info
-
-  local OS
-  OS=$(uname)
-  case $OS in
-    'Darwin') browse=open ;;
-    'WindowsNT') browse=start ;;
-    *) browse=xdg-open ;;
-  esac
-  $browse "${base_url[0]}/c/${scan_id[0]}/${scan_id[1]}/task-inputs"
-}
-
 print_summary() {
  read_scan_info
-
- local fmt="%-20s%-10s"
 
  local branch
  branch=$(git branch)
@@ -296,7 +271,7 @@ print_summary() {
    branch=${_arg_branch}
  fi
 
- info "${GREEN}DONE!${RESTORE}"
+ local fmt="%-25s%-10s"
  info
  info "SUMMARY"
  info "----------------------------"
@@ -306,9 +281,23 @@ print_summary() {
  infof "$fmt" "Experiment Dir:" "${experiment_dir}"
  infof "$fmt" "Experiment Tag:" "exp1"
  infof "$fmt" "Experiment Run ID:" "${run_id}"
+ print_build_scans
+ print_starting_points
+}
+
+print_build_scans() {
+ local fmt="%-25s%-10s"
  infof "$fmt" "First Build Scan:" "${scan_url[0]}"
  infof "$fmt" "Second Build Scan:" "${scan_url[1]}"
+}
+
+print_starting_points() {
+ local fmt="%-25s%-10s"
+ info 
+ info "SUGGESTED STARTING POINTS"
+ info "----------------------------"
  infof "$fmt" "Scan Comparision:" "${base_url[0]}/c/${scan_id[0]}/${scan_id[1]}/task-inputs"
+ infof "$fmt" "Longest-running tasks:" "${base_url[0]}/s/${scan_id[1]}/timeline?outcome=SUCCESS,FAILED&sort=longest"
  info
 }
 
@@ -396,23 +385,50 @@ EOF
 }
 
 print_wrap_up() {
-  wizard
-  wizard "Did you find any tasks to optimize? If so, great! You are one step \
-closer to a faster build and a more productive team."
-  wizard
-  wizard "If you did find something to optimize, then you will want to run this \
-expirment again after you have implemented the optimizations (to validate the \
-optimizations were effective.)"
-  wizard
-  wizard "You will not have to go through this wizard again (that would be annoying). \
-Instead, as long as you do not delete the experiment directory (${experiment_dir}), \
-then the wizard will be skipped (the experiment will run without interruption). If for some \
-reason the experiment directory does get deleted, then you can skip the wizard \
-by running the script with the --no-wizard flag:"
+  if [ "$_arg_wizard" == "on" ]; then
+    read_scan_info
 
-  wizard "${YELLOW}${script_name} --no-wizard --task ${task}"
-
-  wizard "Cheers!"
+    wizard "-----------------------------------------------------------------------------"
+    wizard "Now that both builds have completed, there is a lot of valuable \
+data in Gradle Enterprise to look at. The data can help you find ineffiencies \
+in your build."
+    wizard
+    wizard "After running the experiment, I will generate a summary table that \
+contains useful data and links to help you analze the experiment results. Most \
+of the data in the summmary is self-explainitory, but there are a few things \
+that are worth reviewing:"
+    wizard
+    print_build_scans
+    wizard
+    wizard "^^ These are links to the build scans for the builds. A build scan is a \
+report that provides statistics about the build execution."
+    wizard
+    print_starting_points
+    wizard
+    wizard "^^ These are links to help you get started in your analysis. The first link \
+is to a comparison of the two build scans. Comparisions show you what was different \
+between two different builds."
+    wizard
+    wizard "The second link takes you to the timeline view of the second build \
+scan and automatically shows only the tasks that were executed, sorted by \
+execution time (with the longest-running tasks listed first). You can use this \
+to quickly identify tasks that were executed again unecessarily. You will want \
+to optimize any such tasks that also take a significant amount of time to \
+complete."
+    wizard
+    wizard "Take some time to look over the build scans and the build \
+comparison. You might be surprised by what you find!"
+    wizard
+    wizard "If you do find something to optimize, then you will want to run \
+this expirment again after you have implemented the optimizations (to \
+validate the optimizations were effective.) Here is the command you can use \
+to run the experiment again with the same inputs:"
+   wizard
+   info "./${script_name} --git-url ${project_url} --branch ${project_branch} --task ${task}"
+   wizard
+   wizard "Congratulations! You have completed this experiment."
+   wizard "-----------------------------------------------------------------------------"
+  fi
 }
 
 # Color and text escape sequences
@@ -437,7 +453,6 @@ WHITE=$(echo -en '\033[01;37m')
 BOLD=$(echo -en '\033[1m')
 DIM=$(echo -en '\033[2m')
 UNDERLINE=$(echo -en '\033[4m')
-
 
 main
 
