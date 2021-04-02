@@ -13,7 +13,14 @@ experiment_dir="${script_dir}/data/${script_name%.*}"
 run_id=$(uuidgen)
 
 main() {
- print_introduction
+  if [ "$_arg_wizard" == "on" ]; then
+    wizard_execute
+  else
+    execute
+  fi
+}
+
+execute() {
  print_scan_tags
  collect_project_details
  collect_gradle_task
@@ -21,17 +28,37 @@ main() {
  clone_project
  execute_first_build
  execute_second_build
- print_wrap_up
+ print_summary
+}
+
+wizard_execute() {
+ print_introduction
+
+ explain_scan_tags
+ print_scan_tags
+
+ explain_collect_project_details
+ collect_project_details
+
+ explain_collect_gradle_task
+ collect_gradle_task
+
+ explain_experiment_dir
+ make_experiment_dir
+
+ clone_project
+
+ explain_first_build
+ execute_first_build
+
+ explain_second_build
+ execute_second_build
+
+ explain_summary
  print_summary
 }
 
 print_scan_tags() {
-  wizard "Below is the ID for this particular run of this experiment. Every time you run this script, \
-we'll generate a new unique ID. This ID is added as a tag on all of the build scans, which \
-makes it easy to find the build scans for each run of the experiment. We will also add an \
-'exp1' tag to every build scan so that you can easily find all of the build scans for all \
-runs of this experiment."
-
   local fmt="%-20s%-10s"
 
   info
@@ -41,9 +68,6 @@ runs of this experiment."
 }
 
 collect_project_details() {
-  wizard "We are going to create a fresh checkout of your project. That way, the experiment will be \
-infleunced by as few outside factors as possible)."
-
   echo
 
   if [ -n "${_arg_git_url}" ]; then
@@ -64,11 +88,6 @@ infleunced by as few outside factors as possible)."
 
 collect_gradle_task() {
   if [ -z "$_arg_task" ]; then
-    wizard "We need a build task (or tasks) to run on each build of the experiment. If this is the first \
-time you are running the experiment, then you may want to run a task that doesn't take very long to \
-complete. You can run more complete (and longer) builds after you become more comfortable with running \
-the experiment."
-
     echo
     read -r -p "What Gradle task do you want to run? (assemble) " task
     echo
@@ -83,8 +102,6 @@ the experiment."
 
 make_experiment_dir() {
   mkdir -p "${experiment_dir}"
-  wizard "I just created ${YELLOW}${experiment_dir}${BLUE} where we will do the work for this experiment."
-  wizard
 }
 
 clone_project() {
@@ -107,35 +124,16 @@ clone_project() {
 
 execute_first_build() {
   info "Running first build (invoking clean)."
-  wizard 
-  wizard "OK! We are ready to run our first build!"
-  wizard
-  wizard "For this run, we'll execute 'clean ${task}'. We will also add a few more flags to \
-make sure build caching is disabled (since we are just focused on icremental building \
-for now), and to add the build scan tags we talked about before. I will use a Gradle \
-init script to capture the build scan information. That's for me though, you can totally \
-ignore that part."
-  wizard
-  wizard "Effectively, this is what we are going to run (the actual command is a bit more complex):"
-
   info 
   info "./gradlew --no-build-cache -Dscan.tag.exp1 -Dscan.tag.${run_id} clean ${task}"
-
-  wizard_pause "Press enter to run the first build."
 
   invoke_gradle --no-build-cache clean "${task}"
 }
 
 execute_second_build() {
   info "Running second build (without invoking clean)."
-  wizard
-  wizard "Now we are going to run the build again, but this time we will invoke it without \
-'clean'. This will let us see how well the build takes advantage of Gradle's incremental build."
-
   info 
   info "./gradlew --no-build-cache -Dscan.tag.exp1 -Dscan.tag.${run_id} ${task}"
-
-  wizard_pause "Press enter to run the second build."
 
   invoke_gradle --no-build-cache "${task}"
 }
@@ -209,20 +207,6 @@ infof() {
   printf "${YELLOW}${BOLD}${format_string}${RESTORE}\n" "$@"
 }
 
-wizard() {
-  if [ "$_arg_wizard" == "on" ]; then
-    printf "${BLUE}${BOLD}${1}${RESTORE}\n" | fmt -w 80
-  fi
-}
-
-wizard_pause() {
-  if [ "$_arg_wizard" == "on" ]; then
-    echo "${YELLOW}"
-    read -r -p "$1"
-    echo "${RESTORE}"
-  fi
-}
-
 print_introduction() {
   if [ "$_arg_wizard" == "on" ]; then
     cat <<EOF
@@ -275,7 +259,57 @@ EOF
   fi
 }
 
-print_wrap_up() {
+explain_scan_tags() {
+  wizard "Below is the ID for this particular run of this experiment. Every time you run this script, \
+we'll generate a new unique ID. This ID is added as a tag on all of the build scans, which \
+makes it easy to find the build scans for each run of the experiment. We will also add an \
+'exp1' tag to every build scan so that you can easily find all of the build scans for all \
+runs of this experiment."
+}
+
+explain_collect_project_details() {
+  wizard "We are going to create a fresh checkout of your project. That way, the experiment will be \
+infleunced by as few outside factors as possible)."
+}
+
+explain_collect_gradle_task() {
+  if [ -z "$_arg_task" ]; then
+    wizard "We need a build task (or tasks) to run on each build of the experiment. If this is the first \
+time you are running the experiment, then you may want to run a task that doesn't take very long to \
+complete. You can run more complete (and longer) builds after you become more comfortable with running \
+the experiment."
+  fi
+}
+
+explain_experiment_dir() {
+  wizard "All of the work we do for this experiment will be stored in ${YELLOW}${experiment_dir}${BLUE}."
+}
+
+explain_first_build() {
+  wizard 
+  wizard "OK! We are ready to run our first build!"
+  wizard
+  wizard "For this run, we'll execute 'clean ${task}'. We will also add a few more flags to \
+make sure build caching is disabled (since we are just focused on icremental building \
+for now), and to add the build scan tags we talked about before."
+  wizard
+  wizard "Effectively, this is what we are going to run (the actual command is a bit more complex):"
+
+  info 
+  info "./gradlew --no-build-cache -Dscan.tag.exp1 -Dscan.tag.${run_id} clean ${task}"
+
+  wizard_pause "Press enter to run the first build."
+}
+
+explain_second_build() {
+  wizard
+  wizard "Now we are going to run the build again, but this time we will invoke it without \
+'clean'. This will let us see how well the build takes advantage of Gradle's incremental build."
+
+  wizard_pause "Press enter to run the second build."
+}
+
+explain_summary() {
   if [ "$_arg_wizard" == "on" ]; then
     read_scan_info
 
@@ -322,6 +356,16 @@ to run the experiment again with the same inputs:"
   fi
 }
 
+wizard() {
+  printf "${BLUE}${BOLD}${1}${RESTORE}\n" | fmt -w 80
+}
+
+wizard_pause() {
+  echo "${YELLOW}"
+  read -r -p "$1"
+  echo "${RESTORE}"
+}
+
 # Color and text escape sequences
 RESTORE=$(echo -en '\033[0m')
 RED=$(echo -en '\033[00;31m')
@@ -346,6 +390,4 @@ DIM=$(echo -en '\033[2m')
 UNDERLINE=$(echo -en '\033[4m')
 
 main
-
-# ] <-- needed because of Argbash
 
