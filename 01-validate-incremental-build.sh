@@ -9,7 +9,7 @@ script_name=$(basename "$0")
 # shellcheck source=lib/01/parsing.sh
 source "${script_dir}/lib/01/parsing.sh" || { echo "Couldn't find '${script_dir}/lib/01/parsing.sh' parsing library."; exit 1; }
 
-set -e
+#set -e
 experiment_dir="${script_dir}/data/${script_name%.*}"
 run_id=$(uuidgen)
 
@@ -51,16 +51,16 @@ wizard_execute() {
  explain_experiment_dir
  make_experiment_dir
 
- clone_project
+ #clone_project
 
- explain_first_build
- execute_first_build
+ #explain_first_build
+ #execute_first_build
 
- explain_second_build
- execute_second_build
+ #explain_second_build
+ #execute_second_build
 
- explain_summary
- print_summary
+ #explain_summary
+ #print_summary
 }
 
 print_experiment_name() {
@@ -216,25 +216,23 @@ infof() {
 }
 
 print_introduction() {
-  if [ "$_arg_wizard" == "on" ]; then
-    cat <<EOF
-${CYAN}
-                              ;x0K0d,
-                             kXOxx0XXO,
-               ....                '0XXc
-        .;lx0XXXXXXXKOxl;.          oXXK
-       xXXXXXXXXXXXXXXXXXX0d:.     ,KXX0
-      .,KXXXXXXXXXXXXXXXXXO0XXKOxkKXXXX:
-    lKX:'0XXXXXKo,dXXXXXXO,,XXXXXXXXXK;       Gradle Enterprise Trial
-  ,0XXXXo.oOkl;;oKXXXXXXXXXXXXXXXXXKo.
- :XXXXXXXKdllxKXXXXXXXXXXXXXXXXXX0c.
-'XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXk'
-xXXXXXXXXXXXXXXXXXXXXXXXXXXXXXc           Experiment 01:
-KXXXXXXXXXXXXXXXXXXXXXXXXXXXXl            Validate Incremental Build
-XXXXXXklclkXXXXXXXklclxKXXXXK
-OXXXk.     .OXXX0'     .xXXXx
-oKKK'       ,KKK:       .KKKo
-${RESTORE}${BLUE}${BOLD}
+  local lines text ifs_bak
+  IFS='' read -r -d '' text <<EOF
+${CYAN}                              ;x0K0d,
+${CYAN}                            kXOxx0XXO,
+${CYAN}              ....                '0XXc
+${CYAN}       .;lx0XXXXXXXKOxl;.          oXXK
+${CYAN}      xXXXXXXXXXXXXXXXXXX0d:.     ,KXX0
+${CYAN}     .,KXXXXXXXXXXXXXXXXXO0XXKOxkKXXXX:
+${CYAN}   lKX:'0XXXXXKo,dXXXXXXO,,XXXXXXXXXK;       Gradle Enterprise Trial
+${CYAN} ,0XXXXo.oOkl;;oKXXXXXXXXXXXXXXXXXKo.
+${CYAN}:XXXXXXXKdllxKXXXXXXXXXXXXXXXXXX0c.
+${CYAN}'XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXk'
+${CYAN}xXXXXXXXXXXXXXXXXXXXXXXXXXXXXXc           Experiment 01:
+${CYAN}KXXXXXXXXXXXXXXXXXXXXXXXXXXXXl            Validate Incremental Build
+${CYAN}XXXXXXklclkXXXXXXXklclxKXXXXK
+${CYAN}OXXXk.     .OXXX0'     .xXXXx
+${CYAN}oKKK'       ,KKK:       .KKKo
 
 Wecome! This is the first of several experiments that are part of your Gradle
 Enterprise Trial. Each experiment will help you to make concrete improvements
@@ -260,11 +258,10 @@ have been made.
 The Gradle Solutions engineer will then work with you to figure out why some
 (if any) tasks ran on the second build, and how to optimize them so that all
 tasks participate in Gradle's incremental building feature.
-
-----------------------------------------------------------------------------${RESTORE}
 EOF
-    wizard_pause "Press enter when you're ready to get started."
-  fi
+
+  print_in_box "${text}"
+  wizard_pause "Press enter when you're ready to get started."
 }
 
 explain_scan_tags() {
@@ -365,13 +362,55 @@ to run the experiment again with the same inputs:"
 }
 
 wizard() {
-  printf "${BLUE}${BOLD}${1}${RESTORE}\n" | fmt -w 80
+  local text
+  #text=$(printf "${BLUE}${BOLD}${1}${RESTORE}\n" | fmt -w 80)
+  text=$(printf "${1}\n" | fmt -w 76)
+
+  print_in_box "${text}"
 }
 
 wizard_pause() {
   echo "${YELLOW}"
   read -r -p "$1"
   echo "${RESTORE}"
+}
+
+
+function print_in_box()
+{
+  local lines adjusted_lines b w
+
+  # Convert the input into an array
+  #   In bash, this is tricky, expecially if you want to preserve leading 
+  #   whitespace and blank lines!
+  ifs_bak=$IFS
+  IFS=''
+  while read line; do
+    lines+=( "$line" )
+  done <<< "$*"
+  IFS=${ifs_bak}
+
+  # Calculate the longest text width (w is witdh), excluding color codes
+  # Also save the longest line in b ('b' for buffer)
+  #    We'll use 'b' later to fill in the top and bottom borders
+  for l in "${lines[@]}"; do
+    no_color="$(echo "$l" | sed $'s,\x1b\\[[0-9;]*[a-zA-Z],,g')"
+    ((w<${#no_color})) && { b="$no_color"; w="${#no_color}"; }
+  done
+
+  echo -n "${BOX_COLOR}"
+  echo "┌─${b//?/─}─┐"
+  echo "│ ${b//?/ } │"
+  for l in "${lines[@]}"; do
+    # Adjust padding for color codes (add spaces for removed color codes)
+    local no_color padding
+    no_color="$(echo "$l" | sed $'s,\x1b\\[[0-9;]*[a-zA-Z],,g')"
+    padding=$((w+${#l}-${#no_color}))
+    printf '│ %s%*s%s │\n' "${WIZ_COLOR}" "-$padding" "$l" "${BOX_COLOR}"
+  done
+  echo "│ ${b//?/ } │"
+  echo "└─${b//?/─}─┘"
+  echo -n "${RESET}"
 }
 
 # Color and text escape sequences
@@ -396,6 +435,9 @@ WHITE=$(echo -en '\033[01;37m')
 BOLD=$(echo -en '\033[1m')
 DIM=$(echo -en '\033[2m')
 UNDERLINE=$(echo -en '\033[4m')
+
+WIZ_COLOR="${BLUE}${BOLD}"
+BOX_COLOR="${CYAN}"
 
 main
 
