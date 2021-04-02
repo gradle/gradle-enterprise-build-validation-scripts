@@ -6,6 +6,7 @@ script_dir="$(cd "$(dirname "$(readlink -e "${BASH_SOURCE[0]}")")" && pwd)"
 script_name=$(basename "$0")
 
 # Include and parse the command line arguments
+# shellcheck source=lib/01/parsing.sh
 source "${script_dir}/lib/01/parsing.sh" || { echo "Couldn't find '${script_dir}/lib/01/parsing.sh' parsing library."; exit 1; }
 
 set -e
