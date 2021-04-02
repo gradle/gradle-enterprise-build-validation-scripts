@@ -139,6 +139,13 @@ execute_second_build() {
   invoke_gradle --no-build-cache "${task}"
 }
 
+invoke_gradle() {
+  # The gradle --init-script flag only accepts a relative directory path. ¯\_(ツ)_/¯
+  local script_dir_rel
+  script_dir_rel=$(realpath --relative-to="$( pwd )" "${script_dir}")
+  ./gradlew --init-script "${script_dir_rel}/lib/capture-build-scan-info.gradle" -Dscan.tag.exp1 -Dscan.tag."${run_id}" "$@"
+}
+
 read_scan_info() {
   base_url=()
   scan_url=()
@@ -189,13 +196,6 @@ print_starting_points() {
  infof "$fmt" "Scan Comparision:" "${base_url[0]}/c/${scan_id[0]}/${scan_id[1]}/task-inputs"
  infof "$fmt" "Longest-running tasks:" "${base_url[0]}/s/${scan_id[1]}/timeline?outcome=SUCCESS,FAILED&sort=longest"
  info
-}
-
-invoke_gradle() {
-  # The gradle --init-script flag only accepts a relative directory path. ¯\_(ツ)_/¯
-  local script_dir_rel
-  script_dir_rel=$(realpath --relative-to="$( pwd )" "${script_dir}")
-  ./gradlew --init-script "${script_dir_rel}/capture-build-scan-info.gradle" -Dscan.tag.exp1 -Dscan.tag."${run_id}" "$@"
 }
 
 info() {
