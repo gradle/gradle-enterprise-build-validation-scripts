@@ -22,13 +22,17 @@ main() {
 }
 
 execute() {
+ print_experiment_name
  print_scan_tags
+
  collect_project_details
  collect_gradle_task
  make_experiment_dir
+
  clone_project
  execute_first_build
  execute_second_build
+
  print_summary
 }
 
@@ -59,21 +63,26 @@ wizard_execute() {
  print_summary
 }
 
+print_experiment_name() {
+  info
+  info "Experiment 01: Validate Incremental Build"
+  info "-----------------------------------------"
+}
+
 print_scan_tags() {
   local fmt="%-20s%-10s"
 
   info
   infof "$fmt" "Experiment Tag:" "exp1"
   infof "$fmt" "Experiment Run ID:" "${run_id}"
-  info
 }
 
 collect_project_details() {
-  echo
 
   if [ -n "${_arg_git_url}" ]; then
      project_url=$_arg_git_url
   else
+    echo
     read -r -p "What is the project's GitHub URL? " project_url
   fi
 
@@ -82,7 +91,6 @@ collect_project_details() {
   else
      read -r -p "What branch should we checkout (press enter to use the project's default branch)? " project_branch
   fi
-  echo
 
   project_name=$(basename -s .git "${project_url}")
 }
@@ -91,7 +99,6 @@ collect_gradle_task() {
   if [ -z "$_arg_task" ]; then
     echo
     read -r -p "What Gradle task do you want to run? (assemble) " task
-    echo
 
     if [[ "${task}" == "" ]]; then
       task=assemble
@@ -106,8 +113,8 @@ make_experiment_dir() {
 }
 
 clone_project() {
-   info "Cloning ${project_name}"
    info
+   info "Cloning ${project_name}"
 
    local clone_dir="${experiment_dir}/${project_name}"
 
@@ -222,8 +229,8 @@ ${CYAN}
   ,0XXXXo.oOkl;;oKXXXXXXXXXXXXXXXXXKo.
  :XXXXXXXKdllxKXXXXXXXXXXXXXXXXXX0c.
 'XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXk'
-xXXXXXXXXXXXXXXXXXXXXXXXXXXXXXc           Experiment 1:
-KXXXXXXXXXXXXXXXXXXXXXXXXXXXXl            Optimize for Incremental Build
+xXXXXXXXXXXXXXXXXXXXXXXXXXXXXXc           Experiment 01:
+KXXXXXXXXXXXXXXXXXXXXXXXXXXXXl            Validate Incremental Build
 XXXXXXklclkXXXXXXXklclxKXXXXK
 OXXXk.     .OXXX0'     .xXXXx
 oKKK'       ,KKK:       .KKKo
