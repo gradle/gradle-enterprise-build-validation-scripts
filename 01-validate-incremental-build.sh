@@ -11,7 +11,6 @@ script_name=$(basename "$0")
 # shellcheck source=lib/01/parsing.sh
 source "${script_dir}/lib/01/parsing.sh" || { echo "Couldn't find '${script_dir}/lib/01/parsing.sh' parsing library."; exit 1; }
 
-#set -e
 experiment_dir="${script_dir}/data/${script_name%.*}"
 run_id=$(uuidgen)
 
