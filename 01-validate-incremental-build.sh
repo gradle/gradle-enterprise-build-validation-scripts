@@ -31,13 +31,13 @@ execute() {
  load_settings
  collect_project_details
  collect_gradle_task
- save_settings
 
  clone_project
 
  execute_first_build
  execute_second_build
 
+ save_settings
  print_summary
 }
 
@@ -55,7 +55,6 @@ wizard_execute() {
 
  explain_collect_gradle_task
  collect_gradle_task
- save_settings
 
  explain_clone_project
  clone_project
@@ -66,6 +65,7 @@ wizard_execute() {
  explain_second_build
  execute_second_build
 
+ save_settings
  print_summary
  explain_summary
 }
