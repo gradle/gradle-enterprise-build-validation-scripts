@@ -6,13 +6,11 @@
 #
 script_dir="$(cd "$(dirname "$(readlink -e "${BASH_SOURCE[0]}")")" && pwd)"
 script_name=$(basename "$0")
+experiment_dir="${script_dir}/data/${script_name%.*}"
 
 # Include and parse the command line arguments
 # shellcheck source=lib/01/parsing.sh
 source "${script_dir}/lib/01/parsing.sh" || { echo "Couldn't find '${script_dir}/lib/01/parsing.sh' parsing library."; exit 1; }
-
-experiment_dir="${script_dir}/data/${script_name%.*}"
-settings_file="${experiment_dir}/settings"
 
 run_id=$(uuidgen)
 
@@ -118,8 +116,8 @@ collect_gradle_task() {
 }
 
 save_settings() {
-  if [ ! -f "${settings_file}" ]; then
-    cat << EOF > "${settings_file}"
+  if [ ! -f "${_arg_settings}" ]; then
+    cat << EOF > "${_arg_settings}"
 GIT_URL=${project_url}
 GIT_BRANCH=${project_branch}
 GRADLE_TASK=${task}
@@ -128,8 +126,8 @@ EOF
 }
 
 load_settings() {
-  if [ -f  "${settings_file}" ]; then
-    source "${settings_file}"
+  if [ -f  "${_arg_settings}" ]; then
+    source "${_arg_settings}"
 
     if [ -z "${_arg_git_url}" ]; then
       _arg_git_url="${GIT_URL}"
