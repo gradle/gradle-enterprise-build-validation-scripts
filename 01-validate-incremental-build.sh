@@ -12,6 +12,8 @@ script_name=$(basename "$0")
 source "${script_dir}/lib/01/parsing.sh" || { echo "Couldn't find '${script_dir}/lib/01/parsing.sh' parsing library."; exit 1; }
 
 experiment_dir="${script_dir}/data/${script_name%.*}"
+settings_file="${experiment_dir}/settings"
+
 run_id=$(uuidgen)
 
 main() {
@@ -26,11 +28,15 @@ execute() {
  print_experiment_name
  print_scan_tags
 
- collect_project_details
- collect_gradle_task
  make_experiment_dir
 
+ load_settings
+ collect_project_details
+ collect_gradle_task
+ save_settings
+
  clone_project
+
  execute_first_build
  execute_second_build
 
@@ -45,10 +51,13 @@ wizard_execute() {
  explain_experiment_dir
  make_experiment_dir
 
+ load_settings
+
  collect_project_details
 
  explain_collect_gradle_task
  collect_gradle_task
+ save_settings
 
  explain_clone_project
  clone_project
@@ -95,7 +104,8 @@ collect_project_details() {
   project_name=$(basename -s .git "${project_url}")
 }
 
-collect_gradle_task() { if [ -z "$_arg_task" ]; then
+collect_gradle_task() { 
+  if [ -z "$_arg_task" ]; then
     echo
     read -r -p "What Gradle task do you want to run? (assemble) " task
 
@@ -104,6 +114,35 @@ collect_gradle_task() { if [ -z "$_arg_task" ]; then
     fi
   else
     task=$_arg_task
+  fi
+}
+
+save_settings() {
+  if [ ! -f "${settings_file}" ]; then
+    cat << EOF > "${settings_file}"
+GIT_URL=${project_url}
+GIT_BRANCH=${project_branch}
+GRADLE_TASK=${task}
+EOF
+  fi
+}
+
+load_settings() {
+  if [ -f  "${settings_file}" ]; then
+    source "${settings_file}"
+
+    if [ -z "${_arg_git_url}" ]; then
+      _arg_git_url="${GIT_URL}"
+    fi
+    if [ -z "${_arg_branch}" ]; then
+      _arg_branch="${GIT_BRANCH}"
+    fi
+    if [ -z "${_arg_task}" ]; then
+      _arg_task="${GRADLE_TASK}"
+    fi
+
+    info
+    info "Loaded settings from ${settings_file}"
   fi
 }
 
@@ -379,12 +418,13 @@ complete.
 Take some time to look over the build scans and the build comparison. You
 might be surprised by what you find!"
 
-If you do find something to optimize, then you will want to run this
-expirment again after you have implemented the optimizations (to validate
-the optimizations were effective.) Here is the command you can use to run
-the experiment again with the same inputs:
+If you do find something to optimize, then you will want to run this expirment
+again after you have implemented the optimizations (to validate the
+optimizations were effective). You will not need to run this wizard again. All
+of your settings have been saved, so all you need to do to run this experiment
+again without the wizard is to invoke this script without any arguments:
 
-$(info "./${script_name} --git-url ${project_url} --branch ${project_branch} --task ${task}")
+$(info "./${script_name}")
 
 Congrats! You have completed this experiment.
 EOF
