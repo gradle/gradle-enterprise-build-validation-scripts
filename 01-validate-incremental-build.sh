@@ -40,27 +40,26 @@ wizard_execute() {
  print_introduction
 
  explain_scan_tags
- print_scan_tags
 
- explain_collect_project_details
+ explain_experiment_dir
+ make_experiment_dir
+
  collect_project_details
 
  explain_collect_gradle_task
  collect_gradle_task
 
- explain_experiment_dir
- make_experiment_dir
+ explain_clone_project
+ clone_project
 
- #clone_project
+ explain_first_build
+ execute_first_build
 
- #explain_first_build
- #execute_first_build
+ explain_second_build
+ execute_second_build
 
- #explain_second_build
- #execute_second_build
-
- #explain_summary
- #print_summary
+ print_summary
+ explain_summary
 }
 
 print_experiment_name() {
@@ -95,8 +94,7 @@ collect_project_details() {
   project_name=$(basename -s .git "${project_url}")
 }
 
-collect_gradle_task() {
-  if [ -z "$_arg_task" ]; then
+collect_gradle_task() { if [ -z "$_arg_task" ]; then
     echo
     read -r -p "What Gradle task do you want to run? (assemble) " task
 
@@ -126,7 +124,7 @@ clone_project() {
    rm -rf "${clone_dir}"
    # shellcheck disable=SC2086  # we want $branch to expand into multiple arguments
    git clone --depth=1 ${branch} "${project_url}" "${clone_dir}"
-   cd "${clone_dir}"
+   cd "${clone_dir}" || exit
    info
 }
 
@@ -216,7 +214,7 @@ infof() {
 }
 
 print_introduction() {
-  local lines text ifs_bak
+  local text
   IFS='' read -r -d '' text <<EOF
 ${CYAN}                              ;x0K0d,
 ${CYAN}                            kXOxx0XXO,
@@ -224,36 +222,36 @@ ${CYAN}              ....                '0XXc
 ${CYAN}       .;lx0XXXXXXXKOxl;.          oXXK
 ${CYAN}      xXXXXXXXXXXXXXXXXXX0d:.     ,KXX0
 ${CYAN}     .,KXXXXXXXXXXXXXXXXXO0XXKOxkKXXXX:
-${CYAN}   lKX:'0XXXXXKo,dXXXXXXO,,XXXXXXXXXK;       Gradle Enterprise Trial
+${CYAN}   lKX:'0XXXXXKo,dXXXXXXO,,XXXXXXXXXK;   Gradle Enterprise Trial
 ${CYAN} ,0XXXXo.oOkl;;oKXXXXXXXXXXXXXXXXXKo.
 ${CYAN}:XXXXXXXKdllxKXXXXXXXXXXXXXXXXXX0c.
 ${CYAN}'XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXk'
-${CYAN}xXXXXXXXXXXXXXXXXXXXXXXXXXXXXXc           Experiment 01:
-${CYAN}KXXXXXXXXXXXXXXXXXXXXXXXXXXXXl            Validate Incremental Build
+${CYAN}xXXXXXXXXXXXXXXXXXXXXXXXXXXXXXc          Experiment 01:
+${CYAN}KXXXXXXXXXXXXXXXXXXXXXXXXXXXXl           Validate Incremental Build
 ${CYAN}XXXXXXklclkXXXXXXXklclxKXXXXK
 ${CYAN}OXXXk.     .OXXX0'     .xXXXx
 ${CYAN}oKKK'       ,KKK:       .KKKo
 
-Wecome! This is the first of several experiments that are part of your Gradle
-Enterprise Trial. Each experiment will help you to make concrete improvements
-to your existing build. The experiments will also help you to build the data
-necessary to recommend Gradle Enerprise to your organization.
+Wecome! This is the first of several experiments that are part of your
+Gradle Enterprise Trial. Each experiment will help you to make concrete
+improvements to your existing build. The experiments will also help you to
+build the data necessary to recommend Gradle Enerprise to your organization.
 
-This script (and the other experiment scripts) will run some of the experiment
-steps for you, but we'll walk you through each step so that you know exactly
-what we are doing, and why.
+This script (and the other experiment scripts) will run some of the
+experiment steps for you, but we'll walk you through each step so that you
+know exactly what we are doing, and why.
 
-In this first experiment, we will be optimizing your existing build so that all
-tasks participate in Gradle's incremental build feature. Gradle will only
-execute tasks if their inputs have changed since the last time you ran them.
-This let's Gradle avoid running tasks unecessarily (after all, why run a task
-again if it's already completed it's work?).
+In this first experiment, we will be optimizing your existing build so that
+all tasks participate in Gradle's incremental build feature. Gradle will
+only execute tasks if their inputs have changed since the last time you ran
+them.  This let's Gradle avoid running tasks unecessarily (after all, why
+run a task again if it's already completed it's work?).
 
-For this experiment, we will run a clean build, and then we will run the same
-build again without making any changes (but without invoking clean).
-Afterwards, we'll look at the build scans to find tasks that were executed the
-second time. In a fully optimized build, no tasks should run when no changes
-have been made.
+For this experiment, we will run a clean build, and then we will run the
+same build again without making any changes (but without invoking clean).
+Afterwards, we'll look at the build scans to find tasks that were executed
+the second time. In a fully optimized build, no tasks should run when no
+changes have been made.
 
 The Gradle Solutions engineer will then work with you to figure out why some
 (if any) tasks ran on the second build, and how to optimize them so that all
@@ -265,16 +263,25 @@ EOF
 }
 
 explain_scan_tags() {
-  wizard "Below is the ID for this particular run of this experiment. Every time you run this script, \
-we'll generate a new unique ID. This ID is added as a tag on all of the build scans, which \
-makes it easy to find the build scans for each run of the experiment. We will also add an \
-'exp1' tag to every build scan so that you can easily find all of the build scans for all \
-runs of this experiment."
+  local text
+  IFS='' read -r -d '' text <<EOF
+Below are some tags we are going to add to the build scans for this
+experiment. 
+$(print_scan_tags)
+
+Every time you run this script, we'll generate a new unique ID. This ID is
+added as a tag on the build scans from this run, which makes it easy to find
+the build scans for each run of the experiment. 
+
+You can use the 'exp1' tag to easily find all of the build scans for all
+runs of this experiment.
+EOF
+  print_in_box "${text}"
 }
 
-explain_collect_project_details() {
-  wizard "We are going to create a fresh checkout of your project. That way, the experiment will be \
-infleunced by as few outside factors as possible)."
+explain_experiment_dir() {
+  wizard "All of the work we do for this experiment will be stored in
+${YELLOW}${experiment_dir}"
 }
 
 explain_collect_gradle_task() {
@@ -286,85 +293,106 @@ the experiment."
   fi
 }
 
-explain_experiment_dir() {
-  wizard "All of the work we do for this experiment will be stored in ${YELLOW}${experiment_dir}${BLUE}."
+explain_clone_project() {
+  wizard "We are going to create a fresh checkout of your project. That way, the experiment will be \
+infleunced by as few outside factors as possible)."
 }
 
 explain_first_build() {
-  wizard 
-  wizard "OK! We are ready to run our first build!"
-  wizard
-  wizard "For this run, we'll execute 'clean ${task}'. We will also add a few more flags to \
-make sure build caching is disabled (since we are just focused on icremental building \
-for now), and to add the build scan tags we talked about before."
-  wizard
-  wizard "Effectively, this is what we are going to run (the actual command is a bit more complex):"
+ local build_command
+  build_command="${YELLOW}./gradlew --no-build-cache \\
+  ${YELLOW}-Dscan.tag.exp1 \\
+  ${YELLOW}-Dscan.tag.${run_id} \\
+  ${YELLOW} clean ${task}"
 
-  info 
-  info "./gradlew --no-build-cache -Dscan.tag.exp1 -Dscan.tag.${run_id} clean ${task}"
+  local text
+  IFS='' read -r -d '' text <<EOF
+OK! We are ready to run our first build!
 
+For this run, we'll execute 'clean ${task}'. 
+
+We are invoking clean even though we just created a fresh clone because
+sometimes the clean task changes the order other tasks run in, which can
+impact how incremental building works.
+
+We will also add a flag to make sure build caching is disabled (since we are
+just focused on incremental building for now), and we will add the build
+scan tags we talked about before.
+
+Effectively, this is what we are going to run:
+
+${build_command}
+EOF
+  print_in_box "${text}"
   wizard_pause "Press enter to run the first build."
 }
 
 explain_second_build() {
-  wizard
-  wizard "Now we are going to run the build again, but this time we will invoke it without \
-'clean'. This will let us see how well the build takes advantage of Gradle's incremental build."
+  local text
+  IFS='' read -r -d '' text <<EOF
+Now we are going to run the build again, but this time we will invoke it
+without 'clean'. This will let us see how well the build takes advantage of
+Gradle's incremental build.
 
+In a fully optimized build, no tasks should run on this second build because
+we already built everything in the first build. If some tasks do run, they
+will show up in the build scan for this second build.
+EOF
+  print_in_box "$text"
   wizard_pause "Press enter to run the second build."
 }
 
 explain_summary() {
-  if [ "$_arg_wizard" == "on" ]; then
-    read_scan_info
+  read_scan_info
+  local text
+  IFS='' read -r -d '' text <<EOF
+Builds complete!
 
-    wizard "-----------------------------------------------------------------------------"
-    wizard "Now that both builds have completed, there is a lot of valuable \
-data in Gradle Enterprise to look at. The data can help you find ineffiencies \
-in your build."
-    wizard
-    wizard "After running the experiment, I will generate a summary table that \
-contains useful data and links to help you analze the experiment results. Most \
-of the data in the summmary is self-explainitory, but there are a few things \
-that are worth reviewing:"
-    wizard
-    print_build_scans
-    wizard
-    wizard "^^ These are links to the build scans for the builds. A build scan is a \
-report that provides statistics about the build execution."
-    wizard
-    print_starting_points
-    wizard
-    wizard "^^ These are links to help you get started in your analysis. The first link \
-is to a comparison of the two build scans. Comparisions show you what was different \
-between two different builds."
-    wizard
-    wizard "The second link takes you to the timeline view of the second build \
-scan and automatically shows only the tasks that were executed, sorted by \
-execution time (with the longest-running tasks listed first). You can use this \
-to quickly identify tasks that were executed again unecessarily. You will want \
-to optimize any such tasks that also take a significant amount of time to \
-complete."
-    wizard
-    wizard "Take some time to look over the build scans and the build \
-comparison. You might be surprised by what you find!"
-    wizard
-    wizard "If you do find something to optimize, then you will want to run \
-this expirment again after you have implemented the optimizations (to \
-validate the optimizations were effective.) Here is the command you can use \
-to run the experiment again with the same inputs:"
-   wizard
-   info "./${script_name} --git-url ${project_url} --branch ${project_branch} --task ${task}"
-   wizard
-   wizard "Congratulations! You have completed this experiment."
-   wizard "-----------------------------------------------------------------------------"
-  fi
+Now that both builds have completed, there is a lot of valuable data in
+Gradle Enterprise to look at. The data can help you find ineffiencies in
+your build.
+
+After running the experiment, I will generate a summary table of useful data
+and links to help you analyze the experiment results. Most of the data in
+the summmary is self-explanatory, but there are a few things are worth
+reviewing:
+
+$(print_build_scans)
+
+^^ These are links to the build scans for the builds. A build scan is a
+report that provides information and statistics about the build execution.
+
+$(print_starting_points)
+
+^^ These are links to help you get started in your analysis. The first link
+is to a comparison of the two build scans. Comparisions show you what was
+different between two different builds.
+
+The second link takes you to the timeline view of the second build scan and
+automatically shows only the tasks that were executed, sorted by execution
+time (with the longest-running tasks listed first). You can use this to
+quickly identify tasks that were executed again unecessarily. You will want
+to optimize any such tasks that also take a significant amount of time to
+complete.
+
+Take some time to look over the build scans and the build comparison. You
+might be surprised by what you find!"
+
+If you do find something to optimize, then you will want to run this
+expirment again after you have implemented the optimizations (to validate
+the optimizations were effective.) Here is the command you can use to run
+the experiment again with the same inputs:
+
+$(info "./${script_name} --git-url ${project_url} --branch ${project_branch} --task ${task}")
+
+Congrats! You have completed this experiment.
+EOF
+  print_in_box "${text}"
 }
 
 wizard() {
   local text
-  #text=$(printf "${BLUE}${BOLD}${1}${RESTORE}\n" | fmt -w 80)
-  text=$(printf "${1}\n" | fmt -w 76)
+  text=$(echo "${1}" | fmt -w 78)
 
   print_in_box "${text}"
 }
@@ -378,14 +406,14 @@ wizard_pause() {
 
 function print_in_box()
 {
-  local lines adjusted_lines b w
+  local lines b w
 
   # Convert the input into an array
   #   In bash, this is tricky, expecially if you want to preserve leading 
   #   whitespace and blank lines!
   ifs_bak=$IFS
   IFS=''
-  while read line; do
+  while read -r line; do
     lines+=( "$line" )
   done <<< "$*"
   IFS=${ifs_bak}
@@ -394,16 +422,18 @@ function print_in_box()
   # Also save the longest line in b ('b' for buffer)
   #    We'll use 'b' later to fill in the top and bottom borders
   for l in "${lines[@]}"; do
+    local no_color
+    # shellcheck disable=SC2001  # I could only get this to work with sed
     no_color="$(echo "$l" | sed $'s,\x1b\\[[0-9;]*[a-zA-Z],,g')"
     ((w<${#no_color})) && { b="$no_color"; w="${#no_color}"; }
   done
 
   echo -n "${BOX_COLOR}"
   echo "┌─${b//?/─}─┐"
-  echo "│ ${b//?/ } │"
   for l in "${lines[@]}"; do
     # Adjust padding for color codes (add spaces for removed color codes)
     local no_color padding
+    # shellcheck disable=SC2001  # I could only get this to work with sed
     no_color="$(echo "$l" | sed $'s,\x1b\\[[0-9;]*[a-zA-Z],,g')"
     padding=$((w+${#l}-${#no_color}))
     printf '│ %s%*s%s │\n' "${WIZ_COLOR}" "-$padding" "$l" "${BOX_COLOR}"
