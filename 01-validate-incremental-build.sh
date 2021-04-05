@@ -2,6 +2,8 @@
 #
 # Runs Experiment 01 -  Optimize for incremental building
 #
+# Invoke this script with --help to get a description of the command line arguments
+#
 script_dir="$(cd "$(dirname "$(readlink -e "${BASH_SOURCE[0]}")")" && pwd)"
 script_name=$(basename "$0")
 
@@ -123,8 +125,8 @@ clone_project() {
 
    rm -rf "${clone_dir}"
    # shellcheck disable=SC2086  # we want $branch to expand into multiple arguments
-   git clone --depth=1 ${branch} "${project_url}" "${clone_dir}"
-   cd "${clone_dir}" || exit
+   git clone --depth=1 ${branch} "${project_url}" "${clone_dir}" || die "Unable to clone from ${project_url} Aborting!" 1
+   cd "${clone_dir}" || die "Unable to access ${clone_dir}. Aborting!" 1
    info
 }
 
@@ -148,7 +150,7 @@ invoke_gradle() {
   # The gradle --init-script flag only accepts a relative directory path. ¯\_(ツ)_/¯
   local script_dir_rel
   script_dir_rel=$(realpath --relative-to="$( pwd )" "${script_dir}")
-  ./gradlew --init-script "${script_dir_rel}/lib/capture-build-scan-info.gradle" -Dscan.tag.exp1 -Dscan.tag."${run_id}" "$@"
+  ./gradlew --init-script "${script_dir_rel}/lib/capture-build-scan-info.gradle" -Dscan.tag.exp1 -Dscan.tag."${run_id}" "$@" || exit 1
 }
 
 read_scan_info() {
@@ -440,7 +442,7 @@ function print_in_box()
   done
   echo "│ ${b//?/ } │"
   echo "└─${b//?/─}─┘"
-  echo -n "${RESET}"
+  echo -n "${RESTORE}"
 }
 
 # Color and text escape sequences
