@@ -9,7 +9,7 @@ script_name=$(basename "$0")
 experiment_dir="${script_dir}/data/${script_name%.*}"
 
 # Include and parse the command line arguments
-# shellcheck source=lib/01/parsing.sh
+# shellcheck source=experiments/lib/01/parsing.sh
 source "${script_dir}/lib/01/parsing.sh" || { echo "Couldn't find '${script_dir}/lib/01/parsing.sh' parsing library."; exit 1; }
 
 run_id=$(uuidgen)
