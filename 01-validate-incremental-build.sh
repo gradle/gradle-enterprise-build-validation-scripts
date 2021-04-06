@@ -127,6 +127,7 @@ EOF
 
 load_settings() {
   if [ -f  "${_arg_settings}" ]; then
+    # shellcheck source=/dev/null # this file is created by the user so nothing for shellcheck to check
     source "${_arg_settings}"
 
     if [ -z "${_arg_git_url}" ]; then
@@ -140,7 +141,7 @@ load_settings() {
     fi
 
     info
-    info "Loaded settings from ${settings_file}"
+    info "Loaded settings from ${_arg_settings}"
   fi
 }
 
