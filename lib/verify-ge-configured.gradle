@@ -1,0 +1,56 @@
+import org.gradle.util.GradleVersion
+
+initscript {
+    def pluginVersion = "3.6"
+
+    repositories {
+        gradlePluginPortal()
+    }
+
+    dependencies {
+        classpath("com.gradle:gradle-enterprise-gradle-plugin:${pluginVersion}")
+    }
+}
+
+def isTopLevelBuild = gradle.getParent() == null
+
+if (isTopLevelBuild) {
+    def version = GradleVersion.current().baseVersion
+    def atLeastGradle5 = version >= GradleVersion.version("5.0")
+    def atLeastGradle6 = version >= GradleVersion.version("6.0")
+
+    if (atLeastGradle6) {
+        settingsEvaluated { settings ->
+            assertPluginExists(settings.pluginManager, "Gradle Enterprise", "com.gradle.enterprise")
+            assertPluginExists(settings.pluginManager, "Common Custom User Data", "com.gradle.common-custom-user-data-gradle-plugin")
+
+            def gradleEnterprise = settings.extensions["gradleEnterprise"]
+            assert gradleEnterprise.server != null : "A Gradle Enterprise server to publish build scans to has not been configured. Please configure the build to publish build scans to a Gradle Enterprise instance and then try running the experiment again"
+            assert gradleEnterprise.buildScan.captureTaskInputFiles : "Capturing task inputs should be enabled"
+            // TODO verify publishAlways has been enabled
+        }
+    } else if (atLeastGradle5) {
+        projectsEvaluated { gradle ->
+            def rootProject = gradle.rootProject
+
+            assertPluginExists(rootProject.pluginManager, "Gradle Enterprise", "com.gradle.build-scan")
+            assertPluginExists(rootProject.pluginManager, "Common Custom User Data", "com.gradle.common-custom-user-data-gradle-plugin")
+
+            def buildScan = rootProject.extensions["buildScan"]
+            assert buildScan.server != null : "A Gradle Enterprise server to publish build scans to has not been configured. Please configure the build to publish build scans to a Gradle Enterprise instance and then try running the experiment again"
+            assert buildScan.captureTaskInputFiles : "Capturing task inputs should be enabled"
+            // TODO verify publishAlways has been enabled
+        }
+    }
+}
+
+def logScan(scanFile, scan) {
+    def port = (scan.buildScanUri.port != -1) ? ":" + scan.buildScanUri.port : ""
+    def baseUrl = "${scan.buildScanUri.scheme}://${scan.buildScanUri.host}${port}"
+    scanFile.append("${baseUrl},${scan.buildScanId},${scan.buildScanUri}\n")
+}
+
+def assertPluginExists(pluginManager, pluginName, pluginId) {
+    assert pluginManager.hasPlugin(pluginId) : "The ${pluginName} plugin is missing from this project. Please add '${pluginId}' to your build and then try running the experiment again"
+    // TODO Validate the plugin versions are the latest versions
+}
