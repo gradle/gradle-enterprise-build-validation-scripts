@@ -72,7 +72,7 @@ wizard_execute() {
 
 print_experiment_name() {
   info
-  info "Experiment 01: Validate Incremental Build"
+  info "Experiment 01: Optimize Incremental Build"
   info "-----------------------------------------"
 }
 
@@ -276,7 +276,7 @@ ${CYAN} ,0XXXXo.oOkl;;oKXXXXXXXXXXXXXXXXXKo.
 ${CYAN}:XXXXXXXKdllxKXXXXXXXXXXXXXXXXXX0c.
 ${CYAN}'XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXk'
 ${CYAN}xXXXXXXXXXXXXXXXXXXXXXXXXXXXXXc          Experiment 01:
-${CYAN}KXXXXXXXXXXXXXXXXXXXXXXXXXXXXl           Validate Incremental Build
+${CYAN}KXXXXXXXXXXXXXXXXXXXXXXXXXXXXl           Optimize Incremental Build
 ${CYAN}XXXXXXklclkXXXXXXXklclxKXXXXK
 ${CYAN}OXXXk.     .OXXX0'     .xXXXx
 ${CYAN}oKKK'       ,KKK:       .KKKo
