@@ -6,13 +6,17 @@
 #
 script_dir="$(cd "$(dirname "$(readlink -e "${BASH_SOURCE[0]}")")" && pwd)"
 script_name=$(basename "$0")
+
+# Experiment-speicifc constants
+EXP_NAME="Optimze Incremental Build"
+EXP_NO="01"
+EXP_SCAN_TAG=exp1
+RUN_ID=$(uuidgen)
 experiment_dir="${script_dir}/data/${script_name%.*}"
 
 # Include and parse the command line arguments
 # shellcheck source=experiments/lib/01/parsing.sh
 source "${script_dir}/lib/01/parsing.sh" || { echo "Couldn't find '${script_dir}/lib/01/parsing.sh' parsing library."; exit 1; }
-
-run_id=$(uuidgen)
 
 main() {
   if [ "$_arg_wizard" == "on" ]; then
@@ -72,7 +76,7 @@ wizard_execute() {
 
 print_experiment_name() {
   info
-  info "Experiment 01: Optimize Incremental Build"
+  info "Experiment ${EXP_NO}: ${EXP_NAME}"
   info "-----------------------------------------"
 }
 
@@ -80,8 +84,8 @@ print_scan_tags() {
   local fmt="%-20s%-10s"
 
   info
-  infof "$fmt" "Experiment Tag:" "exp1"
-  infof "$fmt" "Experiment Run ID:" "${run_id}"
+  infof "$fmt" "Experiment Tag:" "${EXP_SCAN_TAG}"
+  infof "$fmt" "Experiment Run ID:" "${RUN_ID}"
 }
 
 collect_project_details() {
@@ -170,7 +174,7 @@ clone_project() {
 execute_first_build() {
   info "Running first build (invoking clean)."
   info 
-  info "./gradlew --no-build-cache -Dscan.tag.exp1 -Dscan.tag.${run_id} clean ${task}"
+  info "./gradlew --no-build-cache -Dscan.tag.${EXP_SCAN_TAG} -Dscan.tag.${RUN_ID} clean ${task}"
 
   invoke_gradle --no-build-cache clean "${task}"
 }
@@ -178,7 +182,7 @@ execute_first_build() {
 execute_second_build() {
   info "Running second build (without invoking clean)."
   info 
-  info "./gradlew --no-build-cache -Dscan.tag.exp1 -Dscan.tag.${run_id} ${task}"
+  info "./gradlew --no-build-cache -Dscan.tag.${EXP_SCAN_TAG} -Dscan.tag.${RUN_ID} ${task}"
 
   invoke_gradle --no-build-cache "${task}"
 }
@@ -190,8 +194,8 @@ invoke_gradle() {
   ./gradlew \
       --init-script "${script_dir_rel}/lib/verify-ge-configured.gradle" \
       --init-script "${script_dir_rel}/lib/capture-build-scan-info.gradle" \
-      -Dscan.tag.exp1 \
-      -Dscan.tag."${run_id}" \
+      -Dscan.tag.${EXP_SCAN_TAG} \
+      -Dscan.tag."${RUN_ID}" \
       "$@" \
       || exit 1
 }
@@ -227,7 +231,7 @@ print_summary() {
  infof "$fmt" "Gradle Task(s):" "${task}"
  infof "$fmt" "Experiment Dir:" "${experiment_dir}"
  infof "$fmt" "Experiment Tag:" "exp1"
- infof "$fmt" "Experiment Run ID:" "${run_id}"
+ infof "$fmt" "Experiment Run ID:" "${RUN_ID}"
  print_build_scans
  print_starting_points
 }
@@ -275,8 +279,8 @@ ${CYAN}   lKX:'0XXXXXKo,dXXXXXXO,,XXXXXXXXXK;   Gradle Enterprise Trial
 ${CYAN} ,0XXXXo.oOkl;;oKXXXXXXXXXXXXXXXXXKo.
 ${CYAN}:XXXXXXXKdllxKXXXXXXXXXXXXXXXXXX0c.
 ${CYAN}'XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXk'
-${CYAN}xXXXXXXXXXXXXXXXXXXXXXXXXXXXXXc          Experiment 01:
-${CYAN}KXXXXXXXXXXXXXXXXXXXXXXXXXXXXl           Optimize Incremental Build
+${CYAN}xXXXXXXXXXXXXXXXXXXXXXXXXXXXXXc          Experiment ${EXP_NO}:
+${CYAN}KXXXXXXXXXXXXXXXXXXXXXXXXXXXXl           ${EXP_NAME}
 ${CYAN}XXXXXXklclkXXXXXXXklclxKXXXXK
 ${CYAN}OXXXk.     .OXXX0'     .xXXXx
 ${CYAN}oKKK'       ,KKK:       .KKKo
@@ -350,8 +354,8 @@ infleunced by as few outside factors as possible)."
 explain_first_build() {
  local build_command
   build_command="${YELLOW}./gradlew --no-build-cache \\
-  ${YELLOW}-Dscan.tag.exp1 \\
-  ${YELLOW}-Dscan.tag.${run_id} \\
+  ${YELLOW}-Dscan.tag.${EXP_SCAN_TAG} \\
+  ${YELLOW}-Dscan.tag.${RUN_ID} \\
   ${YELLOW} clean ${task}"
 
   local text
