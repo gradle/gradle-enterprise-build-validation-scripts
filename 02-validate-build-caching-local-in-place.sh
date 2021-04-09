@@ -25,7 +25,7 @@ task=""
 
 # Include and parse the command line arguments
 # shellcheck source=experiments/lib/02/parsing.sh
-source "${SCRIPT_DIR}/lib/02/parsing.sh" || { echo "Couldn't find '${SCRIPT_DIR}/lib/01/parsing.sh' parsing library."; exit 1; }
+source "${SCRIPT_DIR}/lib/02/parsing.sh" || { echo "Couldn't find '${SCRIPT_DIR}/lib/02/parsing.sh' parsing library."; exit 1; }
 
 # shellcheck source=experiments/lib/libs.sh
 source "${SCRIPT_DIR}/lib/libs.sh" || { echo "Couldn't find '${SCRIPT_DIR}/lib/libs.sh'"; exit 1; }
@@ -108,7 +108,7 @@ execute_build() {
   info "./gradlew -Dscan.tag.${EXP_SCAN_TAG} -Dscan.tag.${RUN_ID} clean ${task}"
 
   invoke_gradle \
-     --init-script "${script_dir_rel}/lib/02/verify-and-configure-build-cache.gradle" \
+     --init-script "${script_dir_rel}/lib/verify-and-configure-local-build-cache-only.gradle" \
      clean "${task}"
 }
 
