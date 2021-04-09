@@ -1,11 +1,5 @@
 #!/usr/bin/env bash
 
-wizard_pause() {
-  echo "${YELLOW}"
-  read -r -p "$1"
-  echo "${RESTORE}"
-}
-
 wizard() {
   local text
   text="$(echo "${1}" | fmt -w 78)"

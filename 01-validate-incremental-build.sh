@@ -182,12 +182,12 @@ changes have been made.
 The Gradle Solutions engineer will then work with you to figure out why some
 (if any) tasks ran on the second build, and how to optimize them so that all
 tasks participate in Gradle's incremental building feature.
+
+${USER_ACTION_COLOR}Press enter when you're ready to get started.
 EOF
-
   print_in_box "${text}"
-  wizard_pause "Press enter when you're ready to get started."
+  wait_for_enter
 }
-
 
 explain_clone_project() {
   wizard "We are going to create a fresh checkout of your project. That way, the experiment will be \
@@ -218,9 +218,11 @@ scan tags we talked about before.
 Effectively, this is what we are going to run:
 
 ${build_command}
+
+${USER_ACTION_COLOR}Press enter to run the first build.
 EOF
   print_in_box "${text}"
-  wizard_pause "Press enter to run the first build."
+  wait_for_enter
 }
 
 explain_second_build() {
@@ -233,9 +235,11 @@ Gradle's incremental build.
 In a fully optimized build, no tasks should run on this second build because
 we already built everything in the first build. If some tasks do run, they
 will show up in the build scan for this second build.
+
+${USER_ACTION_COLOR}Press enter to run the second build.
 EOF
   print_in_box "$text"
-  wizard_pause "Press enter to run the second build."
+  wait_for_enter
 }
 
 explain_summary() {
