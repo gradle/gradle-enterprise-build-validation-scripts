@@ -13,6 +13,7 @@ EXP_NO="01"
 EXP_SCAN_TAG=exp1
 RUN_ID=$(uuidgen)
 experiment_dir="${script_dir}/data/${script_name%.*}"
+scan_file="${experiment_dir}/scans.csv"
 
 # Include and parse the command line arguments
 # shellcheck source=experiments/lib/01/parsing.sh
@@ -151,6 +152,7 @@ load_settings() {
 
 make_experiment_dir() {
   mkdir -p "${experiment_dir}"
+  rm -f "${scan_file}" 
 }
 
 clone_project() {
@@ -210,7 +212,7 @@ read_scan_info() {
      base_url+=("$field_1")
      scan_id+=("$field_2")
      scan_url+=("$field_3")
-  done < scans.csv
+  done < "${scan_file}"
 }
 
 print_summary() {
@@ -326,7 +328,7 @@ Every time you run this script, we'll generate a new unique ID. This ID is
 added as a tag on the build scans from this run, which makes it easy to find
 the build scans for each run of the experiment. 
 
-You can use the 'exp1' tag to easily find all of the build scans for all
+You can use the '${EXP_SCAN_TAG}' tag to easily find all of the build scans for all
 runs of this experiment.
 EOF
   print_in_box "${text}"

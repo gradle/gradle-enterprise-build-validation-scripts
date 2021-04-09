@@ -13,6 +13,8 @@ EXP_NO="02"
 EXP_SCAN_TAG=exp2
 RUN_ID=$(uuidgen)
 experiment_dir="${script_dir}/data/${script_name%.*}"
+scan_file="${experiment_dir}/scans.csv"
+
 build_cache_dir="${experiment_dir}/build-cache"
 
 # Include and parse the command line arguments
@@ -155,6 +157,7 @@ load_settings() {
 
 make_experiment_dir() {
   mkdir -p "${experiment_dir}"
+  rm -f "${scan_file}"
 }
 
 clone_project() {
@@ -221,7 +224,7 @@ read_scan_info() {
      base_url+=("$field_1")
      scan_id+=("$field_2")
      scan_url+=("$field_3")
-  done < scans.csv
+  done < "${scan_file}"
 }
 
 print_summary() {
@@ -383,7 +386,6 @@ build cache (we'll delete it if it already exists from a previous run of the
 experiment):
 
 $(info "${build_cache_dir}")
-
 EOF
   print_in_box "${text}"
   wizard_pause "Press enter to continue."
