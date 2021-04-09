@@ -1,0 +1,13 @@
+
+def isTopLevelBuild = gradle.getParent() == null
+
+if (isTopLevelBuild) {
+    settingsEvaluated { settings ->
+        settings.buildCache {
+            local {
+                directory = "${settings.rootDir}/../build-cache"
+            }
+        }
+    }
+}
+
