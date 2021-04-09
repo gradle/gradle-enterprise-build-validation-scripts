@@ -205,8 +205,7 @@ invoke_gradle() {
   script_dir_rel=$(realpath --relative-to="$( pwd )" "${script_dir}")
   ./gradlew \
       --init-script "${script_dir_rel}/lib/verify-ge-configured.gradle" \
-      --init-script "${script_dir_rel}/lib/02/verify-only-local-cache-enabled.gradle" \
-      --init-script "${script_dir_rel}/lib/02/use-experiment-build-cache-dir.gradle" \
+      --init-script "${script_dir_rel}/lib/02/verify-and-configure-build-cache.gradle" \
       --init-script "${script_dir_rel}/lib/capture-build-scan-info.gradle" \
       -Dscan.tag.${EXP_SCAN_TAG} \
       -Dscan.tag."${RUN_ID}" \
