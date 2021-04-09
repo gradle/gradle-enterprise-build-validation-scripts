@@ -12,3 +12,9 @@ invoke_gradle() {
       "$@" \
       || die "The experiment cannot continue because the build failed." 1
 }
+
+make_local_cache_dir() {
+  rm -rf "${build_cache_dir}"
+  mkdir -p "${build_cache_dir}"
+}
+
