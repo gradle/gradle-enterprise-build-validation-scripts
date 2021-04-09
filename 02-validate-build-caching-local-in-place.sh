@@ -100,13 +100,13 @@ collect_project_details() {
      project_url=$_arg_git_url
   else
     echo
-    read -r -p "What is the project's GitHub URL? " project_url
+    read -r -p "${USER_ACTION_COLOR}What is the project's GitHub URL?${RESTORE} " project_url
   fi
 
   if [ -n "${_arg_branch}" ]; then
      project_branch=$_arg_branch
   else
-     read -r -p "What branch should we checkout (press enter to use the project's default branch)? " project_branch
+     read -r -p "${USER_ACTION_COLOR}What branch should we checkout (press enter to use the project's default branch)?${RESTORE} " project_branch
   fi
 
   project_name=$(basename -s .git "${project_url}")
@@ -115,7 +115,7 @@ collect_project_details() {
 collect_gradle_task() { 
   if [ -z "$_arg_task" ]; then
     echo
-    read -r -p "What Gradle task do you want to run? (assemble) " task
+    read -r -p "${USER_ACTION_COLOR}What Gradle task do you want to run?  (assemble)${RESTORE} " task
 
     if [[ "${task}" == "" ]]; then
       task=assemble
@@ -268,7 +268,7 @@ print_starting_points() {
 }
 
 info() {
-  printf "${YELLOW}${BOLD}%s${RESTORE}\n" "$1"
+  printf "${INFO_COLOR}%s${RESTORE}\n" "$1"
 }
 
 infof() {
@@ -278,7 +278,7 @@ infof() {
   # good way to rewrite this that will not trigger SC2059, so outright
   # disable it here.
   # shellcheck disable=SC2059  
-  printf "${YELLOW}${BOLD}${format_string}${RESTORE}\n" "$@"
+  printf "${INFO_COLOR}${format_string}${RESTORE}\n" "$@"
 }
 
 print_introduction() {
@@ -328,10 +328,12 @@ output should be used from the local cache).
 The Gradle Solutions engineer will then work with you to figure out why some
 (if any) tasks ran on the second build, and how to optimize them to take
 advantage of the build cache.
+
+${USER_ACTION_COLOR}Press enter when you're ready to get started.
 EOF
 
   print_in_box "${text}"
-  wizard_pause "Press enter when you're ready to get started."
+  wait_for_enter
 }
 
 explain_scan_tags() {
@@ -367,7 +369,9 @@ the experiment."
 
 explain_clone_project() {
   wizard "We are going to create a fresh checkout of your project. That way, the experiment will be \
-infleunced by as few outside factors as possible)."
+infleunced by as few outside factors as possible).
+
+"
 }
 
 explain_local_cache_dir() {
@@ -385,17 +389,19 @@ build cache (we'll delete it if it already exists from a previous run of the
 experiment):
 
 $(info "${build_cache_dir}")
+
+${USER_ACTION_COLOR}Press enter to continue.
 EOF
   print_in_box "${text}"
-  wizard_pause "Press enter to continue."
+  wait_for_enter
 }
 
 explain_first_build() {
  local build_command
-  build_command="${YELLOW}./gradlew \\
-  ${YELLOW}-Dscan.tag.${EXP_SCAN_TAG} \\
-  ${YELLOW}-Dscan.tag.${RUN_ID} \\
-  ${YELLOW} clean ${task}"
+  build_command="${INFO_COLOR}./gradlew \\
+  ${INFO_COLOR}-Dscan.tag.${EXP_SCAN_TAG} \\
+  ${INFO_COLOR}-Dscan.tag.${RUN_ID} \\
+  ${INFO_COLOR} clean ${task}"
 
   local text
   IFS='' read -r -d '' text <<EOF
@@ -412,9 +418,11 @@ We will also add the build scan tags we talked about before.
 Effectively, this is what we are going to run:
 
 ${build_command}
+
+${USER_ACTION_COLOR}Press enter to run the first build.
 EOF
   print_in_box "${text}"
-  wizard_pause "Press enter to run the first build."
+  wait_for_enter
 }
 
 explain_second_build() {
@@ -426,9 +434,11 @@ In a fully optimized build, no tasks would run on this second build because
 we already built everything in the first build, and the task outputs should
 be in the local build cache. If some tasks do run, they will show up in the
 build scan for this second build.
+
+${USER_ACTION_COLOR}Press enter to run the second build.
 EOF
   print_in_box "$text"
-  wizard_pause "Press enter to run the second build."
+  wait_for_enter
 }
 
 explain_summary() {
@@ -485,15 +495,14 @@ EOF
 
 wizard() {
   local text
-  text=$(echo "${1}" | fmt -w 78)
+  text="$(echo "${1}" | fmt -w 78)"
 
-  print_in_box "${text}"
+  print_in_box "${text}" "
+"
 }
 
-wizard_pause() {
-  echo "${YELLOW}"
-  read -r -p "$1"
-  echo "${RESTORE}"
+wait_for_enter() {
+  read -r
 }
 
 
@@ -531,7 +540,6 @@ function print_in_box()
     padding=$((w+${#l}-${#no_color}))
     printf '│ %s%*s%s │\n' "${WIZ_COLOR}" "-$padding" "$l" "${BOX_COLOR}"
   done
-  echo "│ ${b//?/ } │"
   echo "└─${b//?/─}─┘"
   echo -n "${RESTORE}"
 }
@@ -541,11 +549,14 @@ RESTORE=$(echo -en '\033[0m')
 YELLOW=$(echo -en '\033[00;33m')
 BLUE=$(echo -en '\033[00;34m')
 CYAN=$(echo -en '\033[00;36m')
+WHITE=$(echo -en '\033[01;37m')
 
 BOLD=$(echo -en '\033[1m')
 
 WIZ_COLOR="${BLUE}${BOLD}"
 BOX_COLOR="${CYAN}"
+USER_ACTION_COLOR="${WHITE}"
+INFO_COLOR="${YELLOW}${BOLD}"
 
 main
 
