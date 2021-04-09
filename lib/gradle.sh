@@ -3,7 +3,7 @@
 invoke_gradle() {
   # The gradle --init-script flag only accepts a relative directory path. ¯\_(ツ)_/¯
   local script_dir_rel
-  script_dir_rel=$(realpath --relative-to="$( pwd )" "${script_dir}")
+  script_dir_rel=$(realpath --relative-to="$( pwd )" "${SCRIPT_DIR}")
   ./gradlew \
       --init-script "${script_dir_rel}/lib/verify-ge-configured.gradle" \
       --init-script "${script_dir_rel}/lib/capture-build-scan-info.gradle" \

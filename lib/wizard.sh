@@ -70,7 +70,7 @@ EOF
 
 explain_experiment_dir() {
   wizard "All of the work we do for this experiment will be stored in
-$(info "${experiment_dir}")"
+$(info "${EXPERIMENT_DIR}")"
 }
 
 explain_collect_gradle_task() {
@@ -83,7 +83,15 @@ the experiment."
 }
 
 explain_clone_project() {
-  wizard "We are going to create a fresh checkout of your project. That way, the experiment will be \
-infleunced by as few outside factors as possible)."
+
+  local text
+  IFS='' read -r -d '' text <<EOF
+We are going to create a fresh clone of your project. That way, the experiment will be
+infleunced by as few outside factors as possible."
+
+${USER_ACTION_COLOR}Press enter to clone the project.
+EOF
+  print_in_box "${text}"
+  wait_for_enter
 }
 

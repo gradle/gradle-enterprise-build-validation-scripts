@@ -4,7 +4,7 @@ clone_project() {
    info
    info "Cloning ${project_name}"
 
-   local clone_dir="${experiment_dir}/${project_name}"
+   local clone_dir="${EXPERIMENT_DIR}/${project_name}"
 
    local branch=""
    if [ -n "${project_branch}" ]; then

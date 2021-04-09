@@ -10,6 +10,6 @@ read_scan_info() {
      base_url+=("$field_1")
      scan_id+=("$field_2")
      scan_url+=("$field_3")
-  done < "${scan_file}"
+  done < "${SCAN_FILE}"
 }
 

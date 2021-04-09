@@ -4,18 +4,18 @@
 #
 # Invoke this script with --help to get a description of the command line arguments
 #
-script_dir="$(cd "$(dirname "$(readlink -e "${BASH_SOURCE[0]}")")" && pwd)"
-script_name=$(basename "$0")
+SCRIPT_DIR="$(cd "$(dirname "$(readlink -e "${BASH_SOURCE[0]}")")" && pwd)"
+SCRIPT_NAME=$(basename "$0")
 
 # Experiment-speicifc constants
 EXP_NAME="Validate Build Caching - Local - In Place"
 EXP_NO="02"
 EXP_SCAN_TAG=exp2
 RUN_ID=$(uuidgen)
-experiment_dir="${script_dir}/data/${script_name%.*}"
-scan_file="${experiment_dir}/scans.csv"
+EXPERIMENT_DIR="${SCRIPT_DIR}/data/${SCRIPT_NAME%.*}"
+SCAN_FILE="${EXPERIMENT_DIR}/scans.csv"
 
-build_cache_dir="${experiment_dir}/build-cache"
+build_cache_dir="${EXPERIMENT_DIR}/build-cache"
 
 # These will be set by the collect functions (see lib/input.sh)
 project_url=""
@@ -25,10 +25,10 @@ task=""
 
 # Include and parse the command line arguments
 # shellcheck source=experiments/lib/02/parsing.sh
-source "${script_dir}/lib/02/parsing.sh" || { echo "Couldn't find '${script_dir}/lib/01/parsing.sh' parsing library."; exit 1; }
+source "${SCRIPT_DIR}/lib/02/parsing.sh" || { echo "Couldn't find '${SCRIPT_DIR}/lib/01/parsing.sh' parsing library."; exit 1; }
 
 # shellcheck source=experiments/lib/libs.sh
-source "${script_dir}/lib/libs.sh" || { echo "Couldn't find '${script_dir}/lib/libs.sh'"; exit 1; }
+source "${SCRIPT_DIR}/lib/libs.sh" || { echo "Couldn't find '${SCRIPT_DIR}/lib/libs.sh'"; exit 1; }
 
 main() {
   if [ "$_arg_wizard" == "on" ]; then
@@ -102,7 +102,7 @@ execute_second_build() {
 execute_build() {
   # The gradle --init-script flag only accepts a relative directory path. ¯\_(ツ)_/¯
   local script_dir_rel
-  script_dir_rel=$(realpath --relative-to="$( pwd )" "${script_dir}")
+  script_dir_rel=$(realpath --relative-to="$( pwd )" "${SCRIPT_DIR}")
 
   info 
   info "./gradlew -Dscan.tag.${EXP_SCAN_TAG} -Dscan.tag.${RUN_ID} clean ${task}"
@@ -128,7 +128,7 @@ print_summary() {
  infof "$fmt" "Project:" "${project_name}"
  infof "$fmt" "Branch:" "${branch}"
  infof "$fmt" "Gradle task(s):" "${task}"
- infof "$fmt" "Experiment dir:" "${experiment_dir}"
+ infof "$fmt" "Experiment dir:" "${EXPERIMENT_DIR}"
  infof "$fmt" "Experiment tag:" "${EXP_SCAN_TAG}"
  infof "$fmt" "Experiment run ID:" "${RUN_ID}"
  print_build_scans
@@ -320,7 +320,7 @@ All of your settings have been saved, so all you need to do to run this
 experiment again without the wizard is to invoke this script without any
 arguments:
 
-$(info "./${script_name}")
+$(info "./${SCRIPT_NAME}")
 
 Congrats! You have completed this experiment.
 EOF
