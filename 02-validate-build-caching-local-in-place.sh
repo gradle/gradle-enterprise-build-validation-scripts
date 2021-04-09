@@ -208,13 +208,6 @@ EOF
   wait_for_enter
 }
 
-explain_clone_project() {
-  wizard "We are going to create a fresh checkout of your project. That way, the experiment will be \
-infleunced by as few outside factors as possible).
-
-"
-}
-
 explain_local_cache_dir() {
   local text
   IFS='' read -r -d '' text <<EOF

@@ -189,11 +189,6 @@ EOF
   wait_for_enter
 }
 
-explain_clone_project() {
-  wizard "We are going to create a fresh checkout of your project. That way, the experiment will be \
-infleunced by as few outside factors as possible)."
-}
-
 explain_first_build() {
  local build_command
   build_command="${YELLOW}./gradlew --no-build-cache \\
