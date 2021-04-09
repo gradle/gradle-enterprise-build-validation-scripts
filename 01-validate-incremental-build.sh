@@ -8,7 +8,7 @@ script_dir="$(cd "$(dirname "$(readlink -e "${BASH_SOURCE[0]}")")" && pwd)"
 script_name=$(basename "$0")
 
 # Experiment-speicifc constants
-EXP_NAME="Optimze Incremental Build"
+EXP_NAME="Validate Incremental Build"
 EXP_NO="01"
 EXP_SCAN_TAG=exp1
 RUN_ID=$(uuidgen)
