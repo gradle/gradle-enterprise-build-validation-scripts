@@ -44,13 +44,8 @@ if (isTopLevelBuild) {
     }
 }
 
-def logScan(scanFile, scan) {
-    def port = (scan.buildScanUri.port != -1) ? ":" + scan.buildScanUri.port : ""
-    def baseUrl = "${scan.buildScanUri.scheme}://${scan.buildScanUri.host}${port}"
-    scanFile.append("${baseUrl},${scan.buildScanId},${scan.buildScanUri}\n")
-}
-
 def assertPluginExists(pluginManager, pluginName, pluginId) {
     assert pluginManager.hasPlugin(pluginId) : "The ${pluginName} plugin is missing from this project. Please add '${pluginId}' to your build and then try running the experiment again"
     // TODO Validate the plugin versions are the latest versions
 }
+

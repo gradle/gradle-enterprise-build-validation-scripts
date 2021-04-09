@@ -285,7 +285,7 @@ ${CYAN}XXXXXXklclkXXXXXXXklclxKXXXXK
 ${CYAN}OXXXk.     .OXXX0'     .xXXXx
 ${CYAN}oKKK'       ,KKK:       .KKKo
 
-Wecome! This is the first of several experiments that are part of your
+Welcome! This is the first of several experiments that are part of your
 Gradle Enterprise Trial. Each experiment will help you to make concrete
 improvements to your existing build. The experiments will also help you to
 build the data necessary to recommend Gradle Enerprise to your organization.
