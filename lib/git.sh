@@ -1,10 +1,11 @@
 #!/usr/bin/env bash
 
 clone_project() {
+   suffix="$1"
    info
    info "Cloning ${project_name}"
 
-   local clone_dir="${EXPERIMENT_DIR}/${project_name}"
+   local clone_dir="${EXPERIMENT_DIR}/${project_name}${suffix}"
 
    local branch=""
    if [ -n "${project_branch}" ]; then
