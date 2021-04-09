@@ -17,9 +17,18 @@ scan_file="${experiment_dir}/scans.csv"
 
 build_cache_dir="${experiment_dir}/build-cache"
 
+# These will be set by the collect functions (see lib/input.sh)
+project_url=""
+project_name=""
+project_branch=""
+task=""
+
 # Include and parse the command line arguments
 # shellcheck source=experiments/lib/02/parsing.sh
 source "${script_dir}/lib/02/parsing.sh" || { echo "Couldn't find '${script_dir}/lib/01/parsing.sh' parsing library."; exit 1; }
+
+# shellcheck source=experiments/lib/libs.sh
+source "${script_dir}/lib/libs.sh" || { echo "Couldn't find '${script_dir}/lib/libs.sh'"; exit 1; }
 
 main() {
   if [ "$_arg_wizard" == "on" ]; then
@@ -80,150 +89,27 @@ wizard_execute() {
  explain_summary
 }
 
-print_experiment_name() {
-  info
-  info "Experiment ${EXP_NO}: ${EXP_NAME}"
-  info "-----------------------------------------"
-}
-
-print_scan_tags() {
-  local fmt="%-20s%-10s"
-
-  info
-  infof "$fmt" "Experiment Tag:" "${EXP_SCAN_TAG}"
-  infof "$fmt" "Experiment Run ID:" "${RUN_ID}"
-}
-
-collect_project_details() {
-
-  if [ -n "${_arg_git_url}" ]; then
-     project_url=$_arg_git_url
-  else
-    echo
-    read -r -p "${USER_ACTION_COLOR}What is the project's GitHub URL?${RESTORE} " project_url
-  fi
-
-  if [ -n "${_arg_branch}" ]; then
-     project_branch=$_arg_branch
-  else
-     read -r -p "${USER_ACTION_COLOR}What branch should we checkout (press enter to use the project's default branch)?${RESTORE} " project_branch
-  fi
-
-  project_name=$(basename -s .git "${project_url}")
-}
-
-collect_gradle_task() { 
-  if [ -z "$_arg_task" ]; then
-    echo
-    read -r -p "${USER_ACTION_COLOR}What Gradle task do you want to run?  (assemble)${RESTORE} " task
-
-    if [[ "${task}" == "" ]]; then
-      task=assemble
-    fi
-  else
-    task=$_arg_task
-  fi
-}
-
-save_settings() {
-  if [ ! -f "${_arg_settings}" ]; then
-    cat << EOF > "${_arg_settings}"
-GIT_URL=${project_url}
-GIT_BRANCH=${project_branch}
-GRADLE_TASK=${task}
-EOF
-  fi
-}
-
-load_settings() {
-  if [ -f  "${_arg_settings}" ]; then
-    # shellcheck source=/dev/null # this file is created by the user so nothing for shellcheck to check
-    source "${_arg_settings}"
-
-    if [ -z "${_arg_git_url}" ]; then
-      _arg_git_url="${GIT_URL}"
-    fi
-    if [ -z "${_arg_branch}" ]; then
-      _arg_branch="${GIT_BRANCH}"
-    fi
-    if [ -z "${_arg_task}" ]; then
-      _arg_task="${GRADLE_TASK}"
-    fi
-
-    info
-    info "Loaded settings from ${_arg_settings}"
-  fi
-}
-
-make_experiment_dir() {
-  mkdir -p "${experiment_dir}"
-  rm -f "${scan_file}"
-}
-
-clone_project() {
-   info
-   info "Cloning ${project_name}"
-
-   local clone_dir="${experiment_dir}/${project_name}"
-
-   local branch=""
-   if [ -n "${project_branch}" ]; then
-      branch="--branch ${project_branch}"
-   fi
-
-   rm -rf "${clone_dir}"
-   # shellcheck disable=SC2086  # we want $branch to expand into multiple arguments
-   git clone --depth=1 ${branch} "${project_url}" "${clone_dir}" || die "Unable to clone from ${project_url} Aborting!" 1
-   cd "${clone_dir}" || die "Unable to access ${clone_dir}. Aborting!" 1
-   info
-}
-
-make_local_cache_dir() {
-  rm -rf "${build_cache_dir}"
-  mkdir -p "${build_cache_dir}"
-}
-
 execute_first_build() {
   info "Running first build."
-  info 
-  info "./gradlew -Dscan.tag.${EXP_SCAN_TAG} -Dscan.tag.${RUN_ID} clean ${task}"
-
-  invoke_gradle clean "${task}"
+  execute_build
 }
 
 execute_second_build() {
   info "Running second build."
-  info 
-  info "./gradlew -Dscan.tag.${EXP_SCAN_TAG} -Dscan.tag.${RUN_ID} clean ${task}"
-
-  invoke_gradle clean "${task}"
+  execute_build
 }
 
-invoke_gradle() {
+execute_build() {
   # The gradle --init-script flag only accepts a relative directory path. ¯\_(ツ)_/¯
   local script_dir_rel
   script_dir_rel=$(realpath --relative-to="$( pwd )" "${script_dir}")
-  ./gradlew \
-      --init-script "${script_dir_rel}/lib/verify-ge-configured.gradle" \
-      --init-script "${script_dir_rel}/lib/02/verify-and-configure-build-cache.gradle" \
-      --init-script "${script_dir_rel}/lib/capture-build-scan-info.gradle" \
-      -Dscan.tag.${EXP_SCAN_TAG} \
-      -Dscan.tag."${RUN_ID}" \
-      "$@" \
-      || die "The experiment cannot continue because the build failed." 1
-}
 
-read_scan_info() {
-  base_url=()
-  scan_url=()
-  scan_id=()
-  # This isn't the most robust way to read a CSV,
-  # but we control the CSV so we don't have to worry about various CSV edge cases
-  while IFS=, read -r field_1 field_2 field_3; do
-     base_url+=("$field_1")
-     scan_id+=("$field_2")
-     scan_url+=("$field_3")
-  done < "${scan_file}"
+  info 
+  info "./gradlew -Dscan.tag.${EXP_SCAN_TAG} -Dscan.tag.${RUN_ID} clean ${task}"
+
+  invoke_gradle \
+     --init-script "${script_dir_rel}/lib/02/verify-and-configure-build-cache.gradle" \
+     clean "${task}"
 }
 
 print_summary() {
@@ -265,20 +151,6 @@ print_starting_points() {
  infof "$fmt" "Executed cachable tasks:" "${base_url[0]}/s/${scan_id[1]}/timeline?cacheableFilter=cacheable&outcomeFilter=SUCCESS"
  infof "$fmt" "Uncachable tasks:" "${base_url[0]}/s/${scan_id[1]}/timeline?cacheableFilter=any_non-cacheable&outcomeFilter=SUCCESS"
  info
-}
-
-info() {
-  printf "${INFO_COLOR}%s${RESTORE}\n" "$1"
-}
-
-infof() {
-  local format_string="$1"
-  shift
-  # the format string is constructed from the caller's input. There is no
-  # good way to rewrite this that will not trigger SC2059, so outright
-  # disable it here.
-  # shellcheck disable=SC2059  
-  printf "${INFO_COLOR}${format_string}${RESTORE}\n" "$@"
 }
 
 print_introduction() {
@@ -334,37 +206,6 @@ EOF
 
   print_in_box "${text}"
   wait_for_enter
-}
-
-explain_scan_tags() {
-  local text
-  IFS='' read -r -d '' text <<EOF
-Below are some tags we are going to add to the build scans for this
-experiment. 
-$(print_scan_tags)
-
-Every time you run this script, we'll generate a new unique ID. This ID is
-added as a tag on the build scans from this run, which makes it easy to find
-the build scans for each run of the experiment. 
-
-You can use the '${EXP_SCAN_TAG}' tag to easily find all of the build scans for all
-runs of this experiment.
-EOF
-  print_in_box "${text}"
-}
-
-explain_experiment_dir() {
-  wizard "All of the work we do for this experiment will be stored in
-$(info "${experiment_dir}")"
-}
-
-explain_collect_gradle_task() {
-  if [ -z "$_arg_task" ]; then
-    wizard "We need a build task (or tasks) to run on each build of the experiment. If this is the first \
-time you are running the experiment, then you may want to run a task that doesn't take very long to \
-complete. You can run more complete (and longer) builds after you become more comfortable with running \
-the experiment."
-  fi
 }
 
 explain_clone_project() {
@@ -492,71 +333,6 @@ Congrats! You have completed this experiment.
 EOF
   print_in_box "${text}"
 }
-
-wizard() {
-  local text
-  text="$(echo "${1}" | fmt -w 78)"
-
-  print_in_box "${text}" "
-"
-}
-
-wait_for_enter() {
-  read -r
-}
-
-
-function print_in_box()
-{
-  local lines b w
-
-  # Convert the input into an array
-  #   In bash, this is tricky, expecially if you want to preserve leading 
-  #   whitespace and blank lines!
-  ifs_bak=$IFS
-  IFS=''
-  while read -r line; do
-    lines+=( "$line" )
-  done <<< "$*"
-  IFS=${ifs_bak}
-
-  # Calculate the longest text width (w is witdh), excluding color codes
-  # Also save the longest line in b ('b' for buffer)
-  #    We'll use 'b' later to fill in the top and bottom borders
-  for l in "${lines[@]}"; do
-    local no_color
-    # shellcheck disable=SC2001  # I could only get this to work with sed
-    no_color="$(echo "$l" | sed $'s,\x1b\\[[0-9;]*[a-zA-Z],,g')"
-    ((w<${#no_color})) && { b="$no_color"; w="${#no_color}"; }
-  done
-
-  echo -n "${BOX_COLOR}"
-  echo "┌─${b//?/─}─┐"
-  for l in "${lines[@]}"; do
-    # Adjust padding for color codes (add spaces for removed color codes)
-    local no_color padding
-    # shellcheck disable=SC2001  # I could only get this to work with sed
-    no_color="$(echo "$l" | sed $'s,\x1b\\[[0-9;]*[a-zA-Z],,g')"
-    padding=$((w+${#l}-${#no_color}))
-    printf '│ %s%*s%s │\n' "${WIZ_COLOR}" "-$padding" "$l" "${BOX_COLOR}"
-  done
-  echo "└─${b//?/─}─┘"
-  echo -n "${RESTORE}"
-}
-
-# Color and text escape sequences
-RESTORE=$(echo -en '\033[0m')
-YELLOW=$(echo -en '\033[00;33m')
-BLUE=$(echo -en '\033[00;34m')
-CYAN=$(echo -en '\033[00;36m')
-WHITE=$(echo -en '\033[01;37m')
-
-BOLD=$(echo -en '\033[1m')
-
-WIZ_COLOR="${BLUE}${BOLD}"
-BOX_COLOR="${CYAN}"
-USER_ACTION_COLOR="${WHITE}"
-INFO_COLOR="${YELLOW}${BOLD}"
 
 main
 
