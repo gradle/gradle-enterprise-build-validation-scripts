@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 #
-# Runs Experiment 01 -  Optimize for incremental building
+# Runs Experiment 01 - Validate Incremental Build 
 #
 # Invoke this script with --help to get a description of the command line arguments
 #
@@ -197,7 +197,7 @@ invoke_gradle() {
       -Dscan.tag.${EXP_SCAN_TAG} \
       -Dscan.tag."${RUN_ID}" \
       "$@" \
-      || exit 1
+      || die "The experiment cannot continue because the build failed." 1
 }
 
 read_scan_info() {
@@ -228,18 +228,18 @@ print_summary() {
  info "----------------------------"
  infof "$fmt" "Project:" "${project_name}"
  infof "$fmt" "Branch:" "${branch}"
- infof "$fmt" "Gradle Task(s):" "${task}"
- infof "$fmt" "Experiment Dir:" "${experiment_dir}"
- infof "$fmt" "Experiment Tag:" "exp1"
- infof "$fmt" "Experiment Run ID:" "${RUN_ID}"
+ infof "$fmt" "Gradle task(s):" "${task}"
+ infof "$fmt" "Experiment dir:" "${experiment_dir}"
+ infof "$fmt" "Experiment tag:" "${EXP_SCAN_TAG}"
+ infof "$fmt" "Experiment run ID:" "${RUN_ID}"
  print_build_scans
  print_starting_points
 }
 
 print_build_scans() {
  local fmt="%-25s%-10s"
- infof "$fmt" "First Build Scan:" "${scan_url[0]}"
- infof "$fmt" "Second Build Scan:" "${scan_url[1]}"
+ infof "$fmt" "First build scan:" "${scan_url[0]}"
+ infof "$fmt" "Second build scan:" "${scan_url[1]}"
 }
 
 print_starting_points() {
@@ -247,8 +247,8 @@ print_starting_points() {
  info 
  info "SUGGESTED STARTING POINTS"
  info "----------------------------"
- infof "$fmt" "Scan Comparision:" "${base_url[0]}/c/${scan_id[0]}/${scan_id[1]}/task-inputs?cacheability=cacheable"
- infof "$fmt" "Longest-running tasks:" "${base_url[0]}/s/${scan_id[1]}/timeline?outcome=SUCCESS,FAILED&sort=longest"
+ infof "$fmt" "Scan somparision:" "${base_url[0]}/c/${scan_id[0]}/${scan_id[1]}/task-inputs?cacheability=cacheable"
+ infof "$fmt" "Longest-running tasks:" "${base_url[0]}/s/${scan_id[1]}/timeline?outcome=SUCCESS&sort=longest"
  info
 }
 
