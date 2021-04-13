@@ -4,8 +4,9 @@
 #
 # Invoke this script with --help to get a description of the command line arguments
 #
-SCRIPT_DIR="$(cd "$(dirname "$(readlink -e "${BASH_SOURCE[0]}")")" && pwd)"
 SCRIPT_NAME=$(basename "$0")
+SCRIPT_DIR="$(cd "$(dirname "$(readlink -e "${BASH_SOURCE[0]}")")" && pwd)"
+LIB_DIR="${SCRIPT_DIR}/../lib"
 
 # Experiment-speicifc constants
 EXP_NAME="Validate Build Caching - Local - In Place"
@@ -24,11 +25,11 @@ project_branch=""
 task=""
 
 # Include and parse the command line arguments
-# shellcheck source=experiments/lib/02/parsing.sh
-source "${SCRIPT_DIR}/lib/02/parsing.sh" || { echo "Couldn't find '${SCRIPT_DIR}/lib/02/parsing.sh' parsing library."; exit 1; }
+# shellcheck source=experiments/lib/01/parsing.sh
+source "${LIB_DIR}/01/parsing.sh" || { echo "Couldn't find '${LIB_DIR}/01/parsing.sh' parsing library."; exit 1; }
 
 # shellcheck source=experiments/lib/libs.sh
-source "${SCRIPT_DIR}/lib/libs.sh" || { echo "Couldn't find '${SCRIPT_DIR}/lib/libs.sh'"; exit 1; }
+source "${LIB_DIR}/libs.sh" || { echo "Couldn't find '${LIB_DIR}/libs.sh'"; exit 1; }
 
 main() {
   if [ "$_arg_wizard" == "on" ]; then

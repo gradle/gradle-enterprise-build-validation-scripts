@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 
-CAPTURE_SCANS_EXTENSION_DIR="${SCRIPT_DIR}/lib/capture-scans-maven-extension"
+CAPTURE_SCANS_EXTENSION_DIR="${LIB_DIR}/capture-scans-maven-extension"
 CAPTURE_SCANS_EXTENSION_JAR="${CAPTURE_SCANS_EXTENSION_DIR}/target/capture-build-scans-extension-1.0.0-SNAPSHOT.jar"
 
 make_maven_extensions() {
   info "Building Maven extensions"
-  cd "${SCRIPT_DIR}/lib/capture-scans-maven-extension"
+  cd "${CAPTURE_SCANS_EXTENSION_DIR}"
   ./mvnw clean package > "${EXPERIMENT_DIR}/capture-scans-maven-extension.log"
 }
 

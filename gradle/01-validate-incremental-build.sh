@@ -1,21 +1,19 @@
 #!/usr/bin/env bash
 #
-# Runs Experiment 02 - Validate Build Caching - Local - In Place 
+# Runs Experiment 01 - Validate Incremental Build 
 #
 # Invoke this script with --help to get a description of the command line arguments
-#
-SCRIPT_DIR="$(cd "$(dirname "$(readlink -e "${BASH_SOURCE[0]}")")" && pwd)"
 SCRIPT_NAME=$(basename "$0")
+SCRIPT_DIR="$(cd "$(dirname "$(readlink -e "${BASH_SOURCE[0]}")")" && pwd)"
+LIB_DIR="${SCRIPT_DIR}/../lib"
 
 # Experiment-speicifc constants
-EXP_NAME="Validate Build Caching - Local - In Place"
-EXP_NO="02"
-EXP_SCAN_TAG=exp2
+EXP_NAME="Validate Incremental Build"
+EXP_NO="01"
+EXP_SCAN_TAG=exp1
 RUN_ID=$(uuidgen)
 EXPERIMENT_DIR="${SCRIPT_DIR}/data/${SCRIPT_NAME%.*}"
 SCAN_FILE="${EXPERIMENT_DIR}/scans.csv"
-
-build_cache_dir="${EXPERIMENT_DIR}/build-cache"
 
 # These will be set by the collect functions (see lib/input.sh)
 project_url=""
@@ -24,11 +22,11 @@ project_branch=""
 task=""
 
 # Include and parse the command line arguments
-# shellcheck source=experiments/lib/02/parsing.sh
-source "${SCRIPT_DIR}/lib/02/parsing.sh" || { echo "Couldn't find '${SCRIPT_DIR}/lib/02/parsing.sh' parsing library."; exit 1; }
+# shellcheck source=experiments/lib/01/parsing.sh
+source "${LIB_DIR}/01/parsing.sh" || { echo "Couldn't find '${LIB_DIR}/01/parsing.sh' parsing library."; exit 1; }
 
 # shellcheck source=experiments/lib/libs.sh
-source "${SCRIPT_DIR}/lib/libs.sh" || { echo "Couldn't find '${SCRIPT_DIR}/lib/libs.sh'"; exit 1; }
+source "${LIB_DIR}/libs.sh" || { echo "Couldn't find '${LIB_DIR}/libs.sh'"; exit 1; }
 
 main() {
   if [ "$_arg_wizard" == "on" ]; then
@@ -49,7 +47,7 @@ execute() {
  collect_gradle_task
 
  clone_project ""
- make_local_cache_dir
+
  execute_first_build
  execute_second_build
 
@@ -75,9 +73,6 @@ wizard_execute() {
  explain_clone_project
  clone_project ""
 
- explain_local_cache_dir
- make_local_cache_dir
-
  explain_first_build
  execute_first_build
 
@@ -90,26 +85,19 @@ wizard_execute() {
 }
 
 execute_first_build() {
-  info "Running first build."
-  execute_build
+  info "Running first build (invoking clean)."
+  info 
+  info "./gradlew --no-build-cache -Dscan.tag.${EXP_SCAN_TAG} -Dscan.tag.${RUN_ID} clean ${task}"
+
+  invoke_gradle --no-build-cache clean "${task}"
 }
 
 execute_second_build() {
-  info "Running second build."
-  execute_build
-}
-
-execute_build() {
-  # The gradle --init-script flag only accepts a relative directory path. ¯\_(ツ)_/¯
-  local script_dir_rel
-  script_dir_rel=$(realpath --relative-to="$( pwd )" "${SCRIPT_DIR}")
-
+  info "Running second build (without invoking clean)."
   info 
-  info "./gradlew -Dscan.tag.${EXP_SCAN_TAG} -Dscan.tag.${RUN_ID} clean ${task}"
+  info "./gradlew --no-build-cache -Dscan.tag.${EXP_SCAN_TAG} -Dscan.tag.${RUN_ID} ${task}"
 
-  invoke_gradle \
-     --init-script "${script_dir_rel}/lib/verify-and-configure-local-build-cache-only.gradle" \
-     clean "${task}"
+  invoke_gradle --no-build-cache "${task}"
 }
 
 print_summary() {
@@ -146,10 +134,8 @@ print_starting_points() {
  info 
  info "SUGGESTED STARTING POINTS"
  info "----------------------------"
- infof "$fmt" "Scan comparision:" "${base_url[0]}/c/${scan_id[0]}/${scan_id[1]}/task-inputs?cacheability=cacheable"
- infof "$fmt" "Cache performance:" "${base_url[0]}/s/${scan_id[1]}/performance/build-cache"
- infof "$fmt" "Executed cachable tasks:" "${base_url[0]}/s/${scan_id[1]}/timeline?cacheableFilter=cacheable&outcomeFilter=SUCCESS"
- infof "$fmt" "Uncachable tasks:" "${base_url[0]}/s/${scan_id[1]}/timeline?cacheableFilter=any_non-cacheable&outcomeFilter=SUCCESS"
+ infof "$fmt" "Scan somparision:" "${base_url[0]}/c/${scan_id[0]}/${scan_id[1]}/task-inputs?cacheability=cacheable"
+ infof "$fmt" "Longest-running tasks:" "${base_url[0]}/s/${scan_id[1]}/timeline?outcome=SUCCESS&sort=longest"
  info
 }
 
@@ -172,7 +158,7 @@ ${CYAN}XXXXXXklclkXXXXXXXklclxKXXXXK
 ${CYAN}OXXXk.     .OXXX0'     .xXXXx
 ${CYAN}oKKK'       ,KKK:       .KKKo
 
-This is the second of several experiments that are part of your
+Welcome! This is the first of several experiments that are part of your
 Gradle Enterprise Trial. Each experiment will help you to make concrete
 improvements to your existing build. The experiments will also help you to
 build the data necessary to recommend Gradle Enerprise to your organization.
@@ -181,50 +167,23 @@ This script (and the other experiment scripts) will run some of the
 experiment steps for you, but we'll walk you through each step so that you
 know exactly what we are doing, and why.
 
-In this experiment, we will be checking your build to see how well it takes
-advantage of the local build cache. When the build cache is enabled, Gradle
-saves the output from tasks so that the same output can be reused if the
-task is executed again with the same inputs. This is similar to incremental
-build, except that the cache is used across build runs. So even if you
-perform a clean, cached output will be used if the inputs to a task have not
-changed.
+In this first experiment, we will be optimizing your existing build so that
+all tasks participate in Gradle's incremental build feature. Gradle will
+only execute tasks if their inputs have changed since the last time you ran
+them.  This let's Gradle avoid running tasks unecessarily (after all, why
+run a task again if it's already completed it's work?).
 
-To test out the build cache, we'll run two builds (with build caching
-enabled). Both builds will invoke clean and run the same tasks. We will not
-make any changes between each build run.
-
-If the build is taking advantage of the local build cache, then very few (if
-any) tasks should actually execute on the seond build (all of the task
-output should be used from the local cache).
+For this experiment, we will run a clean build, and then we will run the
+same build again without making any changes (but without invoking clean).
+Afterwards, we'll look at the build scans to find tasks that were executed
+the second time. In a fully optimized build, no tasks should run when no
+changes have been made.
 
 The Gradle Solutions engineer will then work with you to figure out why some
-(if any) tasks ran on the second build, and how to optimize them to take
-advantage of the build cache.
+(if any) tasks ran on the second build, and how to optimize them so that all
+tasks participate in Gradle's incremental building feature.
 
 ${USER_ACTION_COLOR}Press enter when you're ready to get started.
-EOF
-
-  print_in_box "${text}"
-  wait_for_enter
-}
-
-explain_local_cache_dir() {
-  local text
-  IFS='' read -r -d '' text <<EOF
-We are going to create a new empty local build cache dir (and configure
-Gradle to use it instead of the default local cache dir). This way, the
-first build won't find anything in the cache and all tasks will run. 
-
-This is mportant beause we want to make sure tasks that are cachable do in
-fact produce output that is stored in the cache.
-
-Specifically, we are going to create and use this directory for the local
-build cache (we'll delete it if it already exists from a previous run of the
-experiment):
-
-$(info "${build_cache_dir}")
-
-${USER_ACTION_COLOR}Press enter to continue.
 EOF
   print_in_box "${text}"
   wait_for_enter
@@ -232,10 +191,10 @@ EOF
 
 explain_first_build() {
  local build_command
-  build_command="${INFO_COLOR}./gradlew \\
-  ${INFO_COLOR}-Dscan.tag.${EXP_SCAN_TAG} \\
-  ${INFO_COLOR}-Dscan.tag.${RUN_ID} \\
-  ${INFO_COLOR} clean ${task}"
+  build_command="${YELLOW}./gradlew --no-build-cache \\
+  ${YELLOW}-Dscan.tag.${EXP_SCAN_TAG} \\
+  ${YELLOW}-Dscan.tag.${RUN_ID} \\
+  ${YELLOW} clean ${task}"
 
   local text
   IFS='' read -r -d '' text <<EOF
@@ -245,9 +204,11 @@ For this run, we'll execute 'clean ${task}'.
 
 We are invoking clean even though we just created a fresh clone because
 sometimes the clean task changes the order other tasks run in, which can
-impact how the build cache is utilized.
+impact how incremental building works.
 
-We will also add the build scan tags we talked about before.
+We will also add a flag to make sure build caching is disabled (since we are
+just focused on incremental building for now), and we will add the build
+scan tags we talked about before.
 
 Effectively, this is what we are going to run:
 
@@ -262,12 +223,13 @@ EOF
 explain_second_build() {
   local text
   IFS='' read -r -d '' text <<EOF
-Now we are going to run the build again without changing anything.
+Now we are going to run the build again, but this time we will invoke it
+without 'clean'. This will let us see how well the build takes advantage of
+Gradle's incremental build.
 
-In a fully optimized build, no tasks would run on this second build because
-we already built everything in the first build, and the task outputs should
-be in the local build cache. If some tasks do run, they will show up in the
-build scan for this second build.
+In a fully optimized build, no tasks should run on this second build because
+we already built everything in the first build. If some tasks do run, they
+will show up in the build scan for this second build.
 
 ${USER_ACTION_COLOR}Press enter to run the second build.
 EOF
@@ -279,6 +241,8 @@ explain_summary() {
   read_scan_info
   local text
   IFS='' read -r -d '' text <<EOF
+Builds complete!
+
 Now that both builds have completed, there is a lot of valuable data in
 Gradle Enterprise to look at. The data can help you find ineffiencies in
 your build.
@@ -299,26 +263,21 @@ $(print_starting_points)
 is to a comparison of the two build scans. Comparisions show you what was
 different between two different builds.
 
-The "Cache performance" link takes you to the build cache performance page
-of the 2nd build scan. This page contains various metrics related to the
-build cache (such as cache hits and misses).
+The second link takes you to the timeline view of the second build scan and
+automatically shows only the tasks that were executed, sorted by execution
+time (with the longest-running tasks listed first). You can use this to
+quickly identify tasks that were executed again unecessarily. You will want
+to optimize any such tasks that also take a significant amount of time to
+complete.
 
-The "Executed cachable tasks" link shows you which tasks ran again on the
-second build, but shouldn't have because they are actually cachable. If any
-cachable tasks ran, then one of their inputs changed (even though we didn't
-make any changes), or they may not be declaring their inputs correctly.
+Take some time to look over the build scans and the build comparison. You
+might be surprised by what you find!"
 
-The last link, "Uncachable tasks", shows you which tasks ran that are not
-cachable. It is not always possible, or doesn't make sense the output from
-every task. For example, there's no way to cache the "output" of the clean
-task because the clean task deletes output rather than creating it.
-
-If you find something to optimize, then you will want to run this expirment
+If you do find something to optimize, then you will want to run this expirment
 again after you have implemented the optimizations (to validate the
-optimizations were effective). You will not need to run this wizard again.
-All of your settings have been saved, so all you need to do to run this
-experiment again without the wizard is to invoke this script without any
-arguments:
+optimizations were effective). You will not need to run this wizard again. All
+of your settings have been saved, so all you need to do to run this experiment
+again without the wizard is to invoke this script without any arguments:
 
 $(info "./${SCRIPT_NAME}")
 
