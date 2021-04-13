@@ -82,6 +82,15 @@ the experiment."
   fi
 }
 
+explain_collect_maven_goals() {
+  if [ -z "$_arg_task" ]; then
+    wizard "We need a Maven goal (or goals) to run on each build of the experiment. If this is the first \
+time you are running the experiment, then you may want to run a goal that doesn't take very long to \
+complete. You can run more complete (and longer) builds after you become more comfortable with running \
+the experiment."
+  fi
+}
+
 explain_clone_project() {
 
   local text

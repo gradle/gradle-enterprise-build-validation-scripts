@@ -27,3 +27,6 @@ source "${SCRIPT_DIR}/lib/scan_info.sh" || { echo "Couldn't find '${SCRIPT_DIR}/
 # shellcheck source=experiments/lib/gradle.sh
 source "${SCRIPT_DIR}/lib/gradle.sh" || { echo "Couldn't find '${SCRIPT_DIR}/lib/gradle.sh'"; exit 1; }
 
+# shellcheck source=experiments/lib/maven.sh
+source "${SCRIPT_DIR}/lib/maven.sh" || { echo "Couldn't find '${SCRIPT_DIR}/lib/maven.sh'"; exit 1; }
+

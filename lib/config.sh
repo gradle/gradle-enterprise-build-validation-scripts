@@ -3,9 +3,9 @@
 save_settings() {
   if [ ! -f "${_arg_settings}" ]; then
     cat << EOF > "${_arg_settings}"
-GIT_URL=${project_url}
-GIT_BRANCH=${project_branch}
-GRADLE_TASK=${task}
+GIT_URL="${project_url}"
+GIT_BRANCH="${project_branch}"
+GRADLE_TASK="${task}"
 EOF
   fi
 }

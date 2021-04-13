@@ -31,3 +31,16 @@ collect_gradle_task() {
   fi
 }
 
+collect_maven_goals() { 
+  if [ -z "$_arg_task" ]; then
+    echo
+    read -r -p "${USER_ACTION_COLOR}What Maven goals do you want to run?  (package)${RESTORE} " task
+
+    if [[ "${task}" == "" ]]; then
+      task=package
+    fi
+  else
+    task=$_arg_task
+  fi
+}
+
