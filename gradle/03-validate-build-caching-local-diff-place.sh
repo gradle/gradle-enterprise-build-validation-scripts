@@ -25,8 +25,8 @@ project_branch=""
 task=""
 
 # Include and parse the command line arguments
-# shellcheck source=experiments/lib/03/parsing.sh
-source "${LIB_DIR}/03/parsing.sh" || { echo "Couldn't find '${LIB_DIR}/03/parsing.sh' parsing library."; exit 1; }
+# shellcheck source=experiments/lib/gradle/03/parsing.sh
+source "${LIB_DIR}/gradle/03/parsing.sh" || { echo "Couldn't find '${LIB_DIR}/gradle/03/parsing.sh' parsing library."; exit 1; }
 
 # shellcheck source=experiments/lib/libs.sh
 source "${LIB_DIR}/libs.sh" || { echo "Couldn't find '${LIB_DIR}/libs.sh'"; exit 1; }
