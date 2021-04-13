@@ -5,8 +5,8 @@ invoke_gradle() {
   local lib_dir_rel
   lib_dir_rel=$(realpath --relative-to="$( pwd )" "${LIB_DIR}")
   ./gradlew \
-      --init-script "${lib_dir_rel}/verify-ge-configured.gradle" \
-      --init-script "${lib_dir_rel}/capture-build-scan-info.gradle" \
+      --init-script "${lib_dir_rel}/gradle/verify-ge-configured.gradle" \
+      --init-script "${lib_dir_rel}/gradle/capture-build-scan-info.gradle" \
       -Dscan.tag.${EXP_SCAN_TAG} \
       -Dscan.tag."${RUN_ID}" \
       "$@" \

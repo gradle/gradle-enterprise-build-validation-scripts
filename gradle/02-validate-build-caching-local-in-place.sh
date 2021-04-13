@@ -109,7 +109,7 @@ execute_build() {
   info "./gradlew -Dscan.tag.${EXP_SCAN_TAG} -Dscan.tag.${RUN_ID} clean ${task}"
 
   invoke_gradle \
-     --init-script "${lib_dir_rel}/verify-and-configure-local-build-cache-only.gradle" \
+     --init-script "${lib_dir_rel}/gradle/verify-and-configure-local-build-cache-only.gradle" \
      clean "${task}"
 }
 
