@@ -93,18 +93,17 @@ wizard_execute() {
 }
 
 execute_first_build() {
-  info "Running first build."
+  info "Running first build:"
   execute_build
 }
 
 execute_second_build() {
-  info "Running second build."
+  info "Running second build:"
   execute_build
 }
 
 execute_build() {
-  info 
-  info "./mvnw -Dscan.tag.${EXP_SCAN_TAG} -Dscan.tag.${RUN_ID} clean ${tasks}"
+  info "./mvnw clean ${task} -Dscan.tag.${EXP_SCAN_TAG} -Dscan.tag.${RUN_ID}"
 
   #shellcheck disable=SC2086  # we actually want ${tasks} to expand because it may have more than one maven goal
   invoke_maven \

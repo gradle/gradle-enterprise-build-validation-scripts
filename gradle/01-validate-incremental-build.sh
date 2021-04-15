@@ -87,17 +87,15 @@ wizard_execute() {
 }
 
 execute_first_build() {
-  info "Running first build (invoking clean)."
-  info 
-  info "./gradlew --no-build-cache -Dscan.tag.${EXP_SCAN_TAG} -Dscan.tag.${RUN_ID} clean ${tasks}"
+  info "Running first build:"
+  info "./gradlew --no-build-cache clean ${tasks} -Dscan.tag.${EXP_SCAN_TAG} -Dscan.tag.${RUN_ID}"
 
   invoke_gradle --no-build-cache clean "${tasks}"
 }
 
 execute_second_build() {
-  info "Running second build (without invoking clean)."
-  info 
-  info "./gradlew --no-build-cache -Dscan.tag.${EXP_SCAN_TAG} -Dscan.tag.${RUN_ID} ${tasks}"
+  info "Running second build:"
+  info "./gradlew --no-build-cache ${tasks} -Dscan.tag.${EXP_SCAN_TAG} -Dscan.tag.${RUN_ID}"
 
   invoke_gradle --no-build-cache "${tasks}"
 }

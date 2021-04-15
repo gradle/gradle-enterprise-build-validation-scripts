@@ -94,12 +94,12 @@ wizard_execute() {
 }
 
 execute_first_build() {
-  info "Running first build."
+  info "Running first build:"
   execute_build
 }
 
 execute_second_build() {
-  info "Running second build."
+  info "Running second build:"
   execute_build
 }
 
@@ -108,8 +108,7 @@ execute_build() {
   local lib_dir_rel
   lib_dir_rel=$(realpath --relative-to="$( pwd )" "${LIB_DIR}")
 
-  info 
-  info "./gradlew -Dscan.tag.${EXP_SCAN_TAG} -Dscan.tag.${RUN_ID} clean ${tasks}"
+  info "./gradlew clean ${tasks} -Dscan.tag.${EXP_SCAN_TAG} -Dscan.tag.${RUN_ID}"
 
   invoke_gradle \
      --init-script "${lib_dir_rel}/gradle/verify-and-configure-local-build-cache-only.gradle" \
