@@ -5,3 +5,6 @@ make_experiment_dir() {
   rm -f "${SCAN_FILE}"
 }
 
+generate_run_id() {
+  printf '%x' $(date +%s)
+}

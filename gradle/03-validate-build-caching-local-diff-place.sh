@@ -12,7 +12,6 @@ LIB_DIR="${SCRIPT_DIR}/../lib"
 EXP_NAME="Validate Build Caching - Local - Different Places"
 EXP_NO="03"
 EXP_SCAN_TAG=exp3-gradle
-RUN_ID=$(uuidgen)
 EXPERIMENT_DIR="${SCRIPT_DIR}/data/${SCRIPT_NAME%.*}"
 SCAN_FILE="${EXPERIMENT_DIR}/scans.csv"
 
@@ -30,6 +29,8 @@ source "${LIB_DIR}/gradle/03/parsing.sh" || { echo "Couldn't find '${LIB_DIR}/gr
 
 # shellcheck source=experiments/lib/libs.sh
 source "${LIB_DIR}/libs.sh" || { echo "Couldn't find '${LIB_DIR}/libs.sh'"; exit 1; }
+
+RUN_ID=$(generate_run_id)
 
 main() {
   if [ "$_arg_interactive" == "on" ]; then
