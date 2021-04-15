@@ -74,7 +74,7 @@ collect_project_details() {
 collect_gradle_task() { 
   if [ -z "$_arg_tasks" ]; then
     echo
-    read -r -p "${USER_ACTION_COLOR}What Gradle task do you want to run? (assemble)${RESTORE} " tasks
+    read -r -p "${USER_ACTION_COLOR}What build tasks should be run? (assemble)${RESTORE} " tasks
 
     if [[ "${task}" == "" ]]; then
       tasks=assemble
@@ -87,7 +87,7 @@ collect_gradle_task() {
 collect_maven_goals() { 
   if [ -z "$_arg_tasks" ]; then
     echo
-    read -r -p "${USER_ACTION_COLOR}What Maven goals do you want to run?  (package)${RESTORE} " tasks
+    read -r -p "${USER_ACTION_COLOR}What Maven goals should be run?  (package)${RESTORE} " tasks
 
     if [[ "${tasks}" == "" ]]; then
       task=package
