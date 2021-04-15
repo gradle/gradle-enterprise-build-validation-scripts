@@ -21,7 +21,7 @@ die()
 
 begins_with_short_option()
 {
-	local first_option all_short_options='bcsuth'
+	local first_option all_short_options='bcsuith'
 	first_option="${1:0:1}"
 	test "$all_short_options" = "${all_short_options/$first_option/}" && return 1 || return 0
 }
@@ -31,19 +31,19 @@ _arg_branch=
 _arg_config="${EXPERIMENT_DIR}/config"
 _arg_server=
 _arg_git_url=
-_arg_wizard="off"
+_arg_interactive="off"
 _arg_task=
 
 
 print_help()
 {
 	printf '%s\n' "Assists in validating that a Gradle build is optimized for incremental building."
-	printf 'Usage: %s [-b|--branch <arg>] [-c|--config <arg>] [-s|--server <arg>] [-u|--git-url <arg>] [--(no-)wizard] [-t|--task <arg>] [-h|--help]\n' "$0"
+	printf 'Usage: %s [-b|--branch <arg>] [-c|--config <arg>] [-s|--server <arg>] [-u|--git-url <arg>] [-i|--(no-)interactive] [-t|--task <arg>] [-h|--help]\n' "$0"
 	printf '\t%s\n' "-b, --branch: branch to checkout when cloning the repo before running the experiment (no default)"
 	printf '\t%s\n' "-c, --config: File to save/load settings to/from. When saving, the settings file is not overwritten if it already exists. (default: '${EXPERIMENT_DIR}/config')"
 	printf '\t%s\n' "-s, --server: The URL for the Gradle Enterprise server to publish build scans to during the experiment. Overrides whatever may be set in the project itself. (no default)"
 	printf '\t%s\n' "-u, --git-url: Git repository URL for the repository containing the project for the experiment (no default)"
-	printf '\t%s\n' "--wizard, --no-wizard: enables/disables interactive mode (off by default)"
+	printf '\t%s\n' "-i, --interactive, --no-interactive: enables/disables interactive mode (off by default)"
 	printf '\t%s\n' "-t, --task: Gradle task to invoke when running builds as part of the experiment (no default)"
 	printf '\t%s\n' "-h, --help: Prints help"
 }
@@ -111,10 +111,19 @@ parse_commandline()
 				_arg_git_url="${_key##-u}"
 				_args_common_opt+=("$_key")
 				;;
-			--no-wizard|--wizard)
-				_arg_wizard="on"
+			-i|--no-interactive|--interactive)
+				_arg_interactive="on"
 				_args_common_opt+=("${_key}")
-				test "${1:0:5}" = "--no-" && _arg_wizard="off"
+				test "${1:0:5}" = "--no-" && _arg_interactive="off"
+				;;
+			-i*)
+				_arg_interactive="on"
+				_next="${_key##-i}"
+				if test -n "$_next" -a "$_next" != "$_key"
+				then
+					{ begins_with_short_option "$_next" && shift && set -- "-i" "-${_next}" "$@"; } || die "The short option '$_key' can't be decomposed to ${_key:0:2} and -${_key:2}, because ${_key:0:2} doesn't accept value and '-${_key:2:1}' doesn't correspond to a short option."
+				fi
+				_args_common_opt+=("${_key}")
 				;;
 			-t|--task)
 				test $# -lt 2 && die "Missing value for the optional argument '$_key'." 1

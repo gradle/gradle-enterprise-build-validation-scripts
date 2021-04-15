@@ -29,7 +29,7 @@ source "${LIB_DIR}/gradle/01/parsing.sh" || { echo "Couldn't find '${LIB_DIR}/gr
 source "${LIB_DIR}/libs.sh" || { echo "Couldn't find '${LIB_DIR}/libs.sh'"; exit 1; }
 
 main() {
-  if [ "$_arg_wizard" == "on" ]; then
+  if [ "$_arg_interactive" == "on" ]; then
     wizard_execute
   else
     execute
