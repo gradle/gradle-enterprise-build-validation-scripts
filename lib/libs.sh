@@ -12,9 +12,6 @@ source "${SCRIPT_DIR}/../lib/wizard.sh" || { echo "Couldn't find '../lib/wizard.
 # shellcheck source=experiments/lib/config.sh
 source "${SCRIPT_DIR}/../lib/config.sh" || { echo "Couldn't find '../lib/config.sh'"; exit 1; }
 
-# shellcheck source=experiments/lib/input.sh
-source "${SCRIPT_DIR}/../lib/input.sh" || { echo "Couldn't find '../lib/input.sh'"; exit 1; }
-
 # shellcheck source=experiments/lib/init.sh
 source "${SCRIPT_DIR}/../lib/init.sh" || { echo "Couldn't find '../lib/init.sh'"; exit 1; }
 
