@@ -5,7 +5,7 @@ save_settings() {
     cat << EOF > "${_arg_config}"
 GIT_URL="${project_url}"
 GIT_BRANCH="${project_branch}"
-GRADLE_TASK="${tasks}"
+BUILD_TASKS="${tasks}"
 GE_SERVER="${_arg_server}"
 EOF
   fi
@@ -23,7 +23,7 @@ load_settings() {
       _arg_branch="${GIT_BRANCH}"
     fi
     if [ -z "${_arg_tasks}" ]; then
-      _arg_tasks="${GRADLE_TASK}"
+      _arg_tasks="${BUILD_TASKS}"
     fi
     if [ -z "${_arg_server}" ]; then
       _arg_server="${GE_SERVER}"
