@@ -1,0 +1,39 @@
+import com.gradle.enterprise.gradleplugin.GradleEnterprisePlugin
+import com.gradle.scan.plugin.BuildScanPlugin
+import com.gradle.CommonCustomUserDataGradlePlugin
+import org.gradle.util.GradleVersion
+
+initscript {
+    def gradleEnterprisePluginVersion = "3.6.1"
+    def commonCustomUserDataPluginVersion = "1.2.1"
+
+    repositories {
+        gradlePluginPortal()
+    }
+
+    dependencies {
+        classpath("com.gradle:gradle-enterprise-gradle-plugin:${gradleEnterprisePluginVersion}")
+        classpath("com.gradle:common-custom-user-data-gradle-plugin:${commonCustomUserDataPluginVersion}")
+    }
+}
+
+def isTopLevelBuild = gradle.getParent() == null
+
+if (isTopLevelBuild) {
+    def version = GradleVersion.current().baseVersion
+    def atLeastGradle5 = version >= GradleVersion.version("5.0")
+    def atLeastGradle6 = version >= GradleVersion.version("6.0")
+
+    if (atLeastGradle6) {
+       beforeSettings { settings ->
+            settings.pluginManager.apply(GradleEnterprisePlugin)
+            settings.pluginManager.apply(CommonCustomUserDataGradlePlugin)
+        }
+    } else if (atLeastGradle5) {
+        rootProject {
+            pluginManager.apply(BuildScanPlugin)
+            pluginManager.apply(CommonCustomUserDataGradlePlugin)
+        }
+    }
+}
+
