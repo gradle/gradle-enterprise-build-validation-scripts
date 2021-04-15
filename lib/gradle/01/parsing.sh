@@ -33,18 +33,20 @@ _arg_server=
 _arg_git_url=
 _arg_interactive="off"
 _arg_tasks=
+_arg_enable_gradle_enterprise="off"
 
 
 print_help()
 {
 	printf '%s\n' "Assists in validating that a Gradle build is optimized for incremental building."
-	printf 'Usage: %s [-b|--branch <arg>] [-c|--config <arg>] [-s|--server <arg>] [-u|--git-url <arg>] [-i|--(no-)interactive] [-t|--tasks <arg>] [-h|--help]\n' "$0"
+	printf 'Usage: %s [-b|--branch <arg>] [-c|--config <arg>] [-s|--server <arg>] [-u|--git-url <arg>] [-i|--(no-)interactive] [-t|--tasks <arg>] [--(no-)enable-gradle-enterprise] [-h|--help]\n' "$0"
 	printf '\t%s\n' "-b, --branch: Specifies the branch to checkout when cloning the repo before running the experiment. (no default)"
 	printf '\t%s\n' "-c, --config: Specifies the file to save/load settings to/from. When saving, the settings file is not overwritten if it already exists. (default: '${EXPERIMENT_DIR}/config')"
 	printf '\t%s\n' "-s, --server: Specifies the URL for the Gradle Enterprise server to publish build scans to during the experiment. Overrides whatever may be set in the project itself. (no default)"
 	printf '\t%s\n' "-u, --git-url: Specifies the URL for the Git repository to run the experiment against. (no default)"
 	printf '\t%s\n' "-i, --interactive, --no-interactive: Enables/disables interactive mode. (off by default)"
 	printf '\t%s\n' "-t, --tasks: Declares the Gradle task(s) to invoke when running builds as part of the experiment. (no default)"
+	printf '\t%s\n' "--enable-gradle-enterprise, --no-enable-gradle-enterprise: Enables Gradle Enterprise on a project that it is not already enabled on. If used, --server is required. (off by default)"
 	printf '\t%s\n' "-h, --help: Prints help"
 }
 
@@ -138,6 +140,11 @@ parse_commandline()
 			-t*)
 				_arg_tasks="${_key##-t}"
 				_args_common_opt+=("$_key")
+				;;
+			--no-enable-gradle-enterprise|--enable-gradle-enterprise)
+				_arg_enable_gradle_enterprise="on"
+				_args_common_opt+=("${_key}")
+				test "${1:0:5}" = "--no-" && _arg_enable_gradle_enterprise="off"
 				;;
 			-h|--help)
 				print_help

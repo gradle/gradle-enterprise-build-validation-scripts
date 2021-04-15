@@ -7,6 +7,7 @@ GIT_URL="${project_url}"
 GIT_BRANCH="${project_branch}"
 BUILD_TASKS="${tasks}"
 GE_SERVER="${_arg_server}"
+ENABLE_GRADLE_ENTERPRISE="${_arg_enable_gradle_enterprise}"
 EOF
   fi
 }
@@ -27,6 +28,9 @@ load_settings() {
     fi
     if [ -z "${_arg_server}" ]; then
       _arg_server="${GE_SERVER}"
+    fi
+    if [ "$_arg_enable_gradle_enterprise" == "off" ]; then
+      _arg_enable_gradle_enterprise="${ENABLE_GRADLE_ENTERPRISE}"
     fi
 
     info
@@ -51,6 +55,15 @@ validate_required_config() {
     echo
     print_help
     exit 1
+  fi
+
+  if [ "$_arg_enable_gradle_enterprise" == "on" ]; then
+    if [ -z "${_arg_server}" ]; then
+      error "--server is requred when using --enable-gradle-enterprise."
+      echo
+      print_help
+      exit 1
+    fi
   fi
 }
 
