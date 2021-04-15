@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 
 save_settings() {
-  if [ ! -f "${_arg_settings}" ]; then
-    cat << EOF > "${_arg_settings}"
+  if [ ! -f "${_arg_config}" ]; then
+    cat << EOF > "${_arg_config}"
 GIT_URL="${project_url}"
 GIT_BRANCH="${project_branch}"
 GRADLE_TASK="${task}"
@@ -12,9 +12,9 @@ EOF
 }
 
 load_settings() {
-  if [ -f  "${_arg_settings}" ]; then
+  if [ -f  "${_arg_config}" ]; then
     # shellcheck source=/dev/null # this file is created by the user so nothing for shellcheck to check
-    source "${_arg_settings}"
+    source "${_arg_config}"
 
     if [ -z "${_arg_git_url}" ]; then
       _arg_git_url="${GIT_URL}"
@@ -30,7 +30,7 @@ load_settings() {
     fi
 
     info
-    info "Loaded settings from ${_arg_settings}"
+    info "Loaded configuration from ${_arg_config}"
   fi
 }
 

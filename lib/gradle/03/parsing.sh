@@ -3,8 +3,8 @@
 # Created by argbash-init v2.10.0
 # ARG_OPTIONAL_SINGLE([branch],[b],[branch to checkout when cloning the repo before running the experiment])
 # ARG_HELP([Assists in validating that a Gradle build is optimized for using the local build cache (while building in different locations).])
-# ARG_OPTIONAL_SINGLE([server],[],[The URL for the Gradle Enterprise server to publish build scans to during the experiment. Overrides whatever may be set in the project itself.],[])
-# ARG_OPTIONAL_SINGLE([settings],[s],[File to save/load settings to/from. When saving, the settings file is not overwritten if it already exists.],[${EXPERIMENT_DIR}/settings])
+# ARG_OPTIONAL_SINGLE([config],[c],[File to save/load settings to/from. When saving, the settings file is not overwritten if it already exists.],[${EXPERIMENT_DIR}/config])
+# ARG_OPTIONAL_SINGLE([server],[s],[The URL for the Gradle Enterprise server to publish build scans to during the experiment. Overrides whatever may be set in the project itself.],[])
 # ARG_OPTIONAL_SINGLE([task],[t],[Gradle task to invoke when running builds as part of the experiment])
 # ARG_OPTIONAL_SINGLE([git-url],[u],[Git repository URL for the repository containing the project for the experiment])
 # ARG_OPTIONAL_BOOLEAN([wizard],[],[controls whether or not the wizard is run],[off])
@@ -26,15 +26,15 @@ die()
 
 begins_with_short_option()
 {
-	local first_option all_short_options='bhstu'
+	local first_option all_short_options='bhcstu'
 	first_option="${1:0:1}"
 	test "$all_short_options" = "${all_short_options/$first_option/}" && return 1 || return 0
 }
 
 # THE DEFAULTS INITIALIZATION - OPTIONALS
 _arg_branch=
+_arg_config="${EXPERIMENT_DIR}/config"
 _arg_server=
-_arg_settings="${EXPERIMENT_DIR}/settings"
 _arg_task=
 _arg_git_url=
 _arg_wizard="off"
@@ -43,11 +43,11 @@ _arg_wizard="off"
 print_help()
 {
 	printf '%s\n' "Assists in validating that a Gradle build is optimized for using the local build cache (while building in different locations)."
-	printf 'Usage: %s [-b|--branch <arg>] [-h|--help] [--server <arg>] [-s|--settings <arg>] [-t|--task <arg>] [-u|--git-url <arg>] [--(no-)wizard]\n' "$0"
+	printf 'Usage: %s [-b|--branch <arg>] [-h|--help] [-c|--config <arg>] [-s|--server <arg>] [-t|--task <arg>] [-u|--git-url <arg>] [--(no-)wizard]\n' "$0"
 	printf '\t%s\n' "-b, --branch: branch to checkout when cloning the repo before running the experiment (no default)"
 	printf '\t%s\n' "-h, --help: Prints help"
-	printf '\t%s\n' "--server: The URL for the Gradle Enterprise server to publish build scans to during the experiment. Overrides whatever may be set in the project itself. (no default)"
-	printf '\t%s\n' "-s, --settings: File to save/load settings to/from. When saving, the settings file is not overwritten if it already exists. (default: '${EXPERIMENT_DIR}/settings')"
+	printf '\t%s\n' "-c, --config: File to save/load settings to/from. When saving, the settings file is not overwritten if it already exists. (default: '${EXPERIMENT_DIR}/config')"
+	printf '\t%s\n' "-s, --server: The URL for the Gradle Enterprise server to publish build scans to during the experiment. Overrides whatever may be set in the project itself. (no default)"
 	printf '\t%s\n' "-t, --task: Gradle task to invoke when running builds as part of the experiment (no default)"
 	printf '\t%s\n' "-u, --git-url: Git repository URL for the repository containing the project for the experiment (no default)"
 	printf '\t%s\n' "--wizard, --no-wizard: controls whether or not the wizard is run (off by default)"
@@ -79,7 +79,18 @@ parse_commandline()
 				print_help
 				exit 0
 				;;
-			--server)
+			-c|--config)
+				test $# -lt 2 && die "Missing value for the optional argument '$_key'." 1
+				_arg_config="$2"
+				shift
+				;;
+			--config=*)
+				_arg_config="${_key##--config=}"
+				;;
+			-c*)
+				_arg_config="${_key##-c}"
+				;;
+			-s|--server)
 				test $# -lt 2 && die "Missing value for the optional argument '$_key'." 1
 				_arg_server="$2"
 				shift
@@ -87,16 +98,8 @@ parse_commandline()
 			--server=*)
 				_arg_server="${_key##--server=}"
 				;;
-			-s|--settings)
-				test $# -lt 2 && die "Missing value for the optional argument '$_key'." 1
-				_arg_settings="$2"
-				shift
-				;;
-			--settings=*)
-				_arg_settings="${_key##--settings=}"
-				;;
 			-s*)
-				_arg_settings="${_key##-s}"
+				_arg_server="${_key##-s}"
 				;;
 			-t|--task)
 				test $# -lt 2 && die "Missing value for the optional argument '$_key'." 1
