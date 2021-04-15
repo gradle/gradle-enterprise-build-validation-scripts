@@ -30,7 +30,7 @@ invoke_gradle() {
       -Dscan.capture-task-input-files \
       "${_arg_extra[@]}" \
       "$@" \
-      || die "The experiment cannot continue because the build failed." 1
+      || fail "The experiment cannot continue because the build failed."
 }
 
 make_local_cache_dir() {

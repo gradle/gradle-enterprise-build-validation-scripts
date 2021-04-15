@@ -18,6 +18,6 @@ invoke_maven() {
       -Dscan.tag."${RUN_ID}" \
       -Dorg.slf4j.simpleLogger.log.gradle.goal.cache=debug \
       "$@" \
-      || die "The experiment cannot continue because the build failed." 1
+      || fail "The experiment cannot continue because the build failed."
 }
 

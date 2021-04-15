@@ -18,6 +18,11 @@ error() {
   printf "${ERROR_COLOR}ERROR: %s${RESTORE}\n" "$1"
 }
 
+fail() {
+  error "$@"
+  exit 1
+}
+
 print_experiment_info() {
   local fmt="%-20s%-10s"
 
