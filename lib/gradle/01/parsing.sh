@@ -39,12 +39,12 @@ print_help()
 {
 	printf '%s\n' "Assists in validating that a Gradle build is optimized for incremental building."
 	printf 'Usage: %s [-b|--branch <arg>] [-c|--config <arg>] [-s|--server <arg>] [-u|--git-url <arg>] [-i|--(no-)interactive] [-t|--task <arg>] [-h|--help]\n' "$0"
-	printf '\t%s\n' "-b, --branch: branch to checkout when cloning the repo before running the experiment (no default)"
-	printf '\t%s\n' "-c, --config: File to save/load settings to/from. When saving, the settings file is not overwritten if it already exists. (default: '${EXPERIMENT_DIR}/config')"
-	printf '\t%s\n' "-s, --server: The URL for the Gradle Enterprise server to publish build scans to during the experiment. Overrides whatever may be set in the project itself. (no default)"
-	printf '\t%s\n' "-u, --git-url: Git repository URL for the repository containing the project for the experiment (no default)"
-	printf '\t%s\n' "-i, --interactive, --no-interactive: enables/disables interactive mode (off by default)"
-	printf '\t%s\n' "-t, --task: Gradle task to invoke when running builds as part of the experiment (no default)"
+	printf '\t%s\n' "-b, --branch: Specifies the branch to checkout when cloning the repo before running the experiment. (no default)"
+	printf '\t%s\n' "-c, --config: Specifies the file to save/load settings to/from. When saving, the settings file is not overwritten if it already exists. (default: '${EXPERIMENT_DIR}/config')"
+	printf '\t%s\n' "-s, --server: Specifies the URL for the Gradle Enterprise server to publish build scans to during the experiment. Overrides whatever may be set in the project itself. (no default)"
+	printf '\t%s\n' "-u, --git-url: Specifies the URL for the Git repository to run the experiment against. (no default)"
+	printf '\t%s\n' "-i, --interactive, --no-interactive: Enables/disables interactive mode. (off by default)"
+	printf '\t%s\n' "-t, --task: Declares the Gradle task(s) to invoke when running builds as part of the experiment. (no default)"
 	printf '\t%s\n' "-h, --help: Prints help"
 }
 
