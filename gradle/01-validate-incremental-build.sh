@@ -37,15 +37,13 @@ main() {
 }
 
 execute() {
+  load_settings
+  validate_required_config
+
   print_experiment_name
   print_scan_tags
 
   make_experiment_dir
-
-  load_settings
-  collect_project_details
-  collect_gradle_task
-
   clone_project ""
 
   execute_first_build

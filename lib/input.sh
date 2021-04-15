@@ -1,7 +1,6 @@
 #!/usr/bin/env bash
 
 collect_project_details() {
-
   if [ -n "${_arg_git_url}" ]; then
      project_url=$_arg_git_url
   else

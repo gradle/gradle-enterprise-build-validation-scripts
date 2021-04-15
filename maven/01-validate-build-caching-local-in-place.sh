@@ -40,58 +40,57 @@ main() {
 }
 
 execute() {
- print_experiment_name
- print_scan_tags
+  load_settings
+  validate_required_config
 
- make_experiment_dir
+  print_experiment_name
+  print_scan_tags
 
- load_settings
- collect_project_details
- collect_maven_goals
+  make_experiment_dir
+  make_maven_extensions
 
- make_maven_extensions
- clone_project ""
- make_local_cache_dir
- execute_first_build
- execute_second_build
+  clone_project ""
+  make_local_cache_dir
+  execute_first_build
+  execute_second_build
 
- save_settings
- print_summary
+  save_settings
+  print_summary
 }
 
 wizard_execute() {
- print_introduction
+  print_introduction
 
- explain_scan_tags
+  explain_scan_tags
 
- explain_experiment_dir
- make_experiment_dir
+  explain_experiment_dir
+  make_experiment_dir
 
- load_settings
+  load_settings
 
- collect_project_details
+  collect_project_details
 
- explain_collect_maven_goals
- collect_maven_goals
+  explain_collect_maven_goals
+  collect_maven_goals
 
- explain_make_maven_extensions
- make_maven_extensions
+  explain_make_maven_extensions
+  make_maven_extensions
 
- explain_clone_project
- clone_project ""
+  explain_clone_project
+  clone_project ""
 
- explain_local_cache_dir
- make_local_cache_dir
+  explain_local_cache_dir
+  make_local_cache_dir
 
- explain_first_build
- execute_first_build
+  explain_first_build
+  execute_first_build
 
- explain_second_build
- execute_second_build
+  explain_second_build
+  execute_second_build
 
- save_settings
- print_summary
- explain_summary
+  save_settings
+  print_summary
+  explain_summary
 }
 
 execute_first_build() {

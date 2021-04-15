@@ -32,5 +32,25 @@ load_settings() {
     info
     info "Loaded configuration from ${_arg_config}"
   fi
+
+  project_url=${_arg_git_url}
+  project_branch=${_arg_branch}
+  project_name=$(basename -s .git "${project_url}")
+  task=${_arg_task}
+}
+
+validate_required_config() {
+  if [ -z "${_arg_git_url}" ]; then
+    error "Missing required argument: --git-url"
+    echo
+    print_help
+    exit 1
+  fi
+  if [ -z "${_arg_task}" ]; then
+    error "Missing required argument: --task"
+    echo
+    print_help
+    exit 1
+  fi
 }
 

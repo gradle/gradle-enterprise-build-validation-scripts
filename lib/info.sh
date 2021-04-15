@@ -14,6 +14,10 @@ infof() {
   printf "${INFO_COLOR}${format_string}${RESTORE}\n" "$@"
 }
 
+error() {
+  printf "${ERROR_COLOR}ERROR: %s${RESTORE}\n" "$1"
+}
+
 print_experiment_name() {
   info
   info "Experiment ${EXP_NO}: ${EXP_NAME}"
