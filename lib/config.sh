@@ -6,6 +6,7 @@ save_settings() {
 GIT_URL="${project_url}"
 GIT_BRANCH="${project_branch}"
 GRADLE_TASK="${task}"
+GE_SERVER="${_arg_server}"
 EOF
   fi
 }
@@ -23,6 +24,9 @@ load_settings() {
     fi
     if [ -z "${_arg_task}" ]; then
       _arg_task="${GRADLE_TASK}"
+    fi
+    if [ -z "${_arg_server}" ]; then
+      _arg_server="${GE_SERVER}"
     fi
 
     info

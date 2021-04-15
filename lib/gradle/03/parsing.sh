@@ -3,6 +3,7 @@
 # Created by argbash-init v2.10.0
 # ARG_OPTIONAL_SINGLE([branch],[b],[branch to checkout when cloning the repo before running the experiment])
 # ARG_HELP([Assists in validating that a Gradle build is optimized for using the local build cache (while building in different locations).])
+# ARG_OPTIONAL_SINGLE([server],[],[The URL for the Gradle Enterprise server to publish build scans to during the experiment. Overrides whatever may be set in the project itself.],[])
 # ARG_OPTIONAL_SINGLE([settings],[s],[File to save/load settings to/from. When saving, the settings file is not overwritten if it already exists.],[${EXPERIMENT_DIR}/settings])
 # ARG_OPTIONAL_SINGLE([task],[t],[Gradle task to invoke when running builds as part of the experiment])
 # ARG_OPTIONAL_SINGLE([git-url],[u],[Git repository URL for the repository containing the project for the experiment])
@@ -32,6 +33,7 @@ begins_with_short_option()
 
 # THE DEFAULTS INITIALIZATION - OPTIONALS
 _arg_branch=
+_arg_server=
 _arg_settings="${EXPERIMENT_DIR}/settings"
 _arg_task=
 _arg_git_url=
@@ -40,10 +42,11 @@ _arg_wizard="off"
 
 print_help()
 {
-	printf '%s\n' "Assists in validating that a Gradle build is optimized for using the local build cache (while building in the same location)."
-	printf 'Usage: %s [-b|--branch <arg>] [-h|--help] [-s|--settings <arg>] [-t|--task <arg>] [-u|--git-url <arg>] [--(no-)wizard]\n' "$0"
+	printf '%s\n' "Assists in validating that a Gradle build is optimized for using the local build cache (while building in different locations)."
+	printf 'Usage: %s [-b|--branch <arg>] [-h|--help] [--server <arg>] [-s|--settings <arg>] [-t|--task <arg>] [-u|--git-url <arg>] [--(no-)wizard]\n' "$0"
 	printf '\t%s\n' "-b, --branch: branch to checkout when cloning the repo before running the experiment (no default)"
 	printf '\t%s\n' "-h, --help: Prints help"
+	printf '\t%s\n' "--server: The URL for the Gradle Enterprise server to publish build scans to during the experiment. Overrides whatever may be set in the project itself. (no default)"
 	printf '\t%s\n' "-s, --settings: File to save/load settings to/from. When saving, the settings file is not overwritten if it already exists. (default: '${EXPERIMENT_DIR}/settings')"
 	printf '\t%s\n' "-t, --task: Gradle task to invoke when running builds as part of the experiment (no default)"
 	printf '\t%s\n' "-u, --git-url: Git repository URL for the repository containing the project for the experiment (no default)"
@@ -75,6 +78,14 @@ parse_commandline()
 			-h*)
 				print_help
 				exit 0
+				;;
+			--server)
+				test $# -lt 2 && die "Missing value for the optional argument '$_key'." 1
+				_arg_server="$2"
+				shift
+				;;
+			--server=*)
+				_arg_server="${_key##--server=}"
 				;;
 			-s|--settings)
 				test $# -lt 2 && die "Missing value for the optional argument '$_key'." 1

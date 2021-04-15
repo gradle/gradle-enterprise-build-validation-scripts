@@ -37,51 +37,56 @@ main() {
 }
 
 execute() {
- print_experiment_name
- print_scan_tags
+  print_experiment_name
+  print_scan_tags
 
- make_experiment_dir
+  make_experiment_dir
 
- load_settings
- collect_project_details
- collect_gradle_task
+  load_settings
+  collect_project_details
+  collect_gradle_task
 
- clone_project ""
+  clone_project ""
 
- execute_first_build
- execute_second_build
+  execute_first_build
+  execute_second_build
 
- save_settings
- print_summary
+  save_settings
+  print_warnings
+  print_summary
 }
 
 wizard_execute() {
- print_introduction
+  print_introduction
 
- explain_scan_tags
+  explain_scan_tags
 
- explain_experiment_dir
- make_experiment_dir
+  explain_experiment_dir
+  make_experiment_dir
 
- load_settings
+  load_settings
 
- collect_project_details
+  collect_project_details
 
- explain_collect_gradle_task
- collect_gradle_task
+  explain_collect_gradle_task
+  collect_gradle_task
 
- explain_clone_project
- clone_project ""
+  explain_clone_project
+  clone_project ""
 
- explain_first_build
- execute_first_build
+  explain_first_build
+  execute_first_build
 
- explain_second_build
- execute_second_build
+  explain_second_build
+  execute_second_build
 
- save_settings
- print_summary
- explain_summary
+  save_settings
+
+  print_warnings
+  explain_warnings
+
+  print_summary
+  explain_summary
 }
 
 execute_first_build() {
@@ -134,7 +139,7 @@ print_starting_points() {
  info 
  info "SUGGESTED STARTING POINTS"
  info "----------------------------"
- infof "$fmt" "Scan somparision:" "${base_url[0]}/c/${scan_id[0]}/${scan_id[1]}/task-inputs?cacheability=cacheable"
+ infof "$fmt" "Scan comparision:" "${base_url[0]}/c/${scan_id[0]}/${scan_id[1]}/task-inputs?cacheability=cacheable"
  infof "$fmt" "Longest-running tasks:" "${base_url[0]}/s/${scan_id[1]}/timeline?outcome=SUCCESS&sort=longest"
  info
 }

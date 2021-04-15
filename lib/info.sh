@@ -28,3 +28,10 @@ print_scan_tags() {
   infof "$fmt" "Experiment Run ID:" "${RUN_ID}"
 }
 
+print_warnings() {
+  local warnings_file="${EXPERIMENT_DIR}/${project_name}/warnings.txt"
+  while read l; do
+    echo
+    printf "${YELLOW}${BOLD}WARNING: %s${RESTORE}\n" "$l"
+  done <"$warnings_file"
+}

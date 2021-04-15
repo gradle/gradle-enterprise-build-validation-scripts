@@ -40,59 +40,64 @@ main() {
 }
 
 execute() {
- print_experiment_name
- print_scan_tags
+  print_experiment_name
+  print_scan_tags
 
- make_experiment_dir
+  make_experiment_dir
 
- load_settings
- collect_project_details
- collect_gradle_task
+  load_settings
+  collect_project_details
+  collect_gradle_task
 
- make_local_cache_dir
+  make_local_cache_dir
 
- clone_project "_1"
- execute_first_build
+  clone_project "_1"
+  execute_first_build
 
- clone_project "_2"
- execute_second_build
+  clone_project "_2"
+  execute_second_build
 
- save_settings
- print_summary
+  save_settings
+  print_warnings
+  print_summary
 }
 
 wizard_execute() {
- print_introduction
+  print_introduction
 
- explain_scan_tags
+  explain_scan_tags
 
- explain_experiment_dir
- make_experiment_dir
+  explain_experiment_dir
+  make_experiment_dir
 
- load_settings
- collect_project_details
+  load_settings
+  collect_project_details
 
- explain_collect_gradle_task
- collect_gradle_task
+  explain_collect_gradle_task
+  collect_gradle_task
 
- explain_local_cache_dir
- make_local_cache_dir
+  explain_local_cache_dir
+  make_local_cache_dir
 
- explain_first_clone_project
- clone_project "_1"
+  explain_first_clone_project
+  clone_project "_1"
 
- explain_first_build
- execute_first_build
+  explain_first_build
+  execute_first_build
 
- explain_second_clone_project
- clone_project "_2"
+  explain_second_clone_project
+  clone_project "_2"
 
- explain_second_build
- execute_second_build
+  explain_second_build
+  execute_second_build
 
- save_settings
- print_summary
- explain_summary
+  save_settings
+
+  print_warnings
+  explain_warnings
+
+  print_summary
+  explain_summary
 }
 
 execute_first_build() {
