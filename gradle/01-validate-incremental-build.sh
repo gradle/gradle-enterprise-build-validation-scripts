@@ -10,7 +10,7 @@ LIB_DIR="${SCRIPT_DIR}/../lib"
 # Experiment-speicifc constants
 EXP_NAME="Validate Incremental Build"
 EXP_NO="01"
-EXP_SCAN_TAG=exp1
+EXP_SCAN_TAG=exp1-gradle
 RUN_ID=$(uuidgen)
 EXPERIMENT_DIR="${SCRIPT_DIR}/data/${SCRIPT_NAME%.*}"
 SCAN_FILE="${EXPERIMENT_DIR}/scans.csv"
@@ -40,8 +40,7 @@ execute() {
   load_settings
   validate_required_config
 
-  print_experiment_name
-  print_scan_tags
+  print_experiment_info
 
   make_experiment_dir
   clone_project ""
@@ -57,7 +56,7 @@ execute() {
 wizard_execute() {
   print_introduction
 
-  explain_scan_tags
+  explain_experiment_info
 
   explain_experiment_dir
   make_experiment_dir

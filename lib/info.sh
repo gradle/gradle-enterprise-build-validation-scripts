@@ -18,18 +18,13 @@ error() {
   printf "${ERROR_COLOR}ERROR: %s${RESTORE}\n" "$1"
 }
 
-print_experiment_name() {
-  info
-  info "Experiment ${EXP_NO}: ${EXP_NAME}"
-  info "-----------------------------------------"
-}
-
-print_scan_tags() {
+print_experiment_info() {
   local fmt="%-20s%-10s"
 
   info
-  infof "$fmt" "Experiment Tag:" "${EXP_SCAN_TAG}"
-  infof "$fmt" "Experiment Run ID:" "${RUN_ID}"
+  infof "$fmt" "Experiment:" "${EXP_NO}-${EXP_NAME}"
+  infof "$fmt" "Experiment id:" "${EXP_SCAN_TAG}"
+  infof "$fmt" "Experiment run id:" "${RUN_ID}"
 }
 
 print_warnings() {

@@ -10,8 +10,8 @@ LIB_DIR="${SCRIPT_DIR}/../lib"
 
 # Experiment-speicifc constants
 EXP_NAME="Validate Build Caching - Local - In Place"
-EXP_NO="02"
-EXP_SCAN_TAG=exp1
+EXP_NO="01"
+EXP_SCAN_TAG=exp1-maven
 RUN_ID=$(uuidgen)
 EXPERIMENT_DIR="${SCRIPT_DIR}/data/${SCRIPT_NAME%.*}"
 SCAN_FILE="${EXPERIMENT_DIR}/scans.csv"
@@ -43,8 +43,7 @@ execute() {
   load_settings
   validate_required_config
 
-  print_experiment_name
-  print_scan_tags
+  print_experiment_info
 
   make_experiment_dir
   make_maven_extensions
@@ -61,7 +60,7 @@ execute() {
 wizard_execute() {
   print_introduction
 
-  explain_scan_tags
+  explain_experiment_info
 
   explain_experiment_dir
   make_experiment_dir
