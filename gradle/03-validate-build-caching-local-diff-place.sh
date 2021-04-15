@@ -22,7 +22,7 @@ build_cache_dir="${EXPERIMENT_DIR}/build-cache"
 project_url=""
 project_name=""
 project_branch=""
-task=""
+tasks=""
 
 # Include and parse the command line arguments
 # shellcheck source=experiments/lib/gradle/03/parsing.sh
@@ -114,11 +114,11 @@ execute_build() {
   lib_dir_rel=$(realpath --relative-to="$( pwd )" "${LIB_DIR}")
 
   info 
-  info "./gradlew -Dscan.tag.${EXP_SCAN_TAG} -Dscan.tag.${RUN_ID} clean ${task}"
+  info "./gradlew -Dscan.tag.${EXP_SCAN_TAG} -Dscan.tag.${RUN_ID} clean ${tasks}"
 
   invoke_gradle \
      --init-script "${LIB_DIR}/gradle/verify-and-configure-local-build-cache-only.gradle" \
-     clean "${task}"
+     clean "${tasks}"
 }
 
 print_summary() {
@@ -136,7 +136,7 @@ print_summary() {
  info "----------------------------"
  infof "$fmt" "Project:" "${project_name}"
  infof "$fmt" "Branch:" "${branch}"
- infof "$fmt" "Gradle task(s):" "${task}"
+ infof "$fmt" "Gradle task(s):" "${tasks}"
  infof "$fmt" "Experiment dir:" "${EXPERIMENT_DIR}"
  infof "$fmt" "Experiment tag:" "${EXP_SCAN_TAG}"
  infof "$fmt" "Experiment run ID:" "${RUN_ID}"
@@ -262,13 +262,13 @@ explain_first_build() {
   build_command="${INFO_COLOR}./gradlew \\
   ${INFO_COLOR}-Dscan.tag.${EXP_SCAN_TAG} \\
   ${INFO_COLOR}-Dscan.tag.${RUN_ID} \\
-  ${INFO_COLOR} clean ${task}"
+  ${INFO_COLOR} clean ${tasks}"
 
   local text
   IFS='' read -r -d '' text <<EOF
 We are now ready to run the first build.
 
-We will execute 'clean ${task}'. 
+We will execute 'clean ${tasks}'. 
 
 We are invoking clean even though we just created a fresh clone because
 sometimes the clean task changes the order other tasks run in, which can

@@ -19,7 +19,7 @@ SCAN_FILE="${EXPERIMENT_DIR}/scans.csv"
 project_url=""
 project_name=""
 project_branch=""
-task=""
+tasks=""
 
 # Include and parse the command line arguments
 # shellcheck source=experiments/lib/gradle/01/parsing.sh
@@ -90,17 +90,17 @@ wizard_execute() {
 execute_first_build() {
   info "Running first build (invoking clean)."
   info 
-  info "./gradlew --no-build-cache -Dscan.tag.${EXP_SCAN_TAG} -Dscan.tag.${RUN_ID} clean ${task}"
+  info "./gradlew --no-build-cache -Dscan.tag.${EXP_SCAN_TAG} -Dscan.tag.${RUN_ID} clean ${tasks}"
 
-  invoke_gradle --no-build-cache clean "${task}"
+  invoke_gradle --no-build-cache clean "${tasks}"
 }
 
 execute_second_build() {
   info "Running second build (without invoking clean)."
   info 
-  info "./gradlew --no-build-cache -Dscan.tag.${EXP_SCAN_TAG} -Dscan.tag.${RUN_ID} ${task}"
+  info "./gradlew --no-build-cache -Dscan.tag.${EXP_SCAN_TAG} -Dscan.tag.${RUN_ID} ${tasks}"
 
-  invoke_gradle --no-build-cache "${task}"
+  invoke_gradle --no-build-cache "${tasks}"
 }
 
 print_summary() {
@@ -118,7 +118,7 @@ print_summary() {
  info "----------------------------"
  infof "$fmt" "Project:" "${project_name}"
  infof "$fmt" "Branch:" "${branch}"
- infof "$fmt" "Gradle task(s):" "${task}"
+ infof "$fmt" "Gradle task(s):" "${tasks}"
  infof "$fmt" "Experiment dir:" "${EXPERIMENT_DIR}"
  infof "$fmt" "Experiment tag:" "${EXP_SCAN_TAG}"
  infof "$fmt" "Experiment run ID:" "${RUN_ID}"
@@ -197,13 +197,13 @@ explain_first_build() {
   build_command="${YELLOW}./gradlew --no-build-cache \\
   ${YELLOW}-Dscan.tag.${EXP_SCAN_TAG} \\
   ${YELLOW}-Dscan.tag.${RUN_ID} \\
-  ${YELLOW} clean ${task}"
+  ${YELLOW} clean ${tasks}"
 
   local text
   IFS='' read -r -d '' text <<EOF
 OK! We are ready to run our first build!
 
-For this run, we'll execute 'clean ${task}'. 
+For this run, we'll execute 'clean ${tasks}'. 
 
 We are invoking clean even though we just created a fresh clone because
 sometimes the clean task changes the order other tasks run in, which can

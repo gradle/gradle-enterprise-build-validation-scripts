@@ -22,7 +22,7 @@ build_cache_dir="${EXPERIMENT_DIR}/build-cache"
 project_url=""
 project_name=""
 project_branch=""
-task=""
+tasks=""
 
 # Include and parse the command line arguments
 # shellcheck source=experiments/lib/maven/01/parsing.sh
@@ -105,14 +105,14 @@ execute_second_build() {
 
 execute_build() {
   info 
-  info "./mvnw -Dscan.tag.${EXP_SCAN_TAG} -Dscan.tag.${RUN_ID} clean ${task}"
+  info "./mvnw -Dscan.tag.${EXP_SCAN_TAG} -Dscan.tag.${RUN_ID} clean ${tasks}"
 
-  #shellcheck disable=SC2086  # we actually want ${task} to expand because it may have more than one maven goal
+  #shellcheck disable=SC2086  # we actually want ${tasks} to expand because it may have more than one maven goal
   invoke_maven \
      -Dgradle.cache.local.enabled=true \
      -Dgradle.cache.remote.enabled=false \
      -Dgradle.cache.local.directory="${build_cache_dir}" \
-     clean ${task}
+     clean ${tasks}
 }
 
 print_summary() {
@@ -130,7 +130,7 @@ print_summary() {
  info "----------------------------"
  infof "$fmt" "Project:" "${project_name}"
  infof "$fmt" "Branch:" "${branch}"
- infof "$fmt" "Gradle task(s):" "${task}"
+ infof "$fmt" "Maven goal(s):" "${tasks}"
  infof "$fmt" "Experiment dir:" "${EXPERIMENT_DIR}"
  infof "$fmt" "Experiment tag:" "${EXP_SCAN_TAG}"
  infof "$fmt" "Experiment run ID:" "${RUN_ID}"
@@ -151,8 +151,8 @@ print_starting_points() {
  info "----------------------------"
  infof "$fmt" "Scan comparision:" "${base_url[0]}/c/${scan_id[0]}/${scan_id[1]}/task-inputs?cacheability=cacheable"
  infof "$fmt" "Cache performance:" "${base_url[0]}/s/${scan_id[1]}/performance/build-cache"
- infof "$fmt" "Executed cachable tasks:" "${base_url[0]}/s/${scan_id[1]}/timeline?cacheability=cacheable&outcome=successful&sort=longest"
- infof "$fmt" "Uncachable tasks:" "${base_url[0]}/s/${scan_id[1]}/timeline?cacheability=any_non-cacheable&outcome=successful&sort=longest"
+ infof "$fmt" "Executed cachable goals:" "${base_url[0]}/s/${scan_id[1]}/timeline?cacheability=cacheable&outcome=successful&sort=longest"
+ infof "$fmt" "Uncachable goals:" "${base_url[0]}/s/${scan_id[1]}/timeline?cacheability=any_non-cacheable&outcome=successful&sort=longest"
  info
 }
 
@@ -191,15 +191,15 @@ same output can be reused if the goal is executed again with the same
 inputs.
 
 To test out the build cache, we'll run two builds (with build caching
-enabled). Both builds will invoke clean and run the same tasks. We will not
+enabled). Both builds will invoke clean and run the same goals. We will not
 make any changes between each build run.
 
 If the build is taking advantage of the local build cache, then very few (if
-any) tasks should actually execute on the seond build (all of the task
+any) goals should actually execute on the seond build (all of the goal 
 output should be used from the local cache).
 
 The Gradle Solutions engineer will then work with you to figure out why some
-(if any) tasks ran on the second build, and how to optimize them to take
+(if any) goals ran on the second build, and how to optimize them to take
 advantage of the build cache.
 
 ${USER_ACTION_COLOR}Press enter when you're ready to get started.
@@ -214,9 +214,9 @@ explain_local_cache_dir() {
   IFS='' read -r -d '' text <<EOF
 We are going to create a new empty local build cache dir (and configure
 Gradle to use it instead of the default local cache dir). This way, the
-first build won't find anything in the cache and all tasks will run. 
+first build won't find anything in the cache and all goals will run. 
 
-This is mportant beause we want to make sure tasks that are cachable do in
+This is mportant beause we want to make sure goals that are cachable do in
 fact produce output that is stored in the cache.
 
 Specifically, we are going to create and use this directory for the local
@@ -252,13 +252,13 @@ explain_first_build() {
   build_command="${INFO_COLOR}./gradlew \\
   ${INFO_COLOR}-Dscan.tag.${EXP_SCAN_TAG} \\
   ${INFO_COLOR}-Dscan.tag.${RUN_ID} \\
-  ${INFO_COLOR} clean ${task}"
+  ${INFO_COLOR} clean ${tasks}"
 
   local text
   IFS='' read -r -d '' text <<EOF
 OK! We are ready to run our first build!
 
-For this run, we'll execute 'clean ${task}'. 
+For this run, we'll execute 'clean ${tasks}'. 
 
 We will also add the build scan tags we talked about before.
 
@@ -277,9 +277,9 @@ explain_second_build() {
   IFS='' read -r -d '' text <<EOF
 Now we are going to run the build again without changing anything.
 
-In a fully optimized build, no tasks would run on this second build because
-we already built everything in the first build, and the task outputs should
-be in the local build cache. If some tasks do run, they will show up in the
+In a fully optimized build, no goals would run on this second build because
+we already built everything in the first build, and the goal outputs should
+be in the local build cache. If some goals do run, they will show up in the
 build scan for this second build.
 
 ${USER_ACTION_COLOR}Press enter to run the second build.
@@ -316,15 +316,15 @@ The "Cache performance" link takes you to the build cache performance page
 of the 2nd build scan. This page contains various metrics related to the
 build cache (such as cache hits and misses).
 
-The "Executed cachable tasks" link shows you which tasks ran again on the
+The "Executed cachable goals" link shows you which goals ran again on the
 second build, but shouldn't have because they are actually cachable. If any
-cachable tasks ran, then one of their inputs changed (even though we didn't
+cachable goals ran, then one of their inputs changed (even though we didn't
 make any changes), or they may not be declaring their inputs correctly.
 
-The last link, "Uncachable tasks", shows you which tasks ran that are not
+The last link, "Uncachable goals", shows you which goals ran that are not
 cachable. It is not always possible, or doesn't make sense the output from
-every task. For example, there's no way to cache the "output" of the clean
-task because the clean task deletes output rather than creating it.
+every goal. For example, there's no way to cache the "output" of the clean
+ because the clean goal deletes output rather than creating it.
 
 If you find something to optimize, then you will want to run this expirment
 again after you have implemented the optimizations (to validate the

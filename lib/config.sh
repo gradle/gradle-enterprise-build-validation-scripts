@@ -5,7 +5,7 @@ save_settings() {
     cat << EOF > "${_arg_config}"
 GIT_URL="${project_url}"
 GIT_BRANCH="${project_branch}"
-GRADLE_TASK="${task}"
+GRADLE_TASK="${tasks}"
 GE_SERVER="${_arg_server}"
 EOF
   fi
@@ -22,8 +22,8 @@ load_settings() {
     if [ -z "${_arg_branch}" ]; then
       _arg_branch="${GIT_BRANCH}"
     fi
-    if [ -z "${_arg_task}" ]; then
-      _arg_task="${GRADLE_TASK}"
+    if [ -z "${_arg_tasks}" ]; then
+      _arg_tasks="${GRADLE_TASK}"
     fi
     if [ -z "${_arg_server}" ]; then
       _arg_server="${GE_SERVER}"
@@ -36,7 +36,7 @@ load_settings() {
   project_url=${_arg_git_url}
   project_branch=${_arg_branch}
   project_name=$(basename -s .git "${project_url}")
-  task=${_arg_task}
+  tasks=${_arg_tasks}
 }
 
 validate_required_config() {
@@ -46,8 +46,8 @@ validate_required_config() {
     print_help
     exit 1
   fi
-  if [ -z "${_arg_task}" ]; then
-    error "Missing required argument: --task"
+  if [ -z "${_arg_tasks}" ]; then
+    error "Missing required argument: --tasks"
     echo
     print_help
     exit 1
@@ -72,28 +72,28 @@ collect_project_details() {
 }
 
 collect_gradle_task() { 
-  if [ -z "$_arg_task" ]; then
+  if [ -z "$_arg_tasks" ]; then
     echo
-    read -r -p "${USER_ACTION_COLOR}What Gradle task do you want to run? (assemble)${RESTORE} " task
+    read -r -p "${USER_ACTION_COLOR}What Gradle task do you want to run? (assemble)${RESTORE} " tasks
 
     if [[ "${task}" == "" ]]; then
-      task=assemble
+      tasks=assemble
     fi
   else
-    task=$_arg_task
+    tasks=$_arg_tasks
   fi
 }
 
 collect_maven_goals() { 
-  if [ -z "$_arg_task" ]; then
+  if [ -z "$_arg_tasks" ]; then
     echo
-    read -r -p "${USER_ACTION_COLOR}What Maven goals do you want to run?  (package)${RESTORE} " task
+    read -r -p "${USER_ACTION_COLOR}What Maven goals do you want to run?  (package)${RESTORE} " tasks
 
-    if [[ "${task}" == "" ]]; then
+    if [[ "${tasks}" == "" ]]; then
       task=package
     fi
   else
-    task=$_arg_task
+    tasks=$_arg_tasks
   fi
 }
 

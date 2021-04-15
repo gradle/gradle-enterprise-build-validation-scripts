@@ -32,20 +32,20 @@ _arg_config="${EXPERIMENT_DIR}/config"
 _arg_server=
 _arg_git_url=
 _arg_interactive="off"
-_arg_task=
+_arg_tasks=
 
 
 print_help()
 {
 	printf '%s\n' "Assists in validating that a Gradle build is optimized for using the local build cache (while building in the same location)."
-	printf 'Usage: %s [-h|--help] [-b|--branch <arg>] [-c|--config <arg>] [-s|--server <arg>] [-u|--git-url <arg>] [-i|--(no-)interactive] [-t|--task <arg>]\n' "$0"
+	printf 'Usage: %s [-h|--help] [-b|--branch <arg>] [-c|--config <arg>] [-s|--server <arg>] [-u|--git-url <arg>] [-i|--(no-)interactive] [-t|--tasks <arg>]\n' "$0"
 	printf '\t%s\n' "-h, --help: Prints help"
 	printf '\t%s\n' "-b, --branch: Specifies the branch to checkout when cloning the repo before running the experiment. (no default)"
 	printf '\t%s\n' "-c, --config: Specifies the file to save/load settings to/from. When saving, the settings file is not overwritten if it already exists. (default: '${EXPERIMENT_DIR}/config')"
 	printf '\t%s\n' "-s, --server: Specifies the URL for the Gradle Enterprise server to publish build scans to during the experiment. Overrides whatever may be set in the project itself. (no default)"
 	printf '\t%s\n' "-u, --git-url: Specifies the URL for the Git repository to run the experiment against. (no default)"
 	printf '\t%s\n' "-i, --interactive, --no-interactive: Enables/disables interactive mode. (off by default)"
-	printf '\t%s\n' "-t, --task: Declares the Gradle task(s) to invoke when running builds as part of the experiment. (no default)"
+	printf '\t%s\n' "-t, --tasks: Declares the Gradle task(s) to invoke when running builds as part of the experiment. (no default)"
 }
 
 
@@ -133,18 +133,18 @@ parse_commandline()
 				fi
 				_args_common_opt+=("${_key}")
 				;;
-			-t|--task)
+			-t|--tasks)
 				test $# -lt 2 && die "Missing value for the optional argument '$_key'." 1
-				_arg_task="$2"
+				_arg_tasks="$2"
 				_args_common_opt+=("${_key}" "$2")
 				shift
 				;;
-			--task=*)
-				_arg_task="${_key##--task=}"
+			--tasks=*)
+				_arg_tasks="${_key##--tasks=}"
 				_args_common_opt+=("$_key")
 				;;
 			-t*)
-				_arg_task="${_key##-t}"
+				_arg_tasks="${_key##-t}"
 				_args_common_opt+=("$_key")
 				;;
 			*)
