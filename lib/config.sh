@@ -8,6 +8,7 @@ GIT_BRANCH="${project_branch}"
 BUILD_TASKS="${tasks}"
 GE_SERVER="${_arg_server}"
 ENABLE_GRADLE_ENTERPRISE="${_arg_enable_gradle_enterprise}"
+EXTRA_ARGS=($(print_extra_args))
 EOF
   fi
 }
@@ -31,6 +32,9 @@ load_settings() {
     fi
     if [ "$_arg_enable_gradle_enterprise" == "off" ]; then
       _arg_enable_gradle_enterprise="${ENABLE_GRADLE_ENTERPRISE}"
+    fi
+    if [ ${#_arg_extra[@]} -eq 0 ]; then
+      _arg_extra=("${EXTRA_ARGS[@]}")
     fi
 
     info
@@ -110,3 +114,6 @@ collect_maven_goals() {
   fi
 }
 
+print_extra_args() {
+  printf " %q" "${_arg_extra[@]}"
+}

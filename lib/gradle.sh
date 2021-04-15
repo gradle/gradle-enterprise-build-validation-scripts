@@ -13,7 +13,7 @@ invoke_gradle() {
   lib_dir_rel=$(realpath --relative-to="$( pwd )" "${LIB_DIR}")
 
   local enable_ge_init_script
-  enable_ge_init_script=""
+  enable_ge_init_script=()
 
   if [ "$_arg_enable_gradle_enterprise" == "on" ]; then
     # FIXME This doesn't handle paths with spaces in it very well. Figure out how to do the shell qouting properly!
@@ -28,6 +28,7 @@ invoke_gradle() {
       -Dscan.tag.${EXP_SCAN_TAG} \
       -Dscan.tag."${RUN_ID}" \
       -Dscan.capture-task-input-files \
+      "${_arg_extra[@]}" \
       "$@" \
       || die "The experiment cannot continue because the build failed." 1
 }

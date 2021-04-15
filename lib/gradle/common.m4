@@ -2,6 +2,7 @@
 
 # Created by argbash-init v2.10.0
 # ARGBASH_WRAP([../../common])
+# ARG_OPTIONAL_REPEATED([extra],[e],[Sets an additional argument to pass to Gradle (system property, project property, etc). Can be specified more than once.])
 # ARG_OPTIONAL_SINGLE([tasks],[t],[Declares the Gradle task(s) to invoke when running builds as part of the experiment.])
 # ARG_OPTIONAL_BOOLEAN([enable-gradle-enterprise],[],[Enables Gradle Enterprise on a project that it is not already enabled on. If used, --server is required.])
 # ARGBASH_GO()

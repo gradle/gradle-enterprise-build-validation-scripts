@@ -21,7 +21,7 @@ die()
 
 begins_with_short_option()
 {
-	local first_option all_short_options='hbcsuit'
+	local first_option all_short_options='hbcsuiet'
 	first_option="${1:0:1}"
 	test "$all_short_options" = "${all_short_options/$first_option/}" && return 1 || return 0
 }
@@ -32,19 +32,21 @@ _arg_config="${EXPERIMENT_DIR}/config"
 _arg_server=
 _arg_git_url=
 _arg_interactive="off"
+_arg_extra=()
 _arg_tasks=
 
 
 print_help()
 {
 	printf '%s\n' "Assists in validating that a Maven build is optimized for using the local build cache (while building in the same location)."
-	printf 'Usage: %s [-h|--help] [-b|--branch <arg>] [-c|--config <arg>] [-s|--server <arg>] [-u|--git-url <arg>] [-i|--(no-)interactive] [-t|--tasks <arg>]\n' "$0"
+	printf 'Usage: %s [-h|--help] [-b|--branch <arg>] [-c|--config <arg>] [-s|--server <arg>] [-u|--git-url <arg>] [-i|--(no-)interactive] [-e|--extra <arg>] [-t|--tasks <arg>]\n' "$0"
 	printf '\t%s\n' "-h, --help: Prints help"
 	printf '\t%s\n' "-b, --branch: Specifies the branch to checkout when cloning the repo before running the experiment. (no default)"
 	printf '\t%s\n' "-c, --config: Specifies the file to save/load settings to/from. When saving, the settings file is not overwritten if it already exists. (default: '${EXPERIMENT_DIR}/config')"
 	printf '\t%s\n' "-s, --server: Specifies the URL for the Gradle Enterprise server to publish build scans to during the experiment. Overrides whatever may be set in the project itself. (no default)"
 	printf '\t%s\n' "-u, --git-url: Specifies the URL for the Git repository to run the experiment against. (no default)"
 	printf '\t%s\n' "-i, --interactive, --no-interactive: Enables/disables interactive mode. (off by default)"
+	printf '\t%s\n' "-e, --extra: Sets an additional argument to pass to Maven (system property, etc). Can be specified more than once. (empty by default)"
 	printf '\t%s\n' "-t, --tasks: Declares the maven goal(s) to invoke when running builds as part of the experiment. (no default)"
 }
 
@@ -132,6 +134,20 @@ parse_commandline()
 					{ begins_with_short_option "$_next" && shift && set -- "-i" "-${_next}" "$@"; } || die "The short option '$_key' can't be decomposed to ${_key:0:2} and -${_key:2}, because ${_key:0:2} doesn't accept value and '-${_key:2:1}' doesn't correspond to a short option."
 				fi
 				_args_common_opt+=("${_key}")
+				;;
+			-e|--extra)
+				test $# -lt 2 && die "Missing value for the optional argument '$_key'." 1
+				_arg_extra+=("$2")
+				_args_common_opt+=("${_key}" "${_arg_extra[-1]}")
+				shift
+				;;
+			--extra=*)
+				_arg_extra+=("${_key##--extra=}")
+				_args_common_opt+=("$_key")
+				;;
+			-e*)
+				_arg_extra+=("${_key##-e}")
+				_args_common_opt+=("$_key")
 				;;
 			-t|--tasks)
 				test $# -lt 2 && die "Missing value for the optional argument '$_key'." 1
