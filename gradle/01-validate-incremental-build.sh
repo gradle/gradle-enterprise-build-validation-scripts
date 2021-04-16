@@ -143,21 +143,7 @@ print_starting_points() {
 print_introduction() {
   local text
   IFS='' read -r -d '' text <<EOF
-${CYAN}                              ;x0K0d,
-${CYAN}                            kXOxx0XXO,
-${CYAN}              ....                '0XXc
-${CYAN}       .;lx0XXXXXXXKOxl;.          oXXK
-${CYAN}      xXXXXXXXXXXXXXXXXXX0d:.     ,KXX0
-${CYAN}     .,KXXXXXXXXXXXXXXXXXO0XXKOxkKXXXX:
-${CYAN}   lKX:'0XXXXXKo,dXXXXXXO,,XXXXXXXXXK;   Gradle Enterprise Trial
-${CYAN} ,0XXXXo.oOkl;;oKXXXXXXXXXXXXXXXXXKo.
-${CYAN}:XXXXXXXKdllxKXXXXXXXXXXXXXXXXXX0c.
-${CYAN}'XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXk'
-${CYAN}xXXXXXXXXXXXXXXXXXXXXXXXXXXXXXc          Experiment ${EXP_NO}:
-${CYAN}KXXXXXXXXXXXXXXXXXXXXXXXXXXXXl           ${EXP_NAME}
-${CYAN}XXXXXXklclkXXXXXXXklclxKXXXXK
-${CYAN}OXXXk.     .OXXX0'     .xXXXx
-${CYAN}oKKK'       ,KKK:       .KKKo
+$(print_introduction_title)
 
 Welcome! This is the first of several experiments that are part of your
 Gradle Enterprise Trial. Each experiment will help you to make concrete
