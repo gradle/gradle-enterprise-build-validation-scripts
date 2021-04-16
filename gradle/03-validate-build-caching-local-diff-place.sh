@@ -166,10 +166,11 @@ print_introduction() {
   IFS='' read -r -d '' text <<EOF
 $(print_introduction_title)
 
-This is the third of several experiments that are part of your Gradle
-Enterprise Trial. Each experiment will help you to make concrete
-improvements to your existing build. The experiments will also help you to
-build the data necessary to recommend Gradle Enerprise to your organization.
+This is the third of several experiments designed to help you
+optimize your team's builds. If you are running this experiment as part of a
+Gradle Enterprise Trial, then the experiments will also help you to build
+the data necessary to determine if Gradle Enerprise is useful to your
+organization.
 
 This script (and the other experiment scripts) will run some of the
 experiment steps for you, but we'll walk you through each step so that you
@@ -312,21 +313,20 @@ Now that both builds have completed, there is a lot of valuable data in
 Gradle Enterprise to look at. The data can help you find ineffiencies in
 your build.
 
-After running the experiment, I will generate a summary table of useful data
-and links to help you analyze the experiment results. Most of the data in
-the summmary is self-explanatory, but there are a few things are worth
-reviewing:
+After running the experiment, this script will generate a summary table of
+useful data and links to help you analyze the experiment results. Most of
+the data in the summmary is self-explanatory, but a few are worth reviewing:
 
 $(print_build_scans)
 
-^^ These are links to the build scans for the builds. A build scan is a
-report that provides information and statistics about the build execution.
+^^ These are links to the build scans for the builds. A build scan provides
+a wealth of information and statistics about the build execution.
 
 $(print_starting_points)
 
 ^^ These are links to help you get started in your analysis. The first link
 is to a comparison of the two build scans. Comparisions show you what was
-different between two different builds.
+different between two different build executions.
 
 The "Cache performance" link takes you to the build cache performance page
 of the 2nd build scan. This page contains various metrics related to the
@@ -338,15 +338,15 @@ cachable tasks ran, then one of their inputs changed (even though we didn't
 make any changes), or they may not be declaring their inputs correctly.
 
 The last link, "Uncachable tasks", shows you which tasks ran that are not
-cachable. It is not always possible, or doesn't make sense the output from
-every task. For example, there's no way to cache the "output" of the clean
-task because the clean task deletes output rather than creating it.
+cachable. It is not always possible (or doesn't make sense) to cache the
+output from every task. For example, there is no way to cache the "output"
+of the clean task because the clean task deletes output rather than creating
+it.
 
-If you find something to optimize, then you will want to run this expirment
-again after you have implemented the optimizations (to validate the
-optimizations were effective). You will not need to run this wizard again.
-All of your settings have been saved, so all you need to do to run this
-experiment again without the wizard is to invoke this script without any
+If you find some optimizations, then it is recommended to run this expirment
+again (to validate the optimizations were effective). You do not need to run
+in interactive mode again. All of your settings have been saved, so all you
+need to do to repeate this experiment is to invoke the script without any
 arguments:
 
 $(info "./${SCRIPT_NAME}")
