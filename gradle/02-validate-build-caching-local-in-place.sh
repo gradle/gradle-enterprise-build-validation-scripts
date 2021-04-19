@@ -45,51 +45,50 @@ execute() {
   validate_required_config
 
   print_experiment_info
- 
+
   make_experiment_dir
   make_local_cache_dir
- 
+
   clone_project ""
   execute_first_build
   execute_second_build
- 
-  save_settings
+
   print_warnings
   print_summary
 }
 
 wizard_execute() {
   print_introduction
- 
+
   explain_experiment_info
- 
+
   explain_experiment_dir
   make_experiment_dir
- 
+
   load_settings
- 
+
   collect_project_details
- 
+
   explain_collect_gradle_task
   collect_gradle_task
- 
+
   explain_clone_project
   clone_project ""
- 
+
   explain_local_cache_dir
   make_local_cache_dir
- 
+
   explain_first_build
   execute_first_build
- 
+
   explain_second_build
   execute_second_build
- 
+
   save_settings
- 
+
   print_warnings
   explain_warnings
- 
+
   print_summary
   explain_summary
 }

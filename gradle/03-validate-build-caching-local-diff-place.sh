@@ -55,7 +55,6 @@ execute() {
   clone_project "_2"
   execute_second_build
 
-  save_settings
   print_warnings
   print_summary
 }

@@ -54,7 +54,6 @@ execute() {
   execute_first_build
   execute_second_build
 
-  save_settings
   print_summary
 }
 
