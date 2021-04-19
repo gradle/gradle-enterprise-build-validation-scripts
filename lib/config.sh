@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-save_settings() {
+save_config() {
   if [ ! -f "${_arg_config}" ]; then
     cat << EOF > "${_arg_config}"
 GIT_URL="${project_url}"
@@ -13,7 +13,7 @@ EOF
   fi
 }
 
-load_settings() {
+load_config() {
   if [ -f  "${_arg_config}" ]; then
     # shellcheck source=/dev/null # this file is created by the user so nothing for shellcheck to check
     source "${_arg_config}"

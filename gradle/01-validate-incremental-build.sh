@@ -38,7 +38,7 @@ main() {
 }
 
 execute() {
-  load_settings
+  load_config
   validate_required_config
 
   print_experiment_info
@@ -61,7 +61,7 @@ wizard_execute() {
   explain_experiment_dir
   make_experiment_dir
 
-  load_settings
+  load_config
 
   collect_project_details
 
@@ -77,7 +77,7 @@ wizard_execute() {
   explain_second_build
   execute_second_build
 
-  save_settings
+  save_config
 
   print_warnings
   explain_warnings
