@@ -47,7 +47,7 @@ print_help()
 	printf '\t%s\n' "-u, --git-url: Specifies the URL for the Git repository to run the experiment against. (no default)"
 	printf '\t%s\n' "-i, --interactive, --no-interactive: Enables/disables interactive mode. (off by default)"
 	printf '\t%s\n' "-a, --args: Sets an additional arguments to pass to Maven. (no default)"
-	printf '\t%s\n' "-t, --tasks: Declares the maven goal(s) to invoke when running builds as part of the experiment. (no default)"
+	printf '\t%s\n' "-t, --tasks: Declares the maven goals to invoke when running builds as part of the experiment. (no default)"
 }
 
 

@@ -124,7 +124,7 @@ print_summary() {
  info "----------------------------"
  infof "$fmt" "Project:" "${project_name}"
  infof "$fmt" "Branch:" "${branch}"
- infof "$fmt" "Maven goal(s):" "${tasks}"
+ infof "$fmt" "Maven goals:" "${tasks}"
  infof "$fmt" "Experiment dir:" "${EXPERIMENT_DIR}"
  infof "$fmt" "Experiment tag:" "${EXP_SCAN_TAG}"
  infof "$fmt" "Experiment run ID:" "${RUN_ID}"

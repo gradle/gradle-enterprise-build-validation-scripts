@@ -126,7 +126,7 @@ print_summary() {
  info "----------------------------"
  infof "$fmt" "Project:" "${project_name}"
  infof "$fmt" "Branch:" "${branch}"
- infof "$fmt" "Gradle task(s):" "${tasks}"
+ infof "$fmt" "Gradle tasks:" "${tasks}"
  infof "$fmt" "Experiment dir:" "${EXPERIMENT_DIR}"
  infof "$fmt" "Experiment tag:" "${EXP_SCAN_TAG}"
  infof "$fmt" "Experiment run ID:" "${RUN_ID}"
