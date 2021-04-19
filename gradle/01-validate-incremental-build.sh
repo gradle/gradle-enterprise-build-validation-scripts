@@ -105,9 +105,6 @@ print_summary() {
 
  local branch
  branch=$(git branch)
- if [ -n "$_arg_branch" ]; then
-   branch=${_arg_branch}
- fi
 
  local fmt="%-25s%-10s"
  info

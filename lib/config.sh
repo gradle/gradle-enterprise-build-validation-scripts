@@ -21,8 +21,8 @@ load_config() {
     if [ -z "${_arg_git_url}" ]; then
       _arg_git_url="${GIT_URL}"
     fi
-    if [ -z "${_arg_branch}" ]; then
-      _arg_branch="${GIT_BRANCH}"
+    if [ -z "${_arg_git_branch}" ]; then
+      _arg_git_branch="${GIT_BRANCH}"
     fi
     if [ -z "${_arg_tasks}" ]; then
       _arg_tasks="${BUILD_TASKS}"
@@ -42,7 +42,7 @@ load_config() {
   fi
 
   project_url=${_arg_git_url}
-  project_branch=${_arg_branch}
+  project_branch=${_arg_git_branch}
   project_name=$(basename -s .git "${project_url}")
   tasks=${_arg_tasks}
 }
@@ -79,8 +79,8 @@ collect_project_details() {
     read -r -p "${USER_ACTION_COLOR}What is the project's Git URL?${RESTORE} " project_url
   fi
 
-  if [ -n "${_arg_branch}" ]; then
-     project_branch=$_arg_branch
+  if [ -n "${_arg_git_branch}" ]; then
+     project_branch=$_arg_git_branch
   else
      read -r -p "${USER_ACTION_COLOR}What is the project's branch to check out? (the project's default branch)${RESTORE} " project_branch
   fi
