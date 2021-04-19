@@ -1,8 +1,7 @@
 #!/usr/bin/env bash
 
 save_config() {
-  if [ ! -f "${_arg_config}" ]; then
-    cat << EOF > "${_arg_config}"
+    cat << EOF > "${SCRIPT_DIR}/${SCRIPT_NAME%.*}.config"
 GIT_URL="${project_url}"
 GIT_BRANCH="${project_branch}"
 BUILD_TASKS="${tasks}"
@@ -10,7 +9,6 @@ GE_SERVER="${_arg_server}"
 ENABLE_GRADLE_ENTERPRISE="${_arg_enable_gradle_enterprise}"
 EXTRA_ARGS=($(print_extra_args))
 EOF
-  fi
 }
 
 load_config() {

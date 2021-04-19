@@ -66,7 +66,6 @@ wizard_execute() {
   make_experiment_dir
 
   load_config
-
   collect_project_details
 
   explain_collect_maven_goals
@@ -309,12 +308,12 @@ of the clean goal because the clean goal deletes output rather than creating
 it.
 
 If you find some optimizations, then it is recommended to run this expirment
-again (to validate the optimizations were effective). You do not need to run
-in interactive mode again. All of your settings have been saved, so all you
-need to do to repeate this experiment is to invoke the script without any
-arguments:
+again (to validate the optimizations were effective). You do not need to run in
+interactive mode again. All of your settings have been saved so that you can
+repeate the experiment by specifying the configuration when invoking the
+script:
 
-$(info "./${SCRIPT_NAME}")
+$(info "./${SCRIPT_NAME} -c ${SCRIPT_NAME%.*}.config")
 
 Congrats! You have completed this experiment.
 EOF

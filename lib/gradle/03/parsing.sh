@@ -28,7 +28,7 @@ begins_with_short_option()
 
 # THE DEFAULTS INITIALIZATION - OPTIONALS
 _arg_git_branch=
-_arg_config="${EXPERIMENT_DIR}/config"
+_arg_config=
 _arg_server=
 _arg_git_url=
 _arg_interactive="off"
@@ -43,7 +43,7 @@ print_help()
 	printf 'Usage: %s [-h|--help] [-b|--git-branch <arg>] [-c|--config <arg>] [-s|--server <arg>] [-u|--git-url <arg>] [-i|--(no-)interactive] [-e|--extra <arg>] [-t|--tasks <arg>] [--(no-)enable-gradle-enterprise]\n' "$0"
 	printf '\t%s\n' "-h, --help: Prints help"
 	printf '\t%s\n' "-b, --git-branch: Specifies the branch to checkout when cloning the Git repo before running the experiment. (no default)"
-	printf '\t%s\n' "-c, --config: Specifies the file to save/load settings to/from. When saving, the settings file is not overwritten if it already exists. (default: '${EXPERIMENT_DIR}/config')"
+	printf '\t%s\n' "-c, --config: Specifies the file to save/load settings to/from. When saving, the settings file is not overwritten if it already exists. (no default)"
 	printf '\t%s\n' "-s, --server: Specifies the URL for the Gradle Enterprise server to connect to during the experiment. (no default)"
 	printf '\t%s\n' "-u, --git-url: Specifies the URL for the Git repository to run the experiment against. (no default)"
 	printf '\t%s\n' "-i, --interactive, --no-interactive: Enables/disables interactive mode. (off by default)"

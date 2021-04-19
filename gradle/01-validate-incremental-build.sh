@@ -62,7 +62,6 @@ wizard_execute() {
   make_experiment_dir
 
   load_config
-
   collect_project_details
 
   explain_collect_gradle_task
@@ -276,12 +275,12 @@ Take some time to look over the build scans and the build comparison. You
 might be surprised by what you find!"
 
 If you find some optimizations, then it is recommended to run this expirment
-again (to validate the optimizations were effective). You do not need to run
-in interactive mode again. All of your settings have been saved, so all you
-need to do to repeate this experiment is to invoke the script without any
-arguments:
+again (to validate the optimizations were effective). You do not need to run in
+interactive mode again. All of your settings have been saved so that you can
+repeate the experiment by specifying the configuration when invoking the
+script:
 
-$(info "./${SCRIPT_NAME}")
+$(info "./${SCRIPT_NAME} -c ${SCRIPT_NAME%.*}.config")
 
 Congrats! You have completed this experiment.
 EOF
