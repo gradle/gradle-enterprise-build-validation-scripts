@@ -93,7 +93,7 @@ collect_gradle_task() {
     echo
     read -r -p "${USER_ACTION_COLOR}What build tasks should be run? (assemble)${RESTORE} " tasks
 
-    if [[ "${task}" == "" ]]; then
+    if [[ "${tasks}" == "" ]]; then
       tasks=assemble
     fi
   else
