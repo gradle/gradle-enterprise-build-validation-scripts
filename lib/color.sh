@@ -9,6 +9,7 @@ WHITE=$(echo -en '\033[01;37m')
 RED=$(echo -en '\033[00;31m')
 
 BOLD=$(echo -en '\033[1m')
+DIM=$(echo -en '\033[2m')
 
 WIZ_COLOR="${BLUE}${BOLD}"
 BOX_COLOR="${CYAN}"

@@ -80,7 +80,7 @@ collect_project_details() {
   if [ -n "${_arg_git_branch}" ]; then
      project_branch=$_arg_git_branch
   else
-     read -r -p "${USER_ACTION_COLOR}What is the project's branch to check out? (the project's default branch)${RESTORE} " project_branch
+     read -r -p "${USER_ACTION_COLOR}What is the project's branch to check out? ${DIM}(the project's default branch)${RESTORE} " project_branch
   fi
 
   project_name=$(basename -s .git "${project_url}")
@@ -89,7 +89,7 @@ collect_project_details() {
 collect_gradle_task() { 
   if [ -z "$_arg_tasks" ]; then
     echo
-    read -r -p "${USER_ACTION_COLOR}What build tasks should be run? (assemble)${RESTORE} " tasks
+    read -r -p "${USER_ACTION_COLOR}What build tasks should be run? ${DIM}(assemble)${RESTORE} " tasks
 
     if [[ "${tasks}" == "" ]]; then
       tasks=assemble
@@ -102,7 +102,7 @@ collect_gradle_task() {
 collect_maven_goals() { 
   if [ -z "$_arg_tasks" ]; then
     echo
-    read -r -p "${USER_ACTION_COLOR}What Maven goals should be run?  (package)${RESTORE} " tasks
+    read -r -p "${USER_ACTION_COLOR}What Maven goals should be run? ${DIM}(package)${RESTORE} " tasks
 
     if [[ "${tasks}" == "" ]]; then
       task=package
