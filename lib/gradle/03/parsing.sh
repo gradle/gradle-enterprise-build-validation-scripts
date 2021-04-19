@@ -42,7 +42,7 @@ print_help()
 	printf '%s\n' "Assists in validating that a Gradle build is optimized for using the local build cache (while building in different locations)."
 	printf 'Usage: %s [-h|--help] [-b|--git-branch <arg>] [-c|--config <arg>] [-s|--server <arg>] [-u|--git-url <arg>] [-i|--(no-)interactive] [-a|--args <arg>] [-t|--tasks <arg>] [-e|--(no-)enable-gradle-enterprise]\n' "$0"
 	printf '\t%s\n' "-h, --help: Prints help"
-	printf '\t%s\n' "-b, --git-branch: Specifies the branch to checkout when cloning the Git repo before running the experiment. (no default)"
+	printf '\t%s\n' "-b, --git-branch: Specifies the branch to checkout when cloning the Git repository before running the experiment. (no default)"
 	printf '\t%s\n' "-c, --config: Specifies the file to save/load settings to/from. When saving, the settings file is not overwritten if it already exists. (no default)"
 	printf '\t%s\n' "-s, --server: Specifies the URL for the Gradle Enterprise server to connect to during the experiment. (no default)"
 	printf '\t%s\n' "-u, --git-url: Specifies the URL for the Git repository to run the experiment against. (no default)"

@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # Created by argbash-init v2.10.0
-# ARG_OPTIONAL_SINGLE([git-branch],[b],[Specifies the branch to checkout when cloning the Git repo before running the experiment.])
+# ARG_OPTIONAL_SINGLE([git-branch],[b],[Specifies the branch to checkout when cloning the Git repository before running the experiment.])
 # ARG_OPTIONAL_SINGLE([config],[c],[Specifies the file to save/load settings to/from. When saving, the settings file is not overwritten if it already exists.],[])
 # ARG_OPTIONAL_SINGLE([server],[s],[Specifies the URL for the Gradle Enterprise server to connect to during the experiment.],[])
 # ARG_OPTIONAL_SINGLE([git-url],[u],[Specifies the URL for the Git repository to run the experiment against.])
