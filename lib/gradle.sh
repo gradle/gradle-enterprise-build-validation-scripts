@@ -28,7 +28,7 @@ invoke_gradle() {
       -Dscan.tag.${EXP_SCAN_TAG} \
       -Dscan.tag."${RUN_ID}" \
       -Dscan.capture-task-input-files \
-      "${_arg_extra[@]}" \
+      ${_arg_args} \
       "$@" \
       || fail "The experiment cannot continue because the build failed."
 }

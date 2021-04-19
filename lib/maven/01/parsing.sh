@@ -21,7 +21,7 @@ die()
 
 begins_with_short_option()
 {
-	local first_option all_short_options='hbcsuiet'
+	local first_option all_short_options='hbcsuiat'
 	first_option="${1:0:1}"
 	test "$all_short_options" = "${all_short_options/$first_option/}" && return 1 || return 0
 }
@@ -32,21 +32,21 @@ _arg_config=
 _arg_server=
 _arg_git_url=
 _arg_interactive="off"
-_arg_extra=()
+_arg_args=
 _arg_tasks=
 
 
 print_help()
 {
 	printf '%s\n' "Assists in validating that a Maven build is optimized for using the local build cache (while building in the same location)."
-	printf 'Usage: %s [-h|--help] [-b|--git-branch <arg>] [-c|--config <arg>] [-s|--server <arg>] [-u|--git-url <arg>] [-i|--(no-)interactive] [-e|--extra <arg>] [-t|--tasks <arg>]\n' "$0"
+	printf 'Usage: %s [-h|--help] [-b|--git-branch <arg>] [-c|--config <arg>] [-s|--server <arg>] [-u|--git-url <arg>] [-i|--(no-)interactive] [-a|--args <arg>] [-t|--tasks <arg>]\n' "$0"
 	printf '\t%s\n' "-h, --help: Prints help"
 	printf '\t%s\n' "-b, --git-branch: Specifies the branch to checkout when cloning the Git repo before running the experiment. (no default)"
 	printf '\t%s\n' "-c, --config: Specifies the file to save/load settings to/from. When saving, the settings file is not overwritten if it already exists. (no default)"
 	printf '\t%s\n' "-s, --server: Specifies the URL for the Gradle Enterprise server to connect to during the experiment. (no default)"
 	printf '\t%s\n' "-u, --git-url: Specifies the URL for the Git repository to run the experiment against. (no default)"
 	printf '\t%s\n' "-i, --interactive, --no-interactive: Enables/disables interactive mode. (off by default)"
-	printf '\t%s\n' "-e, --extra: Sets an additional argument to pass to Maven (system property, etc). Can be specified more than once. (empty by default)"
+	printf '\t%s\n' "-a, --args: Sets an additional arguments to pass to Maven. (no default)"
 	printf '\t%s\n' "-t, --tasks: Declares the maven goal(s) to invoke when running builds as part of the experiment. (no default)"
 }
 
@@ -135,18 +135,18 @@ parse_commandline()
 				fi
 				_args_common_opt+=("${_key}")
 				;;
-			-e|--extra)
+			-a|--args)
 				test $# -lt 2 && die "Missing value for the optional argument '$_key'." 1
-				_arg_extra+=("$2")
-				_args_common_opt+=("${_key}" "${_arg_extra[-1]}")
+				_arg_args="$2"
+				_args_common_opt+=("${_key}" "$2")
 				shift
 				;;
-			--extra=*)
-				_arg_extra+=("${_key##--extra=}")
+			--args=*)
+				_arg_args="${_key##--args=}"
 				_args_common_opt+=("$_key")
 				;;
-			-e*)
-				_arg_extra+=("${_key##-e}")
+			-a*)
+				_arg_args="${_key##-a}"
 				_args_common_opt+=("$_key")
 				;;
 			-t|--tasks)

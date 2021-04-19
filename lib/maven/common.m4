@@ -2,7 +2,7 @@
 
 # Created by argbash-init v2.10.0
 # ARGBASH_WRAP([../../common])
-# ARG_OPTIONAL_REPEATED([extra],[e],[Sets an additional argument to pass to Maven (system property, etc). Can be specified more than once.])
+# ARG_OPTIONAL_SINGLE([args],[a],[Sets an additional arguments to pass to Maven.])
 # ARG_OPTIONAL_SINGLE([tasks],[t],[Declares the maven goal(s) to invoke when running builds as part of the experiment.])
 # ARGBASH_GO()
 # needed because of Argbash --> m4_ignore([
