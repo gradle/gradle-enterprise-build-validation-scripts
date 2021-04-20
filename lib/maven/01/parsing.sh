@@ -184,7 +184,7 @@ function print_help() {
   print_option_usage -i
   print_option_usage -u
   print_option_usage -b
-  print_option_usage "-t, --tasks" "Declares the maven goals to invoke when running builds as part of the experiment."
+  print_option_usage "-t, --tasks" "Declares the maven goals to invoke."
   print_option_usage "-a, --args" "Sets additional arguments to pass to Maven."
   print_option_usage -s
   print_option_usage -e

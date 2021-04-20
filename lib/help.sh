@@ -15,25 +15,25 @@ print_option_usage() {
        _print_option_usage "-a, --args" "Sets additional arguments to pass to Gradle."
        ;;
     -b)
-       _print_option_usage "-b, --git-branch" "Specifies the branch to checkout when cloning the Git repository."
+       _print_option_usage "-b, --git-branch" "Specifies the branch for the Git repository to validate."
        ;;
     -c)
-       _print_option_usage "-c, --config" "Specifies a configuration file to load the configuration from."
+       _print_option_usage "-c, --config" "Specifies the file to load the configuration settings from."
        ;;
     -e)
-       _print_option_usage "-e, --enable-gradle-enterprise" "Enables Gradle Enterprise on a project that it is not already enabled on. If used, --server is required."
+       _print_option_usage "-e, --enable-gradle-enterprise" "Enables Gradle Enterprise on a project that it is not already enabled on."
        ;;
     -i)
        _print_option_usage "-i, --interactive" "Enables interactive mode."
        ;;
     -s)
-       _print_option_usage "-s, --server" "Specifies the URL for the Gradle Enterprise server to connect to during the experiment."
+       _print_option_usage "-s, --server" "Specifies the URL for the Gradle Enterprise server to connect to."
        ;;
     -t)
-       _print_option_usage "-t, --tasks" "Declares the Gradle tasks to invoke when running builds as part of the experiment."
+       _print_option_usage "-t, --tasks" "Declares the Gradle tasks to invoke."
        ;;
     -u)
-       _print_option_usage "-u, --git-url" "Specifies the URL for the Git repository to run the experiment against."
+       _print_option_usage "-u, --git-url" "Specifies the URL for the Git repository to validate."
        ;;
     *)
        _print_option_usage "$1" "$2"
