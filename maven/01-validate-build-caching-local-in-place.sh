@@ -142,7 +142,7 @@ print_starting_points() {
  info 
  info "SUGGESTED STARTING POINTS"
  info "----------------------------"
- infof "$fmt" "Scan comparision:" "${base_url[0]}/c/${scan_id[0]}/${scan_id[1]}/task-inputs?cacheability=cacheable"
+ infof "$fmt" "Scan comparison:" "${base_url[0]}/c/${scan_id[0]}/${scan_id[1]}/task-inputs?cacheability=cacheable"
  infof "$fmt" "Cache performance:" "${base_url[0]}/s/${scan_id[1]}/performance/build-cache"
  infof "$fmt" "Executed cachable goals:" "${base_url[0]}/s/${scan_id[1]}/timeline?cacheability=cacheable&outcome=successful&sort=longest"
  infof "$fmt" "Uncachable goals:" "${base_url[0]}/s/${scan_id[1]}/timeline?cacheability=any_non-cacheable&outcome=successful&sort=longest"
@@ -288,7 +288,7 @@ a wealth of information and statistics about the build execution.
 $(print_starting_points)
 
 ^^ These are links to help you get started in your analysis. The first link
-is to a comparison of the two build scans. Comparisions show you what was
+is to a comparison of the two build scans. comparisons show you what was
 different between two different build executions.
 
 The "Cache performance" link takes you to the build cache performance page
