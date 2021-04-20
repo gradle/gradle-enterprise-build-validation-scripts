@@ -59,9 +59,6 @@ execute() {
 wizard_execute() {
   print_introduction
 
-  explain_experiment_info
-
-  explain_experiment_dir
   make_experiment_dir
 
   load_config
@@ -76,6 +73,7 @@ wizard_execute() {
   explain_first_clone_project
   clone_project "_1"
 
+  explain_scan_tags
   explain_first_build
   execute_first_build
 

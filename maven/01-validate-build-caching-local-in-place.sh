@@ -57,9 +57,6 @@ execute() {
 wizard_execute() {
   print_introduction
 
-  explain_experiment_info
-
-  explain_experiment_dir
   make_experiment_dir
 
   load_config
@@ -77,6 +74,7 @@ wizard_execute() {
   explain_local_cache_dir
   make_local_cache_dir
 
+  explain_scan_tags
   explain_first_build
   execute_first_build
 

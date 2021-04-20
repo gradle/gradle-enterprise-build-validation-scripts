@@ -51,7 +51,7 @@ function print_in_box()
   echo -n "${RESTORE}"
 }
 
-explain_experiment_info() {
+explain_scan_tags() {
   local text
   IFS='' read -r -d '' text <<EOF
 
