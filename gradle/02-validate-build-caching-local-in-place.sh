@@ -106,7 +106,7 @@ execute_build() {
   local lib_dir_rel
   lib_dir_rel=$(realpath --relative-to="$( pwd )" "${LIB_DIR}")
 
-  info "./gradlew$(orint_extra_args) clean ${tasks} -Dscan.tag.${EXP_SCAN_TAG} -Dscan.tag.${RUN_ID}"
+  info "./gradlew -Dscan.tag.${EXP_SCAN_TAG} -Dscan.tag.${RUN_ID} clean ${tasks}$(print_extra_args)"
 
   invoke_gradle \
      --init-script "${lib_dir_rel}/gradle/verify-and-configure-local-build-cache-only.gradle" \
