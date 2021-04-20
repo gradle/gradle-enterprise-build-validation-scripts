@@ -199,14 +199,14 @@ function print_help() {
   echo "Assists in validating that a Gradle build is optimized for incremental building."
   echo
   print_script_usage
-  print_option_usage -h
-  print_option_usage -a
-  print_option_usage -b
-  print_option_usage -c
-  print_option_usage -e
   print_option_usage -i
-  print_option_usage -s
-  print_option_usage -t
   print_option_usage -u
+  print_option_usage -b
+  print_option_usage -t
+  print_option_usage -a
+  print_option_usage -s
+  print_option_usage -e
+  print_option_usage -c
+  print_option_usage -h
 }
 # ] <-- needed because of Argbash
