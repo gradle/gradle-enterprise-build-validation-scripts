@@ -115,7 +115,7 @@ print_summary() {
  read_scan_info
 
  local branch
- branch=$(git branch)
+ branch=$(git symbolic-ref --short HEAD)
 
  local fmt="%-25s%-10s"
  info
