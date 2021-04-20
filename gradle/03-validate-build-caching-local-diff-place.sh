@@ -26,7 +26,6 @@ tasks=""
 # Include and parse the command line arguments
 # shellcheck source=experiments/lib/gradle/03/parsing.sh
 source "${LIB_DIR}/gradle/03/parsing.sh" || { echo "Couldn't find '${LIB_DIR}/gradle/03/parsing.sh' parsing library."; exit 1; }
-
 # shellcheck source=experiments/lib/libs.sh
 source "${LIB_DIR}/libs.sh" || { echo "Couldn't find '${LIB_DIR}/libs.sh'"; exit 1; }
 
@@ -352,5 +351,6 @@ EOF
   print_in_box "${text}"
 }
 
+parse_commandline "$@"
 main
 

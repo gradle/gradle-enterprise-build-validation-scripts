@@ -23,6 +23,15 @@ fail() {
   exit 1
 }
 
+# Overrides the die() function loaded from the argbash-generated parsing libs
+die() {
+  local _ret="${2:-1}"
+  printf "${ERROR_COLOR}%s${RESTORE}\n" "$1"
+  echo
+  test "${_PRINT_HELP:-no}" = yes && print_help >&2
+  exit "${_ret}"
+}
+
 print_experiment_info() {
   local fmt="%-20s%-10s"
 

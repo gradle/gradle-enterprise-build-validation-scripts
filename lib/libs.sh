@@ -27,3 +27,5 @@ source "${SCRIPT_DIR}/../lib/gradle.sh" || { echo "Couldn't find '../lib/gradle.
 # shellcheck source=experiments/lib/maven.sh
 source "${SCRIPT_DIR}/../lib/maven.sh" || { echo "Couldn't find '../lib/maven.sh'"; exit 1; }
 
+# shellcheck source=experiments/lib/help.sh
+source "${SCRIPT_DIR}/../lib/help.sh" || { echo "Couldn't find '../lib/help.sh'"; exit 1; }
