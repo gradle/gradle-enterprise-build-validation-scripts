@@ -54,21 +54,26 @@ function print_in_box()
 explain_experiment_info() {
   local text
   IFS='' read -r -d '' text <<EOF
-Below is some basic information about the experiment:
+
+We are going to add a few scan tags to make it easy to find the build scans
+generated during this experiment:
 
 $(print_experiment_info)
 
-We will add the "Experiment id" and "Experiment run id" as scan tags on the
-build scans.
-
-Every time you run this script, we'll generate a new unique run ID.
-You can use the run ID to find the build scans from a specific run of the
-experiment.
+Every time you run this script, we'll generate a unique run ID. You can use
+the run ID to find the build scans from a specific run of the experiment.
 
 You can use the '${EXP_SCAN_TAG}' tag to find all of the build scans for all
 runs of this experiment.
 EOF
   print_in_box "${text}"
+}
+
+print_experiment_info() {
+  local fmt="%-20s%-10s"
+
+  infof "$fmt" "Experiment id:" "${EXP_SCAN_TAG}"
+  infof "$fmt" "Experiment run id:" "${RUN_ID}"
 }
 
 print_introduction_title() {

@@ -40,8 +40,6 @@ execute() {
   load_config
   validate_required_config
 
-  print_experiment_info
-
   make_experiment_dir
   clone_project ""
 

@@ -43,8 +43,6 @@ execute() {
   load_config
   validate_required_config
 
-  print_experiment_info
-
   make_experiment_dir
   make_local_cache_dir
 

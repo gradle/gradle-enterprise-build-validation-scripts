@@ -32,15 +32,6 @@ die() {
   exit "${_ret}"
 }
 
-print_experiment_info() {
-  local fmt="%-20s%-10s"
-
-  info
-  infof "$fmt" "Experiment:" "${EXP_NO}-${EXP_NAME}"
-  infof "$fmt" "Experiment id:" "${EXP_SCAN_TAG}"
-  infof "$fmt" "Experiment run id:" "${RUN_ID}"
-}
-
 print_warnings() {
   local warnings_file="${EXPERIMENT_DIR}/${project_name}/warnings.txt"
   while read l; do
@@ -48,3 +39,4 @@ print_warnings() {
     printf "${YELLOW}${BOLD}WARNING: %s${RESTORE}\n" "$l"
   done <"$warnings_file"
 }
+
