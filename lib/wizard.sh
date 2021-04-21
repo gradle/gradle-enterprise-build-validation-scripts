@@ -150,3 +150,17 @@ EOF
     wait_for_enter
  fi
 }
+
+explain_how_to_repeat_the_experiment() {
+  read_scan_info
+  local text
+  IFS='' read -r -d '' text <<EOF
+You may want to validate any optimizations you implement. It is also
+recommended to run this experimentn periodically to detect regressions. You
+can repeat the experiment by running:
+
+$(print_command_to_repeat_experiment)
+EOF
+  print_in_box "${text}"
+}
+

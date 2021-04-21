@@ -87,6 +87,7 @@ wizard_execute() {
 
   print_summary
   explain_summary
+  explain_how_to_repeat_the_experiment
 }
 
 execute_first_build() {
@@ -281,13 +282,25 @@ a wealth of information and statistics about the build execution.
 
 $(print_quick_links)
 
-^^ These are links to help you get started in your analysis. The first link
-is to a comparison of the two build scans. comparisons show you what was
-different between two different build executions.
+^^ These are links to help you get started in your analysis. 
+
+The first link is to a comparison of the two build scans. Comparisons show you
+what was different between two different build executions.
+
+The "Task execution summary" shows overall statistics for the execution of
+the second build. You can use this link to get a quick overview of where
+there may be overall opportunities to optimize.
 
 The "Cache performance" link takes you to the build cache performance page
 of the 2nd build scan. This page contains various metrics related to the
 build cache (such as cache hits and misses).
+
+The "Executed tasks" link takes you to the timeline view of the second build
+scan and automatically shows only the tasks that were executed, sorted by
+execution time (with the longest-running tasks listed first). You can use
+this to quickly identify tasks that were executed again unecessarily. You
+will want to optimize any such tasks that take a significant amount of time
+to complete.
 
 The "Executed cachable tasks" link shows you which tasks ran again on the
 second build, but shouldn't have because they are actually cachable. If any
@@ -299,14 +312,6 @@ cachable. It is not always possible (or doesn't make sense) to cache the
 output from every task. For example, there is no way to cache the "output"
 of the clean task because the clean task deletes output rather than creating
 it.
-
-If you find some optimizations, then it is recommended to run this expirment
-again (to validate the optimizations were effective). You can repeat the
-experiment by running:
-
-$(print_command_to_repeat_experiment)
-
-Congrats! You have completed this experiment.
 EOF
   print_in_box "${text}"
 }
