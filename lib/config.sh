@@ -89,7 +89,7 @@ collect_git_details() {
 
 collect_gradle_details() { 
   prompt_for_setting "What are the Gradle tasks to invoke?" "${tasks}" "assemble" tasks
-  prompt_for_setting "Are there any additional arguments to pass to Gradle?" "${extra_args}" "*none*" extra_args
+  prompt_for_setting "Enter any additional arguments to pass to Gradle." "${extra_args}" "*none*" extra_args
   if [[ "${extra_args}" == "*none*" ]]; then
     extra_args=''
   fi
@@ -97,7 +97,7 @@ collect_gradle_details() {
 
 collect_maven_details() { 
   prompt_for_setting "What are the Maven goals to invoke?" "${tasks}" "package" tasks
-  prompt_for_setting "Are there any additional arguments to pass to Maven?" "${extra_args}" "*none*" extra_args
+  prompt_for_setting "Enter any additional arguments to pass to Maven." "${extra_args}" "*none*" extra_args
   if [[ "${extra_args}" == "*none*" ]]; then
     extra_args=''
   fi
