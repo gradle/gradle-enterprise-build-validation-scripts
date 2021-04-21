@@ -27,7 +27,7 @@ validate_required_config() {
     exit 1
   fi
 
-  if [ "${enable_ge}" == "on" ]; then
+  if [[ "${enable_ge}" == "on" ]]; then
     if [ -z "${ge_server}" ]; then
       error "--gradle-enterprise-server is requred when using --enable-gradle-enterprise."
       echo
@@ -37,46 +37,70 @@ validate_required_config() {
   fi
 }
 
-collect_project_details() {
-  if [ -n "${_arg_git_repo}" ]; then
-     git_repo=$_arg_git_repo
+prompt_for_setting() {
+  local prompt primary_default secondary_default default variable defaultDisplay
+  prompt="$1"
+  primary_default="$2"
+  secondary_default="$3"
+  variable="$4"
+
+  if [ -n "$primary_default" ]; then
+    default="${primary_default}"
   else
-    echo
-    read -r -p "${USER_ACTION_COLOR}What is the project's Git URL?${RESTORE} " git_repo
+    default="${secondary_default}"
   fi
 
-  if [ -n "${_arg_git_branch}" ]; then
-     git_branch=$_arg_git_branch
-  else
-     read -r -p "${USER_ACTION_COLOR}What is the project's branch to check out? ${DIM}(the project's default branch)${RESTORE} " git_branch
+  if [ -n "$default" ]; then
+    defaultDisplay="(${default}) "
+  fi
+
+  echo
+  while :; do
+    read -r -p "${USER_ACTION_COLOR}${prompt} ${DIM}${defaultDisplay}${RESTORE}" ${variable}
+
+    UP_ONE_LINE="\033[1A"
+    ERASE_LINE="\033[2K"
+    echo -en "${UP_ONE_LINE}${ERASE_LINE}"
+
+    if [ -z "${!variable}" ]; then
+      if [ -n "${default}" ]; then
+        eval ${variable}="\${default}"
+        break
+      fi
+    else
+      break
+    fi
+  done
+
+  echo "${USER_ACTION_COLOR}${prompt} ${CYAN}${!variable}${RESTORE}"
+}
+
+collect_git_details() {
+  prompt_for_setting "What is the URL for the Git repository to validate?" "${git_repo}" '' git_repo
+
+  local default_branch="*the repo's default branch*"
+  prompt_for_setting "What is the branch for the Git repository to validate?" "${git_branch}" "${default_branch}" git_branch
+
+  if [[ "${git_branch}" == "${default_branch}" ]]; then
+    git_branch=''
   fi
 
   project_name=$(basename -s .git "${git_repo}")
 }
 
-collect_gradle_task() { 
-  if [ -z "$_arg_tasks" ]; then
-    echo
-    read -r -p "${USER_ACTION_COLOR}What build tasks should be run? ${DIM}(assemble)${RESTORE} " tasks
-
-    if [[ "${tasks}" == "" ]]; then
-      tasks=assemble
-    fi
-  else
-    tasks=$_arg_tasks
+collect_gradle_details() { 
+  prompt_for_setting "What are the Gradle tasks to invoke?" "${tasks}" "assemble" tasks
+  prompt_for_setting "Are there any additional arguments to pass to Gradle?" "${extra_args}" "*none*" extra_args
+  if [[ "${extra_args}" == "*none*" ]]; then
+    extra_args=''
   fi
 }
 
-collect_maven_goals() { 
-  if [ -z "$_arg_tasks" ]; then
-    echo
-    read -r -p "${USER_ACTION_COLOR}What Maven goals should be run? ${DIM}(package)${RESTORE} " tasks
-
-    if [[ "${tasks}" == "" ]]; then
-      task=package
-    fi
-  else
-    tasks=$_arg_tasks
+collect_maven_details() { 
+  prompt_for_setting "What are the Maven goals to invoke?" "${tasks}" "package" tasks
+  prompt_for_setting "Are there any additional arguments to pass to Maven?" "${extra_args}" "*none*" extra_args
+  if [[ "${extra_args}" == "*none*" ]]; then
+    extra_args=''
   fi
 }
 
@@ -104,7 +128,7 @@ print_command_to_repeat_experiment() {
     cmd+=("-s" "${ge_server}")
   fi
 
-  if [ -n "${enable_ge}" ]; then
+  if [[ "${enable_ge}" == "on" ]]; then
     cmd+=("-e")
   fi
 

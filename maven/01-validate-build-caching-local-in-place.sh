@@ -62,10 +62,10 @@ wizard_execute() {
 
   make_experiment_dir
 
-  collect_project_details
+  collect_git_details
 
-  explain_collect_maven_goals
-  collect_maven_goals
+  explain_collect_maven_details
+  collect_maven_details
 
   explain_make_maven_extensions
   make_maven_extensions

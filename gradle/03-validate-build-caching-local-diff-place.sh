@@ -64,10 +64,10 @@ wizard_execute() {
 
   make_experiment_dir
 
-  collect_project_details
+  collect_git_details
 
-  explain_collect_gradle_task
-  collect_gradle_task
+  explain_collect_gradle_details
+  collect_gradle_details
 
   explain_local_cache_dir
   make_local_cache_dir
