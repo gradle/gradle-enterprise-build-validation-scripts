@@ -102,7 +102,7 @@ $(info "${EXPERIMENT_DIR}")"
 }
 
 explain_collect_gradle_task() {
-  if [ -z "$_arg_tasks" ]; then
+  if [ -z "$tasks" ]; then
     wizard "We need a build task (or tasks) to run on each build of the experiment. If this is the first \
 time you are running the experiment, then you may want to run a task that doesn't take very long to \
 complete. You can run more complete (and longer) builds after you become more comfortable with running \
@@ -111,7 +111,7 @@ the experiment."
 }
 
 explain_collect_maven_goals() {
-  if [ -z "$_arg_task" ]; then
+  if [ -z "$tasks" ]; then
     wizard "We need a Maven goal (or goals) to run on each build of the experiment. If this is the first \
 time you are running the experiment, then you may want to run a goal that doesn't take very long to \
 complete. You can run more complete (and longer) builds after you become more comfortable with running \

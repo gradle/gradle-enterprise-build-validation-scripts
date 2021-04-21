@@ -20,11 +20,12 @@ build_cache_dir="${EXPERIMENT_DIR}/build-cache"
 # These will be set by the config functions (see lib/config.sh)
 git_repo=''
 project_name=''
-project_branch=''
+git_branch=''
 tasks=''
 extra_args=''
 enable_ge=''
 ge_server=''
+interactive_mode=''
 
 # Include and parse the command line arguments
 # shellcheck source=experiments/lib/maven/01/parsing.sh
@@ -35,7 +36,9 @@ source "${LIB_DIR}/libs.sh" || { echo "Couldn't find '${LIB_DIR}/libs.sh'"; exit
 RUN_ID=$(generate_run_id)
 
 main() {
-  if [ "$_arg_interactive" == "on" ]; then
+  load_config
+
+  if [ "${interactive_mode}" == "on" ]; then
     wizard_execute
   else
     execute
@@ -43,7 +46,6 @@ main() {
 }
 
 execute() {
-  load_config
   validate_required_config
 
   make_experiment_dir
@@ -62,7 +64,6 @@ wizard_execute() {
 
   make_experiment_dir
 
-  load_config
   collect_project_details
 
   explain_collect_maven_goals
@@ -124,7 +125,7 @@ print_summary() {
  infof "$fmt" "Git repo:" "${git_repo}"
  infof "$fmt" "Git branch:" "${branch}"
  infof "$fmt" "Maven goals:" "${tasks}"
- infof "$fmt" "Maven arguments:" "${_arg_args}"
+ infof "$fmt" "Maven arguments:" "${extra_args}"
  infof "$fmt" "Experiment:" "${EXP_NO}-${EXP_NAME}"
  infof "$fmt" "Experiment id:" "${EXP_SCAN_TAG}"
  infof "$fmt" "Experiment run id:" "${RUN_ID}"

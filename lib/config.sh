@@ -46,6 +46,7 @@ load_config() {
   extra_args="${_arg_args}"
   enable_ge="${_arg_enable_gradle_enterprise}"
   ge_server="${_arg_gradle_enterprise_server}"
+  interactive_mode="${_arg_interactive}"
 }
 
 validate_required_config() {

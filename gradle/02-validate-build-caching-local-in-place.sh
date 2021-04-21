@@ -25,6 +25,7 @@ tasks=''
 extra_args=''
 enable_ge=''
 ge_server=''
+interactive_mode=''
 
 # Include and parse the command line arguments
 # shellcheck source=experiments/lib/gradle/02/parsing.sh
@@ -35,7 +36,9 @@ source "${LIB_DIR}/libs.sh" || { echo "Couldn't find '${LIB_DIR}/libs.sh'"; exit
 RUN_ID=$(generate_run_id)
 
 main() {
-  if [ "$_arg_interactive" == "on" ]; then
+  load_config
+
+  if [ "${interactive_mode}" == "on" ]; then
     wizard_execute
   else
     execute
@@ -43,7 +46,6 @@ main() {
 }
 
 execute() {
-  load_config
   validate_required_config
 
   make_experiment_dir
@@ -62,7 +64,6 @@ wizard_execute() {
 
   make_experiment_dir
 
-  load_config
   collect_project_details
 
   explain_collect_gradle_task
@@ -125,7 +126,7 @@ print_summary() {
  infof "$fmt" "Git repo:" "${git_repo}"
  infof "$fmt" "Git branch:" "${branch}"
  infof "$fmt" "Gradle tasks:" "${tasks}"
- infof "$fmt" "Gradle arguments:" "${_arg_args}"
+ infof "$fmt" "Gradle arguments:" "${extra_args}"
  infof "$fmt" "Experiment:" "${EXP_NO}-${EXP_NAME}"
  infof "$fmt" "Experiment id:" "${EXP_SCAN_TAG}"
  infof "$fmt" "Experiment run id:" "${RUN_ID}"
