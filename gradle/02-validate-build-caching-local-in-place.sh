@@ -116,34 +116,38 @@ print_summary() {
  branch=$(git symbolic-ref --short HEAD)
 
  local fmt="%-25s%-10s"
- info
- info "SUMMARY"
- info "----------------------------"
+ info "Summary"
+ info "-------"
  infof "$fmt" "Project:" "${project_name}"
- infof "$fmt" "Branch:" "${branch}"
+ infof "$fmt" "Git URL:" "${project_url}"
+ infof "$fmt" "Git branch:" "${branch}"
  infof "$fmt" "Gradle tasks:" "${tasks}"
- infof "$fmt" "Experiment dir:" "${EXPERIMENT_DIR}"
- infof "$fmt" "Experiment tag:" "${EXP_SCAN_TAG}"
- infof "$fmt" "Experiment run ID:" "${RUN_ID}"
+ infof "$fmt" "Gradle arguments:" "${_arg_args}"
+ infof "$fmt" "Experiment:" "${EXP_NO}-${EXP_NAME}"
+ infof "$fmt" "Experiment id:" "${EXP_SCAN_TAG}"
+ infof "$fmt" "Experiment run id:" "${RUN_ID}"
+ infof "$fmt" "Experiment artifact dir:" "${EXPERIMENT_DIR}"
  print_build_scans
- print_starting_points
+ print_quick_links
 }
 
 print_build_scans() {
  local fmt="%-25s%-10s"
- infof "$fmt" "First build scan:" "${scan_url[0]}"
- infof "$fmt" "Second build scan:" "${scan_url[1]}"
+ infof "$fmt" "Build scan first build:" "${scan_url[0]}"
+ infof "$fmt" "Build scan second build:" "${scan_url[1]}"
 }
 
-print_starting_points() {
+print_quick_links() {
  local fmt="%-25s%-10s"
  info 
- info "SUGGESTED STARTING POINTS"
- info "----------------------------"
- infof "$fmt" "Scan comparison:" "${base_url[0]}/c/${scan_id[0]}/${scan_id[1]}/task-inputs?cacheability=cacheable"
+ info "Investigation quick links"
+ info "-------------------------"
+ infof "$fmt" "Build scan comparison:" "${base_url[0]}/c/${scan_id[0]}/${scan_id[1]}/task-inputs?cacheability=cacheable"
+ infof "$fmt" "Task execution summary:" "${base_url[0]}/s/${scan_id[1]}/performance/execution"
  infof "$fmt" "Cache performance:" "${base_url[0]}/s/${scan_id[1]}/performance/build-cache"
- infof "$fmt" "Executed cachable tasks:" "${base_url[0]}/s/${scan_id[1]}/timeline?cacheableFilter=cacheable&outcomeFilter=SUCCESS"
- infof "$fmt" "Uncachable tasks:" "${base_url[0]}/s/${scan_id[1]}/timeline?cacheableFilter=any_non-cacheable&outcomeFilter=SUCCESS"
+ infof "$fmt" "Executed tasks:" "${base_url[0]}/s/${scan_id[1]}/timeline?outcome=SUCCESS,FAILED&sort=longest"
+ infof "$fmt" "Executed cachable tasks:" "${base_url[0]}/s/${scan_id[1]}/timeline?cacheableFilter=cacheable&outcomeFilter=SUCCESS,FAILED&sorted=longest"
+ infof "$fmt" "Uncachable tasks:" "${base_url[0]}/s/${scan_id[1]}/timeline?cacheableFilter=any_non-cacheable&outcomeFilter=SUCCESS,FAILED&sorted=longest"
  info
 }
 
@@ -273,7 +277,7 @@ $(print_build_scans)
 ^^ These are links to the build scans for the builds. A build scan provides
 a wealth of information and statistics about the build execution.
 
-$(print_starting_points)
+$(print_quick_links)
 
 ^^ These are links to help you get started in your analysis. The first link
 is to a comparison of the two build scans. comparisons show you what was
