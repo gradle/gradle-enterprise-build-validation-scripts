@@ -22,14 +22,13 @@ die()
 
 begins_with_short_option()
 {
-  local first_option all_short_options='bcsriateh'
+  local first_option all_short_options='bsriateh'
   first_option="${1:0:1}"
   test "$all_short_options" = "${all_short_options/$first_option/}" && return 1 || return 0
 }
 
 # THE DEFAULTS INITIALIZATION - OPTIONALS
 _arg_git_branch=
-_arg_config=
 _arg_gradle_enterprise_server=
 _arg_git_repo=
 _arg_interactive="off"
@@ -41,7 +40,7 @@ _arg_enable_gradle_enterprise="off"
 print_help()
 {
   printf '%s\n' "This function is overridden later on."
-  printf 'Usage: %s [-b|--git-branch <arg>] [-c|--config <arg>] [-s|--gradle-enterprise-server <arg>] [-r|--git-repo <arg>] [-i|--(no-)interactive] [-a|--args <arg>] [-t|--tasks <arg>] [-e|--(no-)enable-gradle-enterprise] [-h|--help]\n' "$0"
+  printf 'Usage: %s [-b|--git-branch <arg>] [-s|--gradle-enterprise-server <arg>] [-r|--git-repo <arg>] [-i|--(no-)interactive] [-a|--args <arg>] [-t|--tasks <arg>] [-e|--(no-)enable-gradle-enterprise] [-h|--help]\n' "$0"
   printf '\t%s\n' "-h, --help: Prints help"
 }
 
@@ -64,20 +63,6 @@ parse_commandline()
         ;;
       -b*)
         _arg_git_branch="${_key##-b}"
-        _args_common_opt+=("$_key")
-        ;;
-      -c|--config)
-        test $# -lt 2 && die "Missing value for the optional argument '$_key'." 1
-        _arg_config="$2"
-        _args_common_opt+=("${_key}" "$2")
-        shift
-        ;;
-      --config=*)
-        _arg_config="${_key##--config=}"
-        _args_common_opt+=("$_key")
-        ;;
-      -c*)
-        _arg_config="${_key##-c}"
         _args_common_opt+=("$_key")
         ;;
       -s|--gradle-enterprise-server)
@@ -198,7 +183,6 @@ function print_help() {
   print_option_usage -a
   print_option_usage -s
   print_option_usage -e
-  print_option_usage -c
   print_option_usage -h
 }
 # ] <-- needed because of Argbash

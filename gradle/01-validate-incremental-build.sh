@@ -33,8 +33,6 @@ source "${LIB_DIR}/libs.sh" || { echo "Couldn't find '${LIB_DIR}/libs.sh'"; exit
 RUN_ID=$(generate_run_id)
 
 main() {
-  load_config
-
   if [ "${interactive_mode}" == "on" ]; then
     wizard_execute
   else
@@ -278,18 +276,16 @@ Take some time to look over the build scans and the build comparison. You
 might be surprised by what you find!"
 
 If you find some optimizations, then it is recommended to run this expirment
-again (to validate the optimizations were effective). You do not need to run in
-interactive mode again. All of your settings have been saved so that you can
-repeate the experiment by specifying the configuration when invoking the
-script:
+again (to validate the optimizations were effective). You can repeat the
+experiment by running:
 
-$(info "./${SCRIPT_NAME} -c ${SCRIPT_NAME%.*}.config")
+$(print_command_to_repeat_experiment)
 
 Congrats! You have completed this experiment.
 EOF
   print_in_box "${text}"
 }
 
-parse_commandline "$@"
+process_arguments "$@"
 main
 

@@ -1,43 +1,7 @@
 #!/usr/bin/env bash
 
-save_config() {
-    cat << EOF > "${SCRIPT_DIR}/${SCRIPT_NAME%.*}.config"
-GIT_URL="${git_repo}"
-GIT_BRANCH="${git_branch}"
-BUILD_TASKS="${tasks}"
-GE_SERVER="${ge_server}"
-ENABLE_GRADLE_ENTERPRISE="${enable_ge}"
-EXTRA_ARGS=$(printf "%q" "${extra_args}")
-EOF
-}
-
-load_config() {
-  if [ -f  "${_arg_config}" ]; then
-    # shellcheck source=/dev/null # this file is created by the user so nothing for shellcheck to check
-    source "${_arg_config}"
-
-    if [ -z "${_arg_git_repo}" ]; then
-      _arg_git_repo="${GIT_URL}"
-    fi
-    if [ -z "${_arg_git_branch}" ]; then
-      _arg_git_branch="${GIT_BRANCH}"
-    fi
-    if [ -z "${_arg_tasks}" ]; then
-      _arg_tasks="${BUILD_TASKS}"
-    fi
-    if [ -z "${_arg_gradle_enterprise_server}" ]; then
-      _arg_gradle_enterprise_server="${GE_SERVER}"
-    fi
-    if [ "$_arg_enable_gradle_enterprise" == "off" ]; then
-      _arg_enable_gradle_enterprise="${ENABLE_GRADLE_ENTERPRISE}"
-    fi
-    if [ -z "${_arg_args}" ]; then
-      _arg_args="${EXTRA_ARGS}"
-    fi
-
-    info
-    info "Loaded configuration from ${_arg_config}"
-  fi
+process_arguments() {
+  parse_commandline "$@"
 
   git_repo="${_arg_git_repo}"
   git_branch="${_arg_git_branch}"
@@ -120,4 +84,29 @@ print_extra_args() {
   if [ -n "${extra_args}" ]; then
     echo " ${extra_args}"
   fi
+}
+
+print_command_to_repeat_experiment() {
+  local cmd
+  cmd=("./${SCRIPT_NAME}" "-r" "${git_repo}")
+
+  if [ -n "${git_branch}" ]; then
+    cmd+=("-b" "${git_branch}")
+  fi
+
+  cmd+=("-t" "${tasks}")
+
+  if [ -n "${extra_args}" ]; then
+    cmd+=("-a" "${extra_args}")
+  fi
+
+  if [ -n "${ge_server}" ]; then
+    cmd+=("-s" "${ge_server}")
+  fi
+
+  if [ -n "${enable_ge}" ]; then
+    cmd+=("-e")
+  fi
+
+  info "$(printf '%q ' "${cmd[@]}")"
 }

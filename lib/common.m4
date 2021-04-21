@@ -2,7 +2,6 @@
 
 # Created by argbash-init v2.10.0
 # ARG_OPTIONAL_SINGLE([git-branch],[b],[])
-# ARG_OPTIONAL_SINGLE([config],[c],[],[])
 # ARG_OPTIONAL_SINGLE([gradle-enterprise-server],[s],[],[])
 # ARG_OPTIONAL_SINGLE([git-repo],[r],[])
 # ARG_OPTIONAL_BOOLEAN([interactive],[i],[],[off])
