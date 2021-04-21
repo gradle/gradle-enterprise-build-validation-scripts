@@ -121,7 +121,7 @@ print_summary() {
  info "Summary"
  info "-------"
  infof "$fmt" "Project:" "${project_name}"
- infof "$fmt" "Git URL:" "${project_url}"
+ infof "$fmt" "Git repo:" "${project_url}"
  infof "$fmt" "Git branch:" "${branch}"
  infof "$fmt" "Maven goals:" "${tasks}"
  infof "$fmt" "Maven arguments:" "${_arg_args}"

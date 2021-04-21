@@ -17,7 +17,7 @@ SCAN_FILE="${EXPERIMENT_DIR}/scans.csv"
 
 build_cache_dir="${EXPERIMENT_DIR}/build-cache"
 
-# These will be set by the collect functions (see lib/input.sh)
+# These will be set by the config functions (see lib/config.sh)
 project_url=''
 project_name=''
 project_branch=''
@@ -122,7 +122,7 @@ print_summary() {
  info "Summary"
  info "-------"
  infof "$fmt" "Project:" "${project_name}"
- infof "$fmt" "Git URL:" "${project_url}"
+ infof "$fmt" "Git repo:" "${project_url}"
  infof "$fmt" "Git branch:" "${branch}"
  infof "$fmt" "Gradle tasks:" "${tasks}"
  infof "$fmt" "Gradle arguments:" "${_arg_args}"
