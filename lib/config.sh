@@ -54,7 +54,6 @@ prompt_for_setting() {
     defaultDisplay="(${default}) "
   fi
 
-  echo
   while :; do
     read -r -p "${USER_ACTION_COLOR}${prompt} ${DIM}${defaultDisplay}${RESTORE}" ${variable}
 
