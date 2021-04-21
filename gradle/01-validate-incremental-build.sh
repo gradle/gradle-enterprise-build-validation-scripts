@@ -15,7 +15,7 @@ EXPERIMENT_DIR="${SCRIPT_DIR}/data/${SCRIPT_NAME%.*}"
 SCAN_FILE="${EXPERIMENT_DIR}/scans.csv"
 
 # These will be set by the config functions (see lib/config.sh)
-project_url=''
+git_repo=''
 project_name=''
 project_branch=''
 tasks=''
@@ -108,7 +108,7 @@ print_summary() {
  info "Summary"
  info "-------"
  infof "$fmt" "Project:" "${project_name}"
- infof "$fmt" "Git repo:" "${project_url}"
+ infof "$fmt" "Git repo:" "${git_repo}"
  infof "$fmt" "Git branch:" "${branch}"
  infof "$fmt" "Gradle tasks:" "${tasks}"
  infof "$fmt" "Gradle arguments:" "${_arg_args}"
