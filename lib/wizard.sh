@@ -151,11 +151,14 @@ explain_how_to_repeat_the_experiment() {
   read_scan_info
   local text
   IFS='' read -r -d '' text <<EOF
-You may want to validate any optimizations you implement. It is also
-recommended to run this experimentn periodically to detect regressions. You
-can repeat the experiment by running:
+Below is the command you can use to repeat the experiment (without running
+in interactive mode):
 
 $(print_command_to_repeat_experiment)
+
+You may want to repeat the experiment in order to validate optimizations you
+have implemented. It is also a best practice to repeat the experiment
+periodically (so as to catch regressions in the build optimization).
 EOF
   print_in_box "${text}"
 }
