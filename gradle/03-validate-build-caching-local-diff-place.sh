@@ -20,7 +20,7 @@ build_cache_dir="${EXPERIMENT_DIR}/build-cache"
 # These will be set by the config functions (see lib/config.sh)
 git_repo=''
 project_name=''
-project_branch=''
+git_branch=''
 tasks=''
 extra_args=''
 enable_ge=''

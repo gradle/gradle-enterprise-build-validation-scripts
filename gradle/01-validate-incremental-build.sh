@@ -17,7 +17,7 @@ SCAN_FILE="${EXPERIMENT_DIR}/scans.csv"
 # These will be set by the config functions (see lib/config.sh)
 git_repo=''
 project_name=''
-project_branch=''
+git_branch=''
 tasks=''
 extra_args=''
 enable_ge=''

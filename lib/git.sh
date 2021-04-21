@@ -8,8 +8,8 @@ clone_project() {
    local clone_dir="${EXPERIMENT_DIR}/${project_name}${suffix}"
 
    local branch=""
-   if [ -n "${project_branch}" ]; then
-      branch="--branch ${project_branch}"
+   if [ -n "${git_branch}" ]; then
+      branch="--branch ${git_branch}"
    fi
 
    rm -rf "${clone_dir}"

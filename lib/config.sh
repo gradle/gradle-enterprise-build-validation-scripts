@@ -3,7 +3,7 @@
 save_config() {
     cat << EOF > "${SCRIPT_DIR}/${SCRIPT_NAME%.*}.config"
 GIT_URL="${git_repo}"
-GIT_BRANCH="${project_branch}"
+GIT_BRANCH="${git_branch}"
 BUILD_TASKS="${tasks}"
 GE_SERVER="${ge_server}"
 ENABLE_GRADLE_ENTERPRISE="${enable_ge}"
@@ -40,7 +40,7 @@ load_config() {
   fi
 
   git_repo="${_arg_git_repo}"
-  project_branch="${_arg_git_branch}"
+  git_branch="${_arg_git_branch}"
   project_name="$(basename -s .git "${git_repo}")"
   tasks="${_arg_tasks}"
   extra_args="${_arg_args}"
@@ -81,9 +81,9 @@ collect_project_details() {
   fi
 
   if [ -n "${_arg_git_branch}" ]; then
-     project_branch=$_arg_git_branch
+     git_branch=$_arg_git_branch
   else
-     read -r -p "${USER_ACTION_COLOR}What is the project's branch to check out? ${DIM}(the project's default branch)${RESTORE} " project_branch
+     read -r -p "${USER_ACTION_COLOR}What is the project's branch to check out? ${DIM}(the project's default branch)${RESTORE} " git_branch
   fi
 
   project_name=$(basename -s .git "${git_repo}")
