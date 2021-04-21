@@ -8,11 +8,8 @@ print_option_usage() {
   local key="$1"
 
   case "$key" in
-    -h)
-       _print_option_usage "-h, --help" "Shows this help message."
-       ;;
     -a)
-       _print_option_usage "-a, --args" "Sets additional arguments to pass to Gradle."
+       _print_option_usage "-a, --args" "Declares additional arguments to pass to Gradle."
        ;;
     -b)
        _print_option_usage "-b, --git-branch" "Specifies the branch for the Git repository to validate."
@@ -23,17 +20,20 @@ print_option_usage() {
     -e)
        _print_option_usage "-e, --enable-gradle-enterprise" "Enables Gradle Enterprise on a project that it is not already enabled on."
        ;;
+    -h)
+       _print_option_usage "-h, --help" "Shows this help message."
+       ;;
     -i)
        _print_option_usage "-i, --interactive" "Enables interactive mode."
        ;;
+    -r)
+       _print_option_usage "-r, --git-repo" "Specifies the URL for the Git repository to validate."
+       ;;
     -s)
-       _print_option_usage "-s, --server" "Specifies the URL for the Gradle Enterprise server to connect to."
+       _print_option_usage "-s, --gradle-enterprise-server" "Specifies the URL for the Gradle Enterprise server to connect to."
        ;;
     -t)
        _print_option_usage "-t, --tasks" "Declares the Gradle tasks to invoke."
-       ;;
-    -u)
-       _print_option_usage "-u, --git-url" "Specifies the URL for the Git repository to validate."
        ;;
     *)
        _print_option_usage "$1" "$2"

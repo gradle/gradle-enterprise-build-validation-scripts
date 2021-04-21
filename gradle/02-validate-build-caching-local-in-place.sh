@@ -18,10 +18,13 @@ SCAN_FILE="${EXPERIMENT_DIR}/scans.csv"
 build_cache_dir="${EXPERIMENT_DIR}/build-cache"
 
 # These will be set by the collect functions (see lib/input.sh)
-project_url=""
-project_name=""
-project_branch=""
-tasks=""
+project_url=''
+project_name=''
+project_branch=''
+tasks=''
+extra_args=''
+enable_ge=''
+ge_server=''
 
 # Include and parse the command line arguments
 # shellcheck source=experiments/lib/gradle/02/parsing.sh

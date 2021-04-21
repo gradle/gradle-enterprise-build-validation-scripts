@@ -2,7 +2,7 @@
 
 # Created by argbash-init v2.10.0
 # ARGBASH_WRAP([../common])
-# ARG_HELP([Assists in validating that a Gradle build is optimized for incremental building.])
+# ARG_HELP([This function is overridden later on.])
 # ARGBASH_SET_INDENT([  ])
 # ARGBASH_PREPARE()
 # needed because of Argbash --> m4_ignore([
@@ -22,7 +22,7 @@ die()
 
 begins_with_short_option()
 {
-  local first_option all_short_options='bcsuiateh'
+  local first_option all_short_options='bcsriateh'
   first_option="${1:0:1}"
   test "$all_short_options" = "${all_short_options/$first_option/}" && return 1 || return 0
 }
@@ -30,8 +30,8 @@ begins_with_short_option()
 # THE DEFAULTS INITIALIZATION - OPTIONALS
 _arg_git_branch=
 _arg_config=
-_arg_server=
-_arg_git_url=
+_arg_gradle_enterprise_server=
+_arg_git_repo=
 _arg_interactive="off"
 _arg_args=
 _arg_tasks=
@@ -40,16 +40,8 @@ _arg_enable_gradle_enterprise="off"
 
 print_help()
 {
-  printf '%s\n' "Assists in validating that a Gradle build is optimized for incremental building."
-  printf 'Usage: %s [-b|--git-branch <arg>] [-c|--config <arg>] [-s|--server <arg>] [-u|--git-url <arg>] [-i|--(no-)interactive] [-a|--args <arg>] [-t|--tasks <arg>] [-e|--(no-)enable-gradle-enterprise] [-h|--help]\n' "$0"
-  printf '\t%s\n' "-b, --git-branch: Specifies the branch to checkout when cloning the Git repository before running the experiment. (no default)"
-  printf '\t%s\n' "-c, --config: Specifies the file to save/load settings to/from. When saving, the settings file is not overwritten if it already exists. (no default)"
-  printf '\t%s\n' "-s, --server: Specifies the URL for the Gradle Enterprise server to connect to during the experiment. (no default)"
-  printf '\t%s\n' "-u, --git-url: Specifies the URL for the Git repository to run the experiment against. (no default)"
-  printf '\t%s\n' "-i, --interactive, --no-interactive: Enables/disables interactive mode. (off by default)"
-  printf '\t%s\n' "-a, --args: Sets additional arguments to pass to Gradle. (no default)"
-  printf '\t%s\n' "-t, --tasks: Declares the Gradle tasks to invoke when running builds as part of the experiment. (no default)"
-  printf '\t%s\n' "-e, --enable-gradle-enterprise, --no-enable-gradle-enterprise: Enables Gradle Enterprise on a project that it is not already enabled on. If used, --server is required. (off by default)"
+  printf '%s\n' "This function is overridden later on."
+  printf 'Usage: %s [-b|--git-branch <arg>] [-c|--config <arg>] [-s|--gradle-enterprise-server <arg>] [-r|--git-repo <arg>] [-i|--(no-)interactive] [-a|--args <arg>] [-t|--tasks <arg>] [-e|--(no-)enable-gradle-enterprise] [-h|--help]\n' "$0"
   printf '\t%s\n' "-h, --help: Prints help"
 }
 
@@ -88,32 +80,32 @@ parse_commandline()
         _arg_config="${_key##-c}"
         _args_common_opt+=("$_key")
         ;;
-      -s|--server)
+      -s|--gradle-enterprise-server)
         test $# -lt 2 && die "Missing value for the optional argument '$_key'." 1
-        _arg_server="$2"
+        _arg_gradle_enterprise_server="$2"
         _args_common_opt+=("${_key}" "$2")
         shift
         ;;
-      --server=*)
-        _arg_server="${_key##--server=}"
+      --gradle-enterprise-server=*)
+        _arg_gradle_enterprise_server="${_key##--gradle-enterprise-server=}"
         _args_common_opt+=("$_key")
         ;;
       -s*)
-        _arg_server="${_key##-s}"
+        _arg_gradle_enterprise_server="${_key##-s}"
         _args_common_opt+=("$_key")
         ;;
-      -u|--git-url)
+      -r|--git-repo)
         test $# -lt 2 && die "Missing value for the optional argument '$_key'." 1
-        _arg_git_url="$2"
+        _arg_git_repo="$2"
         _args_common_opt+=("${_key}" "$2")
         shift
         ;;
-      --git-url=*)
-        _arg_git_url="${_key##--git-url=}"
+      --git-repo=*)
+        _arg_git_repo="${_key##--git-repo=}"
         _args_common_opt+=("$_key")
         ;;
-      -u*)
-        _arg_git_url="${_key##-u}"
+      -r*)
+        _arg_git_repo="${_key##-r}"
         _args_common_opt+=("$_key")
         ;;
       -i|--no-interactive|--interactive)
@@ -200,7 +192,7 @@ function print_help() {
   echo
   print_script_usage
   print_option_usage -i
-  print_option_usage -u
+  print_option_usage -r
   print_option_usage -b
   print_option_usage -t
   print_option_usage -a

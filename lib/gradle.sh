@@ -3,8 +3,8 @@
 invoke_gradle() {
   local ge_server_arg
   ge_server_arg=""
-  if [ -n "${_arg_server}" ]; then
-    ge_server_arg="-Pcom.gradle.enterprise.init.script.server=${_arg_server}"
+  if [ -n "${ge_server}" ]; then
+    ge_server_arg="-Pcom.gradle.enterprise.init.script.server=${ge_server}"
   fi
 
 
@@ -15,7 +15,7 @@ invoke_gradle() {
   local enable_ge_init_script
   enable_ge_init_script=()
 
-  if [ "$_arg_enable_gradle_enterprise" == "on" ]; then
+  if [ "$enable_ge" == "on" ]; then
     # FIXME This doesn't handle paths with spaces in it very well. Figure out how to do the shell qouting properly!
     enable_ge_init_script="--init-script ${lib_dir_rel}/gradle/enable-gradle-enterprise.gradle"
   fi
@@ -28,7 +28,7 @@ invoke_gradle() {
       -Dscan.tag.${EXP_SCAN_TAG} \
       -Dscan.tag."${RUN_ID}" \
       -Dscan.capture-task-input-files \
-      ${_arg_args} \
+      ${extra_args} \
       "$@" \
       || fail "The experiment cannot continue because the build failed."
 }

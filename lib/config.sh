@@ -5,9 +5,9 @@ save_config() {
 GIT_URL="${project_url}"
 GIT_BRANCH="${project_branch}"
 BUILD_TASKS="${tasks}"
-GE_SERVER="${_arg_server}"
-ENABLE_GRADLE_ENTERPRISE="${_arg_enable_gradle_enterprise}"
-EXTRA_ARGS=$(printf "%q" "${_arg_args}")
+GE_SERVER="${ge_server}"
+ENABLE_GRADLE_ENTERPRISE="${enable_ge}"
+EXTRA_ARGS=$(printf "%q" "${extra_args}")
 EOF
 }
 
@@ -16,8 +16,8 @@ load_config() {
     # shellcheck source=/dev/null # this file is created by the user so nothing for shellcheck to check
     source "${_arg_config}"
 
-    if [ -z "${_arg_git_url}" ]; then
-      _arg_git_url="${GIT_URL}"
+    if [ -z "${_arg_git_repo}" ]; then
+      _arg_git_repo="${GIT_URL}"
     fi
     if [ -z "${_arg_git_branch}" ]; then
       _arg_git_branch="${GIT_BRANCH}"
@@ -25,8 +25,8 @@ load_config() {
     if [ -z "${_arg_tasks}" ]; then
       _arg_tasks="${BUILD_TASKS}"
     fi
-    if [ -z "${_arg_server}" ]; then
-      _arg_server="${GE_SERVER}"
+    if [ -z "${_arg_gradle_enterprise_server}" ]; then
+      _arg_gradle_enterprise_server="${GE_SERVER}"
     fi
     if [ "$_arg_enable_gradle_enterprise" == "off" ]; then
       _arg_enable_gradle_enterprise="${ENABLE_GRADLE_ENTERPRISE}"
@@ -39,29 +39,32 @@ load_config() {
     info "Loaded configuration from ${_arg_config}"
   fi
 
-  project_url=${_arg_git_url}
-  project_branch=${_arg_git_branch}
-  project_name=$(basename -s .git "${project_url}")
-  tasks=${_arg_tasks}
+  project_url="${_arg_git_repo}"
+  project_branch="${_arg_git_branch}"
+  project_name="$(basename -s .git "${project_url}")"
+  tasks="${_arg_tasks}"
+  extra_args="${_arg_args}"
+  enable_ge="${_arg_enable_gradle_enterprise}"
+  ge_server="${_arg_gradle_enterprise_server}"
 }
 
 validate_required_config() {
-  if [ -z "${_arg_git_url}" ]; then
-    error "Missing required argument: --git-url"
+  if [ -z "${project_url}" ]; then
+    error "Missing required argument: --git-repo"
     echo
     print_help
     exit 1
   fi
-  if [ -z "${_arg_tasks}" ]; then
+  if [ -z "${tasks}" ]; then
     error "Missing required argument: --tasks"
     echo
     print_help
     exit 1
   fi
 
-  if [ "$_arg_enable_gradle_enterprise" == "on" ]; then
-    if [ -z "${_arg_server}" ]; then
-      error "--server is requred when using --enable-gradle-enterprise."
+  if [ "${enable_ge}" == "on" ]; then
+    if [ -z "${ge_server}" ]; then
+      error "--gradle-enterprise-server is requred when using --enable-gradle-enterprise."
       echo
       print_help
       exit 1
@@ -70,8 +73,8 @@ validate_required_config() {
 }
 
 collect_project_details() {
-  if [ -n "${_arg_git_url}" ]; then
-     project_url=$_arg_git_url
+  if [ -n "${_arg_git_repo}" ]; then
+     project_url=$_arg_git_repo
   else
     echo
     read -r -p "${USER_ACTION_COLOR}What is the project's Git URL?${RESTORE} " project_url
@@ -113,7 +116,7 @@ collect_maven_goals() {
 }
 
 print_extra_args() {
-  if [ -n "${_arg_args}" ]; then
-    echo " ${_arg_args}"
+  if [ -n "${extra_args}" ]; then
+    echo " ${extra_args}"
   fi
 }

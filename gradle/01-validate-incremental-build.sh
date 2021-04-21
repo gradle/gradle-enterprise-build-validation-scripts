@@ -14,11 +14,14 @@ EXP_SCAN_TAG=exp1-gradle
 EXPERIMENT_DIR="${SCRIPT_DIR}/data/${SCRIPT_NAME%.*}"
 SCAN_FILE="${EXPERIMENT_DIR}/scans.csv"
 
-# These will be set by the collect functions (see lib/input.sh)
-project_url=""
-project_name=""
-project_branch=""
-tasks=""
+# These will be set by the config functions (see lib/config.sh)
+project_url=''
+project_name=''
+project_branch=''
+tasks=''
+extra_args=''
+enable_ge=''
+ge_server=''
 
 # Include and parse the command line arguments
 # shellcheck source=experiments/lib/gradle/01/parsing.sh

@@ -17,11 +17,14 @@ SCAN_FILE="${EXPERIMENT_DIR}/scans.csv"
 
 build_cache_dir="${EXPERIMENT_DIR}/build-cache"
 
-# These will be set by the collect functions (see lib/input.sh)
-project_url=""
-project_name=""
-project_branch=""
-tasks=""
+# These will be set by the config functions (see lib/config.sh)
+project_url=''
+project_name=''
+project_branch=''
+tasks=''
+extra_args=''
+enable_ge=''
+ge_server=''
 
 # Include and parse the command line arguments
 # shellcheck source=experiments/lib/maven/01/parsing.sh
