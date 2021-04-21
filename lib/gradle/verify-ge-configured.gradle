@@ -67,7 +67,7 @@ void configureGradleEnterprise(extension) {
 }
 
 void clearWarnings() {
-    new File(gradle.startParameter.currentDir, "warnings.txt").delete()
+    new File(gradle.startParameter.currentDir, "../warnings.txt").delete()
 }
 
 void logMissingCommonCustomUserMetadataPlugin() {
@@ -75,6 +75,6 @@ void logMissingCommonCustomUserMetadataPlugin() {
 }
 
 void logWarning(String warning) {
-   def warningFile = new File(gradle.startParameter.currentDir, "warnings.txt")
+   def warningFile = new File(gradle.startParameter.currentDir, "../warnings.txt")
    warningFile.append(warning + "\n")
 }

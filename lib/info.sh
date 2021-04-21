@@ -33,10 +33,13 @@ die() {
 }
 
 print_warnings() {
-  local warnings_file="${EXPERIMENT_DIR}/${project_name}/warnings.txt"
-  while read l; do
+  local warnings_file="${EXPERIMENT_DIR}/warnings.txt"
+  if [ -f "${warnings_file}" ]; then
+    while read l; do
+      echo
+      printf "${YELLOW}${BOLD}WARNING: %s${RESTORE}\n" "$l"
+    done <"${warnings_file}"
     echo
-    printf "${YELLOW}${BOLD}WARNING: %s${RESTORE}\n" "$l"
-  done <"$warnings_file"
+  fi
 }
 
