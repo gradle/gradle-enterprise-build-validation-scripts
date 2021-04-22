@@ -189,7 +189,7 @@ advantage of the build cache.
 ${USER_ACTION_COLOR}Press enter when you're ready to get started.
 EOF
 
-  print_in_box "${text}"
+  print_wizard_text "${text}"
   wait_for_enter
 }
 
@@ -211,7 +211,7 @@ $(info "${build_cache_dir}")
 
 ${USER_ACTION_COLOR}Press enter to continue.
 EOF
-  print_in_box "${text}"
+  print_wizard_text "${text}"
   wait_for_enter
 }
 
@@ -227,7 +227,7 @@ You can find the log for the extension build in the experiments directory.
 
 ${USER_ACTION_COLOR}Press enter to build the extension.
 EOF
-  print_in_box "${text}"
+  print_wizard_text "${text}"
   wait_for_enter
 }
 
@@ -242,7 +242,7 @@ We will also add the build scan tags we talked about before.
 
 ${USER_ACTION_COLOR}Press enter to run the first build.
 EOF
-  print_in_box "${text}"
+  print_wizard_text "${text}"
   wait_for_enter
 }
 
@@ -258,7 +258,7 @@ build scan for this second build.
 
 ${USER_ACTION_COLOR}Press enter to run the second build.
 EOF
-  print_in_box "$text"
+  print_wizard_text "$text"
   wait_for_enter
 }
 
@@ -312,7 +312,7 @@ output from every goal. For example, there is no way to cache the "output"
 of the clean goal because the clean goal deletes output rather than creating
 it.
 EOF
-  print_in_box "${text}"
+  print_wizard_text "${text}"
 }
 
 process_arguments "$@"
