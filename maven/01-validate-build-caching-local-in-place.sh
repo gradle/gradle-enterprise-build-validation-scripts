@@ -232,12 +232,6 @@ EOF
 }
 
 explain_first_build() {
- local build_command
-  build_command="${INFO_COLOR}./gradlew \\
-  ${INFO_COLOR}-Dscan.tag.${EXP_SCAN_TAG} \\
-  ${INFO_COLOR}-Dscan.tag.${RUN_ID} \\
-  ${INFO_COLOR} clean ${tasks}"
-
   local text
   IFS='' read -r -d '' text <<EOF
 OK! We are ready to run our first build!

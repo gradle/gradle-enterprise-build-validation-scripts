@@ -194,12 +194,6 @@ EOF
 }
 
 explain_first_build() {
- local build_command
-  build_command="${YELLOW}./gradlew --no-build-cache \\
-  ${YELLOW}-Dscan.tag.${EXP_SCAN_TAG} \\
-  ${YELLOW}-Dscan.tag.${RUN_ID} \\
-  ${YELLOW} clean ${tasks}"
-
   local text
   IFS='' read -r -d '' text <<EOF
 OK! We are ready to run our first build!
