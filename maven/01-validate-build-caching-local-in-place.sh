@@ -246,10 +246,6 @@ For this run, we'll execute 'clean ${tasks}'.
 
 We will also add the build scan tags we talked about before.
 
-Effectively, this is what we are going to run:
-
-${build_command}
-
 ${USER_ACTION_COLOR}Press enter to run the first build.
 EOF
   print_in_box "${text}"
