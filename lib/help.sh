@@ -27,7 +27,7 @@ print_option_usage() {
        _print_option_usage "-r, --git-repo" "Specifies the URL for the Git repository to validate."
        ;;
     -s)
-       _print_option_usage "-s, --gradle-enterprise-server" "Specifies the URL for the Gradle Enterprise server to connect to."
+       _print_option_usage "-s, --gradle-enterprise-server" "Enables Gradle Enterprise on a project not already connected."
        ;;
     -t)
        _print_option_usage "-t, --tasks" "Declares the Gradle tasks to invoke."
