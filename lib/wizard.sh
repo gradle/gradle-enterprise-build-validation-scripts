@@ -15,40 +15,11 @@ wait_for_enter() {
 
 function print_in_box()
 {
-  local lines b w
-
-  # Convert the input into an array
-  #   In bash, this is tricky, expecially if you want to preserve leading 
-  #   whitespace and blank lines!
-  ifs_bak=$IFS
-  IFS=''
-  while read -r line; do
-    lines+=( "$line" )
-  done <<< "$*"
-  IFS=${ifs_bak}
-
-  # Calculate the longest text width (w is witdh), excluding color codes
-  # Also save the longest line in b ('b' for buffer)
-  #    We'll use 'b' later to fill in the top and bottom borders
-  for l in "${lines[@]}"; do
-    local no_color
-    # shellcheck disable=SC2001  # I could only get this to work with sed
-    no_color="$(echo "$l" | sed $'s,\x1b\\[[0-9;]*[a-zA-Z],,g')"
-    ((w<${#no_color})) && { b="$no_color"; w="${#no_color}"; }
-  done
-
-  echo -n "${BOX_COLOR}"
-  echo "┌─${b//?/─}─┐"
-  for l in "${lines[@]}"; do
-    # Adjust padding for color codes (add spaces for removed color codes)
-    local no_color padding
-    # shellcheck disable=SC2001  # I could only get this to work with sed
-    no_color="$(echo "$l" | sed $'s,\x1b\\[[0-9;]*[a-zA-Z],,g')"
-    padding=$((w+${#l}-${#no_color}))
-    printf '│ %s%*s%s │\n' "${WIZ_COLOR}" "-$padding" "$l" "${BOX_COLOR}"
-  done
-  echo "└─${b//?/─}─┘"
-  echo -n "${RESTORE}"
+  echo
+  printf '=%.0s' {1..80}
+  echo
+  echo -n "$@"
+  echo
 }
 
 explain_scan_tags() {
@@ -79,9 +50,7 @@ print_experiment_info() {
 print_introduction_title() {
   cat <<EOF
 ${WHITE}Gradle Enterprise
-
-Experiment ${EXP_NO}: ${EXP_NAME}
-${RESTORE}
+Experiment ${EXP_NO}: ${EXP_NAME}${RESTORE}
 EOF
 }
 
