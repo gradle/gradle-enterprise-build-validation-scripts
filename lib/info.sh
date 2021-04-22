@@ -43,3 +43,25 @@ print_warnings() {
   fi
 }
 
+print_experiment_info() {
+ local branch
+ branch=$(git symbolic-ref --short HEAD)
+
+ local fmt="%-26s%s"
+ info "Summary"
+ info "-------"
+ infof "$fmt" "Project:" "${project_name}"
+ infof "$fmt" "Git repo:" "${git_repo}"
+ infof "$fmt" "Git branch:" "${branch}"
+ if [[ "${BUILD_TOOL}" == "Maven" ]]; then
+   infof "$fmt" "Maven goals:" "${tasks}"
+   infof "$fmt" "Maven arguments:" "${extra_args}"
+ else
+   infof "$fmt" "Gradle tasks:" "${tasks}"
+   infof "$fmt" "Gradle arguments:" "${extra_args}"
+ fi
+ infof "$fmt" "Experiment:" "${EXP_NO}-${EXP_NAME}"
+ infof "$fmt" "Experiment id:" "${EXP_SCAN_TAG}"
+ infof "$fmt" "Experiment run id:" "${RUN_ID}"
+ infof "$fmt" "Experiment artifact dir:" "${EXPERIMENT_DIR}"
+}

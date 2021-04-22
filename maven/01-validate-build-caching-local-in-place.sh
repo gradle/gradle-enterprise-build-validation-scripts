@@ -83,7 +83,6 @@ wizard_execute() {
   explain_second_build
   execute_second_build
 
-  print_summary
   explain_summary
   explain_how_to_repeat_the_experiment
 }
@@ -111,25 +110,12 @@ execute_build() {
 
 print_summary() {
  read_scan_info
-
- local branch
- branch=$(git symbolic-ref --short HEAD)
-
- local fmt="%-25s%-10s"
- info
- info "Summary"
- info "-------"
- infof "$fmt" "Project:" "${project_name}"
- infof "$fmt" "Git repo:" "${git_repo}"
- infof "$fmt" "Git branch:" "${branch}"
- infof "$fmt" "Maven goals:" "${tasks}"
- infof "$fmt" "Maven arguments:" "${extra_args}"
- infof "$fmt" "Experiment:" "${EXP_NO}-${EXP_NAME}"
- infof "$fmt" "Experiment id:" "${EXP_SCAN_TAG}"
- infof "$fmt" "Experiment run id:" "${RUN_ID}"
- infof "$fmt" "Experiment artifact dir:" "${EXPERIMENT_DIR}"
+ echo
+ print_experiment_info
  print_build_scans
+ echo
  print_quick_links
+ echo
 }
 
 print_build_scans() {
@@ -140,7 +126,6 @@ print_build_scans() {
 
 print_quick_links() {
  local fmt="%-25s%-10s"
- info 
  info "Investigation quick links"
  info "-------------------------"
  infof "$fmt" "Build scan comparison:" "${base_url[0]}/c/${scan_id[0]}/${scan_id[1]}/goal-inputs?cacheability=cacheable"
@@ -149,7 +134,6 @@ print_quick_links() {
  infof "$fmt" "Executed goals:" "${base_url[0]}/s/${scan_id[1]}/timeline?outcome=successful&sort=longest"
  infof "$fmt" "Executed cachable goals:" "${base_url[0]}/s/${scan_id[1]}/timeline?cacheableFilter=cacheable&outcomeFilter=successful&sorted=longest"
  infof "$fmt" "Uncachable goals:" "${base_url[0]}/s/${scan_id[1]}/timeline?cacheableFilter=any_non-cacheable&outcomeFilter=successful&sorted=longest"
- info
 }
 
 print_introduction() {
@@ -199,7 +183,7 @@ We are going to create a new empty local build cache dir (and configure
 Gradle to use it instead of the default local cache dir). This way, the
 first build won't find anything in the cache and all goals will run. 
 
-This is mportant beause we want to make sure goals that are cachable do in
+This is important beause we want to make sure goals that are cachable do in
 fact produce output that is stored in the cache.
 
 Specifically, we are going to create and use this directory for the local
@@ -237,7 +221,7 @@ OK! We are ready to run our first build!
 
 For this run, we'll execute 'clean ${tasks}'. 
 
-We will also add the build scan tags we talked about before.
+We will also add a few the build scan tags.
 
 ${USER_ACTION_COLOR}Press enter to run the first build.
 EOF
@@ -270,17 +254,28 @@ Gradle Enterprise to look at. The data can help you find ineffiencies in
 your build.
 
 After running the experiment, this script will generate a summary table of
-useful data and links to help you analyze the experiment results. Most of
-the data in the summmary is self-explanatory, but a few are worth reviewing:
+useful data and links to help you analyze the experiment results:
+
+$(print_experiment_info)
+
+"Experiment id" and "Experiment run id" are added as tags on the build
+scans.
+
+You can use the "Experiment id" to find all of the build scans for all runs
+of this experiment.
+
+Every time you run this script, we'll generate a unique "Experiment run id".
+You can use the run id to search for the build scans from a specific run of the
+experiment.
 
 $(print_build_scans)
 
-^^ These are links to the build scans for the builds. A build scan provides
+Abave are links to the build scans from this experiument. A build scan provides
 a wealth of information and statistics about the build execution.
 
 $(print_quick_links)
 
-^^ These are links to help you get started in your analysis. 
+Use the above links help you get started in your analysis. 
 
 The first link is to a comparison of the two build scans. Comparisons show you
 what was different between two different build executions.

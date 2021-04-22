@@ -18,20 +18,13 @@ wait_for_enter() {
 }
 
 
-function print_wizard_text()
+print_wizard_text()
 {
-  echo
+  echo "${RESTORE}"
   printf '=%.0s' {1..80}
   echo
   echo -n "$@"
   echo
-}
-
-print_experiment_info() {
-  local fmt="%-20s%-10s"
-
-  infof "$fmt" "Experiment id:" "${EXP_SCAN_TAG}"
-  infof "$fmt" "Experiment run id:" "${RUN_ID}"
 }
 
 print_introduction_title() {
@@ -64,7 +57,7 @@ explain_clone_project() {
   local text
   IFS='' read -r -d '' text <<EOF
 We are going to create a fresh clone of your project. That way, the
-experiment will be infleunced by as few outside factors as possible."
+experiment will be infleunced by as few outside factors as possible.
 
 ${USER_ACTION_COLOR}Press enter to clone the project.
 EOF
