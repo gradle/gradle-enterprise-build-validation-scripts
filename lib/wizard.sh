@@ -55,7 +55,7 @@ print_experiment_info() {
 print_introduction_title() {
   cat <<EOF
 ${WHITE}Gradle Enterprise
-Experiment ${EXP_NO}: ${EXP_NAME}${RESTORE}
+${BUILD_TOOL} Experiment ${EXP_NO}: ${EXP_NAME}${RESTORE}
 EOF
 }
 

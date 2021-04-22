@@ -14,6 +14,7 @@ EXP_NO="02"
 EXP_SCAN_TAG=exp2-gradle
 EXPERIMENT_DIR="${SCRIPT_DIR}/data/${SCRIPT_NAME%.*}"
 SCAN_FILE="${EXPERIMENT_DIR}/scans.csv"
+BUILD_TOOL="Gradle"
 
 build_cache_dir="${EXPERIMENT_DIR}/build-cache"
 
