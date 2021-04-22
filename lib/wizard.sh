@@ -78,21 +78,10 @@ print_experiment_info() {
 
 print_introduction_title() {
   cat <<EOF
-${CYAN}                              ;x0K0d,
-${CYAN}                            kXOxx0XXO,
-${CYAN}              ....                '0XXc
-${CYAN}       .;lx0XXXXXXXKOxl;.          oXXK
-${CYAN}      xXXXXXXXXXXXXXXXXXX0d:.     ,KXX0
-${CYAN}     .,KXXXXXXXXXXXXXXXXXO0XXKOxkKXXXX:
-${CYAN}   lKX:'0XXXXXKo,dXXXXXXO,,XXXXXXXXXK;   Gradle Enterprise
-${CYAN} ,0XXXXo.oOkl;;oKXXXXXXXXXXXXXXXXXKo.
-${CYAN}:XXXXXXXKdllxKXXXXXXXXXXXXXXXXXX0c.
-${CYAN}'XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXk'
-${CYAN}xXXXXXXXXXXXXXXXXXXXXXXXXXXXXXc          Experiment ${EXP_NO}:
-${CYAN}KXXXXXXXXXXXXXXXXXXXXXXXXXXXXl           ${EXP_NAME}
-${CYAN}XXXXXXklclkXXXXXXXklclxKXXXXK
-${CYAN}OXXXk.     .OXXX0'     .xXXXx
-${CYAN}oKKK'       ,KKK:       .KKKo
+${WHITE}Gradle Enterprise
+
+Experiment ${EXP_NO}: ${EXP_NAME}
+${RESTORE}
 EOF
 }
 
