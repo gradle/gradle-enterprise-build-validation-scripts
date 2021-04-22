@@ -76,7 +76,6 @@ wizard_execute() {
   explain_first_clone_project
   clone_project "_1"
 
-  explain_scan_tags
   explain_first_build
   execute_first_build
 

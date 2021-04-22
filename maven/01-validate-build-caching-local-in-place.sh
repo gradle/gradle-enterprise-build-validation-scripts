@@ -77,7 +77,6 @@ wizard_execute() {
   explain_local_cache_dir
   make_local_cache_dir
 
-  explain_scan_tags
   explain_first_build
   execute_first_build
 

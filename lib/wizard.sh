@@ -27,24 +27,6 @@ function print_wizard_text()
   echo
 }
 
-explain_scan_tags() {
-  local text
-  IFS='' read -r -d '' text <<EOF
-
-We are going to add a few scan tags to make it easy to find the build scans
-generated during this experiment:
-
-$(print_experiment_info)
-
-Every time you run this script, we'll generate a unique run ID. You can use
-the run ID to find the build scans from a specific run of the experiment.
-
-You can use the '${EXP_SCAN_TAG}' tag to find all of the build scans for all
-runs of this experiment.
-EOF
-  print_wizard_text "${text}"
-}
-
 print_experiment_info() {
   local fmt="%-20s%-10s"
 
