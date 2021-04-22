@@ -11,8 +11,8 @@ RED=$(echo -en '\033[00;31m')
 BOLD=$(echo -en '\033[1m')
 DIM=$(echo -en '\033[2m')
 
-WIZ_COLOR="${BLUE}${BOLD}"
-BOX_COLOR="${CYAN}"
+WIZ_COLOR=""
+BOX_COLOR=""
 USER_ACTION_COLOR="${WHITE}"
 INFO_COLOR="${YELLOW}${BOLD}"
 ERROR_COLOR="${RED}${BOLD}"
