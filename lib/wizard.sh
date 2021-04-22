@@ -4,7 +4,7 @@ wizard() {
   local text
   text="$(echo "${1}" | fmt -w 78)"
 
-  print_in_box "${text}" "
+  print_wizard_text "${text}" "
 "
 }
 
@@ -13,7 +13,7 @@ wait_for_enter() {
 }
 
 
-function print_in_box()
+function print_wizard_text()
 {
   echo
   printf '=%.0s' {1..80}
@@ -37,7 +37,7 @@ the run ID to find the build scans from a specific run of the experiment.
 You can use the '${EXP_SCAN_TAG}' tag to find all of the build scans for all
 runs of this experiment.
 EOF
-  print_in_box "${text}"
+  print_wizard_text "${text}"
 }
 
 print_experiment_info() {
@@ -81,7 +81,7 @@ infleunced by as few outside factors as possible."
 
 ${USER_ACTION_COLOR}Press enter to clone the project.
 EOF
-  print_in_box "${text}"
+  print_wizard_text "${text}"
   wait_for_enter
 }
 
@@ -100,7 +100,7 @@ of Gradle Enterprise.
 
 ${USER_ACTION_COLOR}Press enter to continue.
 EOF
-    print_in_box "${text}"
+    print_wizard_text "${text}"
     wait_for_enter
  fi
 }
@@ -118,6 +118,6 @@ You may want to repeat the experiment in order to validate optimizations you
 have implemented. It is also a best practice to repeat the experiment
 periodically (so as to catch regressions in the build optimization).
 EOF
-  print_in_box "${text}"
+  print_wizard_text "${text}"
 }
 

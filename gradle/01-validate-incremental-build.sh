@@ -189,7 +189,7 @@ Gradle's incremental building feature.
 
 ${USER_ACTION_COLOR}Press enter when you're ready to get started.
 EOF
-  print_in_box "${text}"
+  print_wizard_text "${text}"
   wait_for_enter
 }
 
@@ -220,7 +220,7 @@ ${build_command}
 
 ${USER_ACTION_COLOR}Press enter to run the first build.
 EOF
-  print_in_box "${text}"
+  print_wizard_text "${text}"
   wait_for_enter
 }
 
@@ -237,7 +237,7 @@ will show up in the build scan for this second build.
 
 ${USER_ACTION_COLOR}Press enter to run the second build.
 EOF
-  print_in_box "$text"
+  print_wizard_text "$text"
   wait_for_enter
 }
 
@@ -281,7 +281,7 @@ to complete.
 Take some time to explore all of the links. You might be surprised by what
 you find!
 EOF
-  print_in_box "${text}"
+  print_wizard_text "${text}"
 }
 
 process_arguments "$@"

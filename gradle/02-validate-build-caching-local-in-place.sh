@@ -192,7 +192,7 @@ advantage of the build cache.
 ${USER_ACTION_COLOR}Press enter when you're ready to get started.
 EOF
 
-  print_in_box "${text}"
+  print_wizard_text "${text}"
   wait_for_enter
 }
 
@@ -214,7 +214,7 @@ $(info "${build_cache_dir}")
 
 ${USER_ACTION_COLOR}Press enter to continue.
 EOF
-  print_in_box "${text}"
+  print_wizard_text "${text}"
   wait_for_enter
 }
 
@@ -243,7 +243,7 @@ ${build_command}
 
 ${USER_ACTION_COLOR}Press enter to run the first build.
 EOF
-  print_in_box "${text}"
+  print_wizard_text "${text}"
   wait_for_enter
 }
 
@@ -259,7 +259,7 @@ build scan for this second build.
 
 ${USER_ACTION_COLOR}Press enter to run the second build.
 EOF
-  print_in_box "$text"
+  print_wizard_text "$text"
   wait_for_enter
 }
 
@@ -313,7 +313,7 @@ output from every task. For example, there is no way to cache the "output"
 of the clean task because the clean task deletes output rather than creating
 it.
 EOF
-  print_in_box "${text}"
+  print_wizard_text "${text}"
 }
 
 process_arguments "$@"
