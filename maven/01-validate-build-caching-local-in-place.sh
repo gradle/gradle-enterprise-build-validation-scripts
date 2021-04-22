@@ -84,7 +84,6 @@ wizard_execute() {
   explain_second_build
   execute_second_build
 
-  save_config
   print_summary
   explain_summary
   explain_how_to_repeat_the_experiment

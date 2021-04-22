@@ -74,8 +74,6 @@ wizard_execute() {
   explain_second_build
   execute_second_build
 
-  save_config
-
   print_warnings
   explain_warnings
 
