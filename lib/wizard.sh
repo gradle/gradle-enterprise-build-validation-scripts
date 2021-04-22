@@ -108,7 +108,7 @@ EOF
 explain_how_to_repeat_the_experiment() {
   read_scan_info
   local text
-  IFS='' read -r -d '' text <<EOF
+  cat <<EOF
 Below is the command you can use to repeat the experiment (without running
 in interactive mode):
 
@@ -118,6 +118,5 @@ You may want to repeat the experiment in order to validate optimizations you
 have implemented. It is also a best practice to repeat the experiment
 periodically (so as to catch regressions in the build optimization).
 EOF
-  print_wizard_text "${text}"
 }
 
