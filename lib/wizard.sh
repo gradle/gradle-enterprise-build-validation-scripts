@@ -81,8 +81,8 @@ the experiment."
 explain_clone_project() {
   local text
   IFS='' read -r -d '' text <<EOF
-We are going to create a fresh clone of your project. That way, the experiment will be
-infleunced by as few outside factors as possible."
+We are going to create a fresh clone of your project. That way, the
+experiment will be infleunced by as few outside factors as possible."
 
 ${USER_ACTION_COLOR}Press enter to clone the project.
 EOF
