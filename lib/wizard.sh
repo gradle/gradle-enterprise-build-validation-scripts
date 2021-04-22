@@ -10,6 +10,11 @@ wizard() {
 
 wait_for_enter() {
   read -r
+  UP_ONE_LINE="\033[1A"
+  ERASE_LINE="\033[2K"
+  echo -en "${UP_ONE_LINE}${ERASE_LINE}"
+  echo -en "${UP_ONE_LINE}${ERASE_LINE}"
+  echo -en "${UP_ONE_LINE}${ERASE_LINE}"
 }
 
 
