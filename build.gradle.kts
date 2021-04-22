@@ -12,6 +12,7 @@ tasks.register<Zip>("assembleGradleScripts") {
     exclude("lib/maven")
     exclude("**/*.m4")
   }
+  filter { line: String -> line.replace("/../lib","/lib") }
 }
 
 tasks.register<Zip>("assembleMavenScripts") {
@@ -23,6 +24,7 @@ tasks.register<Zip>("assembleMavenScripts") {
     exclude("lib/gradle")
     exclude("**/*.m4")
   }
+  filter { line: String -> line.replace("/../lib","/lib") }
 }
 
 tasks.named("assemble") {
