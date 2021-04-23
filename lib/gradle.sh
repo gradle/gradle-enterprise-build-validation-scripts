@@ -20,6 +20,8 @@ invoke_gradle() {
     enable_ge_init_script="--init-script ${lib_dir_rel}/gradle/enable-gradle-enterprise.gradle"
   fi
 
+  rm -f "${EXPERIMENT_DIR}/build-scan-publish-error.txt"
+
   ./gradlew \
       ${enable_ge_init_script} \
       --init-script "${lib_dir_rel}/gradle/verify-ge-configured.gradle" \
@@ -31,6 +33,10 @@ invoke_gradle() {
       ${extra_args} \
       "$@" \
       || fail "The experiment cannot continue because the build failed."
+
+  if [ -f "${EXPERIMENT_DIR}/build-scan-publish-error.txt" ]; then
+    fail "The experiment cannot continue because publishing the build scan failed."
+  fi
 }
 
 make_local_cache_dir() {
