@@ -1,9 +1,41 @@
+import de.undercouch.gradle.tasks.download.Download
 
 plugins {
   id("base")
+  id("de.undercouch.download") version "4.1.1"
 }
 
 base.archivesBaseName = "gradle-enterprise-experiments"
+
+val argbashVersion by extra("2.10.0")
+
+tasks.register<Download>("downloadArgbash") {
+  src("https://github.com/matejak/argbash/archive/refs/tags/${argbashVersion}.zip")
+  dest(file("${buildDir}/argbash/argbash-${argbashVersion}.zip"))
+}
+
+tasks.register<Copy>("unpackArgbash") {
+  from(zipTree(tasks.getByName("downloadArgbash").outputs.files.singleFile))
+  into(layout.buildDirectory.dir("argbash"))
+  dependsOn("downloadArgbash")
+}
+
+tasks.register("applyArgbash") {
+  dependsOn("unpackArgbash")
+  doLast {
+    val argbash = "${buildDir}/argbash/argbash-${argbashVersion}/bin/argbash"
+    val scripts = fileTree("src") {
+      include("**/parsing.sh")
+    }
+
+    scripts.forEach { file: File ->
+       logger.info("Applying argbash to $file")
+       exec {
+          commandLine(argbash, "-i", file)
+       }
+    }
+  }
+}
 
 tasks.register<Zip>("assembleGradleScripts") {
   archiveAppendix.set("for-gradle")
@@ -15,6 +47,7 @@ tasks.register<Zip>("assembleGradleScripts") {
     exclude("**/*.m4")
   }
   filter { line: String -> line.replace("/../lib","/lib") }
+  dependsOn("applyArgbash")
 }
 
 tasks.register<Zip>("assembleMavenScripts") {
@@ -32,6 +65,7 @@ tasks.register<Zip>("assembleMavenScripts") {
   from(rootProject.childProjects.get("capture-build-scans-maven-extension")!!.tasks.getByName("jar")) {
     into("lib/maven/")
   }
+  dependsOn("applyArgbash")
 }
 
 tasks.named("assemble") {
