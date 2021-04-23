@@ -11,7 +11,6 @@ make_maven_extensions() {
 }
 
 invoke_maven() {
-  echo "$@"
   ./mvnw \
       -Dmaven.ext.class.path="${CAPTURE_SCANS_EXTENSION_JAR}" \
       -Dscan.tag.${EXP_SCAN_TAG} \
