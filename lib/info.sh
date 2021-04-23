@@ -14,15 +14,6 @@ infof() {
   printf "${INFO_COLOR}${format_string}${RESTORE}\n" "$@"
 }
 
-error() {
-  printf "${ERROR_COLOR}ERROR: %s${RESTORE}\n" "$1"
-}
-
-fail() {
-  error "$@"
-  exit 1
-}
-
 # Overrides the die() function loaded from the argbash-generated parsing libs
 die() {
   local _ret="${2:-1}"

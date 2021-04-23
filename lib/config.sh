@@ -15,24 +15,15 @@ process_arguments() {
 
 validate_required_config() {
   if [ -z "${git_repo}" ]; then
-    error "Missing required argument: --git-repo"
-    echo
-    print_help
-    exit 1
+    _PRINT_HELP=yes die "ERROR: Missing required argument: --git-repo" 1
   fi
   if [ -z "${tasks}" ]; then
-    error "Missing required argument: --tasks"
-    echo
-    print_help
-    exit 1
+    _PRINT_HELP=yes die "ERROR: Missing required argument: --tasks" 1
   fi
 
   if [[ "${enable_ge}" == "on" ]]; then
     if [ -z "${ge_server}" ]; then
-      error "--gradle-enterprise-server is requred when using --enable-gradle-enterprise."
-      echo
-      print_help
-      exit 1
+      _PRINT_HELP=yes die "ERROR: --gradle-enterprise-server is requred when using --enable-gradle-enterprise."
     fi
   fi
 }

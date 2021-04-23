@@ -32,10 +32,10 @@ invoke_gradle() {
       -Dscan.capture-task-input-files \
       ${extra_args} \
       "$@" \
-      || fail "The experiment cannot continue because the build failed."
+      || die "ERROR: The experiment cannot continue because the build failed." $?
 
   if [ -f "${EXP_DIR}/build-scan-publish-error.txt" ]; then
-    fail "The experiment cannot continue because publishing the build scan failed."
+    die "ERROR: The experiment cannot continue because publishing the build scan failed." 2
   fi
 }
 
