@@ -36,7 +36,7 @@ EOF
 
 explain_experiment_dir() {
   wizard "All of the work we do for this experiment will be stored in
-$(info "${EXPERIMENT_DIR}")"
+$(info "${EXP_DIR}")"
 }
 
 explain_collect_gradle_details() {
@@ -66,7 +66,7 @@ EOF
 }
 
 explain_warnings() {
-  local warnings_file="${EXPERIMENT_DIR}/${project_name}/warnings.txt"
+  local warnings_file="${EXP_DIR}/${project_name}/warnings.txt"
 
   if [ -f "${warnings_file}" ]; then
     local text

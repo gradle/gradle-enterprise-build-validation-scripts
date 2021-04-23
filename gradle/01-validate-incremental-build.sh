@@ -11,8 +11,8 @@ LIB_DIR="${SCRIPT_DIR}/../lib"
 EXP_NAME="Validate Incremental Build"
 EXP_NO="01"
 EXP_SCAN_TAG=exp1-gradle
-EXPERIMENT_DIR="${SCRIPT_DIR}/data/${SCRIPT_NAME%.*}"
-SCAN_FILE="${EXPERIMENT_DIR}/scans.csv"
+EXP_DIR="${SCRIPT_DIR}/data/${SCRIPT_NAME%.*}"
+SCAN_FILE="${EXP_DIR}/scans.csv"
 BUILD_TOOL="Gradle"
 
 # These will be set by the config functions (see lib/config.sh)

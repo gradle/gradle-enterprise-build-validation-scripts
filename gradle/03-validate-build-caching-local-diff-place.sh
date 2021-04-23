@@ -12,11 +12,11 @@ LIB_DIR="${SCRIPT_DIR}/../lib"
 EXP_NAME="Validate Build Caching - Local - Different Places"
 EXP_NO="03"
 EXP_SCAN_TAG=exp3-gradle
-EXPERIMENT_DIR="${SCRIPT_DIR}/data/${SCRIPT_NAME%.*}"
-SCAN_FILE="${EXPERIMENT_DIR}/scans.csv"
+EXP_DIR="${SCRIPT_DIR}/data/${SCRIPT_NAME%.*}"
+SCAN_FILE="${EXP_DIR}/scans.csv"
 BUILD_TOOL="Gradle"
 
-build_cache_dir="${EXPERIMENT_DIR}/build-cache"
+build_cache_dir="${EXP_DIR}/build-cache"
 
 # These will be set by the config functions (see lib/config.sh)
 git_repo=''

@@ -7,7 +7,7 @@ make_maven_extensions() {
   info
   info "Building Maven extensions"
   cd "${CAPTURE_SCANS_EXTENSION_DIR}"
-  ./mvnw clean package > "${EXPERIMENT_DIR}/capture-scans-maven-extension.log"
+  ./mvnw clean package > "${EXP_DIR}/capture-scans-maven-extension.log"
 }
 
 invoke_maven() {

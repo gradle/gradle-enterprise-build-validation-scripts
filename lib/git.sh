@@ -5,7 +5,7 @@ clone_project() {
    info
    info "Cloning ${project_name}"
 
-   local clone_dir="${EXPERIMENT_DIR}/${project_name}${suffix}"
+   local clone_dir="${EXP_DIR}/${project_name}${suffix}"
 
    local branch=""
    if [ -n "${git_branch}" ]; then

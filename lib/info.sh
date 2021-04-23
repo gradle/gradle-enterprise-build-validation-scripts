@@ -33,7 +33,7 @@ die() {
 }
 
 print_warnings() {
-  local warnings_file="${EXPERIMENT_DIR}/warnings.txt"
+  local warnings_file="${EXP_DIR}/warnings.txt"
   if [ -f "${warnings_file}" ]; then
     while read l; do
       echo
@@ -63,5 +63,5 @@ print_experiment_info() {
  infof "$fmt" "Experiment:" "${EXP_NO}-${EXP_NAME}"
  infof "$fmt" "Experiment id:" "${EXP_SCAN_TAG}"
  infof "$fmt" "Experiment run id:" "${RUN_ID}"
- infof "$fmt" "Experiment artifact dir:" "${EXPERIMENT_DIR}"
+ infof "$fmt" "Experiment artifact dir:" "${EXP_DIR}"
 }
