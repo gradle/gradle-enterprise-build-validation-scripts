@@ -1,0 +1,11 @@
+<component-set>
+  <components>
+    <component>
+      <role>org.apache.maven.eventspy.EventSpy</role>
+      <role-hint>capture-build-scans</role-hint>
+      <implementation>com.gradle.CaptureBuildScansEventSpy</implementation>
+      <description></description>
+      <isolated-realm>false</isolated-realm>
+    </component>
+  </components>
+</component-set>

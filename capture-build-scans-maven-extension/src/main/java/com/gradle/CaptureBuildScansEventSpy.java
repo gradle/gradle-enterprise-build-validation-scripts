@@ -14,7 +14,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Map;
 
-@Component( role = EventSpy.class, hint = "demo" )
+@Component( role = EventSpy.class, hint = "capture-build-scans" )
 public class CaptureBuildScansEventSpy  extends AbstractEventSpy {
 
     private final PlexusContainer container;

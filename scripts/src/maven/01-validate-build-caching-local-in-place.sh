@@ -48,7 +48,6 @@ execute() {
   validate_required_config
 
   make_experiment_dir
-  make_maven_extensions
 
   clone_project ""
   make_local_cache_dir
@@ -67,9 +66,6 @@ wizard_execute() {
 
   explain_collect_maven_details
   collect_maven_details
-
-  explain_make_maven_extensions
-  make_maven_extensions
 
   explain_clone_project
   clone_project ""
@@ -193,22 +189,6 @@ experiment):
 $(info "${build_cache_dir}")
 
 ${USER_ACTION_COLOR}Press enter to continue.
-EOF
-  print_wizard_text "${text}"
-  wait_for_enter
-}
-
-explain_make_maven_extensions() {
-  local text
-  IFS='' read -r -d '' text <<EOF
-
-We will use a Maven extension to capture build scan information, which I
-will use to provide you with some helpful links at the end. The extension
-needs to be built and packaged as a JAR file before it can be used.
-
-You can find the log for the extension build in the experiments directory.
-
-${USER_ACTION_COLOR}Press enter to build the extension.
 EOF
   print_wizard_text "${text}"
   wait_for_enter

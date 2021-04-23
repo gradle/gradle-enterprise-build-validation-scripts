@@ -27,8 +27,11 @@ tasks.register<Zip>("assembleMavenScripts") {
     include("lib/**")
     exclude("lib/gradle")
     exclude("**/*.m4")
+    filter { line: String -> line.replace("/../lib","/lib") }
   }
-  filter { line: String -> line.replace("/../lib","/lib") }
+  from(rootProject.childProjects.get("capture-build-scans-maven-extension")!!.tasks.getByName("jar")) {
+    into("lib/maven/")
+  }
 }
 
 tasks.named("assemble") {
