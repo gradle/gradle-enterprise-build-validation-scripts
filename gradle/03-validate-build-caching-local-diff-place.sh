@@ -105,7 +105,7 @@ execute_second_build() {
 execute_build() {
   # The gradle --init-script flag only accepts a relative directory path. ¯\_(ツ)_/¯
   local lib_dir_rel
-  lib_dir_rel=$(realpath --relative-to="$( pwd )" "${LIB_DIR}")
+  lib_dir_rel=$(relpath "$( pwd )" "${LIB_DIR}")
 
   info "./gradlew -Dscan.tag.${EXP_SCAN_TAG} -Dscan.tag.${RUN_ID} clean ${tasks}$(print_extra_args)"
 
