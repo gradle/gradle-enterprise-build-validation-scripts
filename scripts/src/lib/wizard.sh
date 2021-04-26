@@ -30,7 +30,7 @@ print_wizard_text()
 print_introduction_title() {
   cat <<EOF
 ${WHITE}Gradle Enterprise
-${BUILD_TOOL} Experiment ${EXP_NO}: ${EXP_NAME}${RESTORE}
+Experiment ${EXP_NO}: ${EXP_NAME}${RESTORE}
 EOF
 }
 

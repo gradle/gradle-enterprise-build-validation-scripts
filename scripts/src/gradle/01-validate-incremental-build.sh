@@ -8,7 +8,7 @@ SCRIPT_DIR="$(cd "$(dirname "$(readlink -e "${BASH_SOURCE[0]}")")" && pwd)"
 LIB_DIR="${SCRIPT_DIR}/../lib"
 
 # Experiment-speicifc constants
-EXP_NAME="Validate Incremental Build"
+EXP_NAME="Validating that a Gradle build is optimized for incremental building"
 EXP_NO="01"
 EXP_SCAN_TAG=exp1-gradle
 EXP_DIR="${SCRIPT_DIR}/data/${SCRIPT_NAME%.*}"
@@ -125,52 +125,34 @@ print_introduction() {
   IFS='' read -r -d '' text <<EOF
 $(print_introduction_title)
 
-Welcome! This is the first of several experiments designed to help you
-optimize your team's builds. If you are running this experiment as part of a
-Gradle Enterprise Trial, then the experiments will also help you to build
-the data necessary to determine if Gradle Enerprise is useful to your
-organization.
+In this experiment, you will validate how well a given project leverages
+Gradle’s incremental build functionality. A build is considered fully
+incremental if all tasks avoid performing any work because:
 
-A software development team can gain a lot of efficiency and productivity by
-optimizing their build to avoid performing unnecessary work, or work that
-has been performed already. Shorter builds allow software developers to get
-feedback quicker about their changes (does the code compile, do the tests
-pass?) and helps to reduce context switching (a known productivity killer).
+  * The tasks inputs have not changed since their last invocation
+  * The tasks outputs are still present
 
-We can optimize the build to avoid uncessary work by running controlled,
-reproducable experiments and then using Gradle Enterprise to understand what
-ran unnecessarily and why it ran.
+The goal of this experiment is to first identify those tasks that do not
+participate in Gradle’s incremental build functionality, to then investigate
+why they do not participate, and to finally make an informed decision of
+which tasks are worth improving to make your build faster.
 
-This script (and the other experiment scripts) will run some of the
-experiment steps for you. When run with -i/--interactive, this script will
-explain each step so that you know exactly what the experiment is doing, and
-why.
+This experiment can be run on any developer’s machine. It logically consists
+of the following steps:
 
-It is a good idea to use interactive mode for the first one or two times you
-run an experiment, but afterwards, you can run the script normally to save
-time (all of the steps will execuite automatically without pause).
+  1. Run the Gradle build with a typical task invocation including the `clean` task
+  2. Run the Gradle build with the same task invocation but without the `clean` task
+  3. Determine which tasks are still executed in the second run and why
+  4. Assess which of the executed tasks are worth improving
 
-You may want to repeat the experiment on a regular basis to validate any
-optimizations you have made or to look for any regressions that may sneak
-into your build over time.
+The script you have invoked automates the execution of step 1 and step 2,
+without modifying the project. Build scans support your investigation in
+step 3 and step 4. 
 
-In this first experiment, we will be optimizing your existing build so that
-all tasks participate in Gradle's incremental build feature. Within a single
-project, Gradle will only execute tasks if their inputs have changed since
-the last time you ran them.
+After improving the build to make it more incremental, you can run the
+experiment again. This creates a cycle of run → measure → improve → run → …
 
-For this experiment, we will run a clean build, and then we will run the
-same build again without making any changes (but without invoking clean).
-Afterwards, we'll look at the build scans to find tasks that were executed
-the second time. In a fully optimized build, no tasks should run when no
-changes have been made.
-
-After the experiment has completed, you can look at the generated build
-scans in Gradle Enterprise to figure out why some (if any) tasks ran on the
-second build, and how to optimize them so that all tasks participate in
-Gradle's incremental building feature.
-
-${USER_ACTION_COLOR}Press enter when you're ready to get started.
+${USER_ACTION_COLOR}Press <Enter> to get started.
 EOF
   print_wizard_text "${text}"
   wait_for_enter
