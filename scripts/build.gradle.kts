@@ -10,18 +10,24 @@ base.archivesBaseName = "gradle-enterprise-experiments"
 val argbashVersion by extra("2.10.0")
 
 tasks.register<Download>("downloadArgbash") {
+    group = "argbash"
+    description = "Downloads Argbash."
     src("https://github.com/matejak/argbash/archive/refs/tags/${argbashVersion}.zip")
     dest(file("${buildDir}/argbash/argbash-${argbashVersion}.zip"))
     onlyIfModified(true)
 }
 
 tasks.register<Copy>("unpackArgbash") {
+    group = "argbash"
+    description = "Unpacks the downloaded Argbash archive."
     from(zipTree(tasks.getByName("downloadArgbash").outputs.files.singleFile))
     into(layout.buildDirectory.dir("argbash"))
     dependsOn("downloadArgbash")
 }
 
 tasks.register("applyArgbash") {
+    group = "argbash"
+    description = "Uses Argbash to generate command line argument parsing code."
     val scripts = fileTree("src") {
         include("**/parsing.sh")
     }
@@ -44,6 +50,8 @@ tasks.register("applyArgbash") {
 }
 
 tasks.register<Zip>("assembleGradleScripts") {
+    group = "build"
+    description = "Packages the Gradle experiment scripts in a zip archive."
     archiveAppendix.set("for-gradle")
 
     from(layout.projectDirectory.dir("src/gradle"))
@@ -57,6 +65,8 @@ tasks.register<Zip>("assembleGradleScripts") {
 }
 
 tasks.register<Zip>("assembleMavenScripts") {
+    group = "build"
+    description = "Packages the Maven experiment scripts in a zip archive."
     archiveAppendix.set("for-maven")
 
     from(layout.projectDirectory.dir("src/maven")) {
@@ -78,4 +88,3 @@ tasks.named("assemble") {
     dependsOn("assembleGradleScripts")
     dependsOn("assembleMavenScripts")
 }
-
