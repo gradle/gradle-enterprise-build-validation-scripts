@@ -13,6 +13,7 @@ invoke_maven() {
       "$@" \
       || die "ERROR: The experiment cannot continue because the build failed." $?
 
+  #shellcheck disable=SC2164  # This is extremely unlikely to fail
   popd > /dev/null 2>&1
 }
 

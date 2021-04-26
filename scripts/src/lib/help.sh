@@ -45,6 +45,7 @@ _print_option_usage() {
   local description="$2"
 
   local fmt="%-35s%s\n"
+  #shellcheck disable=SC2059
   printf "$fmt" "$flags" "$description"
 }
 

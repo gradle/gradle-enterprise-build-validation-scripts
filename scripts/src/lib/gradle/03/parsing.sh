@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-
+# shellcheck disable=SC2034  # It is common for variables in this auto-generated file to go unused
 # Created by argbash-init v2.10.0
 # ARG_HELP([This function is overridden later on.])
 # ARGBASH_WRAP([../common])

@@ -10,7 +10,7 @@ infof() {
   # the format string is constructed from the caller's input. There is no
   # good way to rewrite this that will not trigger SC2059, so outright
   # disable it here.
-  # shellcheck disable=SC2059  
+  # shellcheck disable=SC2059
   printf "${INFO_COLOR}${format_string}${RESTORE}\n" "$@"
 }
 
@@ -26,7 +26,7 @@ die() {
 print_warnings() {
   local warnings_file="${EXP_DIR}/warnings.txt"
   if [ -f "${warnings_file}" ]; then
-    while read l; do
+    while read -r l; do
       echo
       printf "${YELLOW}${BOLD}WARNING: %s${RESTORE}\n" "$l"
     done <"${warnings_file}"

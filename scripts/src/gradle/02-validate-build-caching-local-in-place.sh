@@ -49,7 +49,7 @@ execute() {
   validate_required_config
 
   make_experiment_dir
-  make_local_cache_dir
+  make_local_cache_dir "${build_cache_dir}"
 
   clone_project ""
   execute_first_build
@@ -100,6 +100,7 @@ execute_second_build() {
 
 execute_build() {
   # The gradle --init-script flag only accepts a relative directory path. ¯\_(ツ)_/¯
+  #shellcheck disable=SC2164  # We will handle the error when we try to invoke the build, which calls this same function
   pushd "${project_dir}" > /dev/null 2>&1
   local lib_dir_rel
   lib_dir_rel=$(relpath "$( pwd )" "${LIB_DIR}")

@@ -14,7 +14,7 @@ clone_project() {
 
    rm -rf "${clone_dir}"
    # shellcheck disable=SC2086  # we want $branch to expand into multiple arguments
-   git clone --depth=1 ${branch} "${git_repo}" "${clone_dir}" || die "Unable to clone from ${project_url} Aborting!" 1
+   git clone --depth=1 ${branch} "${git_repo}" "${clone_dir}" || die "ERROR: Unable to clone from ${git_repo}." 1
    cd "${clone_dir}" || die "Unable to access ${clone_dir}. Aborting!" 1
    info
 }

@@ -9,6 +9,7 @@ process_arguments() {
   project_dir="${_arg_project_dir}"
   tasks="${_arg_tasks}"
   extra_args="${_arg_args}"
+  #shellcheck disable=SC2154 # The maven scripts don't yet support _arg_gradle_enterprise_server
   enable_ge="${_arg_enable_gradle_enterprise}"
   ge_server="${_arg_gradle_enterprise_server}"
   interactive_mode="${_arg_interactive}"
@@ -47,7 +48,7 @@ prompt_for_setting() {
   fi
 
   while :; do
-    read -r -p "${USER_ACTION_COLOR}${prompt} ${DIM}${defaultDisplay}${RESTORE}" ${variable}
+    read -r -p "${USER_ACTION_COLOR}${prompt} ${DIM}${defaultDisplay}${RESTORE}" "${variable?}"
 
     UP_ONE_LINE="\033[1A"
     ERASE_LINE="\033[2K"
@@ -55,7 +56,7 @@ prompt_for_setting() {
 
     if [ -z "${!variable}" ]; then
       if [ -n "${default}" ]; then
-        eval ${variable}="\${default}"
+        eval "${variable}=\${default}"
         break
       fi
     else

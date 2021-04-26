@@ -6,5 +6,5 @@ make_experiment_dir() {
 }
 
 generate_run_id() {
-  printf '%x' $(date +%s)
+  printf '%x' "$(date +%s)"
 }

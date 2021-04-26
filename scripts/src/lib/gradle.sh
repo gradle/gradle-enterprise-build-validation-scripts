@@ -14,8 +14,6 @@ invoke_gradle() {
   lib_dir_rel=$(relpath "$( pwd )" "${LIB_DIR}")
 
   local enable_ge_init_script
-  enable_ge_init_script=()
-
   if [ "$enable_ge" == "on" ]; then
     # FIXME This doesn't handle paths with spaces in it very well. Figure out how to do the shell qouting properly!
     enable_ge_init_script="--init-script ${lib_dir_rel}/gradle/enable-gradle-enterprise.gradle"
@@ -23,6 +21,7 @@ invoke_gradle() {
 
   rm -f "${EXP_DIR}/build-scan-publish-error.txt"
 
+  # shellcheck disable=SC2086
   ./gradlew \
       ${enable_ge_init_script} \
       --init-script "${lib_dir_rel}/gradle/verify-ge-configured.gradle" \
@@ -40,11 +39,12 @@ invoke_gradle() {
     die "ERROR: The experiment cannot continue because publishing the build scan failed." 2
   fi
 
-  #shellcheck disable=SC2164  #This is extremely unlikely to fail
+  #shellcheck disable=SC2164  # This is extremely unlikely to fail
   popd > /dev/null 2>&1
 }
 
 make_local_cache_dir() {
+  local build_cache_dir="$1"
   rm -rf "${build_cache_dir}"
   mkdir -p "${build_cache_dir}"
 }
