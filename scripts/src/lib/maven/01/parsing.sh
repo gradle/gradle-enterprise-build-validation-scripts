@@ -182,7 +182,6 @@ function print_help() {
   print_option_usage "-a, --args" "Sets additional arguments to pass to Maven."
   print_option_usage -p
   print_option_usage -s
-  print_option_usage -e
   print_option_usage -h
 }
 # ] <-- needed because of Argbash
