@@ -129,8 +129,8 @@ print_quick_links() {
  infof "$fmt" "Task execution summary:" "${base_url[0]}/s/${scan_id[1]}/performance/execution"
  infof "$fmt" "Cache performance:" "${base_url[0]}/s/${scan_id[1]}/performance/build-cache"
  infof "$fmt" "Executed goals:" "${base_url[0]}/s/${scan_id[1]}/timeline?outcome=successful&sort=longest"
- infof "$fmt" "Executed cachable goals:" "${base_url[0]}/s/${scan_id[1]}/timeline?cacheableFilter=cacheable&outcomeFilter=successful&sorted=longest"
- infof "$fmt" "Uncachable goals:" "${base_url[0]}/s/${scan_id[1]}/timeline?cacheableFilter=any_non-cacheable&outcomeFilter=successful&sorted=longest"
+ infof "$fmt" "Executed cacheable goals:" "${base_url[0]}/s/${scan_id[1]}/timeline?cacheableFilter=cacheable&outcomeFilter=successful&sorted=longest"
+ infof "$fmt" "Non-cacheable goals:" "${base_url[0]}/s/${scan_id[1]}/timeline?cacheableFilter=any_non-cacheable&outcomeFilter=successful&sorted=longest"
 }
 
 print_introduction() {
@@ -166,7 +166,7 @@ The Gradle Solutions engineer will then work with you to figure out why some
 (if any) goals ran on the second build, and how to optimize them to take
 advantage of the build cache.
 
-${USER_ACTION_COLOR}Press enter when you're ready to get started.
+${USER_ACTION_COLOR}Press <Enter> to get started.${RESTORE}
 EOF
 
   print_wizard_text "${text}"
@@ -180,7 +180,7 @@ We are going to create a new empty local build cache dir (and configure
 Gradle to use it instead of the default local cache dir). This way, the
 first build won't find anything in the cache and all goals will run.
 
-This is important beause we want to make sure goals that are cachable do in
+This is important because we want to make sure goals that are cachable do in
 fact produce output that is stored in the cache.
 
 Specifically, we are going to create and use this directory for the local
@@ -189,7 +189,7 @@ experiment):
 
 $(info "${build_cache_dir}")
 
-${USER_ACTION_COLOR}Press enter to continue.
+${USER_ACTION_COLOR}Press <Enter> to continue.${RESTORE}
 EOF
   print_wizard_text "${text}"
   wait_for_enter
@@ -204,7 +204,7 @@ For this run, we'll execute 'clean ${tasks}'.
 
 We will also add a few the build scan tags.
 
-${USER_ACTION_COLOR}Press enter to run the first build.
+${USER_ACTION_COLOR}Press <Enter> to run the first build.${RESTORE}
 EOF
   print_wizard_text "${text}"
   wait_for_enter
@@ -220,7 +220,7 @@ we already built everything in the first build, and the goal outputs should
 be in the local build cache. If some goals do run, they will show up in the
 build scan for this second build.
 
-${USER_ACTION_COLOR}Press enter to run the second build.
+${USER_ACTION_COLOR}Press <Enter> to run the second build.${RESTORE}
 EOF
   print_wizard_text "$text"
   wait_for_enter
@@ -251,7 +251,7 @@ experiment.
 
 $(print_build_scans)
 
-Abave are links to the build scans from this experiument. A build scan provides
+Above are links to the build scans from this experiment. A build scan provides
 a wealth of information and statistics about the build execution.
 
 $(print_quick_links)
@@ -272,17 +272,17 @@ build cache (such as cache hits and misses).
 The "Executed goals" link takes you to the timeline view of the second build
 scan and automatically shows only the goals that were executed, sorted by
 execution time (with the longest-running goal listed first). You can use
-this to quickly identify goals that were executed again unecessarily. You
+this to quickly identify goals that were executed again unnecessarily. You
 will want to optimize any such goals that take a significant amount of time
 to complete.
 
-The "Executed cachable goals" link shows you which tasks ran again on the
-second build, but shouldn't have because they are actually cachable. If any
-cachable goals ran, then one of their inputs changed (even though we didn't
+The "Executed cacheable goals" link shows you which tasks ran again on the
+second build, but shouldn't have because they are actually cacheable. If any
+cacheable goals ran, then one of their inputs changed (even though we didn't
 make any changes), or they may not be declaring their inputs correctly.
 
-The last link, "Uncachable goals", shows you which goals ran that are not
-cachable. It is not always possible (or doesn't make sense) to cache the
+The last link, "Non-cacheable goals", shows you which goals ran that are not
+cacheable. It is not always possible (or doesn't make sense) to cache the
 output from every goal. For example, there is no way to cache the "output"
 of the clean goal because the clean goal deletes output rather than creating
 it.

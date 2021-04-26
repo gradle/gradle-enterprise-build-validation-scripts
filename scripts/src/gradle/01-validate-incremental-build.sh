@@ -147,12 +147,12 @@ of the following steps:
 
 The script you have invoked automates the execution of step 1 and step 2,
 without modifying the project. Build scans support your investigation in
-step 3 and step 4. 
+step 3 and step 4.
 
 After improving the build to make it more incremental, you can run the
 experiment again. This creates a cycle of run → measure → improve → run → …
 
-${USER_ACTION_COLOR}Press <Enter> to get started.
+${USER_ACTION_COLOR}Press <Enter> to get started.${RESTORE}
 EOF
   print_wizard_text "${text}"
   wait_for_enter
@@ -173,7 +173,7 @@ We will also add a flag to make sure build caching is disabled (since we are
 just focused on incremental building for now), and we will add a few build
 scan tags.
 
-${USER_ACTION_COLOR}Press enter to run the first build.
+${USER_ACTION_COLOR}Press <Enter> to run the first build.${RESTORE}
 EOF
   print_wizard_text "${text}"
   wait_for_enter
@@ -190,7 +190,7 @@ In a fully optimized build, no tasks should run on this second build because
 we already built everything in the first build. If some tasks do run, they
 will show up in the build scan for this second build.
 
-${USER_ACTION_COLOR}Press enter to run the second build.
+${USER_ACTION_COLOR}Press <Enter> to run the second build.${RESTORE}
 EOF
   print_wizard_text "$text"
   wait_for_enter

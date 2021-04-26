@@ -57,7 +57,7 @@ explain_clone_project() {
   local text
   IFS='' read -r -d '' text <<EOF
 We are going to create a fresh clone of your project. That way, the
-experiment will be infleunced by as few outside factors as possible.
+experiment will be influenced by as few outside factors as possible.
 
 ${USER_ACTION_COLOR}Press enter to clone the project.
 EOF
@@ -71,14 +71,11 @@ explain_warnings() {
   if [ -f "${warnings_file}" ]; then
     local text
     IFS='' read -r -d '' text <<EOF
-^^^
-
 When running the builds, I detected some suboptimal configurations, which
-are listed above (^^^) as WARNINGs. These things aren't necessarily
-problems, but resolving these warnings will allow you to take full advantage
-of Gradle Enterprise.
+are listed above. These aren't necessarily problems, but resolving these
+warnings will allow you to take full advantage of Gradle Enterprise.
 
-${USER_ACTION_COLOR}Press enter to continue.
+${USER_ACTION_COLOR}Press <Enter> to continue.${RESTORE}
 EOF
     print_wizard_text "${text}"
     wait_for_enter

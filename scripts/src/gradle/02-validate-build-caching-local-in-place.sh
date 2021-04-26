@@ -138,8 +138,8 @@ print_quick_links() {
  infof "$fmt" "Task execution summary:" "${base_url[0]}/s/${scan_id[1]}/performance/execution"
  infof "$fmt" "Cache performance:" "${base_url[0]}/s/${scan_id[1]}/performance/build-cache"
  infof "$fmt" "Executed tasks:" "${base_url[0]}/s/${scan_id[1]}/timeline?outcome=SUCCESS,FAILED&sort=longest"
- infof "$fmt" "Executed cachable tasks:" "${base_url[0]}/s/${scan_id[1]}/timeline?cacheableFilter=cacheable&outcomeFilter=SUCCESS,FAILED&sorted=longest"
- infof "$fmt" "Uncachable tasks:" "${base_url[0]}/s/${scan_id[1]}/timeline?cacheableFilter=any_non-cacheable&outcomeFilter=SUCCESS,FAILED&sorted=longest"
+ infof "$fmt" "Executed cacheable tasks:" "${base_url[0]}/s/${scan_id[1]}/timeline?cacheableFilter=cacheable&outcomeFilter=SUCCESS,FAILED&sorted=longest"
+ infof "$fmt" "Non-cacheable tasks:" "${base_url[0]}/s/${scan_id[1]}/timeline?cacheableFilter=any_non-cacheable&outcomeFilter=SUCCESS,FAILED&sorted=longest"
 }
 
 print_introduction() {
@@ -150,7 +150,7 @@ $(print_introduction_title)
 This is the second of several experiments designed to help you
 optimize your team's builds. If you are running this experiment as part of a
 Gradle Enterprise Trial, then the experiments will also help you to build
-the data necessary to determine if Gradle Enerprise is useful to your
+the data necessary to determine if Gradle Enterprise is useful to your
 organization.
 
 This script (and the other experiment scripts) will run some of the
@@ -177,7 +177,7 @@ The Gradle Solutions engineer will then work with you to figure out why some
 (if any) tasks ran on the second build, and how to optimize them to take
 advantage of the build cache.
 
-${USER_ACTION_COLOR}Press enter when you're ready to get started.
+${USER_ACTION_COLOR}Press <Enter> to get started.${RESTORE}
 EOF
 
   print_wizard_text "${text}"
@@ -200,7 +200,7 @@ experiment):
 
 $(info "${build_cache_dir}")
 
-${USER_ACTION_COLOR}Press enter to continue.
+${USER_ACTION_COLOR}Press <Enter> to continue.
 EOF
   print_wizard_text "${text}"
   wait_for_enter
@@ -219,7 +219,7 @@ impact how the build cache is utilized.
 
 We will also add a few build scan tags.
 
-${USER_ACTION_COLOR}Press enter to run the first build.
+${USER_ACTION_COLOR}Press <Enter> to run the first build.${RESTORE}
 EOF
   print_wizard_text "${text}"
   wait_for_enter
@@ -235,7 +235,7 @@ we already built everything in the first build, and the task outputs should
 be in the local build cache. If some tasks do run, they will show up in the
 build scan for this second build.
 
-${USER_ACTION_COLOR}Press enter to run the second build.
+${USER_ACTION_COLOR}Press <Enter> to run the second build.${RESTORE}
 EOF
   print_wizard_text "$text"
   wait_for_enter
@@ -266,7 +266,7 @@ experiment.
 
 $(print_build_scans)
 
-Abave are links to the build scans from this experiument. A build scan provides
+Above are links to the build scans from this experiment. A build scan provides
 a wealth of information and statistics about the build execution.
 
 $(print_quick_links)
@@ -291,13 +291,13 @@ this to quickly identify tasks that were executed again unecessarily. You
 will want to optimize any such tasks that take a significant amount of time
 to complete.
 
-The "Executed cachable tasks" link shows you which tasks ran again on the
+The "Executed cacheable tasks" link shows you which tasks ran again on the
 second build, but shouldn't have because they are actually cachable. If any
-cachable tasks ran, then one of their inputs changed (even though we didn't
+cacheable tasks ran, then one of their inputs changed (even though we didn't
 make any changes), or they may not be declaring their inputs correctly.
 
-The last link, "Uncachable tasks", shows you which tasks ran that are not
-cachable. It is not always possible (or doesn't make sense) to cache the
+The last link, "Non-cacheable tasks", shows you which tasks ran that are not
+cacheable. It is not always possible (or doesn't make sense) to cache the
 output from every task. For example, there is no way to cache the "output"
 of the clean task because the clean task deletes output rather than creating
 it.

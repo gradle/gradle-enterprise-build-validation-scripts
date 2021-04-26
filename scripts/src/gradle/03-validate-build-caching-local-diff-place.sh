@@ -143,8 +143,8 @@ print_quick_links() {
  infof "$fmt" "Goal execution summary:" "${base_url[0]}/s/${scan_id[1]}/performance/execution"
  infof "$fmt" "Cache performance:" "${base_url[0]}/s/${scan_id[1]}/performance/build-cache"
  infof "$fmt" "Executed tasks:" "${base_url[0]}/s/${scan_id[1]}/timeline?outcome=SUCCESS,FAILED&sort=longest"
- infof "$fmt" "Executed cachable tasks:" "${base_url[0]}/s/${scan_id[1]}/timeline?cacheableFilter=cacheable&outcomeFilter=SUCCESS,FAILED&sorted=longest"
- infof "$fmt" "Uncachable tasks:" "${base_url[0]}/s/${scan_id[1]}/timeline?cacheableFilter=any_non-cacheable&outcomeFilter=SUCCESS,FAILED&sorted=longest"
+ infof "$fmt" "Executed cacheable tasks:" "${base_url[0]}/s/${scan_id[1]}/timeline?cacheableFilter=cacheable&outcomeFilter=SUCCESS,FAILED&sorted=longest"
+ infof "$fmt" "Non-cacheable tasks:" "${base_url[0]}/s/${scan_id[1]}/timeline?cacheableFilter=any_non-cacheable&outcomeFilter=SUCCESS,FAILED&sorted=longest"
 }
 
 print_introduction() {
@@ -178,14 +178,14 @@ will invoke clean and run the same tasks. We will not make any changes
 between each build run (other than the location).
 
 If the build is taking advantage of the local build cache, then very few (if
-any) tasks should actually execute on the seond build (all of the task
+any) tasks should actually execute on the second build (all of the task
 output should be used from the local cache).
 
 The Gradle Solutions engineer will then work with you to figure out why some
 (if any) tasks ran on the second build, and how to optimize them to take
 advantage of the build cache.
 
-${USER_ACTION_COLOR}Press enter when you're ready to get started.
+${USER_ACTION_COLOR}Press <Enter> to get started.${RESTORE}
 EOF
 
   print_wizard_text "${text}"
@@ -199,7 +199,7 @@ We are going to create a new empty local build cache dir (and configure
 Gradle to use it instead of the default local cache dir). This way, the
 first build won't find anything in the cache and all tasks will run.
 
-This is important beause we want to make sure tasks that are cachable do in
+This is important because we want to make sure tasks that are cachable do in
 fact produce output that is stored in the cache.
 
 Specifically, we are going to create and use this directory for the local
@@ -208,7 +208,7 @@ experiment):
 
 $(info "${build_cache_dir}")
 
-${USER_ACTION_COLOR}Press enter to continue.
+${USER_ACTION_COLOR}Press <Enter> to continue.${RESTORE}
 EOF
   print_wizard_text "${text}"
   wait_for_enter
@@ -221,9 +221,9 @@ For the first build, we are going create a fresh clone of the project.  That
 way, the experiment will be infleunced by as few outside factors as
 possible.
 
-We'll use a differnt clone of the project for the second build.
+We'll use a different clone of the project for the second build.
 
-${USER_ACTION_COLOR}Press enter to continue.
+${USER_ACTION_COLOR}Press <Enter> to continue.${RESTORE}
 EOF
   print_wizard_text "${text}"
   wait_for_enter
@@ -242,7 +242,7 @@ impact how the build cache is utilized.
 
 We will also add a few build scan tags.
 
-${USER_ACTION_COLOR}Press enter to run the first build.
+${USER_ACTION_COLOR}Press <Enter> to run the first build.${RESTORE}
 EOF
   print_wizard_text "${text}"
   wait_for_enter
@@ -256,7 +256,7 @@ different directory. If all goes well, the second build will use the build
 cache in exactly the same way as it does when we run multiple builds from
 the same location.
 
-${USER_ACTION_COLOR}Press enter to continue.
+${USER_ACTION_COLOR}Press <Enter> to continue.${RESTORE}
 EOF
   print_wizard_text "${text}"
   wait_for_enter
@@ -275,7 +275,7 @@ we already built everything in the first build, and the task outputs should
 be in the local build cache. If some tasks do run, they will show up in the
 build scan for this second build.
 
-${USER_ACTION_COLOR}Press enter to run the second build.
+${USER_ACTION_COLOR}Press <Enter> to run the second build.${RESTORE}
 EOF
   print_wizard_text "$text"
   wait_for_enter
@@ -306,7 +306,7 @@ experiment.
 
 $(print_build_scans)
 
-Abave are links to the build scans from this experiument. A build scan provides
+Above are links to the build scans from this experiment. A build scan provides
 a wealth of information and statistics about the build execution.
 
 $(print_quick_links)
@@ -327,17 +327,17 @@ build cache (such as cache hits and misses).
 The "Executed tasks" link takes you to the timeline view of the second build
 scan and automatically shows only the tasks that were executed, sorted by
 execution time (with the longest-running tasks listed first). You can use
-this to quickly identify tasks that were executed again unecessarily. You
+this to quickly identify tasks that were executed again unnecessarily. You
 will want to optimize any such tasks that take a significant amount of time
 to complete.
 
-The "Executed cachable tasks" link shows you which tasks ran again on the
-second build, but shouldn't have because they are actually cachable. If any
-cachable tasks ran, then one of their inputs changed (even though we didn't
+The "Executed cacheable tasks" link shows you which tasks ran again on the
+second build, but shouldn't have because they are actually cacheable. If any
+cacheable tasks ran, then one of their inputs changed (even though we didn't
 make any changes), or they may not be declaring their inputs correctly.
 
-The last link, "Uncachable tasks", shows you which tasks ran that are not
-cachable. It is not always possible (or doesn't make sense) to cache the
+The last link, "Non-cacheable tasks", shows you which tasks ran that are not
+cacheable. It is not always possible (or doesn't make sense) to cache the
 output from every task. For example, there is no way to cache the "output"
 of the clean task because the clean task deletes output rather than creating
 it.
