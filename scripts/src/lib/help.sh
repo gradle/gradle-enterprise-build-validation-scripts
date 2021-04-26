@@ -1,3 +1,4 @@
+#!/usr/bin/env bash
 
 print_script_usage() {
   echo "USAGE: ${SCRIPT_NAME} [option...]"
