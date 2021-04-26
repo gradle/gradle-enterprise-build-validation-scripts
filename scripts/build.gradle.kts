@@ -12,6 +12,7 @@ val argbashVersion by extra("2.10.0")
 tasks.register<Download>("downloadArgbash") {
     src("https://github.com/matejak/argbash/archive/refs/tags/${argbashVersion}.zip")
     dest(file("${buildDir}/argbash/argbash-${argbashVersion}.zip"))
+    onlyIfModified(true)
 }
 
 tasks.register<Copy>("unpackArgbash") {
@@ -21,13 +22,18 @@ tasks.register<Copy>("unpackArgbash") {
 }
 
 tasks.register("applyArgbash") {
+    val scripts = fileTree("src") {
+        include("**/parsing.sh")
+    }
+    inputs.files(scripts)
+        .withPropertyName("scripts")
+        .withPathSensitivity(PathSensitivity.RELATIVE)
+    val argbash = "${buildDir}/argbash/argbash-${argbashVersion}/bin/argbash"
+    inputs.dir("${buildDir}/argbash/argbash-${argbashVersion}/")
+        .withPropertyName("argbash")
+        .withPathSensitivity(PathSensitivity.RELATIVE)
     dependsOn("unpackArgbash")
     doLast {
-        val argbash = "${buildDir}/argbash/argbash-${argbashVersion}/bin/argbash"
-        val scripts = fileTree("src") {
-            include("**/parsing.sh")
-        }
-
         scripts.forEach { file: File ->
             logger.info("Applying argbash to $file")
             exec {
