@@ -203,7 +203,7 @@ explain_summary() {
 Builds complete!
 
 Now that both builds have completed, there is a lot of valuable data in
-Gradle Enterprise to look at. The data can help you find ineffiencies in
+Gradle Enterprise to look at. The data can help you find inefficiencies in
 your build.
 
 After running the experiment, this script will generate a summary table of
@@ -223,7 +223,7 @@ experiment.
 
 $(print_build_scans)
 
-Abave are links to the build scans from this experiument. A build scan provides
+Above are links to the build scans from this experiment. A build scan provides
 a wealth of information and statistics about the build execution.
 
 $(print_quick_links)
@@ -240,7 +240,7 @@ there may be overall opportunities to optimize.
 The "Executed tasks" link takes you to the timeline view of the second build
 scan and automatically shows only the tasks that were executed, sorted by
 execution time (with the longest-running tasks listed first). You can use
-this to quickly identify tasks that were executed again unecessarily. You
+this to quickly identify tasks that were executed again unnecessarily. You
 will want to optimize any such tasks that take a significant amount of time
 to complete.
 
