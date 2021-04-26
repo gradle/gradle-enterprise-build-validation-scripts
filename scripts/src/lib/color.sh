@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+#shellcheck disable=SC2034 # These variables are very often unused but that's okay because they are constants for colorizing text
 
 # Color and text escape sequences
 RESTORE=$(echo -en '\033[0m')

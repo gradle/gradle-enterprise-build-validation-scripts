@@ -108,6 +108,7 @@ execute_build() {
   pushd "${project_dir}" > /dev/null 2>&1
   local lib_dir_rel
   lib_dir_rel=$(relpath "$( pwd )" "${LIB_DIR}")
+  #shellcheck disable=SC2164  #This is extremely unlikely to fail
   popd > /dev/null 2>&1
 
   info "./gradlew -Dscan.tag.${EXP_SCAN_TAG} -Dscan.tag.${RUN_ID} clean ${tasks}$(print_extra_args)"

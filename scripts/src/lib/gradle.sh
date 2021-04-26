@@ -40,6 +40,7 @@ invoke_gradle() {
     die "ERROR: The experiment cannot continue because publishing the build scan failed." 2
   fi
 
+  #shellcheck disable=SC2164  #This is extremely unlikely to fail
   popd > /dev/null 2>&1
 }
 

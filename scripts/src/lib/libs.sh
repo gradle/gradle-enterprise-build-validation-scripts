@@ -3,7 +3,7 @@
 # shellcheck source=build-validation-automation/scripts/src/lib/color.sh
 source "${SCRIPT_DIR}/../lib/color.sh" || { echo "Couldn't find '../lib/color.sh'"; exit 1; }
 
-# shellcheck source=build-validation-automation/scripts/src/lib/info.sh=
+# shellcheck source=build-validation-automation/scripts/src/lib/info.sh
 source "${SCRIPT_DIR}/../lib/info.sh" || { echo "Couldn't find '../lib/info.sh'"; exit 1; }
 
 # shellcheck source=build-validation-automation/scripts/src/lib/wizard.sh
