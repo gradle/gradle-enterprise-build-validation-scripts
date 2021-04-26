@@ -5,7 +5,7 @@ plugins {
     id("de.undercouch.download") version "4.1.1"
 }
 
-base.archivesBaseName = "gradle-enterprise-experiments"
+base.archivesBaseName = rootProject.name
 
 val argbashVersion by extra("2.10.0")
 
