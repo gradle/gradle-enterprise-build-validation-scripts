@@ -93,3 +93,24 @@ tasks.named("assemble") {
     dependsOn("assembleGradleScripts")
     dependsOn("assembleMavenScripts")
 }
+
+tasks.register<Copy>("publishGradleScripts") {
+    group = "publishing"
+    description = "Publishes the Gradle build validation scripts."
+    from(tasks.named("assembleGradleScripts"))
+    into(rootProject.file("distributions"))
+}
+
+tasks.register<Copy>("publishMavenScripts") {
+    group = "publishing"
+    description = "Publishes the Maven build validation scripts."
+    from(tasks.named("assembleMavenScripts"))
+    into(rootProject.file("distributions"))
+}
+
+tasks.register("publish") {
+    group = "publishing"
+    description = "Publishes all publications produced by this project."
+    dependsOn("publishGradleScripts")
+    dependsOn("publishMavenScripts")
+}
