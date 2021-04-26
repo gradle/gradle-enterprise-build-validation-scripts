@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 #
-# Runs Experiment 02 - Validate Build Caching - Local - In Place 
+# Runs Experiment 02 - Validate Build Caching - Local - In Place
 #
 # Invoke this script with --help to get a description of the command line arguments
 #
@@ -22,6 +22,7 @@ build_cache_dir="${EXP_DIR}/build-cache"
 git_repo=''
 project_name=''
 git_branch=''
+project_dir=''
 tasks=''
 extra_args=''
 enable_ge=''
@@ -104,13 +105,15 @@ execute_second_build() {
 
 execute_build() {
   # The gradle --init-script flag only accepts a relative directory path. ¯\_(ツ)_/¯
+  pushd "${project_dir}" > /dev/null 2>&1
   local lib_dir_rel
   lib_dir_rel=$(relpath "$( pwd )" "${LIB_DIR}")
+  popd > /dev/null 2>&1
 
   info "./gradlew -Dscan.tag.${EXP_SCAN_TAG} -Dscan.tag.${RUN_ID} clean ${tasks}$(print_extra_args)"
 
   invoke_gradle \
-     --init-script "${LIB_DIR}/gradle/verify-and-configure-local-build-cache-only.gradle" \
+     --init-script "${lib_dir_rel}/gradle/verify-and-configure-local-build-cache-only.gradle" \
      clean "${tasks}"
 }
 
@@ -192,7 +195,7 @@ explain_local_cache_dir() {
   IFS='' read -r -d '' text <<EOF
 We are going to create a new empty local build cache dir (and configure
 Gradle to use it instead of the default local cache dir). This way, the
-first build won't find anything in the cache and all tasks will run. 
+first build won't find anything in the cache and all tasks will run.
 
 This is important beause we want to make sure tasks that are cachable do in
 fact produce output that is stored in the cache.
@@ -229,7 +232,7 @@ explain_first_build() {
   IFS='' read -r -d '' text <<EOF
 We are now ready to run the first build.
 
-We will execute 'clean ${tasks}'. 
+We will execute 'clean ${tasks}'.
 
 We are invoking clean even though we just created a fresh clone because
 sometimes the clean task changes the order other tasks run in, which can
@@ -306,7 +309,7 @@ a wealth of information and statistics about the build execution.
 
 $(print_quick_links)
 
-Use the above links help you get started in your analysis. 
+Use the above links help you get started in your analysis.
 
 The first link is to a comparison of the two build scans. Comparisons show you
 what was different between two different build executions.

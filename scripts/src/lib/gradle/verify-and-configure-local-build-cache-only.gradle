@@ -4,12 +4,15 @@ def isTopLevelBuild = gradle.getParent() == null
 if (isTopLevelBuild) {
     assert gradle.startParameter.buildCacheEnabled : "Build caching is not enabled. Please enable build caching and run this experiment again"
 
+    def projectProperties = gradle.startParameter.projectProperties
+    def experimentDir = new File(projectProperties.get("com.gradle.enterprise.init.script.experimentDir"))
+
     settingsEvaluated { settings ->
         settings.buildCache {
             local {
                 enabled = true
                 push = true
-                directory = "${settings.rootDir}/../build-cache"
+                directory = new File(experimentDir, "build-cache")
             }
             if (remote != null) {
                remote.enabled = false

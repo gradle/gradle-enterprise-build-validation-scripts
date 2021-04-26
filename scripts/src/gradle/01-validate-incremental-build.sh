@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 #
-# Runs Experiment 01 - Validate Incremental Build 
+# Runs Experiment 01 - Validate Incremental Build
 #
 # Invoke this script with --help to get a description of the command line arguments
 SCRIPT_NAME=$(basename "$0")
@@ -19,6 +19,7 @@ BUILD_TOOL="Gradle"
 git_repo=''
 project_name=''
 git_branch=''
+project_dir=''
 tasks=''
 extra_args=''
 enable_ge=''
@@ -147,7 +148,7 @@ why.
 
 It is a good idea to use interactive mode for the first one or two times you
 run an experiment, but afterwards, you can run the script normally to save
-time (all of the steps will execuite automatically without pause). 
+time (all of the steps will execuite automatically without pause).
 
 You may want to repeat the experiment on a regular basis to validate any
 optimizations you have made or to look for any regressions that may sneak
@@ -180,7 +181,7 @@ explain_first_build() {
   IFS='' read -r -d '' text <<EOF
 OK! We are ready to run our first build!
 
-For this run, we'll execute 'clean ${tasks}'. 
+For this run, we'll execute 'clean ${tasks}'.
 
 We are invoking clean even though we just created a fresh clone because
 sometimes the clean task changes the order other tasks run in, which can
@@ -245,7 +246,7 @@ a wealth of information and statistics about the build execution.
 
 $(print_quick_links)
 
-Use the above links help you get started in your analysis. 
+Use the above links help you get started in your analysis.
 
 The first link is to a comparison of the two build scans. Comparisons show you
 what was different between two different build executions.

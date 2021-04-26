@@ -22,7 +22,7 @@ die()
 
 begins_with_short_option()
 {
-  local first_option all_short_options='bsriateh'
+  local first_option all_short_options='bsrpiateh'
   first_option="${1:0:1}"
   test "$all_short_options" = "${all_short_options/$first_option/}" && return 1 || return 0
 }
@@ -31,6 +31,7 @@ begins_with_short_option()
 _arg_git_branch=
 _arg_gradle_enterprise_server=
 _arg_git_repo=
+_arg_project_dir="./"
 _arg_interactive="off"
 _arg_args=
 _arg_tasks=
@@ -40,7 +41,7 @@ _arg_enable_gradle_enterprise="off"
 print_help()
 {
   printf '%s\n' "This function is overridden later on."
-  printf 'Usage: %s [-b|--git-branch <arg>] [-s|--gradle-enterprise-server <arg>] [-r|--git-repo <arg>] [-i|--(no-)interactive] [-a|--args <arg>] [-t|--tasks <arg>] [-e|--(no-)enable-gradle-enterprise] [-h|--help]\n' "$0"
+  printf 'Usage: %s [-b|--git-branch <arg>] [-s|--gradle-enterprise-server <arg>] [-r|--git-repo <arg>] [-p|--project-dir <arg>] [-i|--(no-)interactive] [-a|--args <arg>] [-t|--tasks <arg>] [-e|--(no-)enable-gradle-enterprise] [-h|--help]\n' "$0"
   printf '\t%s\n' "-h, --help: Prints help"
 }
 
@@ -91,6 +92,20 @@ parse_commandline()
         ;;
       -r*)
         _arg_git_repo="${_key##-r}"
+        _args_common_opt+=("$_key")
+        ;;
+      -p|--project-dir)
+        test $# -lt 2 && die "Missing value for the optional argument '$_key'." 1
+        _arg_project_dir="$2"
+        _args_common_opt+=("${_key}" "$2")
+        shift
+        ;;
+      --project-dir=*)
+        _arg_project_dir="${_key##--project-dir=}"
+        _args_common_opt+=("$_key")
+        ;;
+      -p*)
+        _arg_project_dir="${_key##-p}"
         _args_common_opt+=("$_key")
         ;;
       -i|--no-interactive|--interactive)
@@ -181,6 +196,7 @@ function print_help() {
   print_option_usage -b
   print_option_usage -t
   print_option_usage -a
+  print_option_usage -p
   print_option_usage -s
   print_option_usage -e
   print_option_usage -h

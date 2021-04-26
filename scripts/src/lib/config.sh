@@ -6,6 +6,7 @@ process_arguments() {
   git_repo="${_arg_git_repo}"
   git_branch="${_arg_git_branch}"
   project_name="$(basename -s .git "${git_repo}")"
+  project_dir="${_arg_project_dir}"
   tasks="${_arg_tasks}"
   extra_args="${_arg_args}"
   enable_ge="${_arg_enable_gradle_enterprise}"
@@ -78,7 +79,7 @@ collect_git_details() {
   project_name=$(basename -s .git "${git_repo}")
 }
 
-collect_gradle_details() { 
+collect_gradle_details() {
   prompt_for_setting "What are the Gradle tasks to invoke?" "${tasks}" "assemble" tasks
   prompt_for_setting "Enter any additional arguments to pass to Gradle." "${extra_args}" "*none*" extra_args
   if [[ "${extra_args}" == "*none*" ]]; then
@@ -86,7 +87,7 @@ collect_gradle_details() {
   fi
 }
 
-collect_maven_details() { 
+collect_maven_details() {
   prompt_for_setting "What are the Maven goals to invoke?" "${tasks}" "package" tasks
   prompt_for_setting "Enter any additional arguments to pass to Maven." "${extra_args}" "*none*" extra_args
   if [[ "${extra_args}" == "*none*" ]]; then

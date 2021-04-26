@@ -7,6 +7,7 @@ invoke_gradle() {
     ge_server_arg="-Pcom.gradle.enterprise.init.script.server=${ge_server}"
   fi
 
+  pushd "${project_dir}" > /dev/null 2>&1 || die "ERROR: The subdirectory ${project_dir} (set with --project-dir) does not exist in ${project_name}." 3
 
   # The gradle --init-script flag only accepts a relative directory path. ¯\_(ツ)_/¯
   local lib_dir_rel
@@ -27,6 +28,7 @@ invoke_gradle() {
       --init-script "${lib_dir_rel}/gradle/verify-ge-configured.gradle" \
       --init-script "${lib_dir_rel}/gradle/capture-build-scan-info.gradle" \
       ${ge_server_arg} \
+      -Pcom.gradle.enterprise.init.script.experimentDir="${EXP_DIR}" \
       -Dscan.tag.${EXP_SCAN_TAG} \
       -Dscan.tag."${RUN_ID}" \
       -Dscan.capture-task-input-files \
@@ -37,6 +39,8 @@ invoke_gradle() {
   if [ -f "${EXP_DIR}/build-scan-publish-error.txt" ]; then
     die "ERROR: The experiment cannot continue because publishing the build scan failed." 2
   fi
+
+  popd > /dev/null 2>&1
 }
 
 make_local_cache_dir() {
@@ -44,7 +48,7 @@ make_local_cache_dir() {
   mkdir -p "${build_cache_dir}"
 }
 
-# From this Stack Exchange Community Wiki Answer: 
+# From this Stack Exchange Community Wiki Answer:
 # https://unix.stackexchange.com/a/85068/88179
 relpath() {
     # both $1 and $2 are absolute paths beginning with /

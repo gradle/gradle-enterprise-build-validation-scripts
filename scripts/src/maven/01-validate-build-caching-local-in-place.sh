@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 #
-# Runs Experiment 02 - Validate Build Caching - Local - In Place 
+# Runs Experiment 02 - Validate Build Caching - Local - In Place
 #
 # Invoke this script with --help to get a description of the command line arguments
 #
@@ -22,6 +22,7 @@ build_cache_dir="${EXP_DIR}/build-cache"
 git_repo=''
 project_name=''
 git_branch=''
+project_dir=''
 tasks=''
 extra_args=''
 enable_ge=''
@@ -158,7 +159,7 @@ enabled). Both builds will invoke clean and run the same goals. We will not
 make any changes between each build run.
 
 If the build is taking advantage of the local build cache, then very few (if
-any) goals should actually execute on the seond build (all of the goal 
+any) goals should actually execute on the seond build (all of the goal
 output should be used from the local cache).
 
 The Gradle Solutions engineer will then work with you to figure out why some
@@ -177,7 +178,7 @@ explain_local_cache_dir() {
   IFS='' read -r -d '' text <<EOF
 We are going to create a new empty local build cache dir (and configure
 Gradle to use it instead of the default local cache dir). This way, the
-first build won't find anything in the cache and all goals will run. 
+first build won't find anything in the cache and all goals will run.
 
 This is important beause we want to make sure goals that are cachable do in
 fact produce output that is stored in the cache.
@@ -199,7 +200,7 @@ explain_first_build() {
   IFS='' read -r -d '' text <<EOF
 OK! We are ready to run our first build!
 
-For this run, we'll execute 'clean ${tasks}'. 
+For this run, we'll execute 'clean ${tasks}'.
 
 We will also add a few the build scan tags.
 
@@ -255,7 +256,7 @@ a wealth of information and statistics about the build execution.
 
 $(print_quick_links)
 
-Use the above links help you get started in your analysis. 
+Use the above links help you get started in your analysis.
 
 The first link is to a comparison of the two build scans. Comparisons show you
 what was different between two different build executions.
