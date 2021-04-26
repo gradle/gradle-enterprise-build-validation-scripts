@@ -54,7 +54,9 @@ tasks.register<Zip>("assembleGradleScripts") {
     description = "Packages the Gradle experiment scripts in a zip archive."
     archiveAppendix.set("for-gradle")
 
-    from(layout.projectDirectory.dir("src/gradle"))
+    from(layout.projectDirectory.dir("src/gradle")) {
+        exclude("data/")
+    }
     from(layout.projectDirectory.dir("src/")) {
         include("lib/**")
         exclude("lib/maven")
@@ -71,6 +73,7 @@ tasks.register<Zip>("assembleMavenScripts") {
 
     from(layout.projectDirectory.dir("src/maven")) {
         filter { line: String -> line.replace("/../lib", "/lib") }
+        exclude("data/")
     }
     from(layout.projectDirectory.dir("src/")) {
         include("lib/**")
