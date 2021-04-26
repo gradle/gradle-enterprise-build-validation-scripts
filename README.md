@@ -33,7 +33,7 @@ The command will download and unpack the scripts to the current directory.
 
 Once you have installed the scripts, you can run the first experiment for Gradle:
 
-```
+```bash
 cd build-validation-automation-for-gradle
 ./01-validate-incremental-build.sh --interactive
 ```
@@ -88,7 +88,7 @@ The command will download and unpack the scripts to the current directory.
 
 Once you have installed the scripts, you can run the first experiment for Maven:
 
-```
+```bash
 cd build-validation-automation-for-maven
 ./01-validate-build-caching-local-in-place.sh --interactive
 ```
