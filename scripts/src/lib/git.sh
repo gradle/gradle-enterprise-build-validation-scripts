@@ -19,3 +19,6 @@ clone_project() {
    info
 }
 
+git_get_branch() {
+  git symbolic-ref -q --short HEAD || git rev-parse --short HEAD
+}

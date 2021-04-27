@@ -36,7 +36,7 @@ print_warnings() {
 
 print_experiment_info() {
  local branch
- branch=$(git symbolic-ref --short HEAD)
+ branch=$(git_get_branch)
 
  local fmt="%-26s%s"
  info "Summary"
