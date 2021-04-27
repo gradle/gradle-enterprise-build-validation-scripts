@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-clone_project() {
+git_clone_project() {
    suffix="$1"
    info
    info "Cloning ${project_name}"

@@ -50,7 +50,7 @@ execute() {
 
   make_experiment_dir
 
-  clone_project ""
+  git_clone_project ""
   make_local_cache_dir "${build_cache_dir}"
   execute_first_build
   execute_second_build
@@ -69,7 +69,7 @@ wizard_execute() {
   collect_maven_details
 
   explain_clone_project
-  clone_project ""
+  git_clone_project ""
 
   explain_local_cache_dir
   make_local_cache_dir

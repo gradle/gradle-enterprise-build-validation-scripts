@@ -46,7 +46,7 @@ execute() {
   validate_required_config
 
   make_experiment_dir
-  clone_project ""
+  git_clone_project ""
 
   execute_first_build
   execute_second_build
@@ -66,7 +66,7 @@ wizard_execute() {
   collect_gradle_details
 
   explain_clone_project
-  clone_project ""
+  git_clone_project ""
 
   explain_first_build
   execute_first_build

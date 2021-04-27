@@ -51,10 +51,10 @@ execute() {
   make_experiment_dir
   make_local_cache_dir "${build_cache_dir}"
 
-  clone_project "_1"
+  git_clone_project "_1"
   execute_first_build
 
-  clone_project "_2"
+  git_clone_project "_2"
   execute_second_build
 
   print_warnings
@@ -75,13 +75,13 @@ wizard_execute() {
   make_local_cache_dir
 
   explain_first_clone_project
-  clone_project "_1"
+  git_clone_project "_1"
 
   explain_first_build
   execute_first_build
 
   explain_second_clone_project
-  clone_project "_2"
+  git_clone_project "_2"
 
   explain_second_build
   execute_second_build
