@@ -1,17 +1,5 @@
 import org.gradle.util.GradleVersion
 
-initscript {
-    def pluginVersion = "3.6"
-
-    repositories {
-        gradlePluginPortal()
-    }
-
-    dependencies {
-        classpath("com.gradle:gradle-enterprise-gradle-plugin:${pluginVersion}")
-    }
-}
-
 def isTopLevelBuild = gradle.getParent() == null
 
 if (isTopLevelBuild) {
@@ -55,4 +43,3 @@ def reportFailedToPublishBuildScan(rootDir, error) {
     def errorFile = new File(rootDir, "build-scan-publish-error.txt")
     errorFile.text = error
 }
-
