@@ -14,7 +14,7 @@ tasks.register<Download>("downloadArgbash") {
     description = "Downloads Argbash."
     src("https://github.com/matejak/argbash/archive/refs/tags/${argbashVersion}.zip")
     dest(file("${buildDir}/argbash/argbash-${argbashVersion}.zip"))
-    onlyIfModified(true)
+    overwrite(false)
 }
 
 tasks.register<Copy>("unpackArgbash") {
