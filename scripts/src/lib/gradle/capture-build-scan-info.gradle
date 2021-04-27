@@ -1,5 +1,4 @@
 import org.gradle.util.GradleVersion
-import java.io.File
 
 initscript {
     def pluginVersion = "3.6"

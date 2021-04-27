@@ -57,7 +57,7 @@ void configureGradleEnterprise(extension) {
          }
 
          if (server == null || server.isEmpty())
-              throw new GradleException("A Gradle Enterprise server URL has not been configured.", null)
+             throw new GradleException("A Gradle Enterprise server URL has not been configured.", null)
 
          buildScan {
              uploadInBackground = false
