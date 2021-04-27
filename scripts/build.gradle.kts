@@ -25,9 +25,9 @@ tasks.register<Copy>("unpackArgbash") {
     dependsOn("downloadArgbash")
 }
 
-tasks.register("applyArgbash") {
+tasks.register("generateBashCliParsers") {
     group = "argbash"
-    description = "Uses Argbash to generate command line argument parsing code."
+    description = "Uses Argbash to generate Bash command line argument parsing code."
     val scripts = fileTree("src") {
         include("**/*-cli-parser.sh")
         exclude("gradle/data/")
@@ -65,7 +65,7 @@ tasks.register<Zip>("assembleGradleScripts") {
         exclude("**/*.m4")
     }
     filter { line: String -> line.replace("/../lib", "/lib") }
-    dependsOn("applyArgbash")
+    dependsOn("generateBashCliParsers")
 }
 
 tasks.register<Zip>("assembleMavenScripts") {
@@ -86,7 +86,7 @@ tasks.register<Zip>("assembleMavenScripts") {
     from(rootProject.childProjects.get("capture-build-scans-maven-extension")!!.tasks.getByName("jar")) {
         into("lib/maven/")
     }
-    dependsOn("applyArgbash")
+    dependsOn("generateBashCliParsers")
 }
 
 tasks.named("assemble") {
