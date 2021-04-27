@@ -140,7 +140,7 @@ print_quick_links() {
  info "Investigation quick links"
  info "-------------------------"
  infof "$fmt" "Build scan comparison:" "${base_url[0]}/c/${scan_id[0]}/${scan_id[1]}/task-inputs?cacheability=cacheable"
- infof "$fmt" "Goal execution summary:" "${base_url[0]}/s/${scan_id[1]}/performance/execution"
+ infof "$fmt" "Task execution summary:" "${base_url[0]}/s/${scan_id[1]}/performance/execution"
  infof "$fmt" "Cache performance:" "${base_url[0]}/s/${scan_id[1]}/performance/build-cache"
  infof "$fmt" "Executed tasks:" "${base_url[0]}/s/${scan_id[1]}/timeline?outcome=SUCCESS,FAILED&sort=longest"
  infof "$fmt" "Executed cacheable tasks:" "${base_url[0]}/s/${scan_id[1]}/timeline?cacheableFilter=cacheable&outcomeFilter=SUCCESS,FAILED&sorted=longest"
