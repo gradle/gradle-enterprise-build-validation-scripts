@@ -29,3 +29,6 @@ source "${SCRIPT_DIR}/../lib/maven.sh" || { echo "Couldn't find '../lib/maven.sh
 
 # shellcheck source=build-validation-automation/scripts/src/lib/help.sh
 source "${SCRIPT_DIR}/../lib/help.sh" || { echo "Couldn't find '../lib/help.sh'"; exit 1; }
+
+# shellcheck source=build-validation-automation/scripts/src/lib/paths.sh
+source "${SCRIPT_DIR}/../lib/paths.sh" || { echo "Couldn't find '../lib/paths.sh'"; exit 1; }

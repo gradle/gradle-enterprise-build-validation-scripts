@@ -105,12 +105,8 @@ execute_second_build() {
 
 execute_build() {
   # The gradle --init-script flag only accepts a relative directory path. ¯\_(ツ)_/¯
-  #shellcheck disable=SC2164  # We will handle the error when we try to invoke the build, which calls this same function
-  pushd "${project_dir}" > /dev/null 2>&1
   local lib_dir_rel
-  lib_dir_rel=$(relpath "$( pwd )" "${LIB_DIR}")
-  #shellcheck disable=SC2164  #This is extremely unlikely to fail
-  popd > /dev/null 2>&1
+  lib_dir_rel="$(relative_lib_path)"
 
   info "./gradlew -Dscan.tag.${EXP_SCAN_TAG} -Dscan.tag.${RUN_ID} clean ${tasks}$(print_extra_args)"
 
