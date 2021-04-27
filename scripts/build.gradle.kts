@@ -36,6 +36,14 @@ tasks.register("generateBashCliParsers") {
     inputs.files(scripts)
         .withPropertyName("scripts")
         .withPathSensitivity(PathSensitivity.RELATIVE)
+    inputs.files(fileTree("src") {
+        include("**/*.m4")
+        exclude("gradle/data/")
+        exclude("maven/data/")
+    })
+        .withPropertyName("templates")
+        .withPathSensitivity(PathSensitivity.RELATIVE)
+    outputs.files(scripts)
     val argbash = "${buildDir}/argbash/argbash-${argbashVersion}/bin/argbash"
     inputs.dir("${buildDir}/argbash/argbash-${argbashVersion}/")
         .withPropertyName("argbash")
