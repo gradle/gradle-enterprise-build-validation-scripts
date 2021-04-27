@@ -4,17 +4,17 @@
 #
 # Invoke this script with --help to get a description of the command line arguments
 #
-SCRIPT_NAME=$(basename "$0")
-SCRIPT_DIR="$(cd "$(dirname "$(readlink -e "${BASH_SOURCE[0]}")")" && pwd)"
-LIB_DIR="${SCRIPT_DIR}/../lib"
+readonly SCRIPT_NAME=$(basename "$0")
+readonly SCRIPT_DIR="$(cd "$(dirname "$(readlink -e "${BASH_SOURCE[0]}")")" && pwd)"
+readonly LIB_DIR="${SCRIPT_DIR}/../lib"
 
 # Experiment-speicifc constants
-EXP_NAME="Validate Build Caching - Local - In Place"
-EXP_NO="01"
-EXP_SCAN_TAG=exp1-maven
-EXP_DIR="${SCRIPT_DIR}/data/${SCRIPT_NAME%.*}"
-SCAN_FILE="${EXP_DIR}/scans.csv"
-BUILD_TOOL="Maven"
+readonly EXP_NAME="Validate Build Caching - Local - In Place"
+readonly EXP_NO="01"
+readonly EXP_SCAN_TAG=exp1-maven
+readonly EXP_DIR="${SCRIPT_DIR}/data/${SCRIPT_NAME%.*}"
+readonly SCAN_FILE="${EXP_DIR}/scans.csv"
+readonly BUILD_TOOL="Maven"
 
 build_cache_dir="${EXP_DIR}/build-cache"
 

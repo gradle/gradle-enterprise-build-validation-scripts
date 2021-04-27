@@ -3,17 +3,17 @@
 # Runs Experiment 01 - Validate Incremental Build
 #
 # Invoke this script with --help to get a description of the command line arguments
-SCRIPT_NAME=$(basename "$0")
-SCRIPT_DIR="$(cd "$(dirname "$(readlink -e "${BASH_SOURCE[0]}")")" && pwd)"
-LIB_DIR="${SCRIPT_DIR}/../lib"
+readonly SCRIPT_NAME=$(basename "$0")
+readonly SCRIPT_DIR="$(cd "$(dirname "$(readlink -e "${BASH_SOURCE[0]}")")" && pwd)"
+readonly LIB_DIR="${SCRIPT_DIR}/../lib"
 
 # Experiment-specific constants
-EXP_NAME="Validating that a Gradle build is optimized for incremental building"
-EXP_NO="01"
-EXP_SCAN_TAG=exp1-gradle
-EXP_DIR="${SCRIPT_DIR}/data/${SCRIPT_NAME%.*}"
-SCAN_FILE="${EXP_DIR}/scans.csv"
-BUILD_TOOL="Gradle"
+readonly EXP_NAME="Validating that a Gradle build is optimized for incremental building"
+readonly EXP_NO="01"
+readonly EXP_SCAN_TAG=exp1-gradle
+readonly EXP_DIR="${SCRIPT_DIR}/data/${SCRIPT_NAME%.*}"
+readonly SCAN_FILE="${EXP_DIR}/scans.csv"
+readonly BUILD_TOOL="Gradle"
 
 # These will be set by the config functions (see lib/config.sh)
 git_repo=''
@@ -32,7 +32,7 @@ source "${LIB_DIR}/gradle/${EXP_NO}-cli-parser.sh" || { echo "Couldn't find '${L
 # shellcheck source=build-validation-automation/scripts/src/lib/libs.sh
 source "${LIB_DIR}/libs.sh" || { echo "Couldn't find '${LIB_DIR}/libs.sh'"; exit 1; }
 
-RUN_ID=$(generate_run_id)
+readonly RUN_ID=$(generate_run_id)
 
 main() {
   if [ "${interactive_mode}" == "on" ]; then

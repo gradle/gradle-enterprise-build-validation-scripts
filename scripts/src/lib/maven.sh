@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-CAPTURE_SCANS_EXTENSION_JAR="${LIB_DIR}/maven/capture-build-scans-maven-extension-1.0.0-SNAPSHOT.jar"
+readonly CAPTURE_SCANS_EXTENSION_JAR="${LIB_DIR}/maven/capture-build-scans-maven-extension-1.0.0-SNAPSHOT.jar"
 
 invoke_maven() {
   pushd "${project_dir}" > /dev/null 2>&1 || die "ERROR: The subdirectory ${project_dir} (set with --project-dir) does not exist in ${project_name}." 3
