@@ -7,7 +7,7 @@ SCRIPT_NAME=$(basename "$0")
 SCRIPT_DIR="$(cd "$(dirname "$(readlink -e "${BASH_SOURCE[0]}")")" && pwd)"
 LIB_DIR="${SCRIPT_DIR}/../lib"
 
-# Experiment-speicifc constants
+# Experiment-specific constants
 EXP_NAME="Validating that a Gradle build is optimized for incremental building"
 EXP_NO="01"
 EXP_SCAN_TAG=exp1-gradle
@@ -27,8 +27,8 @@ ge_server=''
 interactive_mode=''
 
 # Include and parse the command line arguments
-# shellcheck source=build-validation-automation/scripts/src/lib/gradle/01/parsing.sh
-source "${LIB_DIR}/gradle/01/parsing.sh" || { echo "Couldn't find '${LIB_DIR}/gradle/01/parsing.sh' parsing library."; exit 1; }
+# shellcheck source=build-validation-automation/scripts/src/lib/gradle/01-cli-parser.sh
+source "${LIB_DIR}/gradle/${EXP_NO}-cli-parser.sh" || { echo "Couldn't find '${LIB_DIR}/gradle/${EXP_NO}-cli-parser.sh' library."; exit 1; }
 # shellcheck source=build-validation-automation/scripts/src/lib/libs.sh
 source "${LIB_DIR}/libs.sh" || { echo "Couldn't find '${LIB_DIR}/libs.sh'"; exit 1; }
 

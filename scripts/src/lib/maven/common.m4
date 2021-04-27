@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # Created by argbash-init v2.10.0
-# ARGBASH_WRAP([../../common])
+# ARGBASH_WRAP([../common])
 # ARG_OPTIONAL_SINGLE([args],[a],[])
 # ARG_OPTIONAL_SINGLE([tasks],[t],[])
 # ARGBASH_GO()

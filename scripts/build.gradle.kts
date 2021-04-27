@@ -29,7 +29,7 @@ tasks.register("applyArgbash") {
     group = "argbash"
     description = "Uses Argbash to generate command line argument parsing code."
     val scripts = fileTree("src") {
-        include("**/parsing.sh")
+        include("**/*-cli-parser.sh")
         exclude("gradle/data/")
         exclude("maven/data/")
     }

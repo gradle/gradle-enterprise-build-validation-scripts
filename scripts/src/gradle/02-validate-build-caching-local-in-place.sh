@@ -30,8 +30,8 @@ ge_server=''
 interactive_mode=''
 
 # Include and parse the command line arguments
-# shellcheck source=build-validation-automation/scripts/src/lib/gradle/02/parsing.sh
-source "${LIB_DIR}/gradle/02/parsing.sh" || { echo "Couldn't find '${LIB_DIR}/gradle/02/parsing.sh' parsing library."; exit 1; }
+# shellcheck source=build-validation-automation/scripts/src/lib/gradle/02-cli-parser.sh
+source "${LIB_DIR}/gradle/${EXP_NO}-cli-parser.sh" || { echo "Couldn't find '${LIB_DIR}/gradle/${EXP_NO}-cli-parser.sh' parsing library."; exit 1; }
 # shellcheck source=build-validation-automation/scripts/src/lib/libs.sh
 source "${LIB_DIR}/libs.sh" || { echo "Couldn't find '${LIB_DIR}/libs.sh'"; exit 1; }
 
