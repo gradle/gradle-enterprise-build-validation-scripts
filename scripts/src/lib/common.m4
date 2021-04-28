@@ -4,7 +4,7 @@
 # ARG_OPTIONAL_SINGLE([git-branch],[b],[])
 # ARG_OPTIONAL_SINGLE([gradle-enterprise-server],[s],[],[])
 # ARG_OPTIONAL_SINGLE([git-repo],[r],[])
-# ARG_OPTIONAL_SINGLE([project-dir],[p],[],[./])
+# ARG_OPTIONAL_SINGLE([project-dir],[p],[],[])
 # ARG_OPTIONAL_BOOLEAN([interactive],[i],[],[off])
 # ARGBASH_GO()
 # needed because of Argbash --> m4_ignore([

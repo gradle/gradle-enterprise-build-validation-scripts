@@ -31,7 +31,7 @@ begins_with_short_option()
 _arg_git_branch=
 _arg_gradle_enterprise_server=
 _arg_git_repo=
-_arg_project_dir="./"
+_arg_project_dir=
 _arg_interactive="off"
 _arg_args=
 _arg_tasks=

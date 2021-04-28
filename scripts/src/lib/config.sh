@@ -76,13 +76,16 @@ collect_git_details() {
   if [[ "${git_branch}" == "${default_branch}" ]]; then
     git_branch=''
   fi
-
   project_name=$(basename -s .git "${git_repo}")
 }
 
 collect_gradle_details() {
+  prompt_for_setting "What is the folder containing the root project?" "${project_dir}" "*the repo's root dir*" project_dir
   prompt_for_setting "What are the Gradle tasks to invoke?" "${tasks}" "assemble" tasks
   prompt_for_setting "Enter any additional arguments to pass to Gradle." "${extra_args}" "*none*" extra_args
+  if [[ "${project_dir}" == "*the repo's root dir*" ]]; then
+    project_dir=''
+  fi
   if [[ "${extra_args}" == "*none*" ]]; then
     extra_args=''
   fi
