@@ -64,7 +64,7 @@ tasks.register("generateBashCliParsers") {
 tasks.register<Zip>("assembleGradleScripts") {
     group = "build"
     description = "Packages the Gradle experiment scripts in a zip archive."
-    archiveName = "gradle-enterprise-gradle-build-validation.zip"
+    baseName = "gradle-enterprise-gradle-build-validation"
 
     from(layout.projectDirectory.dir("../scripts/gradle")) {
         exclude("data/")
@@ -75,13 +75,14 @@ tasks.register<Zip>("assembleGradleScripts") {
         exclude("**/*.m4")
     }
     filter { line: String -> line.replace("/../lib", "/lib") }
+    into(baseName)
     dependsOn("generateBashCliParsers")
 }
 
 tasks.register<Zip>("assembleMavenScripts") {
     group = "build"
     description = "Packages the Maven experiment scripts in a zip archive."
-    archiveName = "gradle-enterprise-maven-build-validation.zip"
+    baseName = "gradle-enterprise-maven-build-validation"
 
     from(layout.projectDirectory.dir("../scripts/maven")) {
         filter { line: String -> line.replace("/../lib", "/lib") }
@@ -96,6 +97,7 @@ tasks.register<Zip>("assembleMavenScripts") {
     from(project(":helpers:capture-build-scans-maven-extension")!!.tasks.getByName("jar")) {
         into("lib/maven/")
     }
+    into(baseName)
     dependsOn("generateBashCliParsers")
 }
 
