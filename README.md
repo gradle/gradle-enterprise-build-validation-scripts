@@ -24,7 +24,7 @@ regressions that may sneak into your builds over time.
 Use the following command to download and unpack the validation scripts for Gradle:
 
 ```bash
-curl https://raw.githubusercontent.com/gradle/gradle-enterprise-build-config-samples/jhurne/experiment-automation/build-validation/build-validation-automation-for-gradle.zip --output build-validation-automation-for-gradle.zip && unzip build-validation-automation-for-gradle.zip -d build-validation-automation-for-gradle
+curl https://raw.githubusercontent.com/gradle/gradle-enterprise-build-config-samples/jhurne/experiment-automation/build-validation/gradle-enterprise-gradle-build-validation.zip --output gradle-enterprise-gradle-build-validation.zip && unzip gradle-enterprise-gradle-build-validation.zip -d gradle-enterprise-gradle-build-validation
 ```
 
 The command will download and unpack the scripts to the current directory.
@@ -79,7 +79,7 @@ Each script accepts the following command line arguments:
 Use the following command to download and unpack the validation scripts for Maven:
 
 ```bash
-curl https://raw.githubusercontent.com/gradle/gradle-enterprise-build-config-samples/jhurne/experiment-automation/distributions/build-validation-automation-for-maven.zip --output build-validation-automation-for-maven.zip && unzip build-validation-automation-for-maven.zip -d build-validation-automation-for-maven
+curl https://raw.githubusercontent.com/gradle/gradle-enterprise-build-config-samples/jhurne/experiment-automation/distributions/gradle-enterprise-maven-build-validation.zip --output gradle-enterprise-maven-build-validation.zip && unzip gradle-enterprise-maven-build-validation.zip -d gradle-enterprise-maven-build-validation
 ```
 
 The command will download and unpack the scripts to the current directory.
@@ -89,7 +89,7 @@ The command will download and unpack the scripts to the current directory.
 Once you have installed the scripts, you can run the first experiment for Maven:
 
 ```bash
-cd build-validation-automation-for-maven
+cd gradle-enterprise-maven-build-validation
 ./01-validate-build-caching-local-in-place.sh --interactive
 ```
 

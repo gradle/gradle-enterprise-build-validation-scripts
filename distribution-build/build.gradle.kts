@@ -5,8 +5,6 @@ plugins {
     id("de.undercouch.download") version "4.1.1"
 }
 
-base.archivesBaseName = rootProject.name
-
 val argbashVersion by extra("2.10.0")
 
 tasks.register<Download>("downloadArgbash") {
@@ -62,7 +60,7 @@ tasks.register("generateBashCliParsers") {
 tasks.register<Zip>("assembleGradleScripts") {
     group = "build"
     description = "Packages the Gradle experiment scripts in a zip archive."
-    archiveAppendix.set("for-gradle")
+    archiveName = "gradle-enterprise-gradle-build-validation.zip"
 
     from(layout.projectDirectory.dir("../scripts/gradle")) {
         exclude("data/")
@@ -79,7 +77,7 @@ tasks.register<Zip>("assembleGradleScripts") {
 tasks.register<Zip>("assembleMavenScripts") {
     group = "build"
     description = "Packages the Maven experiment scripts in a zip archive."
-    archiveAppendix.set("for-maven")
+    archiveName = "gradle-enterprise-maven-build-validation.zip"
 
     from(layout.projectDirectory.dir("../scripts/maven")) {
         filter { line: String -> line.replace("/../lib", "/lib") }
