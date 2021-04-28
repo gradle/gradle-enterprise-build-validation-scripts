@@ -24,8 +24,8 @@ invoke_gradle() {
   # shellcheck disable=SC2086
   ./gradlew \
       ${enable_ge_init_script} \
-      --init-script "${lib_dir_rel}/gradle/verify-ge-configured.gradle" \
-      --init-script "${lib_dir_rel}/gradle/capture-build-scan-info.gradle" \
+      --init-script "${lib_dir_rel}/gradle/configure-gradle-enterprise.gradle" \
+      --init-script "${lib_dir_rel}/gradle/capture-build-scans.gradle" \
       ${ge_server_arg} \
       -Pcom.gradle.enterprise.init.script.experimentDir="${EXP_DIR}" \
       -Dscan.tag.${EXP_SCAN_TAG} \
