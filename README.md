@@ -24,7 +24,7 @@ regressions that may sneak into your builds over time.
 Use the following command to download and unpack the validation scripts for Gradle:
 
 ```bash
-curl https://raw.githubusercontent.com/gradle/gradle-enterprise-build-config-samples/jhurne/experiment-automation/build-validation/distributions/build-validation-automation-for-gradle.zip --output build-validation-automation-for-gradle.zip && unzip build-validation-automation-for-gradle.zip -d build-validation-automation-for-gradle
+curl https://raw.githubusercontent.com/gradle/gradle-enterprise-build-config-samples/jhurne/experiment-automation/build-validation/build-validation-automation-for-gradle.zip --output build-validation-automation-for-gradle.zip && unzip build-validation-automation-for-gradle.zip -d build-validation-automation-for-gradle
 ```
 
 The command will download and unpack the scripts to the current directory.
@@ -79,7 +79,7 @@ Each script accepts the following command line arguments:
 Use the following command to download and unpack the validation scripts for Maven:
 
 ```bash
-curl https://raw.githubusercontent.com/gradle/gradle-enterprise-build-config-samples/jhurne/experiment-automation/build-validation/distributions/build-validation-automation-for-maven.zip --output build-validation-automation-for-maven.zip && unzip build-validation-automation-for-maven.zip -d build-validation-automation-for-maven
+curl https://raw.githubusercontent.com/gradle/gradle-enterprise-build-config-samples/jhurne/experiment-automation/distributions/build-validation-automation-for-maven.zip --output build-validation-automation-for-maven.zip && unzip build-validation-automation-for-maven.zip -d build-validation-automation-for-maven
 ```
 
 The command will download and unpack the scripts to the current directory.

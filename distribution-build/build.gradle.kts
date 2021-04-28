@@ -28,7 +28,7 @@ tasks.register<Copy>("unpackArgbash") {
 tasks.register("generateBashCliParsers") {
     group = "argbash"
     description = "Uses Argbash to generate Bash command line argument parsing code."
-    val scripts = fileTree("src") {
+    val scripts = fileTree("../scripts") {
         include("**/*-cli-parser.sh")
         exclude("gradle/data/")
         exclude("maven/data/")
@@ -64,10 +64,10 @@ tasks.register<Zip>("assembleGradleScripts") {
     description = "Packages the Gradle experiment scripts in a zip archive."
     archiveAppendix.set("for-gradle")
 
-    from(layout.projectDirectory.dir("src/gradle")) {
+    from(layout.projectDirectory.dir("../scripts/gradle")) {
         exclude("data/")
     }
-    from(layout.projectDirectory.dir("src/")) {
+    from(layout.projectDirectory.dir("../scripts")) {
         include("lib/**")
         exclude("lib/maven")
         exclude("**/*.m4")
@@ -81,17 +81,17 @@ tasks.register<Zip>("assembleMavenScripts") {
     description = "Packages the Maven experiment scripts in a zip archive."
     archiveAppendix.set("for-maven")
 
-    from(layout.projectDirectory.dir("src/maven")) {
+    from(layout.projectDirectory.dir("../scripts/maven")) {
         filter { line: String -> line.replace("/../lib", "/lib") }
         exclude("data/")
     }
-    from(layout.projectDirectory.dir("src/")) {
+    from(layout.projectDirectory.dir("../scripts/")) {
         include("lib/**")
         exclude("lib/gradle")
         exclude("**/*.m4")
         filter { line: String -> line.replace("/../lib", "/lib") }
     }
-    from(rootProject.childProjects.get("capture-build-scans-maven-extension")!!.tasks.getByName("jar")) {
+    from(project(":helpers:capture-build-scans-maven-extension")!!.tasks.getByName("jar")) {
         into("lib/maven/")
     }
     dependsOn("generateBashCliParsers")
@@ -106,14 +106,14 @@ tasks.register<Copy>("publishGradleScripts") {
     group = "publishing"
     description = "Publishes the Gradle build validation scripts."
     from(tasks.named("assembleGradleScripts"))
-    into(rootProject.file("distributions"))
+    into(rootDir)
 }
 
 tasks.register<Copy>("publishMavenScripts") {
     group = "publishing"
     description = "Publishes the Maven build validation scripts."
     from(tasks.named("assembleMavenScripts"))
-    into(rootProject.file("distributions"))
+    into(rootDir)
 }
 
 tasks.register("publish") {
