@@ -194,9 +194,9 @@ function print_help() {
   print_option_usage -i
   print_option_usage -r
   print_option_usage -b
+  print_option_usage -p
   print_option_usage -t
   print_option_usage -a
-  print_option_usage -p
   print_option_usage -s
   print_option_usage -e
   print_option_usage -h

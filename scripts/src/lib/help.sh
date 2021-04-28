@@ -25,7 +25,7 @@ print_option_usage() {
        _print_option_usage "-i, --interactive" "Enables interactive mode."
        ;;
     -p)
-       _print_option_usage "-p, --project-dir" "Specifies the start directory within the Git repo."
+       _print_option_usage "-p, --project-dir" "Specifies the build invocation directory within the Git repository."
        ;;
     -r)
        _print_option_usage "-r, --git-repo" "Specifies the URL for the Git repository to validate."

@@ -178,9 +178,9 @@ function print_help() {
   print_option_usage -i
   print_option_usage -r
   print_option_usage -b
+  print_option_usage -p
   print_option_usage "-t, --tasks" "Declares the Maven goals to invoke."
   print_option_usage "-a, --args" "Sets additional arguments to pass to Maven."
-  print_option_usage -p
   print_option_usage -s
   print_option_usage -h
 }
