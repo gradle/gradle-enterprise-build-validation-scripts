@@ -22,3 +22,10 @@ git_clone_project() {
 git_get_branch() {
   git symbolic-ref -q --short HEAD || git rev-parse --short HEAD
 }
+
+git_checkout_commit() {
+  local commit="$1"
+  info
+  info "Checking out commit ${commit}"
+  git checkout -q "${commit}" || die "ERROR: Unable to checkout commit ${commit}" 1
+}
