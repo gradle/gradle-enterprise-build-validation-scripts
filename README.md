@@ -34,7 +34,7 @@ The command will download and unpack the scripts to the current directory.
 Once you have installed the scripts, you can run the first experiment for Gradle:
 
 ```bash
-cd build-validation-automation-for-gradle
+cd gradle-enterprise-gradle-build-validation
 ./01-validate-incremental-build.sh --interactive
 ```
 
@@ -58,15 +58,15 @@ The following scripts are available for validating Gradle builds:
 
 ### Command Line Arguments
 
-Each script accepts the following command line arguments:
+The scripts accept the following command line arguments:
 
 ```
 -i, --interactive                  Enables interactive mode.
 -r, --git-repo                     Specifies the URL for the Git repository to validate.
 -b, --git-branch                   Specifies the branch for the Git repository to validate.
+-p, --project-dir                  Specifies the build invocation directory within the Git repository.
 -t, --tasks                        Declares the Gradle tasks to invoke.
 -a, --args                         Declares additional arguments to pass to Gradle.
--p, --project-dir                  Specifies the start directory within the Git repo.
 -s, --gradle-enterprise-server     Enables Gradle Enterprise on a project not already connected.
 -e, --enable-gradle-enterprise     Enables Gradle Enterprise on a project that it is not already enabled on.
 -h, --help                         Shows this help message.
@@ -107,15 +107,15 @@ The following scripts are available for validating Maven builds:
 
 ### Command Line Arguments
 
-Each script accepts the following command line arguments:
+The scripts accept the following command line arguments:
 
 ```
 -i, --interactive                  Enables interactive mode.
 -r, --git-repo                     Specifies the URL for the Git repository to validate.
 -b, --git-branch                   Specifies the branch for the Git repository to validate.
+-p, --project-dir                  Specifies the build invocation directory within the Git repository.
 -t, --tasks                        Declares the Maven goals to invoke.
 -a, --args                         Sets additional arguments to pass to Maven.
--p, --project-dir                  Specifies the start directory within the Git repo.
 -s, --gradle-enterprise-server     Enables Gradle Enterprise on a project not already connected.
 -h, --help                         Shows this help message.
 ```
