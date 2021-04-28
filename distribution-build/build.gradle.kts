@@ -5,6 +5,10 @@ plugins {
     id("de.undercouch.download") version "4.1.1"
 }
 
+base {
+  distsDirName = rootDir.toString()
+}
+
 val argbashVersion by extra("2.10.0")
 
 tasks.register<Download>("downloadArgbash") {
@@ -100,23 +104,3 @@ tasks.named("assemble") {
     dependsOn("assembleMavenScripts")
 }
 
-tasks.register<Copy>("publishGradleScripts") {
-    group = "publishing"
-    description = "Publishes the Gradle build validation scripts."
-    from(tasks.named("assembleGradleScripts"))
-    into(rootDir)
-}
-
-tasks.register<Copy>("publishMavenScripts") {
-    group = "publishing"
-    description = "Publishes the Maven build validation scripts."
-    from(tasks.named("assembleMavenScripts"))
-    into(rootDir)
-}
-
-tasks.register("publish") {
-    group = "publishing"
-    description = "Publishes all publications produced by this project."
-    dependsOn("publishGradleScripts")
-    dependsOn("publishMavenScripts")
-}
