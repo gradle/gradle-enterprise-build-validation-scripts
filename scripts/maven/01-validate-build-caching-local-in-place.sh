@@ -63,6 +63,7 @@ wizard_execute() {
 
   make_experiment_dir
 
+  explain_collect_git_details
   collect_git_details
 
   explain_collect_maven_details

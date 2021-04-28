@@ -39,27 +39,62 @@ explain_experiment_dir() {
 $(info "${EXP_DIR}")"
 }
 
+explain_collect_git_details() {
+  local text
+  IFS='' read -r -d '' text <<EOF
+The experiment will run against a fresh checkout of a given project stored
+in Git. The fresh checkout ensures reproducibility of the experiment across
+machines and users since no local changes and commits will be accidentally
+included in the validation process.
+
+You can optionally validate and optimize the project against an existing
+branch until you are satisfied and only then merge any improvements back to
+the main line.
+EOF
+  print_wizard_text "${text}"
+}
+
 explain_collect_gradle_details() {
-  wizard "We need the Gradle task (or tasks) to run on each build of the experiment. If this is the first \
-time you are running the experiment, then you may want to run a task that doesn't take very long to \
-complete. You can run more complete (and longer) builds after you become more comfortable with running \
-the experiment."
+  local text
+  IFS='' read -r -d '' text <<EOF
+Once the project is checked out from Git, the experiment will invoke the
+project’s contained Gradle build with a given set of tasks and an optional
+set of arguments. The Gradle tasks to invoke should resemble what users
+and/or CI typically invoke when building the project.
+
+The build will be invoked from the project’s root directory or from a given
+sub-directory.
+
+In order to become familiar with the experiment, you might want to initially
+choose a task that does not take too long to complete.
+EOF
+  print_wizard_text "${text}"
 }
 
 explain_collect_maven_details() {
-  wizard "We need a Maven goal (or goals) to run on each build of the experiment. If this is the first \
-time you are running the experiment, then you may want to run a goal that doesn't take very long to \
-complete. You can run more complete (and longer) builds after you become more comfortable with running \
-the experiment."
+  local text
+  IFS='' read -r -d '' text <<EOF
+Once the project is checked out from Git, the experiment will invoke the
+project’s contained Maven build with a given set of goals and an optional
+set of arguments. The Maven goals to invoke should resemble what users
+and/or CI typically invoke when building the project.
+
+The build will be invoked from the project’s root directory or from a given
+sub-directory.
+
+In order to become familiar with the experiment, you might want to initially
+choose a goal that does not take too long to complete.
+EOF
+  print_wizard_text "${text}"
 }
 
 explain_clone_project() {
   local text
   IFS='' read -r -d '' text <<EOF
-We are going to create a fresh clone of your project. That way, the
-experiment will be influenced by as few outside factors as possible.
+All configuration has been collected. The experiment can now commence by
+checking out the Git repository that contains the project to validate.
 
-${USER_ACTION_COLOR}Press enter to clone the project.
+${USER_ACTION_COLOR}Press enter to check out the project from Git.
 EOF
   print_wizard_text "${text}"
   wait_for_enter

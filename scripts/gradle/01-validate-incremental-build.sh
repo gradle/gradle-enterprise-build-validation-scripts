@@ -60,6 +60,7 @@ wizard_execute() {
 
   make_experiment_dir
 
+  explain_collect_git_details
   collect_git_details
 
   explain_collect_gradle_details
@@ -129,8 +130,8 @@ In this experiment, you will validate how well a given project leverages
 Gradle’s incremental build functionality. A build is considered fully
 incremental if all tasks avoid performing any work because:
 
-  * The tasks inputs have not changed since their last invocation
-  * The tasks outputs are still present
+  * The tasks' inputs have not changed since their last invocation
+  * The tasks' outputs are still present
 
 The goal of this experiment is to first identify those tasks that do not
 participate in Gradle’s incremental build functionality, to then investigate
@@ -149,8 +150,9 @@ The script you have invoked automates the execution of step 1 and step 2,
 without modifying the project. Build scans support your investigation in
 step 3 and step 4.
 
-After improving the build to make it more incremental, you can run the
-experiment again. This creates a cycle of run → measure → improve → run → …
+After improving the build to make it more incremental, you can push your
+changes and run the experiment again. This creates a cycle of run → measure
+→ improve → run → …
 
 ${USER_ACTION_COLOR}Press <Enter> to get started.${RESTORE}
 EOF
@@ -161,19 +163,11 @@ EOF
 explain_first_build() {
   local text
   IFS='' read -r -d '' text <<EOF
-OK! We are ready to run our first build!
+Now that the project has been checked out, we can run the first build with
+the given configuration. The build will be run with the 'clean' task
+included and build caching disabled.
 
-For this run, we'll execute 'clean ${tasks}'.
-
-We are invoking clean even though we just created a fresh clone because
-sometimes the clean task changes the order other tasks run in, which can
-impact how incremental building works.
-
-We will also add a flag to make sure build caching is disabled (since we are
-just focused on incremental building for now), and we will add a few build
-scan tags.
-
-${USER_ACTION_COLOR}Press <Enter> to run the first build.${RESTORE}
+${USER_ACTION_COLOR}Press <Enter> to run the first build of the experiment.${RESTORE}
 EOF
   print_wizard_text "${text}"
   wait_for_enter
