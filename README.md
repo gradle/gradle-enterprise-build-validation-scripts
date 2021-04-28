@@ -24,7 +24,7 @@ regressions that may sneak into your builds over time.
 Use the following command to download and unpack the validation scripts for Gradle:
 
 ```bash
-curl https://raw.githubusercontent.com/gradle/gradle-enterprise-build-config-samples/jhurne/experiment-automation/build-validation/gradle-enterprise-gradle-build-validation.zip --output gradle-enterprise-gradle-build-validation.zip && unzip gradle-enterprise-gradle-build-validation.zip
+curl https://raw.githubusercontent.com/gradle/gradle-enterprise-build-config-samples/jhurne/experiment-automation/build-validation/gradle-enterprise-gradle-build-validation.zip | tar xv
 ```
 
 The command will download and unpack the scripts to the current directory.
@@ -79,7 +79,7 @@ Each script accepts the following command line arguments:
 Use the following command to download and unpack the validation scripts for Maven:
 
 ```bash
-curl https://raw.githubusercontent.com/gradle/gradle-enterprise-build-config-samples/jhurne/experiment-automation/build-validation/gradle-enterprise-maven-build-validation.zip --output gradle-enterprise-maven-build-validation.zip && unzip gradle-enterprise-maven-build-validation.zip
+curl https://raw.githubusercontent.com/gradle/gradle-enterprise-build-config-samples/jhurne/experiment-automation/build-validation/gradle-enterprise-maven-build-validation.zip | tar xv
 ```
 
 The command will download and unpack the scripts to the current directory.
