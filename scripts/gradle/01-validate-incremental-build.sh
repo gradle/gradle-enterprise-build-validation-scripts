@@ -79,8 +79,7 @@ wizard_execute() {
   print_warnings
   explain_warnings
 
-  explain_summary
-  explain_how_to_repeat_the_experiment
+  explain_and_print_summary
 }
 
 execute_first_build() {
@@ -117,9 +116,9 @@ print_quick_links() {
  local fmt="%-26s%s"
  info "Investigation Quick Links"
  info "-------------------------"
- infof "$fmt" "Build scan comparison:" "${base_url[0]}/c/${scan_id[0]}/${scan_id[1]}/task-inputs"
- infof "$fmt" "Task execution summary:" "${base_url[0]}/s/${scan_id[1]}/performance/execution"
- infof "$fmt" "Executed tasks:" "${base_url[0]}/s/${scan_id[1]}/timeline?outcome=SUCCESS,FAILED&sort=longest"
+ infof "$fmt" "Task execution overview:" "${base_url[0]}/s/${scan_id[1]}/performance/execution"
+ infof "$fmt" "Executed tasks timeline:" "${base_url[0]}/s/${scan_id[1]}/timeline?outcome=SUCCESS,FAILED&sort=longest"
+ infof "$fmt" "Task inputs comparison:" "${base_url[0]}/c/${scan_id[0]}/${scan_id[1]}/task-inputs"
 }
 
 print_introduction() {
@@ -191,56 +190,36 @@ EOF
   wait_for_enter
 }
 
-explain_summary() {
+explain_and_print_summary() {
   read_scan_info
   local text
   IFS='' read -r -d '' text <<EOF
-Builds complete!
+Now that the second build has finished successfully, you are ready to
+measure in Gradle Enterprise how well your build leverages Gradle’s
+incremental build functionality for the invoked set of Gradle tasks.
 
-Now that both builds have completed, there is a lot of valuable data in
-Gradle Enterprise to look at. The data can help you find inefficiencies in
-your build.
+The ‘Summary’ section below captures the configuration of the experiment and
+the two build scans that were published as part of running the experiment.
+The build scan of the second build is particularly interesting since this is
+where you can inspect what tasks were not leveraging Gradle’s incremental
+build functionality.
 
-After running the experiment, this script will generate a summary table of
-useful data and links to help you analyze the experiment results:
+The ‘Investigation Quick Links’ section below allows quick navigation to the
+most relevant views in build scans to investigate what tasks were uptodate
+and what tasks executed in the second build, what tasks that executed in the
+second build had the biggest impact on build performance, and what caused
+the tasks that executed in the second build to not be uptodate.
 
-$(print_experiment_info)
+The ‘Command line invocation’ section below demonstrates how you can rerun
+the experiment with the same configuration and in non-interactive mode.
 
-"Experiment id" and "Experiment run id" are added as tags on the build
-scans.
+$(print_summary)
 
-You can use the "Experiment id" to find all of the build scans for all runs
-of this experiment.
+$(print_command_to_repeat_experiment)
 
-Every time you run this script, we'll generate a unique "Experiment run id".
-You can use the run id to search for the build scans from a specific run of the
-experiment.
-
-$(print_build_scans)
-
-Above are links to the build scans from this experiment. A build scan provides
-a wealth of information and statistics about the build execution.
-
-$(print_quick_links)
-
-Use the above links help you get started in your analysis.
-
-The first link is to a comparison of the two build scans. Comparisons show you
-what was different between two different build executions.
-
-The "Task execution summary" shows overall statistics for the execution of
-the second build. You can use this link to get a quick overview of where
-there may be overall opportunities to optimize.
-
-The "Executed tasks" link takes you to the timeline view of the second build
-scan and automatically shows only the tasks that were executed, sorted by
-execution time (with the longest-running tasks listed first). You can use
-this to quickly identify tasks that were executed again unnecessarily. You
-will want to optimize any such tasks that take a significant amount of time
-to complete.
-
-Take some time to explore all of the links. You might be surprised by what
-you find!
+Once you have addressed the issues surfaced in build scans and pushed the
+changes to your repository, you can rerun the experiment and start over the
+run → measure → improve cycle.
 EOF
   print_wizard_text "${text}"
 }

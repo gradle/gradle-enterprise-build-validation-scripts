@@ -131,6 +131,8 @@ print_command_to_repeat_experiment() {
     cmd+=("-e")
   fi
 
+  info "Command line invocation"
+  info "-----------------------"
   info "$(printf '%q ' "${cmd[@]}")"
 }
 

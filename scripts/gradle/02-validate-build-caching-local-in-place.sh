@@ -132,10 +132,10 @@ print_quick_links() {
  local fmt="%-25s%-10s"
  info "Investigation Quick Links"
  info "-------------------------"
- infof "$fmt" "Build scan comparison:" "${base_url[0]}/c/${scan_id[0]}/${scan_id[1]}/task-inputs?cacheability=cacheable"
- infof "$fmt" "Task execution summary:" "${base_url[0]}/s/${scan_id[1]}/performance/execution"
+ infof "$fmt" "Task execution overview:" "${base_url[0]}/s/${scan_id[1]}/performance/execution"
  infof "$fmt" "Cache performance:" "${base_url[0]}/s/${scan_id[1]}/performance/build-cache"
- infof "$fmt" "Executed tasks:" "${base_url[0]}/s/${scan_id[1]}/timeline?outcome=SUCCESS,FAILED&sort=longest"
+ infof "$fmt" "Executed tasks timeline:" "${base_url[0]}/s/${scan_id[1]}/timeline?outcome=SUCCESS,FAILED&sort=longest"
+ infof "$fmt" "Task inputs comparison:" "${base_url[0]}/c/${scan_id[0]}/${scan_id[1]}/task-inputs"
  infof "$fmt" "Executed cacheable tasks:" "${base_url[0]}/s/${scan_id[1]}/timeline?cacheableFilter=cacheable&outcomeFilter=SUCCESS,FAILED&sorted=longest"
  infof "$fmt" "Non-cacheable tasks:" "${base_url[0]}/s/${scan_id[1]}/timeline?cacheableFilter=any_non-cacheable&outcomeFilter=SUCCESS,FAILED&sorted=longest"
 }

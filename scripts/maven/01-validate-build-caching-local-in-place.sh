@@ -127,10 +127,10 @@ print_quick_links() {
  local fmt="%-25s%-10s"
  info "Investigation Quick Links"
  info "-------------------------"
- infof "$fmt" "Build scan comparison:" "${base_url[0]}/c/${scan_id[0]}/${scan_id[1]}/goal-inputs?cacheability=cacheable"
- infof "$fmt" "Task execution summary:" "${base_url[0]}/s/${scan_id[1]}/performance/execution"
+ infof "$fmt" "Task execution overview:" "${base_url[0]}/s/${scan_id[1]}/performance/execution"
  infof "$fmt" "Cache performance:" "${base_url[0]}/s/${scan_id[1]}/performance/build-cache"
- infof "$fmt" "Executed goals:" "${base_url[0]}/s/${scan_id[1]}/timeline?outcome=successful&sort=longest"
+ infof "$fmt" "Executed goals timeline:" "${base_url[0]}/s/${scan_id[1]}/timeline?outcome=successful&sort=longest"
+ infof "$fmt" "Goal inputs comparison:" "${base_url[0]}/c/${scan_id[0]}/${scan_id[1]}/goal-inputs?cacheability=cacheable"
  infof "$fmt" "Executed cacheable goals:" "${base_url[0]}/s/${scan_id[1]}/timeline?cacheableFilter=cacheable&outcomeFilter=successful&sorted=longest"
  infof "$fmt" "Non-cacheable goals:" "${base_url[0]}/s/${scan_id[1]}/timeline?cacheableFilter=any_non-cacheable&outcomeFilter=successful&sorted=longest"
 }
