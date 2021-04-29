@@ -134,7 +134,7 @@ print_build_scans() {
 
 print_quick_links() {
  local fmt="%-25s%-10s"
- info "Investigation quick links"
+ info "Investigation Quick Links"
  info "-------------------------"
  infof "$fmt" "Build scan comparison:" "${base_url[0]}/c/${scan_id[0]}/${scan_id[1]}/task-inputs?cacheability=cacheable"
  infof "$fmt" "Task execution summary:" "${base_url[0]}/s/${scan_id[1]}/performance/execution"
