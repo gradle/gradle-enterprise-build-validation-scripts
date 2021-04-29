@@ -113,6 +113,10 @@ print_command_to_repeat_experiment() {
     cmd+=("-b" "${git_branch}")
   fi
 
+  if [ -n "${project_dir}" ]; then
+    cmd+=("-p" "${project_dir}")
+  fi
+
   cmd+=("-t" "${tasks}")
 
   if [ -n "${extra_args}" ]; then
