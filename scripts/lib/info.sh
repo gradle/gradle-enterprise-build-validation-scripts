@@ -44,6 +44,11 @@ print_experiment_info() {
  infof "$fmt" "Project:" "${project_name}"
  infof "$fmt" "Git repo:" "${git_repo}"
  infof "$fmt" "Git branch:" "${branch}"
+ if [ -z "${project_dir}" ]; then
+   infof "$fmt" "Project dir:" "/"
+ else
+   infof "$fmt" "Project dir:" "${project_dir}"
+ fi
  if [[ "${BUILD_TOOL}" == "Maven" ]]; then
    infof "$fmt" "Maven goals:" "${tasks}"
    infof "$fmt" "Maven arguments:" "${extra_args}"
