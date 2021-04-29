@@ -56,7 +56,7 @@ print_experiment_info() {
    infof "$fmt" "Gradle tasks:" "${tasks}"
    infof "$fmt" "Gradle arguments:" "${extra_args}"
  fi
- infof "$fmt" "Experiment:" "${EXP_NO}-${EXP_NAME}"
+ infof "$fmt" "Experiment:" "${EXP_NO} ${EXP_NAME}"
  infof "$fmt" "Experiment id:" "${EXP_SCAN_TAG}"
  infof "$fmt" "Experiment run id:" "${RUN_ID}"
  infof "$fmt" "Experiment artifact dir:" "${EXP_DIR}"

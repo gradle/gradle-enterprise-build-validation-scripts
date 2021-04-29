@@ -8,7 +8,7 @@ readonly SCRIPT_DIR="$(cd "$(dirname "$(readlink -e "${BASH_SOURCE[0]}")")" && p
 readonly LIB_DIR="${SCRIPT_DIR}/../lib"
 
 # Experiment-specific constants
-readonly EXP_NAME="Validating that a Gradle build is optimized for incremental building"
+readonly EXP_NAME="Validate Gradle Incremental Build"
 readonly EXP_NO="01"
 readonly EXP_SCAN_TAG=exp1-gradle
 readonly EXP_DIR="${SCRIPT_DIR}/data/${SCRIPT_NAME%.*}"
