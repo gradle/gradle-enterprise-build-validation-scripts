@@ -60,7 +60,6 @@ EOF
 explain_collect_gradle_details() {
   local text
   IFS='' read -r -d '' text <<EOF
-$(print_separator)
 Once the project is checked out from Git, the experiment will invoke the
 project’s contained Gradle build with a given set of tasks and an optional
 set of arguments. The Gradle tasks to invoke should resemble what users
@@ -79,7 +78,6 @@ EOF
 explain_collect_maven_details() {
   local text
   IFS='' read -r -d '' text <<EOF
-$(print_separator)
 Once the project is checked out from Git, the experiment will invoke the
 project’s contained Maven build with a given set of goals and an optional
 set of arguments. The Maven goals to invoke should resemble what users
