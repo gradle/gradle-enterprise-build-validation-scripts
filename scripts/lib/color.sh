@@ -17,3 +17,5 @@ readonly BOX_COLOR=""
 readonly USER_ACTION_COLOR="${WHITE}"
 readonly INFO_COLOR="${YELLOW}${BOLD}"
 readonly ERROR_COLOR="${RED}${BOLD}"
+readonly HEADER_COLOR="${WHITE}${BOLD}"
+

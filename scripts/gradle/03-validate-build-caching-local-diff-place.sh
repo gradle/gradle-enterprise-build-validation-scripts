@@ -194,6 +194,8 @@ explain_local_cache_dir() {
   local text
   IFS='' read -r -d '' text <<EOF
 $(print_separator)
+${HEADER_COLOR}Local build cache dir${RESTORE}
+
 We are going to create a new empty local build cache dir (and configure
 Gradle to use it instead of the default local cache dir). This way, the
 first build won't find anything in the cache and all tasks will run.
@@ -217,6 +219,8 @@ explain_first_clone_project(){
   local text
   IFS='' read -r -d '' text <<EOF
 $(print_separator)
+${HEADER_COLOR}First check out${RESTORE}
+
 For the first build, we are going create a fresh clone of the project.  That
 way, the experiment will be influenced by as few outside factors as
 possible.
@@ -233,6 +237,8 @@ explain_first_build() {
   local text
   IFS='' read -r -d '' text <<EOF
 $(print_separator)
+${HEADER_COLOR}First build${RESTORE}
+
 We are now ready to run the first build.
 
 We will execute 'clean ${tasks}'.
@@ -253,6 +259,8 @@ explain_second_clone_project(){
   local text
   IFS='' read -r -d '' text <<EOF
 $(print_separator)
+${HEADER_COLOR}Second check out${RESTORE}
+
 Before running the second build, we are going to clone the project into a
 different directory. If all goes well, the second build will use the build
 cache in exactly the same way as it does when we run multiple builds from
@@ -269,6 +277,8 @@ explain_second_build() {
   local text
   IFS='' read -r -d '' text <<EOF
 $(print_separator)
+${HEADER_COLOR}Second build${RESTORE}
+
 Now we are going to run the build again without changing anything, other
 than the location (we're running this against the second clone of the
 project).
@@ -289,6 +299,8 @@ explain_summary() {
   local text
   IFS='' read -r -d '' text <<EOF
 $(print_separator)
+${HEADER_COLOR}Investigation${RESTORE}
+
 Now that both builds have completed, there is a lot of valuable data in
 Gradle Enterprise to look at. The data can help you find ineffiencies in
 your build.

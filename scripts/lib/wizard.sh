@@ -31,7 +31,7 @@ print_separator() {
 
 print_introduction_title() {
   cat <<EOF
-${WHITE}Gradle Enterprise
+${HEADER_COLOR}Gradle Enterprise
 
 Experiment ${EXP_NO}: ${EXP_DESCRIPTION}${RESTORE}
 EOF
@@ -46,6 +46,8 @@ explain_collect_git_details() {
   local text
   IFS='' read -r -d '' text <<EOF
 $(print_separator)
+${HEADER_COLOR}Configuration${RESTORE}
+
 The experiment will run against a fresh checkout of a given project stored in
 Git. The fresh checkout ensures reproducibility of the experiment across
 machines and users since no local changes and commits will be accidentally
@@ -100,6 +102,8 @@ explain_clone_project() {
   local text
   IFS='' read -r -d '' text <<EOF
 $(print_separator)
+${HEADER_COLOR}Check out Git repo${RESTORE}
+
 All configuration to run the experiment has been collected. In the first
 step of the experiment, the Git repository that contains the project to
 validate will be checked out.

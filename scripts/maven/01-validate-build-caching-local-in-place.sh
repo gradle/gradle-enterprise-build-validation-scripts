@@ -179,6 +179,8 @@ explain_local_cache_dir() {
   local text
   IFS='' read -r -d '' text <<EOF
 $(print_separator)
+${HEADER_COLOR}Local build cache dir${RESTORE}
+
 We are going to create a new empty local build cache dir (and configure
 Gradle to use it instead of the default local cache dir). This way, the
 first build won't find anything in the cache and all goals will run.
@@ -202,6 +204,8 @@ explain_first_build() {
   local text
   IFS='' read -r -d '' text <<EOF
 $(print_separator)
+${HEADER_COLOR}First build${RESTORE}
+
 OK! We are ready to run our first build!
 
 For this run, we'll execute 'clean ${tasks}'.
@@ -218,6 +222,8 @@ explain_second_build() {
   local text
   IFS='' read -r -d '' text <<EOF
 $(print_separator)
+${HEADER_COLOR}Second build${RESTORE}
+
 Now we are going to run the build again without changing anything.
 
 In a fully optimized build, no goals would run on this second build because
@@ -236,6 +242,8 @@ explain_summary() {
   local text
   IFS='' read -r -d '' text <<EOF
 $(print_separator)
+${HEADER_COLOR}Investigation${RESTORE}
+
 Now that both builds have completed, there is a lot of valuable data in
 Gradle Enterprise to look at. The data can help you find ineffiencies in
 your build.

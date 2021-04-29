@@ -164,6 +164,8 @@ explain_first_build() {
   local text
   IFS='' read -r -d '' text <<EOF
 $(print_separator)
+${HEADER_COLOR}First build${RESTORE}
+
 Now that the project has been checked out, the first build can be run with the
 given Gradle tasks. The build will be invoked with the 'clean' task included
 and build caching disabled.
@@ -178,6 +180,8 @@ explain_second_build() {
   local text
   IFS='' read -r -d '' text <<EOF
 $(print_separator)
+${HEADER_COLOR}Second build${RESTORE}
+
 Now that the first build has finished successfully, the second build can be run
 with the same Gradle tasks. This time, the build will be invoked without the
 'clean' task included and build caching still disabled.
@@ -193,6 +197,8 @@ explain_and_print_summary() {
   local text
   IFS='' read -r -d '' text <<EOF
 $(print_separator)
+${HEADER_COLOR}Investigation${RESTORE}
+
 Now that the second build has finished successfully, you are ready to measure in
 Gradle Enterprise how well your build leverages Gradle’s incremental build
 functionality for the invoked set of Gradle tasks.
