@@ -10,6 +10,7 @@ readonly LIB_DIR="${SCRIPT_DIR}/../lib"
 
 # Experiment-speicifc constants
 readonly EXP_NAME="Validate Build Caching - Local - In Place"
+readonly EXP_DESCRIPTION="Validating that a Maven build is optimized for local in-place build caching"
 readonly EXP_NO="01"
 readonly EXP_SCAN_TAG=exp1-maven
 readonly EXP_DIR="${SCRIPT_DIR}/data/${SCRIPT_NAME%.*}"

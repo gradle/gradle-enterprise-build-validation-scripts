@@ -10,6 +10,7 @@ readonly LIB_DIR="${SCRIPT_DIR}/../lib"
 
 # Experiment-speicifc constants
 readonly EXP_NAME="Validate Build Caching - Local - Different Places"
+readonly EXP_DESCRIPTION="Validating that a Gradle build is optimized for local build caching in different places"
 readonly EXP_NO="03"
 readonly EXP_SCAN_TAG=exp3-gradle
 readonly EXP_DIR="${SCRIPT_DIR}/data/${SCRIPT_NAME%.*}"
