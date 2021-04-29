@@ -1,4 +1,7 @@
 import org.gradle.util.GradleVersion
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
+
 
 initscript {
     def gradleEnterprisePluginVersion = "3.6.1"
@@ -63,6 +66,8 @@ void configureGradleEnterprise(extension) {
              uploadInBackground = false
              publishAlways()
          }
+
+        addCustomData(buildScan)
     }
 }
 
@@ -77,4 +82,35 @@ void logMissingCommonCustomUserMetadataPlugin() {
 void logWarning(String warning) {
    def warningFile = new File(gradle.startParameter.currentDir, "../warnings.txt")
    warningFile.append(warning + "\n")
+}
+
+void addCustomData(buildScan) {
+    def projectProperties = gradle.startParameter.projectProperties
+    if (projectProperties.containsKey("com.gradle.enterprise.init.script.expId")) {
+        def expId = projectProperties.get("com.gradle.enterprise.init.script.expId")
+        addCustomValueAndSearchLink(buildScan, "Experiment id", expId)
+        buildScan.tag(expId)
+    }
+    if (projectProperties.containsKey("com.gradle.enterprise.init.script.runId")) {
+        def runId = projectProperties.get("com.gradle.enterprise.init.script.runId")
+        addCustomValueAndSearchLink(buildScan, "Experiment run id", runId)
+    }
+}
+
+void addCustomValueAndSearchLink(buildScan, String label, String value) {
+    buildScan.value(label, value);
+    String server = buildScan.getServer();
+    if (server != null) {
+        String searchParams = "search.names=" + urlEncode(label) + "&search.values=" + urlEncode(value);
+        String url = appendIfMissing(server, "/") + "scans?" + searchParams + "#selection.buildScanB=" + urlEncode("{SCAN_ID}");
+        buildScan.link(label + " build scans", url);
+    }
+}
+
+String appendIfMissing(String str, String suffix) {
+    return str.endsWith(suffix) ? str : str + suffix;
+}
+
+String urlEncode(String str) {
+    return URLEncoder.encode(str, StandardCharsets.UTF_8.name());
 }

@@ -28,8 +28,8 @@ invoke_gradle() {
       --init-script "${lib_dir_rel}/gradle/capture-build-scans.gradle" \
       ${ge_server_arg} \
       -Pcom.gradle.enterprise.init.script.experimentDir="${EXP_DIR}" \
-      -Dscan.tag.${EXP_SCAN_TAG} \
-      -Dscan.tag."${RUN_ID}" \
+      -Pcom.gradle.enterprise.init.script.expId=${EXP_SCAN_TAG} \
+      -Pcom.gradle.enterprise.init.script.runId="${RUN_ID}" \
       -Dscan.capture-task-input-files \
       ${extra_args} \
       "$@" \
