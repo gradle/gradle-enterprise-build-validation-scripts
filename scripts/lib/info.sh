@@ -45,7 +45,7 @@ print_experiment_info() {
  infof "$fmt" "Git repo:" "${git_repo}"
  infof "$fmt" "Git branch:" "${branch}"
  if [ -z "${project_dir}" ]; then
-   infof "$fmt" "Project dir:" "/"
+   infof "$fmt" "Project dir:" "."
  else
    infof "$fmt" "Project dir:" "${project_dir}"
  fi
