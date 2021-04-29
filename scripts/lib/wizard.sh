@@ -18,13 +18,16 @@ wait_for_enter() {
 }
 
 
-print_wizard_text()
-{
+print_wizard_text() {
   echo "${RESTORE}"
   printf '=%.0s' {1..80}
   echo
   echo -n "$@"
   echo
+}
+
+print_separator() {
+  printf '=%.0s' {1..80}
 }
 
 print_introduction_title() {

@@ -141,14 +141,14 @@ tasks are worth improving to make your build faster.
 The experiment can be run on any developer’s machine. It logically consists of
 the following steps:
 
-  1. Run the Gradle build with a typical task invocation including the `clean` task
-  2. Run the Gradle build with the same task invocation but without the `clean` task
+  1. Run the Gradle build with a typical task invocation including the 'clean' task
+  2. Run the Gradle build with the same task invocation but without the 'clean' task
   3. Determine which tasks are still executed in the second run and why
   4. Assess which of the executed tasks are worth improving
 
 The script you have invoked automates the execution of step 1 and step 2,
 without modifying the project. Build scans support your investigation in step 3
-and step 4. 
+and step 4.
 
 After improving the build to make it more incremental, you can push your
 changes and run the experiment again. This creates a cycle of run → measure →
