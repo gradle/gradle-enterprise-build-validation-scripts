@@ -148,7 +148,6 @@ print_quick_links() {
 print_introduction() {
   local text
   IFS='' read -r -d '' text <<EOF
-$(print_separator)
 $(print_introduction_title)
 
 This is the third of several experiments designed to help you

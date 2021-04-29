@@ -32,6 +32,7 @@ print_separator() {
 print_introduction_title() {
   cat <<EOF
 ${WHITE}Gradle Enterprise
+
 Experiment ${EXP_NO}: ${EXP_DESCRIPTION}${RESTORE}
 EOF
 }
@@ -60,6 +61,7 @@ EOF
 explain_collect_gradle_details() {
   local text
   IFS='' read -r -d '' text <<EOF
+
 Once the project is checked out from Git, the experiment will invoke the
 project’s contained Gradle build with a given set of tasks and an optional
 set of arguments. The Gradle tasks to invoke should resemble what users
@@ -78,6 +80,7 @@ EOF
 explain_collect_maven_details() {
   local text
   IFS='' read -r -d '' text <<EOF
+
 Once the project is checked out from Git, the experiment will invoke the
 project’s contained Maven build with a given set of goals and an optional
 set of arguments. The Maven goals to invoke should resemble what users
@@ -101,7 +104,7 @@ All configuration to run the experiment has been collected. In the first
 step of the experiment, the Git repository that contains the project to
 validate will be checked out.
 
-${USER_ACTION_COLOR}Press enter to check out the project from Git.
+${USER_ACTION_COLOR}Press <Enter> to check out the project from Git.
 EOF
   print_wizard_text "${text}"
   wait_for_enter

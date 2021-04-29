@@ -124,7 +124,6 @@ print_quick_links() {
 print_introduction() {
   local text
   IFS='' read -r -d '' text <<EOF
-$(print_separator)
 $(print_introduction_title)
 
 In this experiment, you will validate how well a given project leverages
@@ -212,7 +211,6 @@ the tasks that executed in the second build to not be uptodate.
 
 The ‘Command line invocation’ section below demonstrates how you can rerun
 the experiment with the same configuration and in non-interactive mode.
-
 $(print_summary)
 
 $(print_command_to_repeat_experiment)
@@ -226,4 +224,3 @@ EOF
 
 process_arguments "$@"
 main
-
