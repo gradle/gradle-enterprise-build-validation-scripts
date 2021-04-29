@@ -94,7 +94,7 @@ tasks.register<Zip>("assembleMavenScripts") {
         exclude("**/*.m4")
         filter { line: String -> line.replace("/../lib", "/lib") }
     }
-    from(project(":helpers:capture-build-scans-maven-extension")!!.tasks.getByName("jar")) {
+    from(project(":components:capture-build-scans-maven-extension")!!.tasks.getByName("jar")) {
         into("lib/maven/")
     }
     into(baseName)
