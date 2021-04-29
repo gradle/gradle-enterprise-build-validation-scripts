@@ -110,7 +110,7 @@ execute_build() {
   local lib_dir_rel
   lib_dir_rel="$(relative_lib_path)"
 
-  info "./gradlew -Dscan.tag.${EXP_SCAN_TAG} -Dscan.tag.${RUN_ID} clean ${tasks}$(print_extra_args)"
+  info "./gradlew -Dscan.tag.${EXP_SCAN_TAG} clean ${tasks}$(print_extra_args)"
 
   invoke_gradle \
      --init-script "${lib_dir_rel}/gradle/use-local-build-cache-only.gradle" \
@@ -216,7 +216,7 @@ explain_first_clone_project(){
   local text
   IFS='' read -r -d '' text <<EOF
 For the first build, we are going create a fresh clone of the project.  That
-way, the experiment will be infleunced by as few outside factors as
+way, the experiment will be influenced by as few outside factors as
 possible.
 
 We'll use a different clone of the project for the second build.
