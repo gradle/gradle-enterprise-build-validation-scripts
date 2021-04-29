@@ -47,9 +47,9 @@ in Git. The fresh checkout ensures reproducibility of the experiment across
 machines and users since no local changes and commits will be accidentally
 included in the validation process.
 
-You can optionally validate and optimize the project against an existing
-branch until you are satisfied and only then merge any improvements back to
-the main line.
+Optionally, the project can be validated and optimized against an existing
+branch and only merged back to the main line once all improvements are
+completed.
 EOF
   print_wizard_text "${text}"
 }
@@ -65,8 +65,9 @@ and/or CI typically invoke when building the project.
 The build will be invoked from the project’s root directory or from a given
 sub-directory.
 
-In order to become familiar with the experiment, you might want to initially
-choose a task that does not take too long to complete.
+In order to become familiar with the experiment, it is advisable to
+initially choose a task that does not take too long to complete, for example
+the 'assemble' task.
 EOF
   print_wizard_text "${text}"
 }
@@ -82,8 +83,9 @@ and/or CI typically invoke when building the project.
 The build will be invoked from the project’s root directory or from a given
 sub-directory.
 
-In order to become familiar with the experiment, you might want to initially
-choose a goal that does not take too long to complete.
+In order to become familiar with the experiment, it is advisable to
+initially choose a goal that does not take too long to complete, for example
+the 'install' goal.
 EOF
   print_wizard_text "${text}"
 }
@@ -91,8 +93,9 @@ EOF
 explain_clone_project() {
   local text
   IFS='' read -r -d '' text <<EOF
-All configuration has been collected. The experiment can now commence by
-checking out the Git repository that contains the project to validate.
+All configuration to run the experiment has been collected. In the first
+step of the experiment, the Git repository that contains the project to
+validate will be checked out.
 
 ${USER_ACTION_COLOR}Press enter to check out the project from Git.
 EOF
@@ -106,7 +109,7 @@ explain_warnings() {
   if [ -f "${warnings_file}" ]; then
     local text
     IFS='' read -r -d '' text <<EOF
-When running the builds, I detected some suboptimal configurations, which
+When running the builds, some suboptimal configurations where detected which
 are listed above. These aren't necessarily problems, but resolving these
 warnings will allow you to take full advantage of Gradle Enterprise.
 

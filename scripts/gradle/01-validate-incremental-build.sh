@@ -130,31 +130,31 @@ In this experiment, you will validate how well a given project leverages
 Gradle’s incremental build functionality. A build is considered fully
 incremental if all tasks avoid performing any work because:
 
-  * The tasks' inputs have not changed since their last invocation
-  * The tasks' outputs are still present
+  * The tasks’ inputs have not changed since their last invocation and
+  * The tasks’ outputs are still present
 
-The goal of this experiment is to first identify those tasks that do not
+The goal of the experiment is to first identify those tasks that do not
 participate in Gradle’s incremental build functionality, to then investigate
-why they do not participate, and to finally make an informed decision of
-which tasks are worth improving to make your build faster.
+why they do not participate, and to finally make an informed decision of which
+tasks are worth improving to make your build faster.
 
-This experiment can be run on any developer’s machine. It logically consists
-of the following steps:
+The experiment can be run on any developer’s machine. It logically consists of
+the following steps:
 
-  1. Run the Gradle build with a typical task invocation including the 'clean' task
-  2. Run the Gradle build with the same task invocation but without the 'clean' task
+  1. Run the Gradle build with a typical task invocation including the `clean` task
+  2. Run the Gradle build with the same task invocation but without the `clean` task
   3. Determine which tasks are still executed in the second run and why
   4. Assess which of the executed tasks are worth improving
 
 The script you have invoked automates the execution of step 1 and step 2,
-without modifying the project. Build scans support your investigation in
-step 3 and step 4.
+without modifying the project. Build scans support your investigation in step 3
+and step 4. 
 
 After improving the build to make it more incremental, you can push your
-changes and run the experiment again. This creates a cycle of run → measure
-→ improve → run → …
+changes and run the experiment again. This creates a cycle of run → measure →
+improve → run → …
 
-${USER_ACTION_COLOR}Press <Enter> to get started.${RESTORE}
+${USER_ACTION_COLOR}Press <Enter> to get started with the experiment.${RESTORE}
 EOF
   print_wizard_text "${text}"
   wait_for_enter
@@ -163,9 +163,9 @@ EOF
 explain_first_build() {
   local text
   IFS='' read -r -d '' text <<EOF
-Now that the project has been checked out, we can run the first build with
-the given configuration. The build will be run with the 'clean' task
-included and build caching disabled.
+Now that the project has been checked out, the first build can be run with the
+given Gradle tasks. The build will be invoked with the 'clean' task included
+and build caching disabled.
 
 ${USER_ACTION_COLOR}Press <Enter> to run the first build of the experiment.${RESTORE}
 EOF
@@ -176,15 +176,12 @@ EOF
 explain_second_build() {
   local text
   IFS='' read -r -d '' text <<EOF
-Now we are going to run the build again, but this time we will invoke it
-without 'clean'. This will let us see how well the build takes advantage of
-Gradle's incremental build.
 
-In a fully optimized build, no tasks should run on this second build because
-we already built everything in the first build. If some tasks do run, they
-will show up in the build scan for this second build.
+Now that the first build has finished successfully, the second build can be run
+with the same Gradle tasks. This time, the build will be invoked without the
+'clean' task included and build caching still disabled.
 
-${USER_ACTION_COLOR}Press <Enter> to run the second build.${RESTORE}
+${USER_ACTION_COLOR}Press <Enter> to run the second build of the experiment.${RESTORE}
 EOF
   print_wizard_text "$text"
   wait_for_enter
