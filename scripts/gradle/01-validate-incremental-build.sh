@@ -124,6 +124,7 @@ print_quick_links() {
 print_introduction() {
   local text
   IFS='' read -r -d '' text <<EOF
+$(print_separator)
 $(print_introduction_title)
 
 In this experiment, you will validate how well a given project leverages
@@ -163,6 +164,7 @@ EOF
 explain_first_build() {
   local text
   IFS='' read -r -d '' text <<EOF
+$(print_separator)
 Now that the project has been checked out, the first build can be run with the
 given Gradle tasks. The build will be invoked with the 'clean' task included
 and build caching disabled.
@@ -176,7 +178,7 @@ EOF
 explain_second_build() {
   local text
   IFS='' read -r -d '' text <<EOF
-
+$(print_separator)
 Now that the first build has finished successfully, the second build can be run
 with the same Gradle tasks. This time, the build will be invoked without the
 'clean' task included and build caching still disabled.
@@ -191,6 +193,7 @@ explain_and_print_summary() {
   read_scan_info
   local text
   IFS='' read -r -d '' text <<EOF
+$(print_separator)
 Now that the second build has finished successfully, you are ready to
 measure in Gradle Enterprise how well your build leverages Gradle’s
 incremental build functionality for the invoked set of Gradle tasks.

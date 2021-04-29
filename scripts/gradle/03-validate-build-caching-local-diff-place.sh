@@ -148,6 +148,7 @@ print_quick_links() {
 print_introduction() {
   local text
   IFS='' read -r -d '' text <<EOF
+$(print_separator)
 $(print_introduction_title)
 
 This is the third of several experiments designed to help you
@@ -193,6 +194,7 @@ EOF
 explain_local_cache_dir() {
   local text
   IFS='' read -r -d '' text <<EOF
+$(print_separator)
 We are going to create a new empty local build cache dir (and configure
 Gradle to use it instead of the default local cache dir). This way, the
 first build won't find anything in the cache and all tasks will run.
@@ -215,6 +217,7 @@ EOF
 explain_first_clone_project(){
   local text
   IFS='' read -r -d '' text <<EOF
+$(print_separator)
 For the first build, we are going create a fresh clone of the project.  That
 way, the experiment will be influenced by as few outside factors as
 possible.
@@ -230,6 +233,7 @@ EOF
 explain_first_build() {
   local text
   IFS='' read -r -d '' text <<EOF
+$(print_separator)
 We are now ready to run the first build.
 
 We will execute 'clean ${tasks}'.
@@ -249,6 +253,7 @@ EOF
 explain_second_clone_project(){
   local text
   IFS='' read -r -d '' text <<EOF
+$(print_separator)
 Before running the second build, we are going to clone the project into a
 different directory. If all goes well, the second build will use the build
 cache in exactly the same way as it does when we run multiple builds from
@@ -264,6 +269,7 @@ EOF
 explain_second_build() {
   local text
   IFS='' read -r -d '' text <<EOF
+$(print_separator)
 Now we are going to run the build again without changing anything, other
 than the location (we're running this against the second clone of the
 project).
@@ -283,6 +289,7 @@ explain_summary() {
   read_scan_info
   local text
   IFS='' read -r -d '' text <<EOF
+$(print_separator)
 Now that both builds have completed, there is a lot of valuable data in
 Gradle Enterprise to look at. The data can help you find ineffiencies in
 your build.
@@ -345,4 +352,3 @@ EOF
 
 process_arguments "$@"
 main
-

@@ -20,14 +20,13 @@ wait_for_enter() {
 
 print_wizard_text() {
   echo "${RESTORE}"
-  printf '=%.0s' {1..80}
-  echo
   echo -n "$@"
   echo
 }
 
 print_separator() {
   printf '=%.0s' {1..80}
+  echo
 }
 
 print_introduction_title() {
@@ -45,6 +44,7 @@ $(info "${EXP_DIR}")"
 explain_collect_git_details() {
   local text
   IFS='' read -r -d '' text <<EOF
+$(print_separator)
 The experiment will run against a fresh checkout of a given project stored
 in Git. The fresh checkout ensures reproducibility of the experiment across
 machines and users since no local changes and commits will be accidentally
@@ -60,6 +60,7 @@ EOF
 explain_collect_gradle_details() {
   local text
   IFS='' read -r -d '' text <<EOF
+$(print_separator)
 Once the project is checked out from Git, the experiment will invoke the
 project’s contained Gradle build with a given set of tasks and an optional
 set of arguments. The Gradle tasks to invoke should resemble what users
@@ -78,6 +79,7 @@ EOF
 explain_collect_maven_details() {
   local text
   IFS='' read -r -d '' text <<EOF
+$(print_separator)
 Once the project is checked out from Git, the experiment will invoke the
 project’s contained Maven build with a given set of goals and an optional
 set of arguments. The Maven goals to invoke should resemble what users
@@ -96,6 +98,7 @@ EOF
 explain_clone_project() {
   local text
   IFS='' read -r -d '' text <<EOF
+$(print_separator)
 All configuration to run the experiment has been collected. In the first
 step of the experiment, the Git repository that contains the project to
 validate will be checked out.
@@ -112,6 +115,7 @@ explain_warnings() {
   if [ -f "${warnings_file}" ]; then
     local text
     IFS='' read -r -d '' text <<EOF
+$(print_separator)
 When running the builds, some suboptimal configurations where detected which
 are listed above. These aren't necessarily problems, but resolving these
 warnings will allow you to take full advantage of Gradle Enterprise.
@@ -127,6 +131,7 @@ explain_how_to_repeat_the_experiment() {
   read_scan_info
   local text
   cat <<EOF
+$(print_separator)
 Below is the command you can use to repeat the experiment (without running
 in interactive mode):
 
@@ -137,4 +142,3 @@ have implemented. It is also a best practice to repeat the experiment
 periodically (so as to catch regressions in the build optimization).
 EOF
 }
-

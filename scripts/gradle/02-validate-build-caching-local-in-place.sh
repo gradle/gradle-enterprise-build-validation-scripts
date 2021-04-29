@@ -143,6 +143,7 @@ print_quick_links() {
 print_introduction() {
   local text
   IFS='' read -r -d '' text <<EOF
+$(print_separator)
 $(print_introduction_title)
 
 This is the second of several experiments designed to help you
@@ -185,6 +186,7 @@ EOF
 explain_local_cache_dir() {
   local text
   IFS='' read -r -d '' text <<EOF
+$(print_separator)
 We are going to create a new empty local build cache dir (and configure
 Gradle to use it instead of the default local cache dir). This way, the
 first build won't find anything in the cache and all tasks will run.
@@ -207,6 +209,7 @@ EOF
 explain_first_build() {
   local text
   IFS='' read -r -d '' text <<EOF
+$(print_separator)
 OK! We are ready to run our first build!
 
 For this run, we'll execute 'clean ${tasks}'.
@@ -226,6 +229,7 @@ EOF
 explain_second_build() {
   local text
   IFS='' read -r -d '' text <<EOF
+$(print_separator)
 Now we are going to run the build again without changing anything.
 
 In a fully optimized build, no tasks would run on this second build because
@@ -243,6 +247,7 @@ explain_summary() {
   read_scan_info
   local text
   IFS='' read -r -d '' text <<EOF
+$(print_separator)
 Now that both builds have completed, there is a lot of valuable data in
 Gradle Enterprise to look at. The data can help you find ineffiencies in
 your build.
