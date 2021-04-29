@@ -53,6 +53,7 @@ execute() {
   execute_second_build
 
   print_warnings
+  echo
   print_summary
 }
 
@@ -98,12 +99,10 @@ execute_second_build() {
 
 print_summary() {
  read_scan_info
- echo
  print_experiment_info
  print_build_scans
  echo
  print_quick_links
- echo
 }
 
 print_build_scans() {
@@ -130,13 +129,14 @@ In this experiment, you will validate how well a given project leverages
 Gradle’s incremental build functionality. A build is considered fully
 incremental if all tasks avoid performing any work because:
 
-  * The tasks’ inputs have not changed since their last invocation and
-  * The tasks’ outputs are still present
+  * The tasks' inputs have not changed since their last invocation and
+  * The tasks' outputs are still present
 
 The goal of the experiment is to first identify those tasks that do not
-participate in Gradle’s incremental build functionality, to then investigate
-why they do not participate, and to finally make an informed decision of which
-tasks are worth improving to make your build faster.
+participate in Gradle’s incremental build functionality, to then make an
+informed decision which of those tasks are worth improving to make your build
+faster, to then investigate why they do not participate, and to finally fix them
+once you understand the root cause.
 
 The experiment can be run on any developer’s machine. It logically consists of
 the following steps:
@@ -148,11 +148,11 @@ the following steps:
 
 The script you have invoked automates the execution of step 1 and step 2,
 without modifying the project. Build scans support your investigation in step 3
-and step 4.
+and step 4. 
 
-After improving the build to make it more incremental, you can push your
-changes and run the experiment again. This creates a cycle of run → measure →
-improve → run → …
+After improving the build to make it more incremental, you can push your changes
+and run the experiment again. This creates a cycle of run → measure → improve →
+run.
 
 ${USER_ACTION_COLOR}Press <Enter> to get started with the experiment.${RESTORE}
 EOF
@@ -193,31 +193,30 @@ explain_and_print_summary() {
   local text
   IFS='' read -r -d '' text <<EOF
 $(print_separator)
-Now that the second build has finished successfully, you are ready to
-measure in Gradle Enterprise how well your build leverages Gradle’s
-incremental build functionality for the invoked set of Gradle tasks.
+Now that the second build has finished successfully, you are ready to measure in
+Gradle Enterprise how well your build leverages Gradle’s incremental build
+functionality for the invoked set of Gradle tasks.
 
-The ‘Summary’ section below captures the configuration of the experiment and
-the two build scans that were published as part of running the experiment.
-The build scan of the second build is particularly interesting since this is
-where you can inspect what tasks were not leveraging Gradle’s incremental
-build functionality.
+The 'Summary' section below captures the configuration of the experiment and the
+two build scans that were published as part of running the experiment. The build
+scan of the second build is particularly interesting since this is where you can
+inspect what tasks were not leveraging Gradle’s incremental build functionality.
 
-The ‘Investigation Quick Links’ section below allows quick navigation to the
-most relevant views in build scans to investigate what tasks were uptodate
-and what tasks executed in the second build, what tasks that executed in the
-second build had the biggest impact on build performance, and what caused
-the tasks that executed in the second build to not be uptodate.
+The 'Investigation Quick Links' section below allows quick navigation to the
+most relevant views in build scans to investigate what tasks were uptodate and
+what tasks executed in the second build, which of those tasks had the biggest
+impact on build performance, and what caused those tasks to not be uptodate.
 
-The ‘Command line invocation’ section below demonstrates how you can rerun
-the experiment with the same configuration and in non-interactive mode.
+The 'Command Line Invocation' section below demonstrates how you can rerun the
+experiment with the same configuration and in non-interactive mode.
+
 $(print_summary)
 
 $(print_command_to_repeat_experiment)
 
 Once you have addressed the issues surfaced in build scans and pushed the
 changes to your repository, you can rerun the experiment and start over the
-run → measure → improve cycle.
+cycle of run → measure → improve → run.
 EOF
   print_wizard_text "${text}"
 }

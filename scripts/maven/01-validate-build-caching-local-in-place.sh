@@ -56,6 +56,7 @@ execute() {
   execute_first_build
   execute_second_build
 
+  echo
   print_summary
 }
 
@@ -109,7 +110,6 @@ execute_build() {
 
 print_summary() {
  read_scan_info
- echo
  print_experiment_info
  print_build_scans
  echo

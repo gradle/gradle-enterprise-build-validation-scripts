@@ -46,8 +46,8 @@ explain_collect_git_details() {
   local text
   IFS='' read -r -d '' text <<EOF
 $(print_separator)
-The experiment will run against a fresh checkout of a given project stored
-in Git. The fresh checkout ensures reproducibility of the experiment across
+The experiment will run against a fresh checkout of a given project stored in
+Git. The fresh checkout ensures reproducibility of the experiment across
 machines and users since no local changes and commits will be accidentally
 included in the validation process.
 

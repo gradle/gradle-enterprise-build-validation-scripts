@@ -57,6 +57,7 @@ execute() {
   execute_second_build
 
   print_warnings
+  echo
   print_summary
 }
 
@@ -114,7 +115,6 @@ execute_build() {
 
 print_summary() {
  read_scan_info
- echo
  print_experiment_info
  print_build_scans
  echo
@@ -145,11 +145,10 @@ print_introduction() {
   IFS='' read -r -d '' text <<EOF
 $(print_introduction_title)
 
-This is the second of several experiments designed to help you
-optimize your team's builds. If you are running this experiment as part of a
-Gradle Enterprise Trial, then the experiments will also help you to build
-the data necessary to determine if Gradle Enterprise is useful to your
-organization.
+This is the second of several experiments designed to help you optimize your
+team's builds. If you are running this experiment as part of a Gradle Enterprise
+Trial, then the experiments will also help you to build the data necessary to
+determine if Gradle Enterprise is useful to your organization.
 
 This script (and the other experiment scripts) will run some of the
 experiment steps for you, but we'll walk you through each step so that you
