@@ -2,7 +2,6 @@
 
 git_clone_project() {
    suffix="$1"
-   info
    info "Cloning ${project_name}"
 
    local clone_dir="${EXP_DIR}/${project_name}${suffix}"
@@ -16,7 +15,6 @@ git_clone_project() {
    # shellcheck disable=SC2086  # we want $branch to expand into multiple arguments
    git clone --depth=1 ${branch} "${git_repo}" "${clone_dir}" || die "ERROR: Unable to clone from ${git_repo}." 1
    cd "${clone_dir}" || die "Unable to access ${clone_dir}. Aborting!" 1
-   info
 }
 
 git_get_branch() {
@@ -25,7 +23,6 @@ git_get_branch() {
 
 git_checkout_commit() {
   local commit="$1"
-  info
   info "Checking out commit ${commit}"
   git checkout -q "${commit}" || die "ERROR: Unable to checkout commit ${commit}" 1
 }

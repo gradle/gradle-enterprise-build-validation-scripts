@@ -33,6 +33,7 @@ _arg_gradle_enterprise_server=
 _arg_git_repo=
 _arg_project_dir=
 _arg_interactive="off"
+_arg_debug="off"
 _arg_args=
 _arg_tasks=
 _arg_enable_gradle_enterprise="off"
@@ -41,7 +42,7 @@ _arg_enable_gradle_enterprise="off"
 print_help()
 {
   printf '%s\n' "This function is overridden later on."
-  printf 'Usage: %s [-b|--git-branch <arg>] [-s|--gradle-enterprise-server <arg>] [-r|--git-repo <arg>] [-p|--project-dir <arg>] [-i|--(no-)interactive] [-a|--args <arg>] [-t|--tasks <arg>] [-e|--(no-)enable-gradle-enterprise] [-h|--help]\n' "$0"
+  printf 'Usage: %s [-b|--git-branch <arg>] [-s|--gradle-enterprise-server <arg>] [-r|--git-repo <arg>] [-p|--project-dir <arg>] [-i|--(no-)interactive] [--(no-)debug] [-a|--args <arg>] [-t|--tasks <arg>] [-e|--(no-)enable-gradle-enterprise] [-h|--help]\n' "$0"
   printf '\t%s\n' "-h, --help: Prints help"
 }
 
@@ -121,6 +122,11 @@ parse_commandline()
           { begins_with_short_option "$_next" && shift && set -- "-i" "-${_next}" "$@"; } || die "The short option '$_key' can't be decomposed to ${_key:0:2} and -${_key:2}, because ${_key:0:2} doesn't accept value and '-${_key:2:1}' doesn't correspond to a short option."
         fi
         _args_common_opt+=("${_key}")
+        ;;
+      --no-debug|--debug)
+        _arg_debug="on"
+        _args_common_opt+=("${_key}")
+        test "${1:0:5}" = "--no-" && _arg_debug="off"
         ;;
       -a|--args)
         test $# -lt 2 && die "Missing value for the optional argument '$_key'." 1

@@ -14,6 +14,14 @@ infof() {
   printf "${INFO_COLOR}${format_string}${RESTORE}\n" "$@"
 }
 
+print_bl() {
+  if [[ "$_arg_debug" == "on" ]]; then
+    echo "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
+  else
+    echo
+  fi
+}
+
 # Overrides the die() function loaded from the argbash-generated parsing libs
 die() {
   local _ret="${2:-1}"
@@ -27,10 +35,9 @@ print_warnings() {
   local warnings_file="${EXP_DIR}/warnings.txt"
   if [ -f "${warnings_file}" ]; then
     while read -r l; do
-      echo
+      print_bl
       printf "${YELLOW}${BOLD}WARNING: %s${RESTORE}\n" "$l"
     done <"${warnings_file}"
-    echo
   fi
 }
 

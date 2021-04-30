@@ -19,9 +19,8 @@ wait_for_enter() {
 
 
 print_wizard_text() {
-  echo "${RESTORE}"
+  echo -n "${RESTORE}"
   echo -n "$@"
-  echo
 }
 
 print_separator() {
@@ -63,7 +62,6 @@ EOF
 explain_collect_gradle_details() {
   local text
   IFS='' read -r -d '' text <<EOF
-
 Once the project is checked out from Git, the experiment will invoke the
 project’s contained Gradle build with a given set of tasks and an optional
 set of arguments. The Gradle tasks to invoke should resemble what users
@@ -82,7 +80,6 @@ EOF
 explain_collect_maven_details() {
   local text
   IFS='' read -r -d '' text <<EOF
-
 Once the project is checked out from Git, the experiment will invoke the
 project’s contained Maven build with a given set of goals and an optional
 set of arguments. The Maven goals to invoke should resemble what users
@@ -108,7 +105,7 @@ All configuration to run the experiment has been collected. In the first
 step of the experiment, the Git repository that contains the project to
 validate will be checked out.
 
-${USER_ACTION_COLOR}Press <Enter> to check out the project from Git.
+${USER_ACTION_COLOR}Press <Enter> to check out the project from Git.${RESTORE}
 EOF
   print_wizard_text "${text}"
   wait_for_enter

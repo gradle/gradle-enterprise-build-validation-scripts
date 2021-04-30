@@ -47,53 +47,73 @@ main() {
 }
 
 execute() {
+  print_bl
   validate_required_config
 
   make_experiment_dir
   make_local_cache_dir "${build_cache_dir}"
-
   git_clone_project "_1"
+
+  print_bl
   execute_first_build
 
+  print_bl
   git_clone_project "_2"
+  print_bl
   execute_second_build
 
   print_warnings
-  echo
+  print_bl
   print_summary
+  print_bl
 }
 
 wizard_execute() {
+  print_bl
   print_introduction
 
-  make_experiment_dir
-
+  print_bl
   explain_collect_git_details
+  print_bl
   collect_git_details
 
+  print_bl
   explain_collect_gradle_details
+  print_bl
   collect_gradle_details
 
+  print_bl
   explain_local_cache_dir
   make_local_cache_dir
 
+  print_bl
   explain_first_clone_project
+  print_bl
+  make_experiment_dir
   git_clone_project "_1"
 
+  print_bl
   explain_first_build
+  print_bl
   execute_first_build
 
+  print_bl
   explain_second_clone_project
+  print_bl
   git_clone_project "_2"
 
+  print_bl
   explain_second_build
+  print_bl
   execute_second_build
 
   print_warnings
   explain_warnings
 
+  print_bl
   explain_summary
   explain_how_to_repeat_the_experiment
+  print_bl
 }
 
 execute_first_build() {
@@ -122,9 +142,9 @@ print_summary() {
  read_scan_info
  print_experiment_info
  print_build_scans
- echo
+ print_bl
  print_quick_links
- echo
+ print_bl
 }
 
 print_build_scans() {
