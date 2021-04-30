@@ -1,4 +1,4 @@
-# Build Validation Automation
+# Gradle Enterprise - Build Validation
 
 A software development team can gain a lot of efficiency and productivity by optimizing their build to avoid performing
 unnecessary work, or work that has been performed already. Shorter builds allow software developers to get feedback

@@ -31,7 +31,7 @@ print_separator() {
 
 print_introduction_title() {
   cat <<EOF
-${HEADER_COLOR}Gradle Enterprise
+${HEADER_COLOR}Gradle Enterprise - Build Validation
 
 Experiment ${EXP_NO}: ${EXP_DESCRIPTION}${RESTORE}
 EOF
