@@ -95,6 +95,8 @@ wizard_execute() {
   explain_warnings
 
   print_bl
+  explain_measure_build_results
+  print_bl
   explain_and_print_summary
   print_bl
 }
@@ -208,7 +210,7 @@ EOF
   wait_for_enter
 }
 
-explain_and_print_summary() {
+explain_measure_build_results() {
   read_scan_info
   local text
   IFS='' read -r -d '' text <<EOF
@@ -219,6 +221,16 @@ Now that the second build has finished successfully, you are ready to measure in
 Gradle Enterprise how well your build leverages Gradle’s incremental build
 functionality for the invoked set of Gradle tasks.
 
+${USER_ACTION_COLOR}Press <Enter> to measure the build results.${RESTORE}
+EOF
+  print_wizard_text "${text}"
+  wait_for_enter
+}
+
+explain_and_print_summary() {
+  read_scan_info
+  local text
+  IFS='' read -r -d '' text <<EOF
 The 'Summary' section below captures the configuration of the experiment and the
 two build scans that were published as part of running the experiment. The build
 scan of the second build is particularly interesting since this is where you can
