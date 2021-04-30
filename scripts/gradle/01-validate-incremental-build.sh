@@ -249,7 +249,7 @@ $(print_summary)
 $(print_command_to_repeat_experiment)
 
 Once you have addressed the issues surfaced in build scans and pushed the
-changes to your repository, you can rerun the experiment and start over the
+changes to your Git repository, you can rerun the experiment and start over the
 cycle of run → measure → improve → run.
 EOF
   print_wizard_text "${text}"
