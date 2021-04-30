@@ -46,7 +46,7 @@ explain_collect_git_details() {
   local text
   IFS='' read -r -d '' text <<EOF
 $(print_separator)
-${HEADER_COLOR}Configuration${RESTORE}
+${HEADER_COLOR}Configure experiment${RESTORE}
 
 The experiment will run against a fresh checkout of a given project stored in
 Git. The fresh checkout ensures reproducibility of the experiment across
@@ -102,7 +102,7 @@ explain_clone_project() {
   local text
   IFS='' read -r -d '' text <<EOF
 $(print_separator)
-${HEADER_COLOR}Check out Git repo${RESTORE}
+${HEADER_COLOR}Check out project from Git${RESTORE}
 
 All configuration to run the experiment has been collected. In the first
 step of the experiment, the Git repository that contains the project to

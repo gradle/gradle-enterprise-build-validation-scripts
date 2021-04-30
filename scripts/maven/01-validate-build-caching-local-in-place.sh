@@ -179,7 +179,7 @@ explain_local_cache_dir() {
   local text
   IFS='' read -r -d '' text <<EOF
 $(print_separator)
-${HEADER_COLOR}Local build cache dir${RESTORE}
+${HEADER_COLOR}Configure local build cache${RESTORE}
 
 We are going to create a new empty local build cache dir (and configure
 Gradle to use it instead of the default local cache dir). This way, the
@@ -204,7 +204,7 @@ explain_first_build() {
   local text
   IFS='' read -r -d '' text <<EOF
 $(print_separator)
-${HEADER_COLOR}First build${RESTORE}
+${HEADER_COLOR}Run first build${RESTORE}
 
 OK! We are ready to run our first build!
 
@@ -222,7 +222,7 @@ explain_second_build() {
   local text
   IFS='' read -r -d '' text <<EOF
 $(print_separator)
-${HEADER_COLOR}Second build${RESTORE}
+${HEADER_COLOR}Run second build${RESTORE}
 
 Now we are going to run the build again without changing anything.
 
@@ -242,7 +242,7 @@ explain_summary() {
   local text
   IFS='' read -r -d '' text <<EOF
 $(print_separator)
-${HEADER_COLOR}Investigation${RESTORE}
+${HEADER_COLOR}Measure build results${RESTORE}
 
 Now that both builds have completed, there is a lot of valuable data in
 Gradle Enterprise to look at. The data can help you find ineffiencies in

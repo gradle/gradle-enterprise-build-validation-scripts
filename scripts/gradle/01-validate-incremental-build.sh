@@ -148,7 +148,7 @@ the following steps:
 
 The script you have invoked automates the execution of step 1 and step 2,
 without modifying the project. Build scans support your investigation in step 3
-and step 4. 
+and step 4.
 
 After improving the build to make it more incremental, you can push your changes
 and run the experiment again. This creates a cycle of run → measure → improve →
@@ -164,7 +164,7 @@ explain_first_build() {
   local text
   IFS='' read -r -d '' text <<EOF
 $(print_separator)
-${HEADER_COLOR}First build${RESTORE}
+${HEADER_COLOR}Run first build${RESTORE}
 
 Now that the project has been checked out, the first build can be run with the
 given Gradle tasks. The build will be invoked with the 'clean' task included
@@ -180,7 +180,7 @@ explain_second_build() {
   local text
   IFS='' read -r -d '' text <<EOF
 $(print_separator)
-${HEADER_COLOR}Second build${RESTORE}
+${HEADER_COLOR}Run second build${RESTORE}
 
 Now that the first build has finished successfully, the second build can be run
 with the same Gradle tasks. This time, the build will be invoked without the
@@ -197,7 +197,7 @@ explain_and_print_summary() {
   local text
   IFS='' read -r -d '' text <<EOF
 $(print_separator)
-${HEADER_COLOR}Investigation${RESTORE}
+${HEADER_COLOR}Measure build results${RESTORE}
 
 Now that the second build has finished successfully, you are ready to measure in
 Gradle Enterprise how well your build leverages Gradle’s incremental build

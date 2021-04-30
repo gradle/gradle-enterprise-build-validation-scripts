@@ -194,7 +194,7 @@ explain_local_cache_dir() {
   local text
   IFS='' read -r -d '' text <<EOF
 $(print_separator)
-${HEADER_COLOR}Local build cache dir${RESTORE}
+${HEADER_COLOR}Configure local build cache${RESTORE}
 
 We are going to create a new empty local build cache dir (and configure
 Gradle to use it instead of the default local cache dir). This way, the
@@ -219,7 +219,7 @@ explain_first_clone_project(){
   local text
   IFS='' read -r -d '' text <<EOF
 $(print_separator)
-${HEADER_COLOR}First check out${RESTORE}
+${HEADER_COLOR}Check out project from Git for first build${RESTORE}
 
 For the first build, we are going create a fresh clone of the project.  That
 way, the experiment will be influenced by as few outside factors as
@@ -237,7 +237,7 @@ explain_first_build() {
   local text
   IFS='' read -r -d '' text <<EOF
 $(print_separator)
-${HEADER_COLOR}First build${RESTORE}
+${HEADER_COLOR}Run first build${RESTORE}
 
 We are now ready to run the first build.
 
@@ -259,7 +259,7 @@ explain_second_clone_project(){
   local text
   IFS='' read -r -d '' text <<EOF
 $(print_separator)
-${HEADER_COLOR}Second check out${RESTORE}
+${HEADER_COLOR}Check out project from Git for second build${RESTORE}
 
 Before running the second build, we are going to clone the project into a
 different directory. If all goes well, the second build will use the build
@@ -277,7 +277,7 @@ explain_second_build() {
   local text
   IFS='' read -r -d '' text <<EOF
 $(print_separator)
-${HEADER_COLOR}Second build${RESTORE}
+${HEADER_COLOR}Run second build${RESTORE}
 
 Now we are going to run the build again without changing anything, other
 than the location (we're running this against the second clone of the
@@ -299,7 +299,7 @@ explain_summary() {
   local text
   IFS='' read -r -d '' text <<EOF
 $(print_separator)
-${HEADER_COLOR}Investigation${RESTORE}
+${HEADER_COLOR}Measure build results${RESTORE}
 
 Now that both builds have completed, there is a lot of valuable data in
 Gradle Enterprise to look at. The data can help you find ineffiencies in
