@@ -24,7 +24,7 @@ dependencies {
 
 group = "com.gradle"
 version = "1.0.0-SNAPSHOT"
-description = "Gradle Enterprise Capture Build Scans Extension"
+description = "Gradle Enterprise Capture Published Build Scan Maven Extension"
 java.sourceCompatibility = JavaVersion.VERSION_1_8
 
 publishing {

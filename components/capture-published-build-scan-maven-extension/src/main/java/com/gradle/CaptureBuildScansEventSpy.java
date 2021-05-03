@@ -43,7 +43,7 @@ public class CaptureBuildScansEventSpy  extends AbstractEventSpy {
                 BufferedWriter bw = new BufferedWriter(fw);
                 PrintWriter out = new PrintWriter(bw))
             {
-                out.println(String.format("%s,%s,%s", baseUrl, scan.getBuildScanId(), scan.getBuildScanUri()));
+                out.println(String.format("%s,%s,%s", baseUrl, scan.getBuildScanUri(), scan.getBuildScanId()));
             } catch (IOException e) {
                 logger.error("Unable to save scan data to scans.csv: " + e.getMessage(), e);
                 throw new RuntimeException("Unable to save scan data to scans.csv: " + e.getMessage(), e);
