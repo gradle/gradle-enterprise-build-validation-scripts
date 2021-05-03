@@ -25,7 +25,7 @@ invoke_gradle() {
   ./gradlew \
       ${enable_ge_init_script} \
       --init-script "${lib_dir_rel}/gradle/configure-gradle-enterprise.gradle" \
-      --init-script "${lib_dir_rel}/gradle/capture-build-scans.gradle" \
+      --init-script "${lib_dir_rel}/gradle/capture-published-build-scan.gradle" \
       ${ge_server_arg} \
       -Pcom.gradle.enterprise.init.script.experimentDir="${EXP_DIR}" \
       -Pcom.gradle.enterprise.init.script.expId=${EXP_SCAN_TAG} \
