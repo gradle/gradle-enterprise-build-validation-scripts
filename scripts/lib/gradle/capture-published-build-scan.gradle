@@ -11,12 +11,10 @@ if (isTopLevelBuild) {
 
     if (atLeastGradle6) {
         settingsEvaluated { settings ->
-            def rootDir = settings.rootDir
             registerCallbacks(settings.extensions["gradleEnterprise"], experimentDir)
         }
     } else if (atLeastGradle5) {
         projectsEvaluated { gradle ->
-            def rootDir = gradle.settings.rootDir
             registerCallbacks(gradle.rootProject.extensions["gradleEnterprise"], experimentDir)
         }
     }
@@ -36,7 +34,7 @@ def logScan(rootDir, scan) {
     def baseUrl = "${scan.buildScanUri.scheme}://${scan.buildScanUri.host}${port}"
 
     def scanFile = new File(rootDir, "scans.csv")
-    scanFile.append("${baseUrl},${scan.buildScanId},${scan.buildScanUri}\n")
+    scanFile.append("${baseUrl},${scan.buildScanUri},${scan.buildScanId}\n")
 }
 
 def reportFailedToPublishBuildScan(rootDir, error) {
