@@ -131,7 +131,6 @@ print_summary() {
  print_build_scans
  print_bl
  print_quick_links
- print_bl
 }
 
 print_build_scans() {
