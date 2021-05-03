@@ -2,10 +2,8 @@ import org.gradle.util.GradleVersion
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 
-
 initscript {
     def gradleEnterprisePluginVersion = "3.6.1"
-    def commonCustomUserDataPluginVersion = "1.2.1"
 
     repositories {
         gradlePluginPortal()
@@ -13,7 +11,6 @@ initscript {
 
     dependencies {
         classpath("com.gradle:gradle-enterprise-gradle-plugin:${gradleEnterprisePluginVersion}")
-        classpath("com.gradle:common-custom-user-data-gradle-plugin:${commonCustomUserDataPluginVersion}")
     }
 }
 
@@ -27,61 +24,61 @@ if (isTopLevelBuild) {
     clearWarnings()
 
     if (atLeastGradle6) {
-       settingsEvaluated { settings ->
+        settingsEvaluated { settings ->
             if (!settings.pluginManager.hasPlugin("com.gradle.enterprise")) {
-                 throw new GradleException("The Gradle Enterprise plugin is missing from the project (see https://docs.gradle.com/enterprise/gradle-plugin/#gradle_6_x_and_later).")
+                throw new GradleException("The com.gradle.enterprise plugin is missing from the project (see https://docs.gradle.com/enterprise/gradle-plugin/#gradle_6_x_and_later).")
             }
             if (!settings.pluginManager.hasPlugin("com.gradle.common-custom-user-data-gradle-plugin")) {
-                 logMissingCommonCustomUserMetadataPlugin()
+                logMissingCommonCustomUserDataGradlePluginWarning()
             }
             configureGradleEnterprise(settings.extensions["gradleEnterprise"])
         }
     } else if (atLeastGradle5) {
         projectsEvaluated { gradle ->
-            def rootProject = gradle.rootProject
-
-            if (!rootProject.pluginManager.hasPlugin("com.gradle.build-scan")) {
-                 throw new GradleException("The Gradle Enterprise (Build Scan) plugin is missing from the project (see https://docs.gradle.com/enterprise/gradle-plugin/#gradle_5_x).")
+            if (!gradle.rootProject.pluginManager.hasPlugin("com.gradle.build-scan")) {
+                throw new GradleException("The com.gradle.build-scan plugin is missing from the project (see https://docs.gradle.com/enterprise/gradle-plugin/#gradle_5_x).")
             }
-            if (!rootProject.pluginManager.hasPlugin("com.gradle.common-custom-user-data-gradle-plugin")) {
-                 logMissingCommonCustomUserMetadataPlugin()
+            if (!gradle.rootProject.pluginManager.hasPlugin("com.gradle.common-custom-user-data-gradle-plugin")) {
+                logMissingCommonCustomUserDataGradlePluginWarning()
             }
-
-            configureGradleEnterprise(rootProject.extensions["gradleEnterprise"])
+            configureGradleEnterprise(gradle.rootProject.extensions["gradleEnterprise"])
         }
     }
 }
 
 void configureGradleEnterprise(extension) {
     extension.with {
-         def projectProperties = gradle.startParameter.projectProperties
-         if (projectProperties.containsKey("com.gradle.enterprise.init.script.server")) {
-             server = projectProperties.get("com.gradle.enterprise.init.script.server")
-         }
+        def projectProperties = gradle.startParameter.projectProperties
+        if (projectProperties.containsKey("com.gradle.enterprise.init.script.server")) {
+            server = projectProperties.get("com.gradle.enterprise.init.script.server")
+        }
 
-         if (server == null || server.isEmpty())
-             throw new GradleException("A Gradle Enterprise server URL has not been configured.", null)
+        if (server == null || server.isEmpty()) {
+            throw new GradleException("A Gradle Enterprise server URL has not been configured.", null)
+        }
 
-         buildScan {
-             uploadInBackground = false
-             publishAlways()
-         }
+        buildScan {
+            // captureTaskInputFiles = true (too late to be set here for Gradle 5, set via sys prop)
+            uploadInBackground = false
+            publishAlways()
+        }
 
         addCustomData(buildScan)
     }
 }
 
 void clearWarnings() {
-    new File(gradle.startParameter.currentDir, "../warnings.txt").delete()
+    def warningFile = new File(gradle.startParameter.currentDir, "../warnings.txt")
+    warningFile.delete()
 }
 
-void logMissingCommonCustomUserMetadataPlugin() {
-     logWarning("The Common Custom User Data Gradle Plugin has not been applied. The Common Custom User Data plugin attaches common metadata to the build scans (see https://github.com/gradle/gradle-enterprise-build-config-samples/tree/master/common-custom-user-data-gradle-plugin).")
+void logMissingCommonCustomUserDataGradlePluginWarning() {
+    logWarning("The com.gradle.common-custom-user-data-gradle-plugin plugin is missing from the project (see https://github.com/gradle/gradle-enterprise-build-config-samples/tree/master/common-custom-user-data-gradle-plugin).")
 }
 
 void logWarning(String warning) {
-   def warningFile = new File(gradle.startParameter.currentDir, "../warnings.txt")
-   warningFile.append(warning + "\n")
+    def warningFile = new File(gradle.startParameter.currentDir, "../warnings.txt")
+    warningFile.append(warning + "\n")
 }
 
 void addCustomData(buildScan) {
@@ -98,13 +95,11 @@ void addCustomData(buildScan) {
 }
 
 void addCustomValueAndSearchLink(buildScan, String label, String value) {
-    buildScan.value(label, value);
-    String server = buildScan.getServer();
-    if (server != null) {
-        String searchParams = "search.names=" + urlEncode(label) + "&search.values=" + urlEncode(value);
-        String url = appendIfMissing(server, "/") + "scans?" + searchParams + "#selection.buildScanB=" + urlEncode("{SCAN_ID}");
-        buildScan.link(label + " build scans", url);
-    }
+    buildScan.value(label, value)
+    String server = buildScan.server
+    String searchParams = "search.names=" + urlEncode(label) + "&search.values=" + urlEncode(value)
+    String url = appendIfMissing(server, "/") + "scans?" + searchParams + "#selection.buildScanB=" + urlEncode("{SCAN_ID}")
+    buildScan.link(label + " build scans", url)
 }
 
 String appendIfMissing(String str, String suffix) {
