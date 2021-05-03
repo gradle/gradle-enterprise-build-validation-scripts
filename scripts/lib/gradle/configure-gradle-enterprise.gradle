@@ -43,32 +43,33 @@ if (isTopLevelBuild) {
             }
             configureGradleEnterprise(gradle.rootProject.extensions["gradleEnterprise"])
         }
+    } else {
+        throw new GradleEnterprise("The Gradle version (${GradleVersion.current()} is too old to run the experiment. Please upgrade to at least Gradle 5.")
     }
 }
 
 void configureGradleEnterprise(extension) {
     extension.with {
-        def projectProperties = gradle.startParameter.projectProperties
-        if (projectProperties.containsKey("com.gradle.enterprise.init.script.server")) {
-            server = projectProperties.get("com.gradle.enterprise.init.script.server")
-        }
-
-        if (server == null || server.isEmpty()) {
-            throw new GradleException("A Gradle Enterprise server URL has not been configured.", null)
-        }
-
         buildScan {
+            def projectProperties = gradle.startParameter.projectProperties
+            if (projectProperties.containsKey("com.gradle.enterprise.init.script.server")) {
+                server = projectProperties.get("com.gradle.enterprise.init.script.server")
+            }
+
+            if (!server) {
+                throw new GradleException("A Gradle Enterprise server URL has not been configured.", null)
+            }
+
             // captureTaskInputFiles = true (too late to be set here for Gradle 5, set via sys prop)
             uploadInBackground = false
             publishAlways()
         }
-
         addCustomData(buildScan)
     }
 }
 
 void clearWarnings() {
-    def warningFile = new File(gradle.startParameter.currentDir, "../warnings.txt")
+    def warningFile = new File(getExperimentDir(), "warnings.txt")
     warningFile.delete()
 }
 
@@ -77,8 +78,13 @@ void logMissingCommonCustomUserDataGradlePluginWarning() {
 }
 
 void logWarning(String warning) {
-    def warningFile = new File(gradle.startParameter.currentDir, "../warnings.txt")
+    def warningFile = new File(getExperimentDir(), "warnings.txt")
     warningFile.append(warning + "\n")
+}
+
+File getExperimentDir() {
+    def projectProperties = gradle.startParameter.projectProperties
+    def experimentDir = new File(projectProperties.get("com.gradle.enterprise.init.script.experimentDir"))
 }
 
 void addCustomData(buildScan) {

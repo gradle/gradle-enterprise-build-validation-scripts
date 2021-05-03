@@ -34,6 +34,8 @@ if (isTopLevelBuild) {
             pluginManager.apply(BuildScanPlugin)
             pluginManager.apply(CommonCustomUserDataGradlePlugin)
         }
+    } else {
+        throw new GradleEnterprise("The Gradle version (${GradleVersion.current()} is too old to run the experiment. Please upgrade to at least Gradle 5.")
     }
 }
 

@@ -17,6 +17,8 @@ if (isTopLevelBuild) {
         projectsEvaluated { gradle ->
             registerCallbacks(gradle.rootProject.extensions["gradleEnterprise"], experimentDir)
         }
+    } else {
+        throw new GradleEnterprise("The Gradle version (${GradleVersion.current()} is too old to run the experiment. Please upgrade to at least Gradle 5.")
     }
 }
 
@@ -24,7 +26,7 @@ def registerCallbacks(gradleEnterprise, rootDir) {
     gradleEnterprise.with {
         buildScan {
             buildScanPublished { scan -> logScan(rootDir, scan) }
-            onError { error -> reportFailedToPublishBuildScan(rootDir, error)  }
+            onError { error -> reportFailedToPublishBuildScan(rootDir, error) }
         }
     }
 }
