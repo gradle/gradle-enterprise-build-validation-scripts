@@ -124,18 +124,16 @@ print_summary() {
 }
 
 print_build_scans() {
- local fmt="%-26s%s"
- infof "$fmt" "Build scan first build:" "${scan_url[0]}"
- infof "$fmt" "Build scan second build:" "${scan_url[1]}"
+ summary_row "Build scan first build:" "${scan_url[0]}"
+ summary_row "Build scan second build:" "${scan_url[1]}"
 }
 
 print_quick_links() {
- local fmt="%-26s%s"
  info "Investigation Quick Links"
  info "-------------------------"
- infof "$fmt" "Task execution overview:" "${base_url[0]}/s/${scan_id[1]}/performance/execution"
- infof "$fmt" "Executed tasks timeline:" "${base_url[0]}/s/${scan_id[1]}/timeline?outcome=SUCCESS,FAILED&sort=longest"
- infof "$fmt" "Task inputs comparison:" "${base_url[0]}/c/${scan_id[0]}/${scan_id[1]}/task-inputs"
+ summary_row "Task execution overview:" "${base_url[0]}/s/${scan_id[1]}/performance/execution"
+ summary_row "Executed tasks timeline:" "${base_url[0]}/s/${scan_id[1]}/timeline?outcome=SUCCESS,FAILED&sort=longest"
+ summary_row "Task inputs comparison:" "${base_url[0]}/c/${scan_id[0]}/${scan_id[1]}/task-inputs"
 }
 
 print_introduction() {

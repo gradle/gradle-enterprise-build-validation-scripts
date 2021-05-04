@@ -134,21 +134,19 @@ print_summary() {
 }
 
 print_build_scans() {
- local fmt="%-25s%-10s"
- infof "$fmt" "Build scan first build:" "${scan_url[0]}"
- infof "$fmt" "Build scan second build:" "${scan_url[1]}"
+ summary_row "Build scan first build:" "${scan_url[0]}"
+ summary_row "Build scan second build:" "${scan_url[1]}"
 }
 
 print_quick_links() {
- local fmt="%-25s%-10s"
  info "Investigation Quick Links"
  info "-------------------------"
- infof "$fmt" "Task execution overview:" "${base_url[0]}/s/${scan_id[1]}/performance/execution"
- infof "$fmt" "Cache performance:" "${base_url[0]}/s/${scan_id[1]}/performance/build-cache"
- infof "$fmt" "Executed goals timeline:" "${base_url[0]}/s/${scan_id[1]}/timeline?outcome=successful&sort=longest"
- infof "$fmt" "Goal inputs comparison:" "${base_url[0]}/c/${scan_id[0]}/${scan_id[1]}/goal-inputs?cacheability=cacheable"
- infof "$fmt" "Executed cacheable goals:" "${base_url[0]}/s/${scan_id[1]}/timeline?cacheableFilter=cacheable&outcomeFilter=successful&sorted=longest"
- infof "$fmt" "Non-cacheable goals:" "${base_url[0]}/s/${scan_id[1]}/timeline?cacheableFilter=any_non-cacheable&outcomeFilter=successful&sorted=longest"
+ summary_row "Task execution overview:" "${base_url[0]}/s/${scan_id[1]}/performance/execution"
+ summary_row "Cache performance:" "${base_url[0]}/s/${scan_id[1]}/performance/build-cache"
+ summary_row "Executed goals timeline:" "${base_url[0]}/s/${scan_id[1]}/timeline?outcome=successful&sort=longest"
+ summary_row "Goal inputs comparison:" "${base_url[0]}/c/${scan_id[0]}/${scan_id[1]}/goal-inputs?cacheability=cacheable"
+ summary_row "Executed cacheable goals:" "${base_url[0]}/s/${scan_id[1]}/timeline?cacheableFilter=cacheable&outcomeFilter=successful&sorted=longest"
+ summary_row "Non-cacheable goals:" "${base_url[0]}/s/${scan_id[1]}/timeline?cacheableFilter=any_non-cacheable&outcomeFilter=successful&sorted=longest"
 }
 
 print_introduction() {
