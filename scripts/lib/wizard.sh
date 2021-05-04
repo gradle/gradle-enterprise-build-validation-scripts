@@ -129,6 +129,23 @@ EOF
  fi
 }
 
+explain_measure_build_results() {
+  read_scan_info
+  local text
+  IFS='' read -r -d '' text <<EOF
+$(print_separator)
+${HEADER_COLOR}Measure build results${RESTORE}
+
+Now that the second build has finished successfully, you are ready to measure in
+Gradle Enterprise how well your build leverages Gradle’s local build cache for
+the invoked set of Gradle tasks.
+
+${USER_ACTION_COLOR}Press <Enter> to measure the build results.${RESTORE}
+EOF
+  print_wizard_text "${text}"
+  wait_for_enter
+}
+
 explain_how_to_repeat_the_experiment() {
   read_scan_info
   local text
