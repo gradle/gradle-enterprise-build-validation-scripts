@@ -115,7 +115,7 @@ execute_second_build() {
 }
 
 execute_build() {
-  info "./mvnw -Dscan.tag.${EXP_SCAN_TAG} clean ${tasks}$(print_extra_args)"
+  info "./mvnw -Dscan.tag.${EXP_SCAN_TAG} -Dscan.value.runId=${RUN_ID} clean ${tasks}$(print_extra_args)"
 
   #shellcheck disable=SC2086  # we actually want ${tasks} to expand because it may have more than one maven goal
   invoke_maven \
