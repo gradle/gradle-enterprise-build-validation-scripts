@@ -28,7 +28,7 @@ if (isTopLevelBuild) {
                 throw new IllegalStateException("The com.gradle.enterprise plugin is missing from the project (see https://docs.gradle.com/enterprise/gradle-plugin/#gradle_6_x_and_later).")
             }
             if (!settings.pluginManager.hasPlugin("com.gradle.common-custom-user-data-gradle-plugin")) {
-                logMissingCommonCustomUserDataGradlePluginWarning()
+                logWarningMissingCommonCustomUserDataGradlePlugin()
             }
             configureGradleEnterprise(settings.extensions["gradleEnterprise"])
         }
@@ -38,7 +38,7 @@ if (isTopLevelBuild) {
                 throw new IllegalStateException("The com.gradle.build-scan plugin is missing from the project (see https://docs.gradle.com/enterprise/gradle-plugin/#gradle_5_x).")
             }
             if (!gradle.rootProject.pluginManager.hasPlugin("com.gradle.common-custom-user-data-gradle-plugin")) {
-                logMissingCommonCustomUserDataGradlePluginWarning()
+                logWarningMissingCommonCustomUserDataGradlePlugin()
             }
             configureGradleEnterprise(gradle.rootProject.extensions["gradleEnterprise"])
         }
@@ -97,7 +97,7 @@ String urlEncode(String str) {
     return URLEncoder.encode(str, StandardCharsets.UTF_8.name());
 }
 
-void logMissingCommonCustomUserDataGradlePluginWarning() {
+void logWarningMissingCommonCustomUserDataGradlePlugin() {
     logWarning("The com.gradle.common-custom-user-data-gradle-plugin plugin is missing from the project (see https://github.com/gradle/gradle-enterprise-build-config-samples/tree/master/common-custom-user-data-gradle-plugin).")
 }
 
