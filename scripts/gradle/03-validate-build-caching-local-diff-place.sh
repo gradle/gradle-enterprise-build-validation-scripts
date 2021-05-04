@@ -127,7 +127,7 @@ execute_first_build() {
   invoke_gradle \
      --build-cache \
      --rerun-tasks \
-     --init-script "${lib_dir_rel}/gradle/use-local-build-cache-only.gradle" \
+     --init-script "${lib_dir_rel}/gradle/configure-local-build-caching.gradle" \
      clean "${tasks}"
 }
 
@@ -141,7 +141,7 @@ execute_second_build() {
 
   invoke_gradle \
      --build-cache \
-     --init-script "${lib_dir_rel}/gradle/use-local-build-cache-only.gradle" \
+     --init-script "${lib_dir_rel}/gradle/configure-local-build-caching.gradle" \
      clean "${tasks}"
 }
 
