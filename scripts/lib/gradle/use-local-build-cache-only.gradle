@@ -1,9 +1,5 @@
 def isTopLevelBuild = gradle.getParent() == null
 if (isTopLevelBuild) {
-    if (!gradle.startParameter.buildCacheEnabled) {
-        throw new IllegalStateException("Build caching is not enabled. Please enable build caching and run this experiment again.")
-    }
-
     settingsEvaluated { settings ->
         settings.buildCache {
             local {
