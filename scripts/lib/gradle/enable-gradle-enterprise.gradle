@@ -18,7 +18,6 @@ initscript {
 }
 
 def isTopLevelBuild = gradle.getParent() == null
-
 if (isTopLevelBuild) {
     def version = GradleVersion.current().baseVersion
     def atLeastGradle5 = version >= GradleVersion.version("5.0")
@@ -35,6 +34,8 @@ if (isTopLevelBuild) {
             pluginManager.apply(CommonCustomUserDataGradlePlugin)
         }
     } else {
-        throw new IllegalStateException("Build validation not supported for Gradle ${GradleVersion.current()}. Upgrade your project's build to Gradle 5 or newer.")    }
+        throw new IllegalStateException("Build validation not supported for Gradle ${GradleVersion.current()}. Upgrade your project's build to Gradle 5 or newer.")
+    }
+} else {
+    throw new IllegalStateException("Build validation only supported on top-level Gradle build.")
 }
-
