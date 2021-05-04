@@ -1,11 +1,8 @@
 def isTopLevelBuild = gradle.getParent() == null
-
 if (isTopLevelBuild) {
-    if (!gradle.startParameter.buildCacheEnabled)
+    if (!gradle.startParameter.buildCacheEnabled) {
         throw new GradleException("Build caching is not enabled. Please enable build caching and run this experiment again.")
-
-    def projectProperties = gradle.startParameter.projectProperties
-    def experimentDir = new File(projectProperties.get("com.gradle.enterprise.init.script.experimentDir"))
+    }
 
     settingsEvaluated { settings ->
         settings.buildCache {
@@ -19,5 +16,11 @@ if (isTopLevelBuild) {
             }
         }
     }
+} else {
+    throw new IllegalStateException("Build validation only supported on top-level Gradle build.")
 }
 
+File getExperimentDir() {
+    def projectProperties = gradle.startParameter.projectProperties
+    new File(projectProperties.get("com.gradle.enterprise.init.script.experimentDir"))
+}
