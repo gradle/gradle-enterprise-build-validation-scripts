@@ -110,15 +110,21 @@ wizard_execute() {
 
 execute_first_build() {
   info "Running first build:"
-  execute_build
+  # The gradle --init-script flag only accepts a relative directory path. ¯\_(ツ)_/¯
+  local lib_dir_rel
+  lib_dir_rel="$(relative_lib_path)"
+
+  info "./gradlew --build-cache --rerun-tasks -Dscan.tag.${EXP_SCAN_TAG} -Dscan.value.runId=${RUN_ID} clean ${tasks}$(print_extra_args)"
+
+  invoke_gradle \
+     --build-cache \
+     --rerun-tasks \
+     --init-script "${lib_dir_rel}/gradle/use-local-build-cache-only.gradle" \
+     clean "${tasks}"
 }
 
 execute_second_build() {
   info "Running second build:"
-  execute_build
-}
-
-execute_build() {
   # The gradle --init-script flag only accepts a relative directory path. ¯\_(ツ)_/¯
   local lib_dir_rel
   lib_dir_rel="$(relative_lib_path)"
