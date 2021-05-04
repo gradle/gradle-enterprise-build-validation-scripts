@@ -72,15 +72,13 @@ void configureGradleEnterprise(gradleEnterprise) {
 
 void addCustomData(buildScan) {
     def projectProperties = gradle.startParameter.projectProperties
-    if (projectProperties.containsKey("com.gradle.enterprise.init.script.expId")) {
-        def expId = projectProperties.get("com.gradle.enterprise.init.script.expId")
-        addCustomValueAndSearchLink(buildScan, "Experiment id", expId)
-        buildScan.tag(expId)
-    }
-    if (projectProperties.containsKey("com.gradle.enterprise.init.script.runId")) {
-        def runId = projectProperties.get("com.gradle.enterprise.init.script.runId")
-        addCustomValueAndSearchLink(buildScan, "Experiment run id", runId)
-    }
+
+    def expId = projectProperties.get("com.gradle.enterprise.init.script.expId")
+    addCustomValueAndSearchLink(buildScan, "Experiment id", expId)
+    buildScan.tag(expId)
+
+    def runId = projectProperties.get("com.gradle.enterprise.init.script.runId")
+    addCustomValueAndSearchLink(buildScan, "Experiment run id", runId)
 }
 
 void addCustomValueAndSearchLink(buildScan, String label, String value) {
