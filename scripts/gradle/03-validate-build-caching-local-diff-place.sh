@@ -131,9 +131,10 @@ execute_build() {
   local lib_dir_rel
   lib_dir_rel="$(relative_lib_path)"
 
-  info "./gradlew -Dscan.tag.${EXP_SCAN_TAG} -Dscan.value.runId=${RUN_ID} clean ${tasks}$(print_extra_args)"
+  info "./gradlew --build-cache -Dscan.tag.${EXP_SCAN_TAG} -Dscan.value.runId=${RUN_ID} clean ${tasks}$(print_extra_args)"
 
   invoke_gradle \
+     --build-cache \
      --init-script "${lib_dir_rel}/gradle/use-local-build-cache-only.gradle" \
      clean "${tasks}"
 }
