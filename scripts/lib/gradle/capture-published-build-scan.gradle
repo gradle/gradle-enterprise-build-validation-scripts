@@ -29,14 +29,15 @@ if (isTopLevelBuild) {
 
 def registerCallbacks(gradleEnterprise) {
     gradleEnterprise.with {
+        def logBuildScanRef = this.&logBuildScan
         buildScan {
-            buildScanPublished { scan -> logScan(scan) }
+            buildScanPublished { scan -> logBuildScanRef(scan) }
             onError { error -> reportFailedToPublishBuildScan(error) }
         }
     }
 }
 
-def logScan(scan) {
+def logBuildScan(scan) {
     def port = (scan.buildScanUri.port != -1) ? ":" + scan.buildScanUri.port : ""
     def baseUrl = "${scan.buildScanUri.scheme}://${scan.buildScanUri.host}${port}"
 
