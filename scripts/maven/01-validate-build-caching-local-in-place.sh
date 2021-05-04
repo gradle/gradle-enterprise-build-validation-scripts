@@ -83,9 +83,6 @@ wizard_execute() {
   print_bl
   make_experiment_dir
   git_clone_project ""
-
-  print_bl
-  explain_local_cache_dir
   make_local_cache_dir
 
   print_bl
@@ -99,9 +96,11 @@ wizard_execute() {
   execute_second_build
 
   print_bl
-  explain_summary
-  explain_how_to_repeat_the_experiment
+  explain_measure_build_results
   print_bl
+  explain_and_print_summary
+  print_bl
+
 }
 
 execute_first_build() {
@@ -154,62 +153,40 @@ print_introduction() {
   IFS='' read -r -d '' text <<EOF
 $(print_introduction_title)
 
-This is the first of several experiments designed to help you
-optimize your team's builds. If you are running this experiment as part of a
-Gradle Enterprise Trial, then the experiments will also help you to build
-the data necessary to determine if Gradle Enerprise is useful to your
-organization.
+In this experiment, you will validate how well a given Maven project leverages
+Gradle Enterprise’s local build cache. A build is considered fully local-cache
+enabled if all goals avoid performing any work because:
 
-This script (and the other experiment scripts) will run some of the
-experiment steps for you, but we'll walk you through each step so that you
-know exactly what we are doing, and why.
+  * The goals' inputs have not changed since their last invocation and
+  * The goals' outputs are present in the local cache
 
-In this experiment, we will be checking your build to see how well it takes
-advantage of the local build cache. When the build cache is enabled, the
-Gradle Enterprise Maven extension saves the output from goals so that the
-same output can be reused if the goal is executed again with the same
-inputs.
+The goal of the experiment is to first identify those goals that do not reuse
+outputs from the local cache, to then make an informed decision which of those
+tasks are worth improving to make your build faster, to then investigate why
+they did not reuse outputs, and to finally fix them once you understand the root
+cause.
 
-To test out the build cache, we'll run two builds (with build caching
-enabled). Both builds will invoke clean and run the same goals. We will not
-make any changes between each build run.
+The experiment can be run on any developer’s machine. It logically consists of
+the following steps:
 
-If the build is taking advantage of the local build cache, then very few (if
-any) goals should actually execute on the seond build (all of the goal
-output should be used from the local cache).
+  1. Run the Maven build with the a typical goal invocation including the 'clean' goal
+  2. Run the Maven build with the same goal invocation including the 'clean' goal
+  3. Determine which goals are still executed in the second run and why
+  4. Assess which of the executed goals are worth improving
 
-The Gradle Solutions engineer will then work with you to figure out why some
-(if any) goals ran on the second build, and how to optimize them to take
-advantage of the build cache.
+Step 1 and 2 should be executed with the local build cache enabled.
 
-${USER_ACTION_COLOR}Press <Enter> to get started.${RESTORE}
+The script you have invoked automates the execution of step 1 and step 2 without
+modifying the project. Build scans support your investigation in step 3 and step
+4.
+
+After improving the build to make it leverage the local build cache, you can
+push your changes and run the experiment again. This creates a cycle of run →
+measure → improve → run.
+
+${USER_ACTION_COLOR}Press <Enter> to get started with the experiment.${RESTORE}
 EOF
 
-  print_wizard_text "${text}"
-  wait_for_enter
-}
-
-explain_local_cache_dir() {
-  local text
-  IFS='' read -r -d '' text <<EOF
-$(print_separator)
-${HEADER_COLOR}Configure local build cache${RESTORE}
-
-We are going to create a new empty local build cache dir (and configure
-Gradle to use it instead of the default local cache dir). This way, the
-first build won't find anything in the cache and all goals will run.
-
-This is important because we want to make sure goals that are cachable do in
-fact produce output that is stored in the cache.
-
-Specifically, we are going to create and use this directory for the local
-build cache (we'll delete it if it already exists from a previous run of the
-experiment):
-
-$(info "${build_cache_dir}")
-
-${USER_ACTION_COLOR}Press <Enter> to continue.${RESTORE}
-EOF
   print_wizard_text "${text}"
   wait_for_enter
 }
@@ -220,11 +197,12 @@ explain_first_build() {
 $(print_separator)
 ${HEADER_COLOR}Run first build${RESTORE}
 
-OK! We are ready to run our first build!
+Now that the project has been checked out, the first build can be run with the
+given Maven goals. The build will be invoked with the 'clean' goal included and
+local build caching enabled.
 
-For this run, we'll execute 'clean ${tasks}'.
-
-We will also add a few the build scan tags.
+To keep the experiment isolated and repeatable, a clean local build cache
+directory was created.
 
 ${USER_ACTION_COLOR}Press <Enter> to run the first build.${RESTORE}
 EOF
@@ -238,12 +216,8 @@ explain_second_build() {
 $(print_separator)
 ${HEADER_COLOR}Run second build${RESTORE}
 
-Now we are going to run the build again without changing anything.
-
-In a fully optimized build, no goals would run on this second build because
-we already built everything in the first build, and the goal outputs should
-be in the local build cache. If some goals do run, they will show up in the
-build scan for this second build.
+Now that the first build has finished successfully, the second build can be run
+with the same Maven goals.
 
 ${USER_ACTION_COLOR}Press <Enter> to run the second build.${RESTORE}
 EOF
@@ -251,69 +225,31 @@ EOF
   wait_for_enter
 }
 
-explain_summary() {
+explain_and_print_summary() {
   read_scan_info
   local text
   IFS='' read -r -d '' text <<EOF
-$(print_separator)
-${HEADER_COLOR}Measure build results${RESTORE}
+The 'Summary' section below captures the configuration of the experiment and the
+two build scans that were published as part of running the experiment.  The
+build scan of the second build is particularly interesting since this is where
+you can inspect what goals were not leveraging the local build cache.
 
-Now that both builds have completed, there is a lot of valuable data in
-Gradle Enterprise to look at. The data can help you find ineffiencies in
-your build.
+The 'Investigation Quick Links' section below allows quick navigation to the
+most relevant views in build scans to investigate what goal outputs were fetched
+from the cache and what goals executed in the second build with cache misses,
+which of those goals had the biggest impact on build performance, and what
+caused the cache misses.
 
-After running the experiment, this script will generate a summary table of
-useful data and links to help you analyze the experiment results:
+The 'Command Line Invocation' section below demonstrates how you can rerun the
+experiment with the same configuration and in non-interactive mode.
 
-$(print_experiment_info)
+$(print_summary)
 
-"Experiment id" and "Experiment run id" are added as tags on the build
-scans.
+$(print_command_to_repeat_experiment)
 
-You can use the "Experiment id" to find all of the build scans for all runs
-of this experiment.
-
-Every time you run this script, we'll generate a unique "Experiment run id".
-You can use the run id to search for the build scans from a specific run of the
-experiment.
-
-$(print_build_scans)
-
-Above are links to the build scans from this experiment. A build scan provides
-a wealth of information and statistics about the build execution.
-
-$(print_quick_links)
-
-Use the above links help you get started in your analysis.
-
-The first link is to a comparison of the two build scans. Comparisons show you
-what was different between two different build executions.
-
-The "Goal execution summary" shows overall statistics for the execution of
-the second build. You can use this link to get a quick overview of where
-there may be overall opportunities to optimize.
-
-The "Cache performance" link takes you to the build cache performance page
-of the 2nd build scan. This page contains various metrics related to the
-build cache (such as cache hits and misses).
-
-The "Executed goals" link takes you to the timeline view of the second build
-scan and automatically shows only the goals that were executed, sorted by
-execution time (with the longest-running goal listed first). You can use
-this to quickly identify goals that were executed again unnecessarily. You
-will want to optimize any such goals that take a significant amount of time
-to complete.
-
-The "Executed cacheable goals" link shows you which tasks ran again on the
-second build, but shouldn't have because they are actually cacheable. If any
-cacheable goals ran, then one of their inputs changed (even though we didn't
-make any changes), or they may not be declaring their inputs correctly.
-
-The last link, "Non-cacheable goals", shows you which goals ran that are not
-cacheable. It is not always possible (or doesn't make sense) to cache the
-output from every goal. For example, there is no way to cache the "output"
-of the clean goal because the clean goal deletes output rather than creating
-it.
+Once you have addressed the issues surfaced in build scans and pushed the
+changes to your Git repository, you can rerun the experiment and start over the
+cycle of run → measure → improve → run.
 EOF
   print_wizard_text "${text}"
 }
