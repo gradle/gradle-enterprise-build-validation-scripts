@@ -130,7 +130,6 @@ EOF
 }
 
 explain_measure_build_results() {
-  read_build_scan_metadata
   local text
   IFS='' read -r -d '' text <<EOF
 $(print_separator)

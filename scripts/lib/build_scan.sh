@@ -1,9 +1,10 @@
 #!/usr/bin/env bash
 
+base_urls=()
+build_scan_urls=()
+build_scan_ids=()
+
 read_build_scan_metadata() {
-  base_urls=()
-  build_scan_urls=()
-  build_scan_ids=()
   # This isn't the most robust way to read a CSV,
   # but we control the CSV so we don't have to worry about various CSV edge cases
   while IFS=, read -r field_1 field_2 field_3; do
