@@ -14,7 +14,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Properties;
 import java.util.concurrent.Callable;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Command(

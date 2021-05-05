@@ -25,6 +25,7 @@ import java.util.concurrent.ExecutionException;
 
 public class ExportApiClient {
     private static final String BUILD_EVENT = "BuildEvent";
+
     private static class EventTypes {
         private static final String BUILD_REQUESTED_TASKS = "BuildRequestedTasks";
         private static final String USER_NAMED_VALUE = "UserNamedValue";
