@@ -55,7 +55,7 @@ public class ExportApiClient {
             .url(endpointFor(buildScanId))
             .build();
 
-        var eventListener = new BuildValidationDataEventListener();
+        var eventListener = new BuildValidationDataEventListener(baseUrl, buildScanId);
         eventSourceFactory.newEventSource(request, eventListener);
         return eventListener.getBuildValidationData();
     }
@@ -64,17 +64,25 @@ public class ExportApiClient {
         try {
             return new URL(baseUrl, "/build-export/v1/build/" + buildScanId + "/events?eventTypes=" + EventTypes.ALL);
         } catch (MalformedURLException e) {
+            // TODO do something better here
             throw new RuntimeException(e.getMessage(), e);
         }
     }
 
     private static class BuildValidationDataEventListener extends EventSourceListener {
+        private final URL gradleEnterpriseServerUrl;
+        private final String buildScanId;
         private final CompletableFuture<String> commitId = new CompletableFuture<>();
         private final CompletableFuture<List<String>> requestedTasks = new CompletableFuture<>();
         private final CompletableFuture<Boolean> buildSuccessful = new CompletableFuture<>();
 
+        private BuildValidationDataEventListener(URL gradleEnterpriseServerUrl, String buildScanId) {
+            this.gradleEnterpriseServerUrl = gradleEnterpriseServerUrl;
+            this.buildScanId = buildScanId;
+        }
+
         public BuildValidationData getBuildValidationData() throws ExecutionException, InterruptedException {
-            return new BuildValidationData(commitId.get(), requestedTasks.get(), buildSuccessful.get());
+            return new BuildValidationData(buildScanId, gradleEnterpriseServerUrl, commitId.get(), requestedTasks.get(), buildSuccessful.get());
         }
 
         @Override

@@ -10,9 +10,12 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.List;
 import java.util.Optional;
 import java.util.Properties;
 import java.util.concurrent.Callable;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 @Command(
     name = "fetch-build-validation-data",
@@ -25,44 +28,44 @@ public class FetchBuildValidationData implements Callable<Integer> {
         public static final int OK = 0;
     }
 
-    @Parameters(index = "0", description = "The build scan to fetch.")
-    private URL buildScan;
+    @Parameters(paramLabel = "BUILD_SCAN", description = "The build scans to fetch.", arity = "1..*")
+    private List<URL> buildScanUrls;
 
-    @Option(names = { "-u", "--username"}, description = "Specifies the username to use when authenticating with Gradle Enterprise.")
+    @Option(names = {"-u", "--username"}, description = "Specifies the username to use when authenticating with Gradle Enterprise.")
     private String username;
 
-    @Option(names = { "-p", "--password"}, description = "Specifies the password to use when authenticating with Gradle Enterprise.")
+    @Option(names = {"-p", "--password"}, description = "Specifies the password to use when authenticating with Gradle Enterprise.")
     private String password;
 
     @Override
     public Integer call() throws Exception {
-        var accessKey = lookupAccessKey(buildScan);
-        if (accessKey.isEmpty()) {
-            System.out.println("An access key is currently required.");
-            return 1;
-        }
+        var buildValidationData = buildScanUrls.stream()
+            .map(this::fetchBuildValidationData)
+            .collect(Collectors.toList());
 
-        var baseUrl = baseUrlFrom(buildScan);
-        var buildScanId = buildScanIdFrom(buildScan);
-
-        var apiClient = new ExportApiClient(baseUrl, Authenticators.accessKey(accessKey.get()));
-        var buildValidationData = apiClient.fetchBuildValidationData(buildScanId);
-
-        System.out.println("Gradle Enterprise Server\tBuild Scan ID\tGit Commit Id\tRequested Tasks\tBuild Successful");
-        System.out.println(String.format("%s\t%s\t%s\t%s\t%s",
-            baseUrl,
-            buildScanId,
-            buildValidationData.getCommitId(),
-            String.join(" ", buildValidationData.getRequestedTasks()),
-            buildValidationData.getBuildSuccessful()
-        ));
+        printHeader();
+        buildValidationData.stream().forEach(this::printRow);
 
         return ExitCode.OK;
     }
 
-    public static void main(String[] args) {
-        int exitCode = new CommandLine(new FetchBuildValidationData()).execute(args);
-        System.exit(exitCode);
+    private BuildValidationData fetchBuildValidationData(URL buildScanUrl) {
+        try {
+            var accessKey = lookupAccessKey(buildScanUrl);
+            if (accessKey.isEmpty()) {
+                // TODO do something better here
+                throw new RuntimeException("An access key is currently required.");
+            }
+
+            var baseUrl = baseUrlFrom(buildScanUrl);
+            var apiClient = new ExportApiClient(baseUrl, Authenticators.accessKey(accessKey.get()));
+
+            var buildScanId = buildScanIdFrom(buildScanUrl);
+            return apiClient.fetchBuildValidationData(buildScanId);
+        } catch (Exception e) {
+            // TODO Yuck!
+            throw new RuntimeException(e.getMessage(), e);
+        }
     }
 
     private Optional<String> lookupAccessKey(URL buildScan) throws IOException {
@@ -77,12 +80,31 @@ public class FetchBuildValidationData implements Callable<Integer> {
 
     private URL baseUrlFrom(URL buildScanUrl) throws MalformedURLException {
         var port = (buildScanUrl.getPort() != -1) ? ":" + buildScanUrl.getPort() : "";
-        return new URL(buildScanUrl.getProtocol() + "://" + buildScanUrl.getHost() +  port);
+        return new URL(buildScanUrl.getProtocol() + "://" + buildScanUrl.getHost() + port);
     }
 
     private String buildScanIdFrom(URL buildScanUrl) {
         var pathSegments = buildScanUrl.getPath().split("/");
         // TODO handle the case where there are no path segments
-        return pathSegments[pathSegments.length -1];
+        return pathSegments[pathSegments.length - 1];
+    }
+
+    public void printHeader() {
+        System.out.println("Gradle Enterprise Server\tBuild Scan ID\tGit Commit Id\tRequested Tasks\tBuild Successful");
+    }
+
+    private void printRow(BuildValidationData buildValidationData) {
+        System.out.println(String.format("%s\t%s\t%s\t%s\t%s",
+            buildValidationData.getGradleEnterpriseServerUrl(),
+            buildValidationData.getBuildScanId(),
+            buildValidationData.getCommitId(),
+            String.join(" ", buildValidationData.getRequestedTasks()),
+            buildValidationData.getBuildSuccessful()
+        ));
+    }
+
+    public static void main(String[] args) {
+        int exitCode = new CommandLine(new FetchBuildValidationData()).execute(args);
+        System.exit(exitCode);
     }
 }
