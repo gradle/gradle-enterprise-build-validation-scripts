@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-read_scan_info() {
+read_build_scan_metadata() {
   base_url=()
   scan_url=()
   scan_id=()
@@ -12,4 +12,3 @@ read_scan_info() {
      scan_id+=("$field_3")
   done < "${SCAN_FILE}"
 }
-

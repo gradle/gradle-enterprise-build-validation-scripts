@@ -18,8 +18,8 @@ source "${SCRIPT_DIR}/../lib/init.sh" || { echo "Couldn't find '../lib/init.sh'"
 # shellcheck source=build-validation/scripts/lib/git.sh
 source "${SCRIPT_DIR}/../lib/git.sh" || { echo "Couldn't find '../lib/git.sh'"; exit 1; }
 
-# shellcheck source=build-validation/scripts/lib/scan_info.sh
-source "${SCRIPT_DIR}/../lib/scan_info.sh" || { echo "Couldn't find '../lib/scan_info.sh'"; exit 1; }
+# shellcheck source=build-validation/scripts/lib/build_scan.sh
+source "${SCRIPT_DIR}/../lib/build_scan.sh" || { echo "Couldn't find '../lib/build_scan.sh'"; exit 1; }
 
 # shellcheck source=build-validation/scripts/lib/gradle.sh
 source "${SCRIPT_DIR}/../lib/gradle.sh" || { echo "Couldn't find '../lib/gradle.sh'"; exit 1; }

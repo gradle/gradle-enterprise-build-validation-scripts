@@ -144,7 +144,7 @@ execute_second_build() {
 }
 
 print_summary() {
- read_scan_info
+ read_build_scan_metadata
  print_experiment_info
  print_build_scans
  print_bl
@@ -280,7 +280,7 @@ EOF
 }
 
 explain_and_print_summary() {
-  read_scan_info
+  read_build_scan_metadata
   local text
   IFS='' read -r -d '' text <<EOF
 The 'Summary' section below captures the configuration of the experiment and the
