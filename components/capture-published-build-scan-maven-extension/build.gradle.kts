@@ -8,7 +8,6 @@ repositories {
 }
 
 dependencies {
-    implementation("org.codehaus.groovy:groovy:3.0.7")
     annotationProcessor("org.eclipse.sisu:org.eclipse.sisu.inject:0.3.4")
     compileOnly("org.apache.maven:maven-core:3.8.1")
     compileOnly("org.codehaus.plexus:plexus-component-annotations:1.7.1")

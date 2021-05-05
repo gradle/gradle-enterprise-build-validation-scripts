@@ -9,6 +9,12 @@ base {
   distsDirName = rootDir.toString()
 }
 
+val components by configurations.creating
+
+dependencies {
+    components(project(":components:capture-published-build-scan-maven-extension"))
+}
+
 val argbashVersion by extra("2.10.0")
 
 tasks.register<Download>("downloadArgbash") {
@@ -94,7 +100,7 @@ tasks.register<Zip>("assembleMavenScripts") {
         exclude("**/*.m4")
         filter { line: String -> line.replace("/../lib", "/lib") }
     }
-    from(project(":components:capture-published-build-scan-maven-extension")!!.tasks.getByName("jar")) {
+    from(components) {
         into("lib/maven/")
     }
     into(baseName)
