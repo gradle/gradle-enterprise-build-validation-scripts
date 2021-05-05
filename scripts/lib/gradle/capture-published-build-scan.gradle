@@ -30,23 +30,19 @@ if (isTopLevelBuild) {
 def registerCallbacks(gradleEnterprise) {
     gradleEnterprise.with {
         buildScan {
-            buildScanPublished { buildScan -> logBuildScan(buildScan) }
-            onError { error -> reportFailedToPublishBuildScan(error) }
+            def scanFile = new File(experimentDir, "scans.csv")
+            buildScanPublished { buildScan -> 
+                def port = (buildScan.buildScanUri.port != -1) ? ":" + buildScan.buildScanUri.port : ""
+                def baseUrl = "${buildScan.buildScanUri.scheme}://${buildScan.buildScanUri.host}${port}"
+
+                scanFile.append("${baseUrl},${buildScan.buildScanUri},${buildScan.buildScanId}\n")
+            }
+            def errorFile = new File(experimentDir, "build-scan-publish-error.txt")
+            onError { error -> 
+                errorFile.text = error
+            }
         }
     }
-}
-
-def logBuildScan(scan) {
-    def port = (scan.buildScanUri.port != -1) ? ":" + scan.buildScanUri.port : ""
-    def baseUrl = "${scan.buildScanUri.scheme}://${scan.buildScanUri.host}${port}"
-
-    def scanFile = new File(experimentDir, "scans.csv")
-    scanFile.append("${baseUrl},${scan.buildScanUri},${scan.buildScanId}\n")
-}
-
-def reportFailedToPublishBuildScan(error) {
-    def errorFile = new File(experimentDir, "build-scan-publish-error.txt")
-    errorFile.text = error
 }
 
 File getExperimentDir() {
