@@ -13,9 +13,6 @@ readonly EXP_NAME="Validate Build Caching - Continuous Integration"
 readonly EXP_DESCRIPTION="Validating that a Gradle build is optimized for remote build caching on CI"
 readonly EXP_NO="04"
 readonly EXP_SCAN_TAG=exp4-gradle
-readonly EXP_DIR="${SCRIPT_DIR}/data/${SCRIPT_NAME%.*}"
-readonly BUILD_SCAN_FILE="${EXP_DIR}/build-scans.csv"
-readonly BUILD_TOOL="Gradle"
 
 # These will be set by the config functions (see lib/config.sh)
 git_repo=''
@@ -23,22 +20,14 @@ project_name=''
 git_branch=''
 project_dir=''
 tasks=''
-extra_args=''
-enable_ge=''
-ge_server=''
 interactive_mode=''
 
-ci_build_scan_url=''
-ci_build_scan_id=''
-commit_id=''
-
 # Include and parse the command line arguments
-# shellcheck source=build-validation-automation/scripts/src/lib/gradle/05-cli-parser.sh
+# shellcheck source=build-validation/scripts/lib/gradle/04-cli-parser.sh
 source "${LIB_DIR}/gradle/${EXP_NO}-cli-parser.sh" || { echo "Couldn't find '${LIB_DIR}/gradle/${EXP_NO}-cli-parser.sh' parsing library."; exit 1; }
-# shellcheck source=build-validation-automation/scripts/src/lib/libs.sh
+# shellcheck source=build-validation/scripts/lib/libs.sh
+# shellcheck disable=SC2154 # the libs include scripts that reference CLI arguments that this script does not create
 source "${LIB_DIR}/libs.sh" || { echo "Couldn't find '${LIB_DIR}/libs.sh'"; exit 1; }
-
-readonly RUN_ID=$(generate_run_id)
 
 main() {
   if [ "${interactive_mode}" == "on" ]; then
@@ -116,7 +105,7 @@ parse_build_scan_urls() {
       base_urls+=("${protocol}://${ge_host}${port}")
       build_scan_ids+=("$build_scan_id")
     else
-      die "${build_scan_url} is not a parsable URL." 4
+      die "${url} is not a parsable URL." 4
     fi
   done
 }

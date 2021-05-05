@@ -8,7 +8,7 @@ readonly SCRIPT_NAME=$(basename "$0")
 readonly SCRIPT_DIR="$(cd "$(dirname "$(readlink -e "${BASH_SOURCE[0]}")")" && pwd)"
 readonly LIB_DIR="${SCRIPT_DIR}/../lib"
 
-# Experiment-speicifc constants
+# Experiment-specific constants
 readonly EXP_NAME="Validate Build Caching - Local - Different Places"
 readonly EXP_DESCRIPTION="Validating that a Gradle build is optimized for local build caching in different places"
 readonly EXP_NO="03"
