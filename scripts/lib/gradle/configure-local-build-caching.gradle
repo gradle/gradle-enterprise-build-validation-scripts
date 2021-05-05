@@ -7,8 +7,8 @@ if (isTopLevelBuild) {
                 push = true
                 directory = new File(experimentDir, "build-cache")
             }
-            if (remote != null) {
-                remote.enabled = false
+            remote(HttpBuildCache) {
+                enabled = false
             }
         }
     }

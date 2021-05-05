@@ -2,18 +2,13 @@ def isTopLevelBuild = gradle.getParent() == null
 if (isTopLevelBuild) {
     settingsEvaluated { settings ->
         settings.buildCache {
-            if (remote == null)
-                throw new IllegalStateException("A remote build cache has not been configured.")
-
-            if (remote instanceof HttpBuildCache) {
-                remote(HttpBuildCache) {
-                    if (url == null)
-                        throw new IllegalStateException("A remote build cache URL has not been configured.")
-                }
+            local {
+                enabled = false
             }
-            local.enabled = false
-            remote.enabled = true
-            remote.push = false
+            remote(HttpBuildCache) {
+                enabled = true
+                push = false
+            }
         }
     }
 } else {
