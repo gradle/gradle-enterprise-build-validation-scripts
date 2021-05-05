@@ -13,7 +13,7 @@ readonly EXP_DESCRIPTION="Validating that a Gradle build is optimized for increm
 readonly EXP_NO="01"
 readonly EXP_SCAN_TAG=exp1-gradle
 readonly EXP_DIR="${SCRIPT_DIR}/data/${SCRIPT_NAME%.*}"
-readonly SCAN_FILE="${EXP_DIR}/scans.csv"
+readonly SCAN_FILE="${EXP_DIR}/build-scans.csv"
 readonly BUILD_TOOL="Gradle"
 
 # These will be set by the config functions (see lib/config.sh)

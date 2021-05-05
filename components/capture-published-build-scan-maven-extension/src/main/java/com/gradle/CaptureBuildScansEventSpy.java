@@ -35,18 +35,18 @@ public class CaptureBuildScansEventSpy  extends AbstractEventSpy {
         if (buildScan == null) throw new RuntimeException("Unable to configure build scans: the Build Scan API cannot be found.");
 
         buildScan.buildScanPublished(scan -> {
-            logger.debug("Saving build scan data to scans.csv");
+            logger.debug("Saving build scan data to build-scans.csv");
             String port = scan.getBuildScanUri().getPort() != -1 ? ":" + scan.getBuildScanUri().getPort(): "";
             String baseUrl = String.format("%s://%s%s", scan.getBuildScanUri().getScheme(), scan.getBuildScanUri().getHost(), port);
 
-            try(FileWriter fw = new FileWriter("../scans.csv", true);
+            try(FileWriter fw = new FileWriter("../build-scans.csv", true);
                 BufferedWriter bw = new BufferedWriter(fw);
                 PrintWriter out = new PrintWriter(bw))
             {
                 out.println(String.format("%s,%s,%s", baseUrl, scan.getBuildScanUri(), scan.getBuildScanId()));
             } catch (IOException e) {
-                logger.error("Unable to save scan data to scans.csv: " + e.getMessage(), e);
-                throw new RuntimeException("Unable to save scan data to scans.csv: " + e.getMessage(), e);
+                logger.error("Unable to save scan data to build-scans.csv: " + e.getMessage(), e);
+                throw new RuntimeException("Unable to save scan data to build-scans.csv: " + e.getMessage(), e);
             }
         });
     }
