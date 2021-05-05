@@ -32,10 +32,11 @@ def registerCallbacks(gradleEnterprise) {
         buildScan {
             def scanFile = new File(experimentDir, "scans.csv")
             buildScanPublished { buildScan -> 
-                def port = (buildScan.buildScanUri.port != -1) ? ":" + buildScan.buildScanUri.port : ""
-                def baseUrl = "${buildScan.buildScanUri.scheme}://${buildScan.buildScanUri.host}${port}"
-
-                scanFile.append("${baseUrl},${buildScan.buildScanUri},${buildScan.buildScanId}\n")
+                def buildScanUri = buildScan.buildScanUri
+                def buildScanId = buildScan.buildScanId
+                def port = (buildScanUri.port != -1) ? ":" + buildScanUri.port : ""
+                def baseUrl = "${buildScanUri.scheme}://${buildScanUri.host}${port}"
+                scanFile.append("${baseUrl},${buildScanUri},${buildScanId}\n")
             }
             def errorFile = new File(experimentDir, "build-scan-publish-error.txt")
             onError { error -> 
