@@ -6,13 +6,13 @@ plugins {
 }
 
 base {
-  distsDirName = rootDir.toString()
+  distsDirName = rootDir.resolve("../").toString()
 }
 
 val components by configurations.creating
 
 dependencies {
-    components(project(":components:capture-published-build-scan-maven-extension"))
+    components("com.gradle:capture-published-build-scan-maven-extension:1.0.0-SNAPSHOT")
 }
 
 val argbashVersion by extra("2.10.0")
