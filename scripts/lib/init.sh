@@ -2,7 +2,7 @@
 
 make_experiment_dir() {
   mkdir -p "${EXP_DIR}"
-  rm -f "${SCAN_FILE}"
+  rm -f "${BUILD_SCAN_FILE}"
 }
 
 generate_run_id() {
