@@ -21,8 +21,6 @@ source "${LIB_DIR}/maven/${EXP_NO}-cli-parser.sh" || { echo "Couldn't find '${LI
 # shellcheck source=build-validation/scripts/lib/libs.sh
 source "${LIB_DIR}/libs.sh" || { echo "Couldn't find '${LIB_DIR}/libs.sh'"; exit 1; }
 
-build_cache_dir="${EXP_DIR}/build-cache"
-
 # These will be set by the config functions (see lib/config.sh)
 git_repo=''
 project_name=''
@@ -47,7 +45,7 @@ execute() {
   validate_required_config
 
   make_experiment_dir
-  make_local_cache_dir "${build_cache_dir}"
+  make_local_cache_dir
   git_clone_project ""
 
   print_bl
@@ -116,7 +114,7 @@ execute_build() {
   invoke_maven \
      -Dgradle.cache.local.enabled=true \
      -Dgradle.cache.remote.enabled=false \
-     -Dgradle.cache.local.directory="${build_cache_dir}" \
+     -Dgradle.cache.local.directory="${BUILD_CACHE_DIR}" \
      clean ${tasks}
 }
 

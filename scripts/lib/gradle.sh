@@ -44,7 +44,6 @@ invoke_gradle() {
 }
 
 make_local_cache_dir() {
-  local build_cache_dir="$1"
-  rm -rf "${build_cache_dir}"
-  mkdir -p "${build_cache_dir}"
+  rm -rf "${BUILD_CACHE_DIR}"
+  mkdir -p "${BUILD_CACHE_DIR}"
 }

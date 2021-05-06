@@ -13,3 +13,4 @@ generate_run_id() {
 readonly RUN_ID=$(generate_run_id)
 readonly EXP_DIR="${SCRIPT_DIR}/.data/${SCRIPT_NAME%.*}/$(date +"%Y-%m-%dT%H_%M_%S")-${RUN_ID}"
 readonly BUILD_SCAN_FILE="${EXP_DIR}/build-scans.csv"
+readonly BUILD_CACHE_DIR="${EXP_DIR}/build-cache"

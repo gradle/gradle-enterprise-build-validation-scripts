@@ -21,8 +21,6 @@ source "${LIB_DIR}/gradle/${EXP_NO}-cli-parser.sh" || { echo "Couldn't find '${L
 # shellcheck source=build-validation/scripts/lib/libs.sh
 source "${LIB_DIR}/libs.sh" || { echo "Couldn't find '${LIB_DIR}/libs.sh'"; exit 1; }
 
-build_cache_dir="${EXP_DIR}/build-cache"
-
 # These will be set by the config functions (see lib/config.sh)
 git_repo=''
 project_name=''
@@ -47,7 +45,7 @@ execute() {
   validate_required_config
 
   make_experiment_dir
-  make_local_cache_dir "${build_cache_dir}"
+  make_local_cache_dir
   git_clone_project "_1"
 
   print_bl
@@ -82,7 +80,7 @@ wizard_execute() {
   explain_first_clone_project
   print_bl
   make_experiment_dir
-  make_local_cache_dir "${build_cache_dir}"
+  make_local_cache_dir
   git_clone_project "_1"
 
   print_bl
