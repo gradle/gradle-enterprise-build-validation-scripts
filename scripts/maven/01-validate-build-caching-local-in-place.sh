@@ -13,7 +13,7 @@ readonly EXP_NAME="Validate Build Caching - Local - In Place"
 readonly EXP_DESCRIPTION="Validating that a Maven build is optimized for local in-place build caching"
 readonly EXP_NO="01"
 readonly EXP_SCAN_TAG=exp1-maven
-readonly EXP_DIR="${SCRIPT_DIR}/data/${SCRIPT_NAME%.*}"
+readonly EXP_DIR="${SCRIPT_DIR}/.data/${SCRIPT_NAME%.*}"
 readonly BUILD_SCAN_FILE="${EXP_DIR}/build-scans.csv"
 readonly BUILD_TOOL="Maven"
 

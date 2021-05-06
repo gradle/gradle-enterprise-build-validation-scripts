@@ -38,16 +38,16 @@ tasks.register("generateBashCliParsers") {
     description = "Uses Argbash to generate Bash command line argument parsing code."
     val scripts = fileTree("../scripts") {
         include("**/*-cli-parser.sh")
-        exclude("gradle/data/")
-        exclude("maven/data/")
+        exclude("gradle/.data/")
+        exclude("maven/.data/")
     }
     inputs.files(scripts)
         .withPropertyName("scripts")
         .withPathSensitivity(PathSensitivity.RELATIVE)
     inputs.files(fileTree("src") {
         include("**/*.m4")
-        exclude("gradle/data/")
-        exclude("maven/data/")
+        exclude("gradle/.data/")
+        exclude("maven/.data/")
     })
         .withPropertyName("templates")
         .withPathSensitivity(PathSensitivity.RELATIVE)
