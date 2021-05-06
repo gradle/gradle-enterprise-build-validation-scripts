@@ -73,7 +73,7 @@ tasks.register<Zip>("assembleGradleScripts") {
     baseName = "gradle-enterprise-gradle-build-validation"
 
     from(layout.projectDirectory.dir("../scripts/gradle")) {
-        exclude("data/")
+        exclude(".data/")
     }
     from(layout.projectDirectory.dir("../scripts")) {
         include("lib/**")
@@ -92,7 +92,7 @@ tasks.register<Zip>("assembleMavenScripts") {
 
     from(layout.projectDirectory.dir("../scripts/maven")) {
         filter { line: String -> line.replace("/../lib", "/lib") }
-        exclude("data/")
+        exclude(".data/")
     }
     from(layout.projectDirectory.dir("../scripts/")) {
         include("lib/**")
