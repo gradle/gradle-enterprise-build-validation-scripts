@@ -68,10 +68,10 @@ prompt_for_setting() {
 }
 
 collect_git_details() {
-  prompt_for_setting "What is the URL for the Git repository to validate?" "${git_repo}" '' git_repo
+  prompt_for_setting "What is the URL for the Git repository that contains the project to validate?" "${git_repo}" '' git_repo
 
   local default_branch="*the repo's default branch*"
-  prompt_for_setting "What is the branch for the Git repository to validate?" "${git_branch}" "${default_branch}" git_branch
+  prompt_for_setting "What is the branch for the Git repository that contains the project to validate?" "${git_branch}" "${default_branch}" git_branch
 
   if [[ "${git_branch}" == "${default_branch}" ]]; then
     git_branch=''
@@ -80,9 +80,9 @@ collect_git_details() {
 }
 
 collect_gradle_details() {
-  prompt_for_setting "What is the folder containing the root project?" "${project_dir}" "*the repo's root dir*" project_dir
+  prompt_for_setting "Which directory contains the Gradle root project?" "${project_dir}" "*the repo's root dir*" project_dir
   prompt_for_setting "What are the Gradle tasks to invoke?" "${tasks}" "assemble" tasks
-  prompt_for_setting "Enter any additional arguments to pass to Gradle." "${extra_args}" "*none*" extra_args
+  prompt_for_setting "What are additional cmd line arguments to pass to the Gradle invocation?" "${extra_args}" "*none*" extra_args
   if [[ "${project_dir}" == "*the repo's root dir*" ]]; then
     project_dir=''
   fi
@@ -93,7 +93,7 @@ collect_gradle_details() {
 
 collect_maven_details() {
   prompt_for_setting "What are the Maven goals to invoke?" "${tasks}" "package" tasks
-  prompt_for_setting "Enter any additional arguments to pass to Maven." "${extra_args}" "*none*" extra_args
+  prompt_for_setting "What are additional cmd line arguments to pass to the Maven invocation?" "${extra_args}" "*none*" extra_args
   if [[ "${extra_args}" == "*none*" ]]; then
     extra_args=''
   fi
