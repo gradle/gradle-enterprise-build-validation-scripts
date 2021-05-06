@@ -60,14 +60,16 @@ print_summary() {
 }
 
 print_experiment_info() {
- local branch
+ local branch commit_id
  branch=$(git_get_branch)
+ commit_id=$(git_get_commit_id)
 
  info "Summary"
  info "-------"
  summary_row "Project:" "${project_name}"
  summary_row "Git repo:" "${git_repo}"
  summary_row "Git branch:" "${branch}"
+ summary_row "Git commit id:" "${commit_id}"
  if [ -z "${project_dir}" ]; then
    summary_row "Project dir:" "."
  else

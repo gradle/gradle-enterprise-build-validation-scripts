@@ -21,6 +21,10 @@ git_get_branch() {
   git symbolic-ref -q --short HEAD || git rev-parse --short HEAD
 }
 
+git_get_commit_id() {
+  git rev-parse --short=8 --verify HEAD
+}
+
 git_checkout_commit() {
   local commit="$1"
   info "Checking out commit ${commit}"
