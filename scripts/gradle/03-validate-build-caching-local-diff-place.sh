@@ -38,6 +38,7 @@ main() {
   else
     execute
   fi
+  create_receipt_file
 }
 
 execute() {

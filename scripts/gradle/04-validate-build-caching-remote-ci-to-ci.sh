@@ -36,6 +36,7 @@ main() {
   else
     execute
   fi
+  create_receipt_file
 }
 
 execute() {
@@ -43,6 +44,7 @@ execute() {
   validate_required_args
 
   parse_build_scan_urls
+  make_experiment_dir
 
   print_summary
   print_bl
@@ -64,6 +66,7 @@ wizard_execute() {
   collect_second_build_scan
 
   parse_build_scan_urls
+  make_experiment_dir
 
   print_bl
   explain_measure_build_results
@@ -125,6 +128,7 @@ print_experiment_info() {
  summary_row "Gradle tasks:" "${tasks}"
  summary_row "Experiment:" "${EXP_NO} ${EXP_NAME}"
  summary_row "Experiment id:" "${EXP_SCAN_TAG}"
+ summary_row "Experiment artifact dir:" "${EXP_DIR}"
 }
 
 

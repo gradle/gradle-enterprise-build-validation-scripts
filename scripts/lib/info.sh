@@ -28,6 +28,13 @@ print_bl() {
   fi
 }
 
+# Strips color codes from Standard in. This function is intended to be used as a filter on another command:
+# print_summary | strip_color_codes
+strip_color_codes() {
+  # shellcheck disable=SC2001  # I could only get this to work with sed
+  sed $'s,\x1b\\[[0-9;]*[a-zA-Z],,g'
+}
+
 # Overrides the die() function loaded from the argbash-generated parsing libs
 die() {
   local _ret="${2:-1}"
@@ -45,6 +52,11 @@ print_warnings() {
       printf "${YELLOW}${BOLD}WARNING: %s${RESTORE}\n" "$l"
     done <"${warnings_file}"
   fi
+}
+
+# This function should be overridden by each top-level build validation script
+print_summary() {
+    print_bl
 }
 
 print_experiment_info() {
@@ -72,4 +84,10 @@ print_experiment_info() {
  summary_row "Experiment id:" "${EXP_SCAN_TAG}"
  summary_row "Experiment run id:" "${RUN_ID}"
  summary_row "Experiment artifact dir:" "${EXP_DIR}"
+}
+
+create_receipt_file() {
+  print_summary | strip_color_codes > "${RECEIPT_FILE}"
+  print_bl >> "${RECEIPT_FILE}"
+  print_command_to_repeat_experiment | strip_color_codes >> "${RECEIPT_FILE}"
 }
