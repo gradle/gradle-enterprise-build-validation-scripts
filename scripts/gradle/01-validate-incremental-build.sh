@@ -1,20 +1,25 @@
 #!/usr/bin/env bash
 #
-# Runs Experiment 01 - Validate Incremental Build
+# Runs Experiment 01 - Validate Gradle Incremental Build
 #
 # Invoke this script with --help to get a description of the command line arguments
-readonly SCRIPT_NAME=$(basename "$0")
-readonly SCRIPT_DIR="$(cd "$(dirname "$(readlink -e "${BASH_SOURCE[0]}")")" && pwd)"
-readonly LIB_DIR="${SCRIPT_DIR}/../lib"
-
-# Experiment-specific constants
+#
 readonly EXP_NAME="Validate Gradle Incremental Build"
 readonly EXP_DESCRIPTION="Validating that a Gradle build is optimized for incremental building"
 readonly EXP_NO="01"
 readonly EXP_SCAN_TAG=exp1-gradle
-readonly EXP_DIR="${SCRIPT_DIR}/.data/${SCRIPT_NAME%.*}"
-readonly BUILD_SCAN_FILE="${EXP_DIR}/build-scans.csv"
 readonly BUILD_TOOL="Gradle"
+
+# Needed to bootstrap the script
+readonly SCRIPT_NAME=$(basename "$0")
+readonly SCRIPT_DIR="$(cd "$(dirname "$(readlink -e "${BASH_SOURCE[0]}")")" && pwd)"
+readonly LIB_DIR="${SCRIPT_DIR}/../lib"
+
+# Include and parse the command line arguments
+# shellcheck source=build-validation/scripts/lib/gradle/01-cli-parser.sh
+source "${LIB_DIR}/gradle/${EXP_NO}-cli-parser.sh" || { echo "Couldn't find '${LIB_DIR}/gradle/${EXP_NO}-cli-parser.sh' library."; exit 1; }
+# shellcheck source=build-validation/scripts/lib/libs.sh
+source "${LIB_DIR}/libs.sh" || { echo "Couldn't find '${LIB_DIR}/libs.sh'"; exit 1; }
 
 # These will be set by the config functions (see lib/config.sh)
 git_repo=''
@@ -26,14 +31,6 @@ extra_args=''
 enable_ge=''
 ge_server=''
 interactive_mode=''
-
-# Include and parse the command line arguments
-# shellcheck source=build-validation/scripts/lib/gradle/01-cli-parser.sh
-source "${LIB_DIR}/gradle/${EXP_NO}-cli-parser.sh" || { echo "Couldn't find '${LIB_DIR}/gradle/${EXP_NO}-cli-parser.sh' library."; exit 1; }
-# shellcheck source=build-validation/scripts/lib/libs.sh
-source "${LIB_DIR}/libs.sh" || { echo "Couldn't find '${LIB_DIR}/libs.sh'"; exit 1; }
-
-readonly RUN_ID=$(generate_run_id)
 
 main() {
   if [ "${interactive_mode}" == "on" ]; then

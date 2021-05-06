@@ -1,21 +1,25 @@
 #!/usr/bin/env bash
 #
-# Runs Experiment 02 - Validate Build Caching - Local - In Place
+# Runs Experiment 02 - Validate Gradle Build Caching - Local - In Place
 #
 # Invoke this script with --help to get a description of the command line arguments
 #
+readonly EXP_NAME="Validate Gradle Build Caching - Local - In Place"
+readonly EXP_DESCRIPTION="Validating that a Gradle build is optimized for local in-place build caching"
+readonly EXP_NO="02"
+readonly EXP_SCAN_TAG=exp2-gradle
+readonly BUILD_TOOL="Gradle"
+
+# Needed to bootstrap the script
 readonly SCRIPT_NAME=$(basename "$0")
 readonly SCRIPT_DIR="$(cd "$(dirname "$(readlink -e "${BASH_SOURCE[0]}")")" && pwd)"
 readonly LIB_DIR="${SCRIPT_DIR}/../lib"
 
-# Experiment-speicifc constants
-readonly EXP_NAME="Validate Build Caching - Local - In Place"
-readonly EXP_DESCRIPTION="Validating that a Gradle build is optimized for local in-place build caching"
-readonly EXP_NO="02"
-readonly EXP_SCAN_TAG=exp2-gradle
-readonly EXP_DIR="${SCRIPT_DIR}/.data/${SCRIPT_NAME%.*}"
-readonly BUILD_SCAN_FILE="${EXP_DIR}/build-scans.csv"
-readonly BUILD_TOOL="Gradle"
+# Include and parse the command line arguments
+# shellcheck source=build-validation/scripts/lib/gradle/02-cli-parser.sh
+source "${LIB_DIR}/gradle/${EXP_NO}-cli-parser.sh" || { echo "Couldn't find '${LIB_DIR}/gradle/${EXP_NO}-cli-parser.sh' parsing library."; exit 1; }
+# shellcheck source=build-validation/scripts/lib/libs.sh
+source "${LIB_DIR}/libs.sh" || { echo "Couldn't find '${LIB_DIR}/libs.sh'"; exit 1; }
 
 build_cache_dir="${EXP_DIR}/build-cache"
 
@@ -29,14 +33,6 @@ extra_args=''
 enable_ge=''
 ge_server=''
 interactive_mode=''
-
-# Include and parse the command line arguments
-# shellcheck source=build-validation/scripts/lib/gradle/02-cli-parser.sh
-source "${LIB_DIR}/gradle/${EXP_NO}-cli-parser.sh" || { echo "Couldn't find '${LIB_DIR}/gradle/${EXP_NO}-cli-parser.sh' parsing library."; exit 1; }
-# shellcheck source=build-validation/scripts/lib/libs.sh
-source "${LIB_DIR}/libs.sh" || { echo "Couldn't find '${LIB_DIR}/libs.sh'"; exit 1; }
-
-readonly RUN_ID=$(generate_run_id)
 
 main() {
   if [ "${interactive_mode}" == "on" ]; then

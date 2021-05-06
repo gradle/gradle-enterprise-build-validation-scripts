@@ -8,3 +8,8 @@ make_experiment_dir() {
 generate_run_id() {
   printf '%x' "$(date +%s)"
 }
+
+# Init common constants
+readonly RUN_ID=$(generate_run_id)
+readonly EXP_DIR="${SCRIPT_DIR}/.data/${SCRIPT_NAME%.*}/$(date +"%Y-%m-%dT%H_%M_%S")-${RUN_ID}"
+readonly BUILD_SCAN_FILE="${EXP_DIR}/build-scans.csv"

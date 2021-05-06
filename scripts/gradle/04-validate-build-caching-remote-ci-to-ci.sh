@@ -1,18 +1,26 @@
 #!/usr/bin/env bash
 #
-# Runs Experiment 02 - Validate Build Caching - Local - In Place
+# Runs Experiment 02 - Validate Gradle Build Caching - CI -> CI
 #
 # Invoke this script with --help to get a description of the command line arguments
 #
+readonly EXP_NAME="Validate Gradle Build Caching - CI -> CI"
+readonly EXP_DESCRIPTION="Validating that a Gradle build is optimized for remote build caching on CI"
+readonly EXP_NO="04"
+readonly EXP_SCAN_TAG=exp4-gradle
+readonly BUILD_TOOL="Gradle"
+
+# Needed to bootstrap the script
 readonly SCRIPT_NAME=$(basename "$0")
 readonly SCRIPT_DIR="$(cd "$(dirname "$(readlink -e "${BASH_SOURCE[0]}")")" && pwd)"
 readonly LIB_DIR="${SCRIPT_DIR}/../lib"
 
-# Experiment-specific constants
-readonly EXP_NAME="Validate Build Caching - Continuous Integration"
-readonly EXP_DESCRIPTION="Validating that a Gradle build is optimized for remote build caching on CI"
-readonly EXP_NO="04"
-readonly EXP_SCAN_TAG=exp4-gradle
+# Include and parse the command line arguments
+# shellcheck source=build-validation/scripts/lib/gradle/04-cli-parser.sh
+source "${LIB_DIR}/gradle/${EXP_NO}-cli-parser.sh" || { echo "Couldn't find '${LIB_DIR}/gradle/${EXP_NO}-cli-parser.sh' parsing library."; exit 1; }
+# shellcheck source=build-validation/scripts/lib/libs.sh
+# shellcheck disable=SC2154 # the libs include scripts that reference CLI arguments that this script does not create
+source "${LIB_DIR}/libs.sh" || { echo "Couldn't find '${LIB_DIR}/libs.sh'"; exit 1; }
 
 # These will be set by the config functions (see lib/config.sh)
 git_repo=''
@@ -21,13 +29,6 @@ git_branch=''
 project_dir=''
 tasks=''
 interactive_mode=''
-
-# Include and parse the command line arguments
-# shellcheck source=build-validation/scripts/lib/gradle/04-cli-parser.sh
-source "${LIB_DIR}/gradle/${EXP_NO}-cli-parser.sh" || { echo "Couldn't find '${LIB_DIR}/gradle/${EXP_NO}-cli-parser.sh' parsing library."; exit 1; }
-# shellcheck source=build-validation/scripts/lib/libs.sh
-# shellcheck disable=SC2154 # the libs include scripts that reference CLI arguments that this script does not create
-source "${LIB_DIR}/libs.sh" || { echo "Couldn't find '${LIB_DIR}/libs.sh'"; exit 1; }
 
 main() {
   if [ "${interactive_mode}" == "on" ]; then

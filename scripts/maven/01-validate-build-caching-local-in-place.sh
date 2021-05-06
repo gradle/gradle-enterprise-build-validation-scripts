@@ -4,18 +4,22 @@
 #
 # Invoke this script with --help to get a description of the command line arguments
 #
-readonly SCRIPT_NAME=$(basename "$0")
-readonly SCRIPT_DIR="$(cd "$(dirname "$(readlink -e "${BASH_SOURCE[0]}")")" && pwd)"
-readonly LIB_DIR="${SCRIPT_DIR}/../lib"
-
-# Experiment-speicifc constants
 readonly EXP_NAME="Validate Build Caching - Local - In Place"
 readonly EXP_DESCRIPTION="Validating that a Maven build is optimized for local in-place build caching"
 readonly EXP_NO="01"
 readonly EXP_SCAN_TAG=exp1-maven
-readonly EXP_DIR="${SCRIPT_DIR}/.data/${SCRIPT_NAME%.*}"
-readonly BUILD_SCAN_FILE="${EXP_DIR}/build-scans.csv"
 readonly BUILD_TOOL="Maven"
+
+# Needed to bootstrap the script
+readonly SCRIPT_NAME=$(basename "$0")
+readonly SCRIPT_DIR="$(cd "$(dirname "$(readlink -e "${BASH_SOURCE[0]}")")" && pwd)"
+readonly LIB_DIR="${SCRIPT_DIR}/../lib"
+
+# Include and parse the command line arguments
+# shellcheck source=build-validation/scripts/lib/maven/01-cli-parser.sh
+source "${LIB_DIR}/maven/${EXP_NO}-cli-parser.sh" || { echo "Couldn't find '${LIB_DIR}/maven/${EXP_NO}-cli-parser.sh' parsing library."; exit 1; }
+# shellcheck source=build-validation/scripts/lib/libs.sh
+source "${LIB_DIR}/libs.sh" || { echo "Couldn't find '${LIB_DIR}/libs.sh'"; exit 1; }
 
 build_cache_dir="${EXP_DIR}/build-cache"
 
@@ -29,14 +33,6 @@ extra_args=''
 enable_ge=''
 ge_server=''
 interactive_mode=''
-
-# Include and parse the command line arguments
-# shellcheck source=build-validation/scripts/lib/maven/01-cli-parser.sh
-source "${LIB_DIR}/maven/${EXP_NO}-cli-parser.sh" || { echo "Couldn't find '${LIB_DIR}/maven/${EXP_NO}-cli-parser.sh' parsing library."; exit 1; }
-# shellcheck source=build-validation/scripts/lib/libs.sh
-source "${LIB_DIR}/libs.sh" || { echo "Couldn't find '${LIB_DIR}/libs.sh'"; exit 1; }
-
-RUN_ID=$(generate_run_id)
 
 main() {
   if [ "${interactive_mode}" == "on" ]; then
