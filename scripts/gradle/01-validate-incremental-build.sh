@@ -155,10 +155,11 @@ once you understand the root cause.
 The experiment can be run on any developer’s machine. It logically consists of
 the following steps:
 
-  1. Run the Gradle build with a typical task invocation including the 'clean' task
-  2. Run the Gradle build with the same task invocation but without the 'clean' task
+  1. Run the build with a typical task invocation including the 'clean' task
+  2. Run the build with the same task invocation but without the 'clean' task
   3. Determine which tasks are still executed in the second run and why
   4. Assess which of the executed tasks are worth improving
+  5. Fix triaged tasks
 
 The script you have invoked automates the execution of step 1 and step 2,
 without modifying the project. Build scans support your investigation in step 3
