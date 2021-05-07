@@ -168,18 +168,18 @@ because:
   * The cacheable tasks’ inputs have not changed since their last invocation and
   * The cacheable tasks’ outputs are present in the local build cache
 
-The goal of the experiment is to first identify those tasks whose outputs are
-not taken from the local build cache due to changed inputs or to ensure
-correctness of the build, to then make an informed decision which of those tasks
-are worth improving to make your build faster, to then investigate why they are
-not taken from the local build cache, and to finally fix them once you
-understand the root cause.
-
 The experiment will reveal tasks with volatile inputs, for example tasks that
 have a timestamp as one of their inputs. It will also reveal tasks that produce
 non-deterministic outputs consumed by other tasks downstream, for example tasks
 generating code with non-deterministic method ordering or tasks producing
 artifacts that include timestamps.
+
+The experiment will assist you to first identify those tasks whose outputs are
+not taken from the local build cache due to changed inputs or to ensure
+correctness of the build, to then make an informed decision which of those
+tasks are worth improving to make your build faster, to then investigate why
+they are not taken from the local build cache, and to finally fix them once you
+understand the root cause.
 
 The experiment can be run on any developer’s machine. It logically consists of
 the following steps:
@@ -230,8 +230,7 @@ ${HEADER_COLOR}Run second build${RESTORE}
 
 Now that the first build has finished successfully, the second build can be run
 with the same Gradle tasks. This time, the build will still be invoked with the
-‘clean’ task included and local build caching enabled. The local build cache
-populated during the first build will be used.
+‘clean’ task included and local build caching enabled. The local build cache populated during the first build will be used.
 
 ${USER_ACTION_COLOR}Press <Enter> to run the second build of the experiment.${RESTORE}
 EOF
