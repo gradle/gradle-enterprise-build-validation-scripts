@@ -153,6 +153,12 @@ informed decision which of those tasks are worth improving to make your build
 faster, to then investigate why they do not participate in incremental building,
 and to finally fix them once you understand the root cause.
 
+The experiment will reveal tasks with volatile inputs, for example tasks that 
+have a timestamp as one of their inputs. It will also reveal tasks that produce
+non-deterministic outputs consumed by other tasks downstream, for example tasks 
+generating code with non-deterministic method ordering or tasks producing 
+artifacts that include timestamps.
+
 The experiment can be run on any developer’s machine. It logically consists of
 the following steps:
 
