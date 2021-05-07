@@ -70,7 +70,7 @@ prompt_for_setting() {
 collect_git_details() {
   prompt_for_setting "What is the URL for the Git repository that contains the project to validate?" "${git_repo}" '' git_repo
 
-  local default_branch="*the repo's default branch*"
+  local default_branch="<the repository's default branch>"
   prompt_for_setting "What is the branch for the Git repository that contains the project to validate?" "${git_branch}" "${default_branch}" git_branch
 
   if [[ "${git_branch}" == "${default_branch}" ]]; then
@@ -80,13 +80,15 @@ collect_git_details() {
 }
 
 collect_gradle_details() {
-  prompt_for_setting "Which directory contains the Gradle root project?" "${project_dir}" "*the repo's root dir*" project_dir
-  prompt_for_setting "What are the Gradle tasks to invoke?" "${tasks}" "assemble" tasks
-  prompt_for_setting "What are additional cmd line arguments to pass to the Gradle invocation?" "${extra_args}" "*none*" extra_args
-  if [[ "${project_dir}" == "*the repo's root dir*" ]]; then
+  local default_project_dir="<the repository's root directory>"
+  local default_extra_args="<none>"
+  prompt_for_setting "Which directory contains the Gradle root project?" "${project_dir}" "${default_project_dir}" project_dir
+  prompt_for_setting "What are the Gradle tasks to invoke?" "${tasks}" "assemble" tasksi
+  prompt_for_setting "What are additional cmd line arguments to pass to the Gradle invocation?" "${extra_args}" "${default_extra_args}" extra_args
+  if [[ "${project_dir}" == "${default_project_dir}" ]]; then
     project_dir=''
   fi
-  if [[ "${extra_args}" == "*none*" ]]; then
+  if [[ "${extra_args}" == "${default_extra_args}" ]]; then
     extra_args=''
   fi
 }
