@@ -5,6 +5,8 @@ plugins {
     id("de.undercouch.download") version "4.1.1"
 }
 
+version = "0.0.1-SNAPSHOT"
+
 base {
   distsDirName = rootDir.resolve("../").toString()
 }
@@ -71,6 +73,7 @@ tasks.register<Zip>("assembleGradleScripts") {
     group = "build"
     description = "Packages the Gradle experiment scripts in a zip archive."
     baseName = "gradle-enterprise-gradle-build-validation"
+    archiveFileName.set("${baseName}.zip")
 
     from(layout.projectDirectory.dir("../scripts/gradle")) {
         exclude(".data/")
@@ -80,7 +83,7 @@ tasks.register<Zip>("assembleGradleScripts") {
         exclude("lib/maven")
         exclude("**/*.m4")
     }
-    filter { line: String -> line.replace("/../lib", "/lib") }
+    filter { line: String -> line.replace("/../lib", "/lib").replace("<HEAD>","${project.version}") }
     into(baseName)
     dependsOn("generateBashCliParsers")
 }
@@ -89,16 +92,17 @@ tasks.register<Zip>("assembleMavenScripts") {
     group = "build"
     description = "Packages the Maven experiment scripts in a zip archive."
     baseName = "gradle-enterprise-maven-build-validation"
+    archiveFileName.set("${baseName}.zip")
 
     from(layout.projectDirectory.dir("../scripts/maven")) {
-        filter { line: String -> line.replace("/../lib", "/lib") }
+        filter { line: String -> line.replace("/../lib", "/lib").replace("<HEAD>","${project.version}") }
         exclude(".data/")
     }
     from(layout.projectDirectory.dir("../scripts/")) {
         include("lib/**")
         exclude("lib/gradle")
         exclude("**/*.m4")
-        filter { line: String -> line.replace("/../lib", "/lib") }
+        filter { line: String -> line.replace("/../lib", "/lib").replace("<HEAD>","${project.version}") }
     }
     from(components) {
         into("lib/maven/")

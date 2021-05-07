@@ -2,6 +2,7 @@
 # shellcheck disable=SC2034  # It is common for variables in this auto-generated file to go unused
 # Created by argbash-init v2.10.0
 # ARG_HELP([This function is overridden later on.])
+# ARG_VERSION([print_version],[v],[version],[])
 # ARGBASH_WRAP([common])
 # ARGBASH_SET_INDENT([  ])
 # ARGBASH_PREPARE()
@@ -22,7 +23,7 @@ die()
 
 begins_with_short_option()
 {
-  local first_option all_short_options='hbsrpiate'
+  local first_option all_short_options='hvbsrpiate'
   first_option="${1:0:1}"
   test "$all_short_options" = "${all_short_options/$first_option/}" && return 1 || return 0
 }
@@ -42,8 +43,9 @@ _arg_enable_gradle_enterprise="off"
 print_help()
 {
   printf '%s\n' "This function is overridden later on."
-  printf 'Usage: %s [-h|--help] [-b|--git-branch <arg>] [-s|--gradle-enterprise-server <arg>] [-r|--git-repo <arg>] [-p|--project-dir <arg>] [-i|--(no-)interactive] [--(no-)debug] [-a|--args <arg>] [-t|--tasks <arg>] [-e|--(no-)enable-gradle-enterprise]\n' "$0"
+  printf 'Usage: %s [-h|--help] [-v|--version] [-b|--git-branch <arg>] [-s|--gradle-enterprise-server <arg>] [-r|--git-repo <arg>] [-p|--project-dir <arg>] [-i|--(no-)interactive] [--(no-)debug] [-a|--args <arg>] [-t|--tasks <arg>] [-e|--(no-)enable-gradle-enterprise]\n' "$0"
   printf '\t%s\n' "-h, --help: Prints help"
+  printf '\t%s\n' "-v, --version: Prints version"
 }
 
 
@@ -59,6 +61,14 @@ parse_commandline()
         ;;
       -h*)
         print_help
+        exit 0
+        ;;
+      -v|--version)
+        print_version
+        exit 0
+        ;;
+      -v*)
+        print_version
         exit 0
         ;;
       -b|--git-branch)
@@ -194,7 +204,8 @@ _args_common=("${_args_common_opt[@]}" "${_args_common_pos[@]}")
 # [ <-- needed because of Argbash
 function print_help() {
   echo "Assists in validating that a Gradle build is optimized for using the local build cache (while building in different locations)."
-  echo
+  echo "Version ${SCRIPT_VERSION}"
+  print_bl
   print_script_usage
   print_option_usage -i
   print_option_usage -r
@@ -205,5 +216,6 @@ function print_help() {
   print_option_usage -s
   print_option_usage -e
   print_option_usage -h
+  print_option_usage -v
 }
 # ] <-- needed because of Argbash

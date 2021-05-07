@@ -9,6 +9,7 @@ readonly EXP_DESCRIPTION="Validating that a Gradle build is optimized for increm
 readonly EXP_NO="01"
 readonly EXP_SCAN_TAG=exp1-gradle
 readonly BUILD_TOOL="Gradle"
+readonly SCRIPT_VERSION="<HEAD>"
 
 # Needed to bootstrap the script
 readonly SCRIPT_NAME=$(basename "$0")
@@ -147,10 +148,10 @@ all tasks avoid performing any work because:
   * The tasks' inputs have not changed since their last invocation and
   * The tasks' outputs are still present
 
-The experiment will reveal tasks with volatile inputs, for example tasks that 
+The experiment will reveal tasks with volatile inputs, for example tasks that
 have a timestamp as one of their inputs. It will also reveal tasks that produce
-non-deterministic outputs consumed by other tasks downstream, for example tasks 
-generating code with non-deterministic method ordering or tasks producing 
+non-deterministic outputs consumed by other tasks downstream, for example tasks
+generating code with non-deterministic method ordering or tasks producing
 artifacts that include timestamps.
 
 The experiment will assit you to first identify those tasks that do not

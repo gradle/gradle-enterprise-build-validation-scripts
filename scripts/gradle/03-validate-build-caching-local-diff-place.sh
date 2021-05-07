@@ -9,6 +9,7 @@ readonly EXP_DESCRIPTION="Validating that a Gradle build is optimized for local 
 readonly EXP_NO="03"
 readonly EXP_SCAN_TAG=exp3-gradle
 readonly BUILD_TOOL="Gradle"
+readonly SCRIPT_VERSION="<HEAD>"
 
 # Needed to bootstrap the script
 readonly SCRIPT_NAME=$(basename "$0")

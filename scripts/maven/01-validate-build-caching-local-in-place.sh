@@ -9,6 +9,7 @@ readonly EXP_DESCRIPTION="Validating that a Maven build is optimized for local i
 readonly EXP_NO="01"
 readonly EXP_SCAN_TAG=exp1-maven
 readonly BUILD_TOOL="Maven"
+readonly SCRIPT_VERSION="<HEAD>"
 
 # Needed to bootstrap the script
 readonly SCRIPT_NAME=$(basename "$0")

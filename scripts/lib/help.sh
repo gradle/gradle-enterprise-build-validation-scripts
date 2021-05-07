@@ -36,6 +36,9 @@ print_option_usage() {
     -t)
        _print_option_usage "-t, --tasks" "Declares the Gradle tasks to invoke."
        ;;
+    -v)
+       _print_option_usage "-v, --version" "Print version info."
+       ;;
     *)
        _print_option_usage "$1" "$2"
   esac
@@ -48,5 +51,9 @@ _print_option_usage() {
   local fmt="%-35s%s\n"
   #shellcheck disable=SC2059
   printf "$fmt" "$flags" "$description"
+}
+
+print_version() {
+  echo "${SCRIPT_NAME} version ${SCRIPT_VERSION}"
 }
 
