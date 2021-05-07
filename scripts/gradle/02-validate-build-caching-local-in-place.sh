@@ -161,34 +161,43 @@ $(print_introduction_title)
 
 In this experiment, you will validate how well a given project leverages
 Gradle’s local build caching functionality when running the build in the same
-location. A build is considered fully cacheable if all cacheable tasks avoid
-performing any work because:
+location. A build is considered fully cacheable if it can be invoked twice in a
+row with build caching enabled and all cacheable tasks avoid performing any work
+because:
 
-  * Gradle did not exclude any cacheable tasks from build caching to ensure
-    correctness
-  * The cacheable tasks’ inputs have not changed since their last invocation and
+  * No cacheable tasks were excluded from build caching to ensure correctness and
+  * The cacheable tasks’ inputs have not changed since their last invocation and 
   * The cacheable tasks’ outputs are present in the local build cache
 
-The goal of the experiment is to first identify those tasks that were not taken
-from the local build cache due to changed inputs or to ensure correctness of the
-build, to then investigate why they were not taken from the local build cache,
-and to finally fix them once you understand the root cause.
+The goal of the experiment is to first identify those tasks whose outputs are
+not taken from the local build cache due to changed inputs or to ensure
+correctness of the build, to then make an informed decision which of those tasks
+are worth improving to make your build faster, to then investigate why they are
+not taken from the local build cache, and to finally fix them once you
+understand the root cause.
+
+The experiment will reveal tasks with volatile inputs, for example tasks that
+have a timestamp as one of their inputs. It will also reveal tasks that produce
+non-deterministic outputs consumed by other tasks downstream, for example tasks
+generating code with non-deterministic method ordering or tasks producing
+artifacts that include timestamps.
 
 The experiment can be run on any developer’s machine. It logically consists of
 the following steps:
 
-  1. Run the build with a typical task invocation including the 'clean' task and
-     the --rerun-tasks option and local build caching enabled
-  2. Run the build with the same task invocation including the 'clean' task and
-     local build caching enabled
-  3. Determine which cacheable tasks and which non-cacheable tasks to ensure
-     correctness were still executed in the second run and why
-  4. Fix identified tasks
+  1. Enable local build caching and use an empty local build cache
+  2. Run the build with a typical task invocation including the ‘clean’ task
+  3. Run the build with the same task invocation including the ‘clean’ task
+  4. Determine which cacheable tasks are still executed in the second run and
+     why
+  5. Assess which of the executed, cacheable tasks are worth improving
+  6. Fix identified tasks
 
-The script you have invoked automates the execution of step 1 and step 2,
-without modifying the project. Build scans support your investigation in step 3.
+The script you have invoked automates the execution of step 1, step 2, and step
+3 without modifying the project. Build scans support your investigation in step
+4 and step 5.
 
-After improving the build to make it fully leverage the local build cache, you
+After improving the build to make it better leverage the local build cache, you
 can push your changes and run the experiment again. This creates a cycle of run
 → measure → improve → run.
 
@@ -206,9 +215,8 @@ $(print_separator)
 ${HEADER_COLOR}Run first build${RESTORE}
 
 Now that the project has been checked out, the first build can be run with the
-given Gradle tasks. The build will be invoked with the 'clean' task included and
-the --rerun-tasks option and local build caching enabled. An empty local build
-cache will be used.
+given Gradle tasks. The build will be invoked with the ‘clean’ task included and
+local build caching enabled. An empty local build cache will be used.
 
 ${USER_ACTION_COLOR}Press <Enter> to run the first build of the experiment.${RESTORE}
 EOF
@@ -223,8 +231,9 @@ $(print_separator)
 ${HEADER_COLOR}Run second build${RESTORE}
 
 Now that the first build has finished successfully, the second build can be run
-with the same Gradle tasks. This time, the build will be invoked without the
---rerun-tasks option but local build caching still enabled.
+with the same Gradle tasks. This time, the build will still be invoked with the
+‘clean’ task included and local build caching enabled. The local build cache
+from the first build will be reused.
 
 ${USER_ACTION_COLOR}Press <Enter> to run the second build of the experiment.${RESTORE}
 EOF
@@ -239,8 +248,8 @@ $(print_separator)
 ${HEADER_COLOR}Measure build results${RESTORE}
 
 Now that the second build has finished successfully, you are ready to measure in
-Gradle Enterprise how well your build leverages Gradle’s local build cache for
-the invoked set of Gradle tasks.
+Gradle Enterprise how well your build leverages Gradle’s local build caching
+functionality for the invoked set of Gradle tasks.
 
 ${USER_ACTION_COLOR}Press <Enter> to measure the build results.${RESTORE}
 EOF
@@ -255,7 +264,7 @@ explain_and_print_summary() {
 The ‘Summary’ section below captures the configuration of the experiment and the
 two build scans that were published as part of running the experiment. The build
 scan of the second build is particularly interesting since this is where you can
-inspect what tasks were not leveraging Gradle’s local build cache.
+inspect what tasks were not leveraging the local build cache.
 
 The ‘Investigation Quick Links’ section below allows quick navigation to the
 most relevant views in build scans to investigate what tasks were avoided due to
