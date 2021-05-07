@@ -187,8 +187,7 @@ the following steps:
   1. Enable local build caching and use an empty local build cache
   2. Run the build with a typical task invocation including the ‘clean’ task
   3. Run the build with the same task invocation including the ‘clean’ task
-  4. Determine which cacheable tasks are still executed in the second run and
-     why
+  4. Determine which cacheable tasks are still executed in the second run and why
   5. Assess which of the executed, cacheable tasks are worth improving
   6. Fix identified tasks
 
