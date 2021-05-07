@@ -231,7 +231,7 @@ ${HEADER_COLOR}Run second build${RESTORE}
 Now that the first build has finished successfully, the second build can be run
 with the same Gradle tasks. This time, the build will still be invoked with the
 ‘clean’ task included and local build caching enabled. The local build cache
-from the first build will be reused.
+populated during the first build will be used.
 
 ${USER_ACTION_COLOR}Press <Enter> to run the second build of the experiment.${RESTORE}
 EOF
