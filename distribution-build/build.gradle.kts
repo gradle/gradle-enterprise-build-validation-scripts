@@ -44,7 +44,7 @@ tasks.register("generateBashCliParsers") {
     inputs.files(scripts)
         .withPropertyName("scripts")
         .withPathSensitivity(PathSensitivity.RELATIVE)
-    inputs.files(fileTree("src") {
+    inputs.files(fileTree("../scripts") {
         include("**/*.m4")
         exclude("gradle/.data/")
         exclude("maven/.data/")
