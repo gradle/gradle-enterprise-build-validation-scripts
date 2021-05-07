@@ -142,7 +142,7 @@ $(print_introduction_title)
 In this experiment, you will validate how well a given project leverages
 Gradle’s incremental build functionality. A build is considered fully
 incremental if it can be invoked twice in a row with build caching disabled and
-all successful tasks avoid performing any work because:
+all tasks avoid performing any work because:
 
   * The tasks' inputs have not changed since their last invocation and
   * The tasks' outputs are still present
