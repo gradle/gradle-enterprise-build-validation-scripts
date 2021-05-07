@@ -75,7 +75,7 @@ print_experiment_info() {
  else
    summary_row "Project dir:" "${project_dir}"
  fi
- 
+
  local build_tool_args="${extra_args}"
  if [ -z "${build_tool_args}" ]; then
      build_tool_args="<none>"
