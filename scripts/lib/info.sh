@@ -90,7 +90,7 @@ print_experiment_info() {
  summary_row "Experiment:" "${EXP_NO} ${EXP_NAME}"
  summary_row "Experiment id:" "${EXP_SCAN_TAG}"
  summary_row "Experiment run id:" "${RUN_ID}"
- summary_row "Experiment artifact dir:" "${EXP_DIR}"
+ summary_row "Experiment artifact dir:" "$(relative_path "${SCRIPT_DIR}" "${EXP_DIR}")"
 }
 
 create_receipt_file() {
