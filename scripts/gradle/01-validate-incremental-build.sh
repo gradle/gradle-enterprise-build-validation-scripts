@@ -141,7 +141,8 @@ $(print_introduction_title)
 
 In this experiment, you will validate how well a given project leverages
 Gradle’s incremental build functionality. A build is considered fully
-incremental if all tasks avoid performing any work because:
+incremental if it can be invoked twice in a row with build caching disabled and
+all successful tasks avoid performing any work because:
 
   * The tasks' inputs have not changed since their last invocation and
   * The tasks' outputs are still present
@@ -149,8 +150,8 @@ incremental if all tasks avoid performing any work because:
 The goal of the experiment is to first identify those tasks that do not
 participate in Gradle’s incremental build functionality, to then make an
 informed decision which of those tasks are worth improving to make your build
-faster, to then investigate why they do not participate, and to finally fix them
-once you understand the root cause.
+faster, to then investigate why they do not participate in incremental building,
+and to finally fix them once you understand the root cause.
 
 The experiment can be run on any developer’s machine. It logically consists of
 the following steps:
