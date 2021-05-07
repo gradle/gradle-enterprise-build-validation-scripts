@@ -155,15 +155,16 @@ once you understand the root cause.
 The experiment can be run on any developer’s machine. It logically consists of
 the following steps:
 
-  1. Run the build with a typical task invocation including the 'clean' task
-  2. Run the build with the same task invocation but without the 'clean' task
-  3. Determine which tasks are still executed in the second run and why
-  4. Assess which of the executed tasks are worth improving
-  5. Fix identified tasks
+  1. Disable build caching
+  2. Run the build with a typical task invocation including the 'clean' task
+  3. Run the build with the same task invocation but without the 'clean' task
+  4. Determine which tasks are still executed in the second run and why
+  5. Assess which of the executed tasks are worth improving
+  6. Fix identified tasks
 
-The script you have invoked automates the execution of step 1 and step 2,
-without modifying the project. Build scans support your investigation in step 3
-and step 4.
+The script you have invoked automates the execution of step 1, step 2, and step 3
+without modifying the project. Build scans support your investigation in step 4
+and step 5.
 
 After improving the build to make it more incremental, you can push your changes
 and run the experiment again. This creates a cycle of run → measure → improve →
