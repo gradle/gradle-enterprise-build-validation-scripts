@@ -4,8 +4,8 @@
 # ARG_HELP([This function is overridden later on.])
 # ARG_VERSION([print_version],[v],[version],[])
 # ARG_OPTIONAL_BOOLEAN([interactive],[i],[],[off])
-# ARG_OPTIONAL_SINGLE([build-scan-1],[1],[])
-# ARG_OPTIONAL_SINGLE([build-scan-2],[2],[])
+# ARG_OPTIONAL_SINGLE([first-build],[1],[])
+# ARG_OPTIONAL_SINGLE([second-build],[2],[])
 # ARG_OPTIONAL_BOOLEAN([debug],[],[],[off])
 # ARGBASH_SET_INDENT([  ])
 # ARGBASH_PREPARE()
@@ -33,15 +33,15 @@ begins_with_short_option()
 
 # THE DEFAULTS INITIALIZATION - OPTIONALS
 _arg_interactive="off"
-_arg_build_scan_1=
-_arg_build_scan_2=
+_arg_first_build=
+_arg_second_build=
 _arg_debug="off"
 
 
 print_help()
 {
   printf '%s\n' "This function is overridden later on."
-  printf 'Usage: %s [-h|--help] [-v|--version] [-i|--(no-)interactive] [-1|--build-scan-1 <arg>] [-2|--build-scan-2 <arg>] [--(no-)debug]\n' "$0"
+  printf 'Usage: %s [-h|--help] [-v|--version] [-i|--(no-)interactive] [-1|--first-build <arg>] [-2|--second-build <arg>] [--(no-)debug]\n' "$0"
   printf '\t%s\n' "-h, --help: Prints help"
   printf '\t%s\n' "-v, --version: Prints version"
 }
@@ -81,27 +81,27 @@ parse_commandline()
           { begins_with_short_option "$_next" && shift && set -- "-i" "-${_next}" "$@"; } || die "The short option '$_key' can't be decomposed to ${_key:0:2} and -${_key:2}, because ${_key:0:2} doesn't accept value and '-${_key:2:1}' doesn't correspond to a short option."
         fi
         ;;
-      -1|--build-scan-1)
+      -1|--first-build)
         test $# -lt 2 && die "Missing value for the optional argument '$_key'." 1
-        _arg_build_scan_1="$2"
+        _arg_first_build="$2"
         shift
         ;;
-      --build-scan-1=*)
-        _arg_build_scan_1="${_key##--build-scan-1=}"
+      --first-build=*)
+        _arg_first_build="${_key##--first-build=}"
         ;;
       -1*)
-        _arg_build_scan_1="${_key##-1}"
+        _arg_first_build="${_key##-1}"
         ;;
-      -2|--build-scan-2)
+      -2|--second-build)
         test $# -lt 2 && die "Missing value for the optional argument '$_key'." 1
-        _arg_build_scan_2="$2"
+        _arg_second_build="$2"
         shift
         ;;
-      --build-scan-2=*)
-        _arg_build_scan_2="${_key##--build-scan-2=}"
+      --second-build=*)
+        _arg_second_build="${_key##--second-build=}"
         ;;
       -2*)
-        _arg_build_scan_2="${_key##-2}"
+        _arg_second_build="${_key##-2}"
         ;;
       --no-debug|--debug)
         _arg_debug="on"
@@ -125,8 +125,8 @@ function print_help() {
   print_bl
   print_script_usage
   print_option_usage -i
-  print_option_usage "-1, --build-scan-1" "Specifies the build scan URL for the first build."
-  print_option_usage "-2, --build-scan-2" "Specifies the build scan URL for the second build."
+  print_option_usage "-1, --first-build" "Specifies the URL for the build scan of the first build."
+  print_option_usage "-2, --second-build" "Specifies the URL for the build scan of the second build."
   print_option_usage -v
   print_option_usage -h
 }

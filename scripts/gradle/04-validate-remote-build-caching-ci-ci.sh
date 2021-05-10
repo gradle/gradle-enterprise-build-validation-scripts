@@ -77,14 +77,14 @@ wizard_execute() {
 }
 
 validate_required_args() {
-  if [ -z "${_arg_build_scan_1}" ]; then
-    _PRINT_HELP=yes die "ERROR: Missing required argument: --build-scan-1" 1
+  if [ -z "${_arg_first_build}" ]; then
+    _PRINT_HELP=yes die "ERROR: Missing required argument: --first-build" 1
   fi
-  if [ -z "${_arg_build_scan_2}" ]; then
-    _PRINT_HELP=yes die "ERROR: Missing required argument: --build-scan-2" 1
+  if [ -z "${_arg_second_build}" ]; then
+    _PRINT_HELP=yes die "ERROR: Missing required argument: --second_build" 1
   fi
-  build_scan_urls+=("${_arg_build_scan_1}")
-  build_scan_urls+=("${_arg_build_scan_2}")
+  build_scan_urls+=("${_arg_first_build}")
+  build_scan_urls+=("${_arg_second_build}")
 }
 
 parse_build_scan_urls() {
@@ -233,7 +233,7 @@ EOF
 }
 
 collect_first_build_scan() {
-  prompt_for_setting "What is the build scan for the first CI server build?" "${_arg_build_scan_1}" "" build_scan_url
+  prompt_for_setting "What is the build scan for the first CI server build?" "${_arg_first_build}" "" build_scan_url
   build_scan_urls+=("${build_scan_url}")
 }
 
@@ -255,7 +255,7 @@ EOF
 }
 
 collect_second_build_scan() {
-  prompt_for_setting "What is the build scan for the second CI server build?" "${_arg_build_scan_2}" "" build_scan_url
+  prompt_for_setting "What is the build scan for the second CI server build?" "${_arg_second_build}" "" build_scan_url
   build_scan_urls+=("${build_scan_url}")
 }
 
