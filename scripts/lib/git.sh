@@ -17,6 +17,18 @@ git_clone_project() {
    cd "${clone_dir}" || die "Unable to access ${clone_dir}. Aborting!" 1
 }
 
+git_copy_project() {
+   original_repo="$1"
+   copy_repo="$2"
+   info "Copying ${original_repo}"
+
+   cd "${EXP_DIR}"
+   rm -rf "${copy_repo}"
+   # shellcheck disable=SC2086  # we want $branch to expand into multiple arguments
+   git clone "${original_repo}" "${copy_repo}" || die "ERROR: Unable to copy ${copy_repo}." 1
+   cd "${copy_repo}" || die "Unable to access ${clone_dir}. Aborting!" 1
+}
+
 git_get_branch() {
   git symbolic-ref -q --short HEAD || git rev-parse --short HEAD
 }

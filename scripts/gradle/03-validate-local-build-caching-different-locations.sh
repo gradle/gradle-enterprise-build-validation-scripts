@@ -54,7 +54,7 @@ execute() {
   execute_first_build
 
   print_bl
-  git_clone_project "_2"
+  git_copy_project "${project_name}_1" "${project_name}_2"
   print_bl
   execute_second_build
 
@@ -93,7 +93,7 @@ wizard_execute() {
   print_bl
   explain_second_clone_project
   print_bl
-  git_clone_project "_2"
+  git_copy_project "${project_name}_1" "${project_name}_2"
 
   print_bl
   explain_second_build
