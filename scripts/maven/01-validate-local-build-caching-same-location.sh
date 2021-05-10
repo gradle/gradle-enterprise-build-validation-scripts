@@ -27,7 +27,7 @@ git_repo=''
 project_name=''
 git_branch=''
 project_dir=''
-tasks=''
+goals=''
 extra_args=''
 enable_ge=''
 ge_server=''
@@ -149,36 +149,46 @@ print_introduction() {
   IFS='' read -r -d '' text <<EOF
 $(print_introduction_title)
 
-In this experiment, you will validate how well a given Maven project leverages
-Gradle Enterprise’s local build cache. A build is considered fully local-cache
-enabled if all goals avoid performing any work because:
+In this experiment, you will validate how well a given project leverages
+Gradle Enterprise’s local build caching functionality when running the build in the same
+location. A build is considered fully cacheable if it can be invoked twice in a
+row with build caching enabled and all cacheable goals avoid performing any work
+because:
 
-  * The goals' inputs have not changed since their last invocation and
-  * The goals' outputs are present in the local cache
+  * No cacheable goals were excluded from build caching to ensure correctness and
+  * The cacheable goals’ inputs have not changed since their last invocation and
+  * The cacheable goals’ outputs are present in the local build cache
 
-The goal of the experiment is to first identify those goals that do not reuse
-outputs from the local cache, to then make an informed decision which of those
-tasks are worth improving to make your build faster, to then investigate why
-they did not reuse outputs, and to finally fix them once you understand the root
-cause.
+The experiment will reveal goals with volatile inputs, for example goals that
+have a timestamp as one of their inputs. It will also reveal goals that produce
+non-deterministic outputs consumed by other goals downstream, for example goals
+generating code with non-deterministic method ordering or goals producing
+artifacts that include timestamps.
+
+The experiment will assist you to first identify those goals whose outputs are
+not taken from the local build cache due to changed inputs or to ensure
+correctness of the build, to then make an informed decision which of those
+goals are worth improving to make your build faster, to then investigate why
+they are not taken from the local build cache, and to finally fix them once you
+understand the root cause.
 
 The experiment can be run on any developer’s machine. It logically consists of
 the following steps:
 
-  1. Run the Maven build with the a typical goal invocation including the 'clean' goal
-  2. Run the Maven build with the same goal invocation including the 'clean' goal
-  3. Determine which goals are still executed in the second run and why
-  4. Assess which of the executed goals are worth improving
+  1. Enable local build caching and use an empty local build cache
+  2. Run the build with a typical goal invocation including the ‘clean’ goal
+  3. Run the build with the same goal invocation including the ‘clean’ goal
+  4. Determine which cacheable goals are still executed in the second run and why
+  5. Assess which of the executed, cacheable goals are worth improving
+  6. Fix identified goals
 
-Step 1 and 2 should be executed with the local build cache enabled.
+The script you have invoked automates the execution of step 1, step 2, and step
+3 without modifying the project. Build scans support your investigation in step
+4 and step 5.
 
-The script you have invoked automates the execution of step 1 and step 2 without
-modifying the project. Build scans support your investigation in step 3 and step
-4.
-
-After improving the build to make it leverage the local build cache, you can
-push your changes and run the experiment again. This creates a cycle of run →
-measure → improve → run.
+After improving the build to make it better leverage the local build cache, you
+can push your changes and run the experiment again. This creates a cycle of run
+→ measure → improve → run.
 
 ${USER_ACTION_COLOR}Press <Enter> to get started with the experiment.${RESTORE}
 EOF
@@ -194,11 +204,8 @@ $(print_separator)
 ${HEADER_COLOR}Run first build${RESTORE}
 
 Now that the project has been checked out, the first build can be run with the
-given Maven goals. The build will be invoked with the 'clean' goal included and
-local build caching enabled.
-
-To keep the experiment isolated and repeatable, a clean local build cache
-directory was created.
+given Maven goals. The build will be invoked with the ‘clean’ goal included and
+local build caching enabled. An empty local build cache will be used.
 
 ${USER_ACTION_COLOR}Press <Enter> to run the first build.${RESTORE}
 EOF
@@ -213,7 +220,9 @@ $(print_separator)
 ${HEADER_COLOR}Run second build${RESTORE}
 
 Now that the first build has finished successfully, the second build can be run
-with the same Maven goals.
+with the same Maven goals. The build will again be invoked with the ‘clean’
+goal included and local build caching enabled. The local build cache populated
+during the first build will be used.
 
 ${USER_ACTION_COLOR}Press <Enter> to run the second build.${RESTORE}
 EOF
