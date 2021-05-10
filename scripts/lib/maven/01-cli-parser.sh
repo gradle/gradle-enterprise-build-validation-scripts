@@ -190,7 +190,6 @@ _args_common=("${_args_common_opt[@]}" "${_args_common_pos[@]}")
 function print_help() {
   print_version
   echo "Assists in validating that a Maven build is optimized for using the local build cache (while building in the same location)."
-  echo "Version ${SCRIPT_VERSION}"
   print_bl
   print_script_usage
   print_option_usage -i
@@ -200,7 +199,7 @@ function print_help() {
   print_option_usage "-t, --tasks" "Declares the Maven goals to invoke."
   print_option_usage "-a, --args" "Sets additional arguments to pass to Maven."
   print_option_usage -s
-  print_option_usage -h
   print_option_usage -v
+  print_option_usage -h
 }
 # ] <-- needed because of Argbash

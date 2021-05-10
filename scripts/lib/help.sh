@@ -37,7 +37,7 @@ print_option_usage() {
        _print_option_usage "-t, --tasks" "Declares the Gradle tasks to invoke."
        ;;
     -v)
-       _print_option_usage "-v, --version" "Print version info."
+       _print_option_usage "-v, --version" "Prints version info."
        ;;
     *)
        _print_option_usage "$1" "$2"

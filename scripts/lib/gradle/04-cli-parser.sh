@@ -122,13 +122,12 @@ parse_commandline()
 # [ <-- needed because of Argbash
 function print_help() {
   echo "Assists in validating that a Gradle build is optimized for using the remote build cache (Continuous Integration to Local)."
-  echo "Version ${SCRIPT_VERSION}"
   print_bl
   print_script_usage
   print_option_usage -i
   print_option_usage "-1, --build-scan-1" "Specifies the build scan URL for the first build."
   print_option_usage "-2, --build-scan-2" "Specifies the build scan URL for the second build."
-  print_option_usage -h
   print_option_usage -v
+  print_option_usage -h
 }
 # ] <-- needed because of Argbash

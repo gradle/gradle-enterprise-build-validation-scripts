@@ -205,7 +205,6 @@ _args_common=("${_args_common_opt[@]}" "${_args_common_pos[@]}")
 
 function print_help() {
   echo "Assists in validating that a Gradle build is optimized for incremental building."
-  echo "Version ${SCRIPT_VERSION}"
   print_bl
   print_script_usage
   print_option_usage -i
@@ -216,7 +215,7 @@ function print_help() {
   print_option_usage -a
   print_option_usage -s
   print_option_usage -e
-  print_option_usage -h
   print_option_usage -v
+  print_option_usage -h
 }
 # ] <-- needed because of Argbash
