@@ -5,7 +5,7 @@
 # Invoke this script with --help to get a description of the command line arguments
 #
 readonly EXP_NAME="Validate Gradle Build Caching - Local - In Place"
-readonly EXP_DESCRIPTION="Validating that a Gradle build is optimized for local build caching when running in the same location"
+readonly EXP_DESCRIPTION="Validating that a Gradle build is optimized for local build caching when invoked from the same location"
 readonly EXP_NO="02"
 readonly EXP_SCAN_TAG=exp2-gradle
 readonly BUILD_TOOL="Gradle"

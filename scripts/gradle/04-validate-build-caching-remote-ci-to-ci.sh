@@ -5,7 +5,7 @@
 # Invoke this script with --help to get a description of the command line arguments
 #
 readonly EXP_NAME="Validate Gradle Build Caching - CI -> CI"
-readonly EXP_DESCRIPTION="Validating that a Gradle build is optimized for remote build caching on CI"
+readonly EXP_DESCRIPTION="Validating that a Gradle build is optimized for remote build caching when invoked on CI agents"
 readonly EXP_NO="04"
 readonly EXP_SCAN_TAG=exp4-gradle
 readonly BUILD_TOOL="Gradle"
