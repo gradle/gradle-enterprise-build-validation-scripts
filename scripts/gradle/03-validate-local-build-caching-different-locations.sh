@@ -168,37 +168,45 @@ print_introduction() {
 $(print_introduction_title)
 
 In this experiment, you will validate how well a given project leverages
-Gradle’s local build cache when built from different locations. A build is
-considered fully local-cache enabled if all tasks avoid performing any work
+Gradle’s local build caching functionality when running the build in the same
+location. A build is considered fully cacheable if it can be invoked twice in a
+row with build caching enabled and all cacheable tasks avoid performing any work
 because:
 
-  * The tasks' inputs have not changed since their last invocation and
-  * The tasks' outputs are present in the local cache
+  * No cacheable tasks were excluded from build caching to ensure correctness and
+  * The cacheable tasks’ inputs have not changed since their last invocation and
+  * The cacheable tasks’ outputs are present in the local build cache
 
-The goal of the experiment is to first identify those tasks that do not reuse
-outputs from the local cache, to then make an informed decision which of those
+The experiment will reveal tasks with volatile inputs, for example tasks that
+have a timestamp as one of their inputs. It will also reveal tasks that produce
+non-deterministic outputs consumed by other tasks downstream, for example tasks
+generating code with non-deterministic method ordering or tasks producing
+artifacts that include timestamps.
+
+The experiment will assist you to first identify those tasks whose outputs are
+not taken from the local build cache due to changed inputs or to ensure
+correctness of the build, to then make an informed decision which of those
 tasks are worth improving to make your build faster, to then investigate why
-they did not reuse outputs, and to finally fix them once you understand the root
-cause.
+they are not taken from the local build cache, and to finally fix them once you
+understand the root cause.
 
 The experiment can be run on any developer’s machine. It logically consists of
 the following steps:
 
-  1. Run the Gradle build with the a typical task invocation including the 'clean' task
-  2. From a different check out of the same project, run the Gradle build with
-     the same task invocation including the 'clean' task
-  3. Determine which tasks are still executed in the second run and why
-  4. Assess which of the executed tasks are worth improving
+  1. Enable local build caching and use an empty local build cache
+  2. Run the build with a typical task invocation including the ‘clean’ task
+  3. Run the build with the same task invocation including the ‘clean’ task
+  4. Determine which cacheable tasks are still executed in the second run and why
+  5. Assess which of the executed, cacheable tasks are worth improving
+  6. Fix identified tasks
 
-Step 1 and 2 should be executed with the local build cache enabled.
+The script you have invoked automates the execution of step 1, step 2, and step
+3 without modifying the project. Build scans support your investigation in step
+4 and step 5.
 
-The script you have invoked automates the execution of step 1 and step 2 without
-modifying the project. Build scans support your investigation in step 3 and step
-4.
-
-After improving the build to make it leverage the local build cache, you can
-push your changes and run the experiment again. This creates a cycle of run →
-measure → improve → run.
+After improving the build to make it better leverage the local build cache, you
+can push your changes and run the experiment again. This creates a cycle of run
+→ measure → improve → run.
 
 ${USER_ACTION_COLOR}Press <Enter> to get started with the experiment.${RESTORE}
 EOF
@@ -216,11 +224,6 @@ ${HEADER_COLOR}Check out project from Git for first build${RESTORE}
 All configuration to run the experiment has been collected. For the first build,
 the Git repository that contains the project to validate will be checked out.
 
-A different check out of the project will be used for the second build.
-
-To keep the experiment isolated and repeatable, a clean local build cache
-directory was created.
-
 ${USER_ACTION_COLOR}Press <Enter> to check out the project from Git.${RESTORE}
 EOF
   print_wizard_text "${text}"
@@ -234,8 +237,8 @@ $(print_separator)
 ${HEADER_COLOR}Run first build${RESTORE}
 
 Now that the project has been checked out, the first build can be run with the
-given Gradle tasks. The build will be invoked with the 'clean' task included and
-build caching disabled.
+given Gradle tasks. The build will be invoked with the ‘clean’ task included and
+local build caching enabled. An empty local build cache will be used.
 
 ${USER_ACTION_COLOR}Press <Enter> to run the first build of the experiment.${RESTORE}
 EOF
@@ -265,8 +268,10 @@ explain_second_build() {
 $(print_separator)
 ${HEADER_COLOR}Run second build${RESTORE}
 
-Now that the project has been checked out a second time, the second build can be
-run with the same Gradle tasks from the second check out.
+Now that the first build has finished successfully, the second build can be run
+with the same Gradle tasks. The build will again be invoked with the ‘clean’
+task included and local build caching enabled. The local build cache populated
+during the first build will be used.
 
 ${USER_ACTION_COLOR}Press <Enter> to run the second build.${RESTORE}
 EOF
@@ -294,18 +299,18 @@ explain_and_print_summary() {
   read_build_scan_metadata
   local text
   IFS='' read -r -d '' text <<EOF
-The 'Summary' section below captures the configuration of the experiment and the
-two build scans that were published as part of running the experiment.  The
-build scan of the second build is particularly interesting since this is where
-you can inspect what tasks were not leveraging Gradle’s local build cache.
+The ‘Summary’ section below captures the configuration of the experiment and the
+two build scans that were published as part of running the experiment. The build
+scan of the second build is particularly interesting since this is where you can
+inspect what tasks were not leveraging the local build cache.
 
-The 'Investigation Quick Links' section below allows quick navigation to the
-most relevant views in build scans to investigate what task outputs were fetched
-from the cache and what tasks executed in the second build with cache misses,
-which of those tasks had the biggest impact on build performance, and what
-caused the cache misses.
+The ‘Investigation Quick Links’ section below allows quick navigation to the
+most relevant views in build scans to investigate what tasks were avoided due to
+local build caching and what tasks executed in the second build, which of those
+tasks had the biggest impact on build performance, and what caused those tasks
+to not be taken from the local build cache.
 
-The 'Command Line Invocation' section below demonstrates how you can rerun the
+The ‘Command Line Invocation’ section below demonstrates how you can rerun the
 experiment with the same configuration and in non-interactive mode.
 
 $(print_summary)
