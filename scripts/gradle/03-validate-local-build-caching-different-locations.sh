@@ -91,7 +91,7 @@ wizard_execute() {
   execute_first_build
 
   print_bl
-  explain_second_clone_project
+  explain_copy_project
   print_bl
   git_copy_project "${project_name}_1" "${project_name}_2"
 
@@ -246,16 +246,16 @@ EOF
   wait_for_enter
 }
 
-explain_second_clone_project(){
+explain_copy_project(){
   local text
   IFS='' read -r -d '' text <<EOF
 $(print_separator)
-${HEADER_COLOR}Check out project from Git for second build${RESTORE}
+${HEADER_COLOR}Copy project for second build${RESTORE}
 
-Before running the second build, we are going to check out the project into a
+Before running the second build, we are going to copy the project into a
 different directory.
 
-${USER_ACTION_COLOR}Press <Enter> to check out the project from Git to a second directory.${RESTORE}
+${USER_ACTION_COLOR}Press <Enter> to copy the project to a second directory.${RESTORE}
 EOF
   print_wizard_text "${text}"
   wait_for_enter
