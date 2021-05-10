@@ -275,6 +275,16 @@ EOF
   wait_for_enter
 }
 
+print_command_to_repeat_experiment() {
+  local cmd
+  cmd=("./${SCRIPT_NAME}")
+  cmd+=("--first-build" "${build_scan_urls[0]}")
+  cmd+=("--second-build" "${build_scan_urls[1]}")
+
+  info "Command Line Invocation"
+  info "-----------------------"
+  info "$(printf '%q ' "${cmd[@]}")"
+}
 explain_and_print_summary() {
   local text
   IFS='' read -r -d '' text <<EOF
