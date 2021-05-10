@@ -5,6 +5,7 @@
 plugins {
     java
     application
+    `maven-publish`
     id("com.github.johnrengelman.shadow") version "7.0.0"
 }
 
@@ -18,7 +19,7 @@ dependencies {
     implementation("com.squareup.okhttp3:okhttp-sse")
 
     implementation(platform("com.fasterxml.jackson:jackson-bom:2.12.3"))
-    implementation("com.fasterxml.jackson.core:jackson-databind")
+    implementation("com.fasterxml.jackson.core:jackson-databind:2.12.3")
 
     implementation("com.google.guava:guava:30.1.1-jre")
     implementation("info.picocli:picocli:4.6.1")
@@ -41,4 +42,12 @@ tasks.compileJava {
 
 application {
     mainClass.set("com.gradle.enterprise.FetchBuildValidationData")
+}
+
+publishing {
+    publications {
+        create<MavenPublication>("maven") {
+            project.shadow.component(this)
+        }
+    }
 }

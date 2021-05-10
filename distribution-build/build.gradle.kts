@@ -5,16 +5,20 @@ plugins {
     id("de.undercouch.download") version "4.1.1"
 }
 
+repositories {
+    mavenCentral()
+}
+
 version = "0.0.1-SNAPSHOT"
 
 base {
   distsDirName = rootDir.resolve("../").toString()
 }
 
-val components by configurations.creating
+val mavenComponents by configurations.creating
 
 dependencies {
-    components("com.gradle:capture-published-build-scan-maven-extension:1.0.0-SNAPSHOT")
+    mavenComponents("com.gradle:capture-published-build-scan-maven-extension:1.0.0-SNAPSHOT")
 }
 
 val argbashVersion by extra("2.10.0")
@@ -77,14 +81,19 @@ tasks.register<Zip>("assembleGradleScripts") {
 
     from(layout.projectDirectory.dir("../scripts/gradle")) {
         exclude(".data/")
+        filter { line: String -> line.replace("/../lib", "/lib").replace("<HEAD>","${project.version}") }
     }
     from(layout.projectDirectory.dir("../scripts")) {
         include("lib/**")
         exclude("lib/maven")
         exclude("**/*.m4")
+        filter { line: String -> line.replace("/../lib", "/lib").replace("<HEAD>","${project.version}") }
     }
-    filter { line: String -> line.replace("/../lib", "/lib").replace("<HEAD>","${project.version}") }
+    from(gradle.includedBuild("fetch-build-validation-data").projectDir.resolve("build/libs/fetch-build-validation-data-1.0.0-SNAPSHOT-all.jar")) {
+        into("lib/")
+    }
     into(baseName)
+    dependsOn(gradle.includedBuild("fetch-build-validation-data").task(":shadowJar"))
     dependsOn("generateBashCliParsers")
 }
 
@@ -104,10 +113,14 @@ tasks.register<Zip>("assembleMavenScripts") {
         exclude("**/*.m4")
         filter { line: String -> line.replace("/../lib", "/lib").replace("<HEAD>","${project.version}") }
     }
-    from(components) {
+    from(gradle.includedBuild("fetch-build-validation-data").projectDir.resolve("build/libs/fetch-build-validation-data-1.0.0-SNAPSHOT-all.jar")) {
+        into("lib/")
+    }
+    from(mavenComponents) {
         into("lib/maven/")
     }
     into(baseName)
+    dependsOn(gradle.includedBuild("fetch-build-validation-data").task(":shadowJar"))
     dependsOn("generateBashCliParsers")
 }
 
