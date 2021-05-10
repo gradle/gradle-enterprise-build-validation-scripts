@@ -2,6 +2,7 @@
 
 make_experiment_dir() {
   mkdir -p "${EXP_DIR}"
+  cd "${EXP_DIR}"
   rm -f "${BUILD_SCAN_FILE}"
 }
 

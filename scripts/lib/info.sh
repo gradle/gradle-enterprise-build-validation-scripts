@@ -17,7 +17,7 @@ infof() {
 }
 
 summary_row() {
-    infof "${SUMMARY_FMT}" "$1" "$2"
+    infof "${SUMMARY_FMT}" "$1" "${2:-<unknown>}"
 }
 
 print_bl() {
@@ -70,22 +70,14 @@ print_experiment_info() {
  summary_row "Git repo:" "${git_repo}"
  summary_row "Git branch:" "${branch}"
  summary_row "Git commit id:" "${commit_id}"
- if [ -z "${project_dir}" ]; then
-   summary_row "Project dir:" "<root directory>"
- else
-   summary_row "Project dir:" "${project_dir}"
- fi
+ summary_row "Project dir:" "${project_dir:-<root directory>}"
 
- local build_tool_args="${extra_args}"
- if [ -z "${build_tool_args}" ]; then
-     build_tool_args="<none>"
- fi
  if [[ "${BUILD_TOOL}" == "Maven" ]]; then
    summary_row "Maven goals:" "${tasks}"
-   summary_row "Maven arguments:" "${build_tool_args}"
+   summary_row "Maven arguments:" "${extra_args:-<none>}"
  else
    summary_row "Gradle tasks:" "${tasks}"
-   summary_row "Gradle arguments:" "${build_tool_args}"
+   summary_row "Gradle arguments:" "${extra_args:-<none>}"
  fi
  summary_row "Experiment:" "${EXP_NO} ${EXP_NAME}"
  summary_row "Experiment id:" "${EXP_SCAN_TAG}"

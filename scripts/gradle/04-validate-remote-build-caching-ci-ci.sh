@@ -126,10 +126,23 @@ print_summary() {
 print_experiment_info() {
  info "Summary"
  info "-------"
- summary_row "Gradle tasks:" "${tasks}"
+ summary_row "Project:" "${project_name}"
+ summary_row "Git repo:" "${git_repo}"
+ summary_row "Git branch:" ""
+ summary_row "Git commit id:" ""
+ summary_row "Project dir:" ""
+
+ if [[ "${BUILD_TOOL}" == "Maven" ]]; then
+   summary_row "Maven goals:" "${tasks}"
+   summary_row "Maven arguments:" "${extra_args:-<none>}"
+ else
+   summary_row "Gradle tasks:" "${tasks}"
+   summary_row "Gradle arguments:" "${extra_args:-<none>}"
+ fi
  summary_row "Experiment:" "${EXP_NO} ${EXP_NAME}"
  summary_row "Experiment id:" "${EXP_SCAN_TAG}"
- summary_row "Experiment artifact dir:" "${EXP_DIR}"
+ summary_row "Experiment run id:" "<not applicable>"
+ summary_row "Experiment artifact dir:" "<not applicable>"
 }
 
 
