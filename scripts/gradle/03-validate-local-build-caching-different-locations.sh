@@ -168,8 +168,8 @@ print_introduction() {
 $(print_introduction_title)
 
 In this experiment, you will validate how well a given project leverages
-Gradle’s local build caching functionality when running the build in the same
-location. A build is considered fully cacheable if it can be invoked twice in a
+Gradle’s local build caching functionality when running the build from different
+locations. A build is considered fully cacheable if it can be invoked twice in a
 row with build caching enabled and all cacheable tasks avoid performing any work
 because:
 
@@ -181,7 +181,8 @@ The experiment will reveal tasks with volatile inputs, for example tasks that
 have a timestamp as one of their inputs. It will also reveal tasks that produce
 non-deterministic outputs consumed by other tasks downstream, for example tasks
 generating code with non-deterministic method ordering or tasks producing
-artifacts that include timestamps.
+artifacts that include timestamps. In addition, the experiment will reveal inputs
+containing absolute file paths.
 
 The experiment will assist you to first identify those tasks whose outputs are
 not taken from the local build cache due to changed inputs or to ensure
@@ -195,7 +196,7 @@ the following steps:
 
   1. Enable local build caching and use an empty local build cache
   2. Run the build with a typical task invocation including the ‘clean’ task
-  3. Run the build with the same task invocation including the ‘clean’ task
+  3. Run the build from a different location with the same task invocation including the ‘clean’ task
   4. Determine which cacheable tasks are still executed in the second run and why
   5. Assess which of the executed, cacheable tasks are worth improving
   6. Fix identified tasks
@@ -250,17 +251,16 @@ explain_copy_project(){
   local text
   IFS='' read -r -d '' text <<EOF
 $(print_separator)
-${HEADER_COLOR}Copy project for second build${RESTORE}
+${HEADER_COLOR}Clone project to different location for second build${RESTORE}
 
-Before running the second build, we are going to copy the project into a
-different directory.
+For the second build, the checked out Git repository that contains the project
+to validate will be cloned into a different location.
 
-${USER_ACTION_COLOR}Press <Enter> to copy the project to a second directory.${RESTORE}
+${USER_ACTION_COLOR}Press <Enter> to clone the project into a different location.${RESTORE}
 EOF
   print_wizard_text "${text}"
   wait_for_enter
 }
-
 
 explain_second_build() {
   local text
@@ -268,10 +268,11 @@ explain_second_build() {
 $(print_separator)
 ${HEADER_COLOR}Run second build${RESTORE}
 
-Now that the first build has finished successfully, the second build can be run
-with the same Gradle tasks. The build will again be invoked with the ‘clean’
-task included and local build caching enabled. The local build cache populated
-during the first build will be used.
+Now that the first build has finished successfully and the project has been
+cloned into a different location, the second build can be run with the same
+Gradle tasks. The build will again be invoked with the ‘clean’ task included
+and local build caching enabled. The local build cache populated during the
+first build will be used.
 
 ${USER_ACTION_COLOR}Press <Enter> to run the second build.${RESTORE}
 EOF
