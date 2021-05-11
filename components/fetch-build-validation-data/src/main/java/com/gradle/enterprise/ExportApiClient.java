@@ -73,7 +73,7 @@ public class ExportApiClient {
     private static class BuildValidationDataEventListener extends EventSourceListener {
         private final URL gradleEnterpriseServerUrl;
         private final String buildScanId;
-        private final CompletableFuture<String> commitId = new CompletableFuture<>();
+        private final CompletableFuture<String> gitCommitId = new CompletableFuture<>();
         private final CompletableFuture<List<String>> requestedTasks = new CompletableFuture<>();
         private final CompletableFuture<Boolean> buildSuccessful = new CompletableFuture<>();
 
@@ -83,7 +83,7 @@ public class ExportApiClient {
         }
 
         public BuildValidationData getBuildValidationData() throws ExecutionException, InterruptedException {
-            return new BuildValidationData(buildScanId, gradleEnterpriseServerUrl, commitId.get(), requestedTasks.get(), buildSuccessful.get());
+            return new BuildValidationData(buildScanId, gradleEnterpriseServerUrl, gitCommitId.get(), requestedTasks.get(), buildSuccessful.get());
         }
 
         @Override
@@ -113,7 +113,7 @@ public class ExportApiClient {
             var key = eventData.get("key").asText();
             var value = eventData.get("value").asText();
             if ("Git commit id".equals(key)) {
-                this.commitId.complete(value);
+                this.gitCommitId.complete(value);
             }
         }
 
@@ -130,7 +130,7 @@ public class ExportApiClient {
 
             // TODO Fail with completeExceptionally instead?
             // complete set the value only if the CompletableFuture hasn't already been completed.
-            commitId.complete("");
+            gitCommitId.complete("");
             requestedTasks.complete(Collections.emptyList());
             buildSuccessful.complete(false);
         }

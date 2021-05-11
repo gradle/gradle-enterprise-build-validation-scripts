@@ -96,7 +96,7 @@ public class FetchBuildValidationData implements Callable<Integer> {
         System.out.println(String.format("%s,%s,%s,%s,%s",
             buildValidationData.getGradleEnterpriseServerUrl(),
             buildValidationData.getBuildScanId(),
-            buildValidationData.getCommitId(),
+            buildValidationData.getGitCommitId(),
             String.join(" ", buildValidationData.getRequestedTasks()),
             buildValidationData.getBuildSuccessful()
         ));

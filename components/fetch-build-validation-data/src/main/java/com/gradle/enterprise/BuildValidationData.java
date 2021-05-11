@@ -6,14 +6,14 @@ import java.util.List;
 public class BuildValidationData {
     private final String buildScanId;
     private final URL gradleEnterpriseServerUrl;
-    private final String commitId;
+    private final String gitCommitId;
     private final List<String> requestedTasks;
     private final Boolean buildSuccessful;
 
-    public BuildValidationData(String buildScanId, URL gradleEnterpriseServerUrl, String commitId, List<String> requestedTasks, Boolean buildSuccessful) {
+    public BuildValidationData(String buildScanId, URL gradleEnterpriseServerUrl, String gitCommitId, List<String> requestedTasks, Boolean buildSuccessful) {
         this.buildScanId = buildScanId;
         this.gradleEnterpriseServerUrl = gradleEnterpriseServerUrl;
-        this.commitId = commitId;
+        this.gitCommitId = gitCommitId;
         this.requestedTasks = requestedTasks;
         this.buildSuccessful = buildSuccessful;
     }
@@ -26,8 +26,8 @@ public class BuildValidationData {
         return gradleEnterpriseServerUrl;
     }
 
-    public String getCommitId() {
-        return commitId;
+    public String getGitCommitId() {
+        return gitCommitId;
     }
 
     public List<String> getRequestedTasks() {
