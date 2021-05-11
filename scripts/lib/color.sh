@@ -8,6 +8,7 @@ readonly BLUE=$(echo -en '\033[00;34m')
 readonly CYAN=$(echo -en '\033[00;36m')
 readonly WHITE=$(echo -en '\033[01;37m')
 readonly RED=$(echo -en '\033[00;31m')
+readonly ORANGE=$(echo -en '\033[38;5;202m')
 
 readonly BOLD=$(echo -en '\033[1m')
 readonly DIM=$(echo -en '\033[2m')

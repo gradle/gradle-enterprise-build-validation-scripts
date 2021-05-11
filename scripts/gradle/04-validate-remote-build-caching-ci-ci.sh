@@ -126,23 +126,33 @@ print_summary() {
  print_build_scans
  print_bl
  print_quick_links
+ print_warning_if_values_different
 }
 
 # Overrides the info.sh#print_experiment_info
 print_experiment_info() {
  info "Summary"
  info "-------"
- summary_row "Project:" "${project_names[0]}"
- summary_row "Git repo:" "${git_repos[0]}"
- summary_row "Git branch:" "${git_branches[0]}"
- summary_row "Git commit id:" "${git_commit_ids[0]}"
+ summary_row "Project:" "$(print_values "${project_names[@]}")"
+ summary_row "Git repo:" "$(print_values "${git_repos[@]}")"
+ summary_row "Git branch:" "$(print_values "${git_branches[@]}")"
+ summary_row "Git commit id:" "$(print_values "${git_commit_ids[@]}")"
  summary_row "Project dir:" ""
- summary_row "Gradle tasks:" "${requested_tasks[0]}"
+ summary_row "Gradle tasks:" "$(print_values "${requested_tasks[@]}")"
  summary_row "Gradle arguments:" ""
  summary_row "Experiment:" "${EXP_NO} ${EXP_NAME}"
  summary_row "Experiment id:" "${EXP_SCAN_TAG}"
  summary_row "Experiment run id:" "<not applicable>"
  summary_row "Experiment artifact dir:" "<not applicable>"
+}
+
+print_values() {
+  if [[ "$1" == "$2" ]]; then
+    echo "$1"
+  else
+    value_mismatch_detected=true
+    echo "${ORANGE}${1} | ${2}${RESTORE}"
+  fi
 }
 
 
@@ -160,6 +170,13 @@ print_quick_links() {
  summary_row "Executed non-cacheable tasks:" "${base_urls[0]}/s/${build_scan_ids[1]}/timeline?cacheability=any_non-cacheable&outcome=SUCCESS,FAILED&sort=longest"
  summary_row "Build caching statistics:" "${base_urls[0]}/s/${build_scan_ids[1]}/performance/build-cache"
  summary_row "Task inputs comparison:" "${base_urls[0]}/c/${build_scan_ids[0]}/${build_scan_ids[1]}/task-inputs?cacheability=cacheable"
+}
+
+print_warning_if_values_different() {
+  if [ -z "${value_mismatch_detected}" ]; then
+    print_bl
+    info "WARNING: Differences were detected between the two builds (highlighted above in ${ORANGE}orange${INFO_COLOR})."
+  fi
 }
 
 print_introduction() {
