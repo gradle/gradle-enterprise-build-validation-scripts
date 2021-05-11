@@ -1,5 +1,6 @@
 package com.gradle.enterprise;
 
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.List;
 
@@ -24,6 +25,14 @@ public class BuildValidationData {
 
     public String getBuildScanId() {
         return buildScanId;
+    }
+
+    public URL getBuildScanUrl() {
+        try {
+            return new URL(gradleEnterpriseServerUrl, "/s/" + buildScanId);
+        } catch (MalformedURLException e) {
+            throw new RuntimeException(e.getMessage(), e);
+        }
     }
 
     public URL getGradleEnterpriseServerUrl() {
