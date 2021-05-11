@@ -54,6 +54,6 @@ _print_option_usage() {
 }
 
 print_version() {
-  echo "${SCRIPT_NAME} version ${SCRIPT_VERSION}"
+  echo "${SCRIPT_VERSION}"
 }
 
