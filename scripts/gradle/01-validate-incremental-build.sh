@@ -154,7 +154,7 @@ non-deterministic outputs consumed by other tasks downstream, for example tasks
 generating code with non-deterministic method ordering or tasks producing
 artifacts that include timestamps.
 
-The experiment will assit you to first identify those tasks that do not
+The experiment will assist you to first identify those tasks that do not
 participate in Gradle’s incremental build functionality, to then make an
 informed decision which of those tasks are worth improving to make your build
 faster, to then investigate why they do not participate in incremental building,
