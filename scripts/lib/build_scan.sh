@@ -13,3 +13,92 @@ read_build_scan_metadata() {
      build_scan_ids+=("$field_3")
   done < "${BUILD_SCAN_FILE}"
 }
+
+fetch_build_validation_data() {
+  # OS specific support (must be 'true' or 'false').
+  cygwin=false
+  msys=false
+  darwin=false
+  nonstop=false
+  case "$(uname)" in
+    CYGWIN* )
+      cygwin=true
+      ;;
+    Darwin* )
+      darwin=true
+      ;;
+    MINGW* )
+      msys=true
+      ;;
+    NONSTOP* )
+      nonstop=true
+      ;;
+  esac
+
+  # Determine the Java command to use to start the JVM.
+  if [ -n "$JAVA_HOME" ] ; then
+      if [ -x "$JAVA_HOME/jre/sh/java" ] ; then
+          # IBM's JDK on AIX uses strange locations for the executables
+          JAVACMD="$JAVA_HOME/jre/sh/java"
+      else
+          JAVACMD="$JAVA_HOME/bin/java"
+      fi
+      if [ ! -x "$JAVACMD" ] ; then
+          die "ERROR: JAVA_HOME is set to an invalid directory: $JAVA_HOME
+
+  Please set the JAVA_HOME variable in your environment to match the
+  location of your Java installation."
+      fi
+  else
+      JAVACMD="java"
+      which java >/dev/null 2>&1 || die "ERROR: JAVA_HOME is not set and no 'java' command could be found in your PATH.
+
+  Please set the JAVA_HOME variable in your environment to match the
+  location of your Java installation."
+  fi
+
+  # Escape application args
+  save () {
+      for i do printf %s\\n "$i" | sed "s/'/'\\\\''/g;1s/^/'/;\$s/\$/' \\\\/" ; done
+      echo " "
+  }
+  APP_ARGS=$(save "$@")
+
+  CLASSPATH="${LIB_DIR}/fetch-build-validation-data-1.0.0-SNAPSHOT-all.jar"
+  # Collect all arguments for the java command, following the shell quoting and substitution rules
+  eval set -- -jar "\"$CLASSPATH\"" "$APP_ARGS"
+
+  exec "$JAVACMD" "$@"
+}
+
+fetch_and_read_build_validation_data() {
+  # This isn't the most robust way to read a CSV,
+  # but we control the CSV so we don't have to worry about various CSV edge cases
+  local fetched_data header_row_read
+  fetched_data="$(fetch_build_validation_data "$@")"
+
+  if [[ "$_arg_debug" == "on" ]]; then
+    info "Raw fetched data"
+    info "----------------"
+    info "${fetched_data}"
+    info "----------------"
+    print_bl
+  fi
+
+  header_row_read=false
+  while IFS=, read -r field_1 field_2 field_3 field_4 field_5 field_6 field_7 field_8; do
+     if [[ "$header_row_read" == "false" ]]; then
+         header_row_read=true
+         continue;
+     fi
+     base_urls+=("$field_1")
+     build_scan_urls+=("$field_2")
+     build_scan_ids+=("$field_3")
+     git_repos+=("$field_4")
+     project_names+=("$(basename -s .git "${field_4}")")
+     git_branches+=("$field_5")
+     git_commit_ids+=("$field_6")
+     requested_tasks+=("$field_7")
+     build_outcomes+=("$field_8")
+  done <<< "${fetched_data}"
+}

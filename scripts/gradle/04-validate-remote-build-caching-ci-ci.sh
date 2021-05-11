@@ -45,6 +45,7 @@ execute() {
   validate_required_args
 
   parse_build_scan_urls
+  fetch_extended_build_scan_data
   make_experiment_dir
 
   print_summary
@@ -67,6 +68,7 @@ wizard_execute() {
   collect_second_build_scan
 
   parse_build_scan_urls
+  fetch_extended_build_scan_data
   make_experiment_dir
 
   print_bl
@@ -115,6 +117,10 @@ parse_build_scan_urls() {
   done
 }
 
+fetch_extended_build_scan_data() {
+    fetch_and_read_build_validation_data "${build_scan_urls[@]}"
+}
+
 print_summary() {
  print_experiment_info
  print_build_scans
@@ -127,18 +133,12 @@ print_experiment_info() {
  info "Summary"
  info "-------"
  summary_row "Project:" "${project_name}"
- summary_row "Git repo:" "${git_repo}"
- summary_row "Git branch:" ""
- summary_row "Git commit id:" ""
+ summary_row "Git repo:" "${git_repos[0]}"
+ summary_row "Git branch:" "${git_branches[0]}"
+ summary_row "Git commit id:" "${git_commit_ids[0]}"
  summary_row "Project dir:" ""
-
- if [[ "${BUILD_TOOL}" == "Maven" ]]; then
-   summary_row "Maven goals:" "${tasks}"
-   summary_row "Maven arguments:" "${extra_args:-<none>}"
- else
-   summary_row "Gradle tasks:" "${tasks}"
-   summary_row "Gradle arguments:" "${extra_args:-<none>}"
- fi
+ summary_row "Gradle tasks:" "${requested_tasks[0]}"
+ summary_row "Gradle arguments:" ""
  summary_row "Experiment:" "${EXP_NO} ${EXP_NAME}"
  summary_row "Experiment id:" "${EXP_SCAN_TAG}"
  summary_row "Experiment run id:" "<not applicable>"
