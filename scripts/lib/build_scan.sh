@@ -50,13 +50,13 @@ fetch_build_validation_data() {
   fi
 
   # For Cygwin or MSYS, switch paths to Windows format before running java
-if [ "$cygwin" = "true" -o "$msys" = "true" ] ; then
-    APP_HOME=`cygpath --path --mixed "$APP_HOME"`
-    CLASSPATH=`cygpath --path --mixed "$CLASSPATH"`
-    JAVACMD=`cygpath --unix "$JAVACMD"`
+if [ "$cygwin" = "true" ] || [ "$msys" = "true" ] ; then
+    APP_HOME=$(cygpath --path --mixed "$APP_HOME")
+    CLASSPATH=$(cygpath --path --mixed "$CLASSPATH")
+    JAVACMD=$(cygpath --unix "$JAVACMD")
 
     # We build the pattern for arguments to be converted via cygpath
-    ROOTDIRSRAW=`find -L / -maxdepth 1 -mindepth 1 -type d 2>/dev/null`
+    ROOTDIRSRAW=$(find -L / -maxdepth 1 -mindepth 1 -type d 2>/dev/null)
     SEP=""
     for dir in $ROOTDIRSRAW ; do
         ROOTDIRS="$ROOTDIRS$SEP$dir"
@@ -70,8 +70,8 @@ if [ "$cygwin" = "true" -o "$msys" = "true" ] ; then
     # Now convert the arguments - kludge to limit ourselves to /bin/sh
     i=0
     for arg in "$@" ; do
-        CHECK=$(echo "$arg"|egrep -c "$OURCYGPATTERN" -)
-        CHECK2=$(echo "$arg"|egrep -c "^-")                                 ### Determine if an option
+        CHECK=$(echo "$arg"|grep -E -c "$OURCYGPATTERN" -)
+        CHECK2=$(echo "$arg"|grep -E -c "^-")                                 ### Determine if an option
 
         # shellcheck disable=SC2046  # we actually want word splitting
         # shellcheck disable=SC2116  # using echo to expand globs
