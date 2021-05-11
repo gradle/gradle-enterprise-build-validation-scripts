@@ -89,7 +89,7 @@ public class ExportApiClient {
                 buildScanId,
                 gradleEnterpriseServerUrl,
                 gitUrl.get(),
-                gitCommitId.get(),
+                gitBranch.get(),
                 gitCommitId.get(),
                 requestedTasks.get(),
                 buildSuccessful.get()
@@ -124,7 +124,7 @@ public class ExportApiClient {
             var value = eventData.get("value").asText();
             switch(key) {
                 case "Git repository":
-                    this.gitBranch.complete(value);
+                    this.gitUrl.complete(value);
                     break;
                 case "Git branch":
                     this.gitBranch.complete(value);
