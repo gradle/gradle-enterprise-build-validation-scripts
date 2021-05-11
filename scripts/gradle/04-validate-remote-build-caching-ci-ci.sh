@@ -118,7 +118,7 @@ parse_build_scan_urls() {
 }
 
 fetch_extended_build_scan_data() {
-    fetch_and_read_build_validation_data "${build_scan_urls[@]}"
+  fetch_and_read_build_validation_data "${build_scan_urls[@]}"
 }
 
 print_summary() {

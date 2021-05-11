@@ -34,7 +34,6 @@ ge_server=''
 interactive_mode=''
 
 ci_build_scan_url=''
-ci_build_scan_id=''
 commit_id=''
 
 main() {
@@ -126,8 +125,6 @@ fetch_build_scan_data() {
   if [ -z "${tasks}" ]; then
     tasks="${requested_tasks[0]}"
   fi
-
-  ci_build_scan_id="${build_scan_ids[0]}"
 }
 
 execute_build() {
