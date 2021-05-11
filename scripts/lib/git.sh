@@ -20,7 +20,7 @@ git_clone_project() {
 git_copy_project() {
    original_repo="$1"
    copy_repo="$2"
-   info "Copying ${original_repo}"
+   info "Cloning ${project_name} into different location"
 
    cd "${EXP_DIR}"
    rm -rf "${copy_repo}"
