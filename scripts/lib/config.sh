@@ -25,7 +25,7 @@ validate_required_config() {
 
   if [[ "${enable_ge}" == "on" ]]; then
     if [ -z "${ge_server}" ]; then
-      _PRINT_HELP=yes die "ERROR: --gradle-enterprise-server is requred when using --enable-gradle-enterprise."
+      _PRINT_HELP=yes die "ERROR: --gradle-enterprise-server is required when using --enable-gradle-enterprise."
     fi
   fi
 }
@@ -83,7 +83,7 @@ collect_gradle_details() {
   local default_project_dir="<the repository's root directory>"
   local default_extra_args="<none>"
   prompt_for_setting "Which directory contains the Gradle root project?" "${project_dir}" "${default_project_dir}" project_dir
-  prompt_for_setting "What are the Gradle tasks to invoke?" "${tasks}" "assemble" tasksi
+  prompt_for_setting "What are the Gradle tasks to invoke?" "${tasks}" "assemble" tasks
   prompt_for_setting "What are additional cmd line arguments to pass to the Gradle invocation?" "${extra_args}" "${default_extra_args}" extra_args
   if [[ "${project_dir}" == "${default_project_dir}" ]]; then
     project_dir=''
