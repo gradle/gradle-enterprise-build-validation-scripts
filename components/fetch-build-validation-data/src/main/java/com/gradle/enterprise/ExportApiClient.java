@@ -73,6 +73,8 @@ public class ExportApiClient {
     private static class BuildValidationDataEventListener extends EventSourceListener {
         private final URL gradleEnterpriseServerUrl;
         private final String buildScanId;
+        private final CompletableFuture<String> gitUrl = new CompletableFuture<>();
+        private final CompletableFuture<String> gitBranch = new CompletableFuture<>();
         private final CompletableFuture<String> gitCommitId = new CompletableFuture<>();
         private final CompletableFuture<List<String>> requestedTasks = new CompletableFuture<>();
         private final CompletableFuture<Boolean> buildSuccessful = new CompletableFuture<>();
@@ -83,7 +85,15 @@ public class ExportApiClient {
         }
 
         public BuildValidationData getBuildValidationData() throws ExecutionException, InterruptedException {
-            return new BuildValidationData(buildScanId, gradleEnterpriseServerUrl, gitCommitId.get(), requestedTasks.get(), buildSuccessful.get());
+            return new BuildValidationData(
+                buildScanId,
+                gradleEnterpriseServerUrl,
+                gitUrl.get(),
+                gitCommitId.get(),
+                gitCommitId.get(),
+                requestedTasks.get(),
+                buildSuccessful.get()
+            );
         }
 
         @Override
@@ -112,8 +122,18 @@ public class ExportApiClient {
         private void onUserNamedValue(JsonNode eventData) {
             var key = eventData.get("key").asText();
             var value = eventData.get("value").asText();
-            if ("Git commit id".equals(key)) {
-                this.gitCommitId.complete(value);
+            switch(key) {
+                case "Git repository":
+                    this.gitBranch.complete(value);
+                    break;
+                case "Git branch":
+                    this.gitBranch.complete(value);
+                    break;
+                case "Git commit id":
+                    this.gitCommitId.complete(value);
+                    break;
+                default:
+                    break;
             }
         }
 
@@ -128,8 +148,9 @@ public class ExportApiClient {
             // If the event stream is closed before we have completed all of the completeable futures, then we can
             // assume that the build scan doesn't have that data
 
-            // TODO Fail with completeExceptionally instead?
             // complete set the value only if the CompletableFuture hasn't already been completed.
+            gitUrl.complete("");
+            gitBranch.complete("");
             gitCommitId.complete("");
             requestedTasks.complete(Collections.emptyList());
             buildSuccessful.complete(false);

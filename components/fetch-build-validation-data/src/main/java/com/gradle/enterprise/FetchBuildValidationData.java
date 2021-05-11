@@ -89,13 +89,15 @@ public class FetchBuildValidationData implements Callable<Integer> {
     }
 
     public void printHeader() {
-        System.out.println("Gradle Enterprise Server,Build Scan ID,Git Commit Id,Requested Tasks,Build Successful");
+        System.out.println("Gradle Enterprise Server,Build Scan ID,Git URL,Git Branch,Git Commit Id,Requested Tasks,Build Successful");
     }
 
     private void printRow(BuildValidationData buildValidationData) {
-        System.out.println(String.format("%s,%s,%s,%s,%s",
+        System.out.println(String.format("%s,%s,%s,%s,%s,%s,%s",
             buildValidationData.getGradleEnterpriseServerUrl(),
             buildValidationData.getBuildScanId(),
+            buildValidationData.getGitUrl(),
+            buildValidationData.getGitBranch(),
             buildValidationData.getGitCommitId(),
             String.join(" ", buildValidationData.getRequestedTasks()),
             buildValidationData.getBuildSuccessful()
