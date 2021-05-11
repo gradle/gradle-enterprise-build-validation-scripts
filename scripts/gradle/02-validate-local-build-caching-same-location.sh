@@ -170,9 +170,9 @@ because:
   * The cacheable tasks’ outputs are present in the local build cache
 
 The experiment will reveal tasks with volatile inputs, for example tasks that
-have a timestamp as one of their inputs. It will also reveal tasks that produce
-non-deterministic outputs consumed by other tasks downstream, for example tasks
-generating code with non-deterministic method ordering or tasks producing
+contain a timestamp in one of their inputs. It will also reveal tasks that produce
+non-deterministic outputs consumed by cacheable tasks downstream, for example
+tasks generating code with non-deterministic method ordering or tasks producing
 artifacts that include timestamps.
 
 The experiment will assist you to first identify those tasks whose outputs are

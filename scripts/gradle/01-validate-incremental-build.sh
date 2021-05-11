@@ -149,10 +149,10 @@ all tasks avoid performing any work because:
   * The tasks' outputs are still present
 
 The experiment will reveal tasks with volatile inputs, for example tasks that
-have a timestamp as one of their inputs. It will also reveal tasks that produce
-non-deterministic outputs consumed by other tasks downstream, for example tasks
-generating code with non-deterministic method ordering or tasks producing
-artifacts that include timestamps.
+contain a timestamp in one of their inputs. It will also reveal tasks that produce
+non-deterministic outputs consumed by tasks downstream that participate in
+incremental building, for example tasks generating code with non-deterministic
+method ordering or tasks producing artifacts that include timestamps.
 
 The experiment will assist you to first identify those tasks that do not
 participate in Gradle’s incremental build functionality, to then make an

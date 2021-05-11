@@ -178,11 +178,11 @@ because:
   * The cacheable tasks’ outputs are present in the local build cache
 
 The experiment will reveal tasks with volatile inputs, for example tasks that
-have a timestamp as one of their inputs. It will also reveal tasks that produce
-non-deterministic outputs consumed by other tasks downstream, for example tasks
-generating code with non-deterministic method ordering or tasks producing
-artifacts that include timestamps. In addition, the experiment will reveal inputs
-containing absolute file paths.
+contain a timestamp in one of their inputs. It will also reveal tasks that produce
+non-deterministic outputs consumed by cacheable tasks downstream, for example
+tasks generating code with non-deterministic method ordering or tasks producing
+artifacts that include timestamps. In addition, the experiment will reveal
+tasks that contain an absolute file path in one of their inputs.
 
 The experiment will assist you to first identify those tasks whose outputs are
 not taken from the local build cache due to changed inputs or to ensure
