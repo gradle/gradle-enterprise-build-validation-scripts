@@ -11,10 +11,6 @@ repositories {
 
 version = "0.0.1-SNAPSHOT"
 
-base {
-  distsDirName = rootDir.resolve("../").toString()
-}
-
 val mavenComponents by configurations.creating
 
 dependencies {
