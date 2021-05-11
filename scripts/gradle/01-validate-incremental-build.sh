@@ -1,10 +1,10 @@
 #!/usr/bin/env bash
 #
-# Runs Experiment 01 - Validate Gradle Incremental Build
+# Runs Experiment 01 - Validate incremental building
 #
 # Invoke this script with --help to get a description of the command line arguments
 #
-readonly EXP_NAME="Validate Gradle Incremental Build"
+readonly EXP_NAME="Validate incremental building"
 readonly EXP_DESCRIPTION="Validating that a Gradle build is optimized for incremental building"
 readonly EXP_NO="01"
 readonly EXP_SCAN_TAG=exp1-gradle

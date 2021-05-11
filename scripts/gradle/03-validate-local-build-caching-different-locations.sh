@@ -1,10 +1,10 @@
 #!/usr/bin/env bash
 #
-# Runs Experiment 03 - Validate Gradle Local Build Caching - Different project locations
+# Runs Experiment 03 - Validate local build caching - different project locations
 #
 # Invoke this script with --help to get a description of the command line arguments
 #
-readonly EXP_NAME="Validate Gradle Local Build Caching - Different project locations"
+readonly EXP_NAME="Validate local build caching - different project locations"
 readonly EXP_DESCRIPTION="Validating that a Gradle build is optimized for local build caching when invoked from different locations"
 readonly EXP_NO="03"
 readonly EXP_SCAN_TAG=exp3-gradle

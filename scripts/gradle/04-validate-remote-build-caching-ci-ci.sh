@@ -1,11 +1,11 @@
 #!/usr/bin/env bash
 #
-# Runs Experiment 04 - Validate Gradle Remote Build Caching - CI and CI
+# Runs Experiment 04 - Validate remote build caching - different CI agents
 #
 # Invoke this script with --help to get a description of the command line arguments
 #
-readonly EXP_NAME="Validate Gradle Remote Build Caching - CI and CI"
-readonly EXP_DESCRIPTION="Validating that a Gradle build is optimized for remote build caching when invoked on CI agents"
+readonly EXP_NAME="Validate remote build caching - different CI agents"
+readonly EXP_DESCRIPTION="Validating that a Gradle build is optimized for remote build caching when invoked from different CI agents"
 readonly EXP_NO="04"
 readonly EXP_SCAN_TAG=exp4-gradle
 readonly BUILD_TOOL="Gradle"
