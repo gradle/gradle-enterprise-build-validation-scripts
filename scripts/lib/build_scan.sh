@@ -18,20 +18,12 @@ fetch_build_validation_data() {
   # OS specific support (must be 'true' or 'false').
   cygwin=false
   msys=false
-  darwin=false
-  nonstop=false
   case "$(uname)" in
     CYGWIN* )
       cygwin=true
       ;;
-    Darwin* )
-      darwin=true
-      ;;
     MINGW* )
       msys=true
-      ;;
-    NONSTOP* )
-      nonstop=true
       ;;
   esac
 
@@ -56,6 +48,55 @@ fetch_build_validation_data() {
   Please set the JAVA_HOME variable in your environment to match the
   location of your Java installation."
   fi
+
+  # For Cygwin or MSYS, switch paths to Windows format before running java
+if [ "$cygwin" = "true" -o "$msys" = "true" ] ; then
+    APP_HOME=`cygpath --path --mixed "$APP_HOME"`
+    CLASSPATH=`cygpath --path --mixed "$CLASSPATH"`
+    JAVACMD=`cygpath --unix "$JAVACMD"`
+
+    # We build the pattern for arguments to be converted via cygpath
+    ROOTDIRSRAW=`find -L / -maxdepth 1 -mindepth 1 -type d 2>/dev/null`
+    SEP=""
+    for dir in $ROOTDIRSRAW ; do
+        ROOTDIRS="$ROOTDIRS$SEP$dir"
+        SEP="|"
+    done
+    OURCYGPATTERN="(^($ROOTDIRS))"
+    # Add a user-defined pattern to the cygpath arguments
+    if [ "$GRADLE_CYGPATTERN" != "" ] ; then
+        OURCYGPATTERN="$OURCYGPATTERN|($GRADLE_CYGPATTERN)"
+    fi
+    # Now convert the arguments - kludge to limit ourselves to /bin/sh
+    i=0
+    for arg in "$@" ; do
+        CHECK=$(echo "$arg"|egrep -c "$OURCYGPATTERN" -)
+        CHECK2=$(echo "$arg"|egrep -c "^-")                                 ### Determine if an option
+
+        # shellcheck disable=SC2046  # we actually want word splitting
+        # shellcheck disable=SC2116  # using echo to expand globs
+        if [ "$CHECK" -ne 0 ] && [ "$CHECK2" -eq 0 ] ; then                    ### Added a condition
+            eval $(echo args$i)=$(cygpath --path --ignore --mixed "$arg")
+        else
+            eval $(echo args$i)="\"$arg\""
+        fi
+        # shellcheck disable=SC2003
+        i=$(expr $i + 1)
+    done
+    # shellcheck disable=SC2154
+    case $i in
+        0) set -- ;;
+        1) set -- "$args0" ;;
+        2) set -- "$args0" "$args1" ;;
+        3) set -- "$args0" "$args1" "$args2" ;;
+        4) set -- "$args0" "$args1" "$args2" "$args3" ;;
+        5) set -- "$args0" "$args1" "$args2" "$args3" "$args4" ;;
+        6) set -- "$args0" "$args1" "$args2" "$args3" "$args4" "$args5" ;;
+        7) set -- "$args0" "$args1" "$args2" "$args3" "$args4" "$args5" "$args6" ;;
+        8) set -- "$args0" "$args1" "$args2" "$args3" "$args4" "$args5" "$args6" "$args7" ;;
+        9) set -- "$args0" "$args1" "$args2" "$args3" "$args4" "$args5" "$args6" "$args7" "$args8" ;;
+    esac
+fi
 
   # Escape application args
   save () {
