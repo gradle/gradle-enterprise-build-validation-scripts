@@ -4,14 +4,14 @@ git_clone_project() {
    suffix="$1"
    info "Cloning ${project_name}"
 
-   local clone_dir="${EXP_DIR}/${project_name}${suffix}"
+   local clone_dir="${EXP_DIR:?}/${project_name:?}${suffix}"
 
    local branch=""
    if [ -n "${git_branch}" ]; then
       branch="--branch ${git_branch}"
    fi
 
-   rm -rf "${clone_dir}"
+   rm -rf "${clone_dir:?}"
    # shellcheck disable=SC2086  # we want $branch to expand into multiple arguments
    git clone --depth=1 ${branch} "${git_repo}" "${clone_dir}" || die "ERROR: Unable to clone from ${git_repo}." 1
    cd "${clone_dir}" || die "Unable to access ${clone_dir}. Aborting!" 1
@@ -22,8 +22,8 @@ git_copy_project() {
    copy_repo="$2"
    info "Making a copy of ${project_name}"
 
-   rm -rf "${EXP_DIR}/${copy_repo}"
-   cp -R "${EXP_DIR}/${original_repo}" "${EXP_DIR}/${copy_repo}"
+   rm -rf "${EXP_DIR:?}/${copy_repo:?}"
+   cp -R "${EXP_DIR:?}/${original_repo:?}" "${EXP_DIR:?}/${copy_repo:?}"
 }
 
 git_get_branch() {
