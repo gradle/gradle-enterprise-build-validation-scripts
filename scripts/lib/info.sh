@@ -66,7 +66,7 @@ print_experiment_info() {
 
  info "Summary"
  info "-------"
- summary_row "Project:" "${project_name}"
+ summary_row "Project:" "${project_names[0]}"
  summary_row "Git repo:" "${git_repo}"
  summary_row "Git branch:" "${branch}"
  summary_row "Git commit id:" "${commit_id}"

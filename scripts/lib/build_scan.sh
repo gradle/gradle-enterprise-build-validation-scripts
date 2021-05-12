@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 
+project_names=()
 base_urls=()
 build_scan_urls=()
 build_scan_ids=()
@@ -7,10 +8,11 @@ build_scan_ids=()
 read_build_scan_metadata() {
   # This isn't the most robust way to read a CSV,
   # but we control the CSV so we don't have to worry about various CSV edge cases
-  while IFS=, read -r field_1 field_2 field_3; do
-     base_urls+=("$field_1")
-     build_scan_urls+=("$field_2")
-     build_scan_ids+=("$field_3")
+  while IFS=, read -r field_1 field_2 field_3 field_4; do
+     project_names=("$field_1")
+     base_urls+=("$field_2")
+     build_scan_urls+=("$field_3")
+     build_scan_ids+=("$field_4")
   done < "${BUILD_SCAN_FILE}"
 }
 
