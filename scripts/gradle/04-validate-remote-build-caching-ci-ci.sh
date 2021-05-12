@@ -127,9 +127,9 @@ fetch_extended_build_scan_data() {
 print_summary() {
  print_experiment_info
  print_build_scans
+ print_warning_if_values_different
  print_bl
  print_quick_links
- print_warning_if_values_different
 }
 
 # Overrides the info.sh#print_experiment_info
@@ -178,7 +178,7 @@ print_quick_links() {
 print_warning_if_values_different() {
   if [ -z "${value_mismatch_detected}" ]; then
     print_bl
-    info "WARNING: Differences were detected between the two builds (highlighted above in ${ORANGE}orange${INFO_COLOR})."
+    info "${ORANGE}WARNING: Differences were detected between the two builds (highlighted above in orange).${RESTORE}"
   fi
 }
 
