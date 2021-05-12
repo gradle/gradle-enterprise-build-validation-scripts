@@ -113,7 +113,7 @@ fi
 
   if [[ "$_arg_debug" == "on" ]]; then
     info "$JAVACMD $*" 1>&2
-    print_bl
+    print_bl 1>&2
   fi
 
   exec "$JAVACMD" "$@"
@@ -137,24 +137,23 @@ fetch_and_read_build_validation_data() {
     info "Raw fetched data"
     info "----------------"
     info "${fetched_data}"
-    info "----------------"
     print_bl
   fi
 
   header_row_read=false
-  while IFS=, read -r field_1 field_2 field_3 field_4 field_5 field_6 field_7 field_8; do
+  while IFS=, read -r field_1 field_2 field_3 field_4 field_5 field_6 field_7 field_8 field_9; do
      if [[ "$header_row_read" == "false" ]]; then
          header_row_read=true
          continue;
      fi
-     base_urls+=("$field_1")
-     build_scan_urls+=("$field_2")
-     build_scan_ids+=("$field_3")
-     git_repos+=("$field_4")
-     project_names+=("$(basename -s .git "${field_4}")")
-     git_branches+=("$field_5")
-     git_commit_ids+=("$field_6")
-     requested_tasks+=("$field_7")
-     build_outcomes+=("$field_8")
+     project_names+=("$field_1")
+     base_urls+=("$field_2")
+     build_scan_urls+=("$field_3")
+     build_scan_ids+=("$field_4")
+     git_repos+=("$field_5")
+     git_branches+=("$field_6")
+     git_commit_ids+=("$field_7")
+     requested_tasks+=("$field_8")
+     build_outcomes+=("$field_9")
   done <<< "${fetched_data}"
 }
