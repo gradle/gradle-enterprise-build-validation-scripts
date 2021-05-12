@@ -48,13 +48,12 @@ execute() {
 
   make_experiment_dir
   make_local_cache_dir
-  git_clone_project "_1"
+  git_clone_project "/1"
+  git_copy_project "${project_name}/1" "${project_name}/2"
 
   print_bl
   execute_first_build
 
-  print_bl
-  git_copy_project "${project_name}_1" "${project_name}_2"
   print_bl
   execute_second_build
 
@@ -83,17 +82,17 @@ wizard_execute() {
   print_bl
   make_experiment_dir
   make_local_cache_dir
-  git_clone_project "_1"
+  git_clone_project "/1"
+
+  print_bl
+  explain_copy_project
+  print_bl
+  git_copy_project "${project_name}/1" "${project_name}/2"
 
   print_bl
   explain_first_build
   print_bl
   execute_first_build
-
-  print_bl
-  explain_copy_project
-  print_bl
-  git_copy_project "${project_name}_1" "${project_name}_2"
 
   print_bl
   explain_second_build
@@ -126,6 +125,9 @@ execute_first_build() {
 
 execute_second_build() {
   info "Running second build:"
+
+  cd "${EXP_DIR}/${project_name}/2" || die "Unable to cd to ${EXP_DIR}/${project_name}/2" 2
+
   # The gradle --init-script flag only accepts a relative directory path. ¯\_(ツ)_/¯
   local lib_dir_rel
   lib_dir_rel="$(relative_lib_path)"
@@ -251,12 +253,12 @@ explain_copy_project(){
   local text
   IFS='' read -r -d '' text <<EOF
 $(print_separator)
-${HEADER_COLOR}Clone project to different location for second build${RESTORE}
+${HEADER_COLOR}Copy project to different location for second build${RESTORE}
 
 For the second build, the checked out Git repository that contains the project
-to validate will be cloned into a different location.
+to validate will be copied into a different location.
 
-${USER_ACTION_COLOR}Press <Enter> to clone the project into a different location.${RESTORE}
+${USER_ACTION_COLOR}Press <Enter> to copy the project into a different location.${RESTORE}
 EOF
   print_wizard_text "${text}"
   wait_for_enter
@@ -269,7 +271,7 @@ $(print_separator)
 ${HEADER_COLOR}Run second build${RESTORE}
 
 Now that the first build has finished successfully and the project has been
-cloned into a different location, the second build can be run with the same
+copied into a different location, the second build can be run with the same
 Gradle tasks. The build will again be invoked with the ‘clean’ task included
 and local build caching enabled. The local build cache populated during the
 first build will be used.

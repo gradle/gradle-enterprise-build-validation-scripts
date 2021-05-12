@@ -20,13 +20,10 @@ git_clone_project() {
 git_copy_project() {
    original_repo="$1"
    copy_repo="$2"
-   info "Cloning ${project_name} into different location"
+   info "Making a copy of ${project_name}"
 
-   cd "${EXP_DIR}"
-   rm -rf "${copy_repo}"
-   # shellcheck disable=SC2086  # we want $branch to expand into multiple arguments
-   git clone "${original_repo}" "${copy_repo}" || die "ERROR: Unable to copy ${copy_repo}." 1
-   cd "${copy_repo}" || die "Unable to access ${clone_dir}. Aborting!" 1
+   rm -rf "${EXP_DIR}/${copy_repo}"
+   cp -R "${EXP_DIR}/${original_repo}" "${EXP_DIR}/${copy_repo}"
 }
 
 git_get_branch() {
