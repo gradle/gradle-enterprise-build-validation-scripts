@@ -5,6 +5,7 @@
 # ARG_VERSION([print_version],[v],[version],[])
 # ARGBASH_WRAP([common])
 # ARG_OPTIONAL_SINGLE([build-scan],[B],[])
+# ARG_OPTIONAL_SINGLE([mapping-file],[m],[])
 # ARGBASH_SET_INDENT([  ])
 # ARGBASH_PREPARE()
 # needed because of Argbash --> m4_ignore([
@@ -24,7 +25,7 @@ die()
 
 begins_with_short_option()
 {
-  local first_option all_short_options='hvbsrpiateB'
+  local first_option all_short_options='hvbsrpiateBm'
   first_option="${1:0:1}"
   test "$all_short_options" = "${all_short_options/$first_option/}" && return 1 || return 0
 }
@@ -40,12 +41,13 @@ _arg_args=
 _arg_tasks=
 _arg_enable_gradle_enterprise="off"
 _arg_build_scan=
+_arg_mapping_file=
 
 
 print_help()
 {
   printf '%s\n' "This function is overridden later on."
-  printf 'Usage: %s [-h|--help] [-v|--version] [-b|--git-branch <arg>] [-s|--gradle-enterprise-server <arg>] [-r|--git-repo <arg>] [-p|--project-dir <arg>] [-i|--(no-)interactive] [--(no-)debug] [-a|--args <arg>] [-t|--tasks <arg>] [-e|--(no-)enable-gradle-enterprise] [-B|--build-scan <arg>]\n' "$0"
+  printf 'Usage: %s [-h|--help] [-v|--version] [-b|--git-branch <arg>] [-s|--gradle-enterprise-server <arg>] [-r|--git-repo <arg>] [-p|--project-dir <arg>] [-i|--(no-)interactive] [--(no-)debug] [-a|--args <arg>] [-t|--tasks <arg>] [-e|--(no-)enable-gradle-enterprise] [-B|--build-scan <arg>] [-m|--mapping-file <arg>]\n' "$0"
   printf '\t%s\n' "-h, --help: Prints help"
   printf '\t%s\n' "-v, --version: Prints version"
 }
@@ -201,6 +203,17 @@ parse_commandline()
       -B*)
         _arg_build_scan="${_key##-B}"
         ;;
+      -m|--mapping-file)
+        test $# -lt 2 && die "Missing value for the optional argument '$_key'." 1
+        _arg_mapping_file="$2"
+        shift
+        ;;
+      --mapping-file=*)
+        _arg_mapping_file="${_key##--mapping-file=}"
+        ;;
+      -m*)
+        _arg_mapping_file="${_key##-m}"
+        ;;
       *)
         _PRINT_HELP=yes die "FATAL ERROR: Got an unexpected argument '$1'" 1
         ;;
@@ -226,6 +239,7 @@ function print_help() {
   print_option_usage -t
   print_option_usage -a
   print_option_usage "-B, --build-scan" "Specifies the build scan URL."
+  print_option_usage -m
   print_option_usage -s
   print_option_usage -e
   print_option_usage -v

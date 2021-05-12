@@ -109,14 +109,26 @@ fi
   # Collect all arguments for the java command, following the shell quoting and substitution rules
   eval set -- -jar "\"$CLASSPATH\"" "$APP_ARGS"
 
+  if [[ "$_arg_debug" == "on" ]]; then
+    info "$JAVACMD $*" 1>&2
+    print_bl
+  fi
+
   exec "$JAVACMD" "$@"
 }
 
 fetch_and_read_build_validation_data() {
+  info "Fetching build scan data"
+
   # This isn't the most robust way to read a CSV,
   # but we control the CSV so we don't have to worry about various CSV edge cases
-  local fetched_data header_row_read
-  fetched_data="$(fetch_build_validation_data "$@")"
+  local args fetched_data header_row_read
+  args=()
+  if [ -n "${mapping_file}" ]; then
+    args+=(-m "${mapping_file}")
+  fi
+  args+=( "$@" )
+  fetched_data="$(fetch_build_validation_data "${args[@]}")"
 
   if [[ "$_arg_debug" == "on" ]]; then
     info "Raw fetched data"

@@ -24,6 +24,9 @@ print_option_usage() {
     -i)
        _print_option_usage "-i, --interactive" "Enables interactive mode."
        ;;
+    -m)
+       _print_option_usage "-m, --mapping-file" "Specifies a file that configures the keys of various custom values."
+       ;;
     -p)
        _print_option_usage "-p, --project-dir" "Specifies the build invocation directory within the Git repository."
        ;;

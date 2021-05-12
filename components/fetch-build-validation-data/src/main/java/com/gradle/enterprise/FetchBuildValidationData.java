@@ -20,7 +20,7 @@ import java.util.stream.Collectors;
 @Command(
     name = "fetch-build-validation-data",
     mixinStandardHelpOptions = true,
-    description = "Fetches data relevant to validating a build from a given build scan."
+    description = "Fetches data relevant to validating a build from the given build scans."
 )
 public class FetchBuildValidationData implements Callable<Integer> {
 

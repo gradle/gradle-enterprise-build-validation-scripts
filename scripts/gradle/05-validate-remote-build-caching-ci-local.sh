@@ -35,6 +35,7 @@ interactive_mode=''
 
 ci_build_scan_url=''
 commit_id=''
+mapping_file=''
 
 main() {
   if [ "${interactive_mode}" == "on" ]; then
@@ -110,6 +111,7 @@ validate_required_args() {
 }
 
 fetch_build_scan_data() {
+  mapping_file="${_arg_mapping_file}"
   fetch_and_read_build_validation_data "${ci_build_scan_url}"
 
   if [ -z "${git_repo}" ]; then

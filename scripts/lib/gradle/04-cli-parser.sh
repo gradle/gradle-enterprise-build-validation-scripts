@@ -7,6 +7,7 @@
 # ARG_OPTIONAL_SINGLE([first-build],[1],[])
 # ARG_OPTIONAL_SINGLE([second-build],[2],[])
 # ARG_OPTIONAL_BOOLEAN([debug],[],[],[off])
+# ARG_OPTIONAL_SINGLE([mapping-file],[m],[])
 # ARGBASH_SET_INDENT([  ])
 # ARGBASH_PREPARE()
 # needed because of Argbash --> m4_ignore([
@@ -26,7 +27,7 @@ die()
 
 begins_with_short_option()
 {
-  local first_option all_short_options='hvi12'
+  local first_option all_short_options='hvi12m'
   first_option="${1:0:1}"
   test "$all_short_options" = "${all_short_options/$first_option/}" && return 1 || return 0
 }
@@ -36,12 +37,13 @@ _arg_interactive="off"
 _arg_first_build=
 _arg_second_build=
 _arg_debug="off"
+_arg_mapping_file=
 
 
 print_help()
 {
   printf '%s\n' "This function is overridden later on."
-  printf 'Usage: %s [-h|--help] [-v|--version] [-i|--(no-)interactive] [-1|--first-build <arg>] [-2|--second-build <arg>] [--(no-)debug]\n' "$0"
+  printf 'Usage: %s [-h|--help] [-v|--version] [-i|--(no-)interactive] [-1|--first-build <arg>] [-2|--second-build <arg>] [--(no-)debug] [-m|--mapping-file <arg>]\n' "$0"
   printf '\t%s\n' "-h, --help: Prints help"
   printf '\t%s\n' "-v, --version: Prints version"
 }
@@ -107,6 +109,17 @@ parse_commandline()
         _arg_debug="on"
         test "${1:0:5}" = "--no-" && _arg_debug="off"
         ;;
+      -m|--mapping-file)
+        test $# -lt 2 && die "Missing value for the optional argument '$_key'." 1
+        _arg_mapping_file="$2"
+        shift
+        ;;
+      --mapping-file=*)
+        _arg_mapping_file="${_key##--mapping-file=}"
+        ;;
+      -m*)
+        _arg_mapping_file="${_key##-m}"
+        ;;
       *)
         _PRINT_HELP=yes die "FATAL ERROR: Got an unexpected argument '$1'" 1
         ;;
@@ -127,6 +140,7 @@ function print_help() {
   print_option_usage -i
   print_option_usage "-1, --first-build" "Specifies the URL for the build scan of the first build."
   print_option_usage "-2, --second-build" "Specifies the URL for the build scan of the second build."
+  print_option_usage -m
   print_option_usage -v
   print_option_usage -h
 }

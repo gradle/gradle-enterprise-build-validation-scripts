@@ -30,6 +30,7 @@ git_branch=''
 project_dir=''
 tasks=''
 interactive_mode=''
+mapping_file=''
 
 main() {
   if [ "${interactive_mode}" == "on" ]; then
@@ -48,6 +49,7 @@ execute() {
   fetch_extended_build_scan_data
   make_experiment_dir
 
+  print_bl
   print_summary
   print_bl
 }
@@ -87,6 +89,7 @@ validate_required_args() {
   fi
   build_scan_urls+=("${_arg_first_build}")
   build_scan_urls+=("${_arg_second_build}")
+  mapping_file="${_arg_mapping_file}"
 }
 
 parse_build_scan_urls() {
