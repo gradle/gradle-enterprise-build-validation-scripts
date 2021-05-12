@@ -39,8 +39,9 @@ public class ExportApiClient {
     private final OkHttpClient httpClient;
     private final URL baseUrl;
     private final EventSource.Factory eventSourceFactory;
+    private final CustomValueKeys customValueKeys;
 
-    public ExportApiClient(URL baseUrl, Authenticator authenticator) {
+    public ExportApiClient(URL baseUrl, Authenticator authenticator, CustomValueKeys customValueKeys) {
         this.httpClient = new OkHttpClient.Builder()
             .connectTimeout(Duration.ZERO)
             .readTimeout(Duration.ZERO)
@@ -49,6 +50,7 @@ public class ExportApiClient {
             .build();
         this.eventSourceFactory = EventSources.createFactory(httpClient);
         this.baseUrl = baseUrl;
+        this.customValueKeys = customValueKeys;
     }
 
     public BuildValidationData fetchBuildValidationData(String buildScanId) throws Exception {
@@ -56,7 +58,7 @@ public class ExportApiClient {
             .url(endpointFor(buildScanId))
             .build();
 
-        var eventListener = new BuildValidationDataEventListener(baseUrl, buildScanId);
+        var eventListener = new BuildValidationDataEventListener(baseUrl, buildScanId, customValueKeys);
         eventSourceFactory.newEventSource(request, eventListener);
         return eventListener.getBuildValidationData();
     }
@@ -73,15 +75,17 @@ public class ExportApiClient {
     private static class BuildValidationDataEventListener extends EventSourceListener {
         private final URL gradleEnterpriseServerUrl;
         private final String buildScanId;
+        private final CustomValueKeys customValueKeys;
         private final CompletableFuture<String> gitUrl = new CompletableFuture<>();
         private final CompletableFuture<String> gitBranch = new CompletableFuture<>();
         private final CompletableFuture<String> gitCommitId = new CompletableFuture<>();
         private final CompletableFuture<List<String>> requestedTasks = new CompletableFuture<>();
         private final CompletableFuture<Boolean> buildSuccessful = new CompletableFuture<>();
 
-        private BuildValidationDataEventListener(URL gradleEnterpriseServerUrl, String buildScanId) {
+        private BuildValidationDataEventListener(URL gradleEnterpriseServerUrl, String buildScanId, CustomValueKeys customValueKeys) {
             this.gradleEnterpriseServerUrl = gradleEnterpriseServerUrl;
             this.buildScanId = buildScanId;
+            this.customValueKeys = customValueKeys;
         }
 
         public BuildValidationData getBuildValidationData() throws ExecutionException, InterruptedException {
@@ -122,18 +126,15 @@ public class ExportApiClient {
         private void onUserNamedValue(JsonNode eventData) {
             var key = eventData.get("key").asText();
             var value = eventData.get("value").asText();
-            switch(key) {
-                case "Git repository":
-                    this.gitUrl.complete(value);
-                    break;
-                case "Git branch":
-                    this.gitBranch.complete(value);
-                    break;
-                case "Git commit id":
-                    this.gitCommitId.complete(value);
-                    break;
-                default:
-                    break;
+
+            if (customValueKeys.getGitRepositoryKey().equals(key)) {
+                this.gitUrl.complete(value);
+            }
+            if (customValueKeys.getGitBranchKey().equals(key)) {
+                this.gitBranch.complete(value);
+            }
+            if (customValueKeys.getGitCommitIdKey().equals(key)) {
+                this.gitCommitId.complete(value);
             }
         }
 

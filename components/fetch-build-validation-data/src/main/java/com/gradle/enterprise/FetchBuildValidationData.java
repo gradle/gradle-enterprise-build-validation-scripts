@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 import java.util.Optional;
@@ -36,10 +37,14 @@ public class FetchBuildValidationData implements Callable<Integer> {
     @Option(names = {"-p", "--password"}, description = "Specifies the password to use when authenticating with Gradle Enterprise.")
     private String password;
 
+    @Option(names = {"-m", "--mapping-file"}, description = "Specifies a file that configures the keys of various custom values.")
+    private Optional<Path> customValueMappingFile;
+
     @Override
     public Integer call() throws Exception {
+        var customValueKeys = loadCustomValueKeys(customValueMappingFile);
         var buildValidationData = buildScanUrls.stream()
-            .map(this::fetchBuildValidationData)
+            .map((URL buildScanUrl) -> fetchBuildValidationData(buildScanUrl, customValueKeys))
             .collect(Collectors.toList());
 
         printHeader();
@@ -48,7 +53,7 @@ public class FetchBuildValidationData implements Callable<Integer> {
         return ExitCode.OK;
     }
 
-    private BuildValidationData fetchBuildValidationData(URL buildScanUrl) {
+    private BuildValidationData fetchBuildValidationData(URL buildScanUrl, CustomValueKeys customValueKeys) {
         try {
             var accessKey = lookupAccessKey(buildScanUrl);
             if (accessKey.isEmpty()) {
@@ -57,7 +62,7 @@ public class FetchBuildValidationData implements Callable<Integer> {
             }
 
             var baseUrl = baseUrlFrom(buildScanUrl);
-            var apiClient = new ExportApiClient(baseUrl, Authenticators.accessKey(accessKey.get()));
+            var apiClient = new ExportApiClient(baseUrl, Authenticators.accessKey(accessKey.get()), customValueKeys);
 
             var buildScanId = buildScanIdFrom(buildScanUrl);
             return apiClient.fetchBuildValidationData(buildScanId);
@@ -103,6 +108,14 @@ public class FetchBuildValidationData implements Callable<Integer> {
             String.join(" ", buildValidationData.getRequestedTasks()),
             buildValidationData.getBuildSuccessful()
         ));
+    }
+
+    private CustomValueKeys loadCustomValueKeys(Optional<Path> customValueMappingFile) throws IOException {
+        if(customValueMappingFile.isEmpty()) {
+            return CustomValueKeys.DEFAULT;
+        } else {
+            return CustomValueKeys.loadFromFile(customValueMappingFile.get());
+        }
     }
 
     public static void main(String[] args) {
