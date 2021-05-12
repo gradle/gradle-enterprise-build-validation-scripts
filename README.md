@@ -119,3 +119,27 @@ The scripts accept the following command line arguments:
 -s, --gradle-enterprise-server     Enables Gradle Enterprise on a project not already connected.
 -h, --help                         Shows this help message.
 ```
+
+## Custom Value Mapping File
+
+Some of the build validation scripts look up data about existing build scans. Some of the data is extracted from custom values published with the build scans:
+
+   * The Git repository
+   * The Git branch
+   * The Git commit
+
+ All of custom values are published by the Common Custom User Data Gradle Plugin and the Common Custom User Data Maven Extension by default. If your builds do not use these plugins but your builds make some or all of these values available, then you can specify a Custom Value mapping file to tell the scripts what custom values contain the data.  Below is an example custom value mapping file:
+
+```
+git.repository=Git repository
+git.branch=Git branch
+git.commitId=Git commit id
+```
+
+The following scirpts accept a custom mapping file using the `-m/--mapping-file` command line argument:
+
+  * Gradle 04-validate-remote-build-caching-ci-ci.sh
+  * Gradle 05-validate-remote-build-caching-ci-local.sh
+  * Maven 03-validate-remote-build-caching-ci-ci.sh
+  * Maven 04-validate-remote-build-caching-ci-local.sh
+
