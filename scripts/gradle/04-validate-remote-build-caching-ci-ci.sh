@@ -314,6 +314,10 @@ print_command_to_repeat_experiment() {
   cmd+=("--first-build" "${build_scan_urls[0]}")
   cmd+=("--second-build" "${build_scan_urls[1]}")
 
+  if [ -n "${mapping_file}" ]; then
+    cmd+=("-m" "${mapping_file}")
+  fi
+
   info "Command Line Invocation"
   info "-----------------------"
   info "$(printf '%q ' "${cmd[@]}")"
