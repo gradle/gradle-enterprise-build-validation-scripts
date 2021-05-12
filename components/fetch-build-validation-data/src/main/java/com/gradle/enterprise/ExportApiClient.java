@@ -27,10 +27,11 @@ public class ExportApiClient {
     private static final String BUILD_EVENT = "BuildEvent";
 
     private static class EventTypes {
+        private static final String PROJECT_STRUCTURE = "ProjectStructure";
         private static final String BUILD_REQUESTED_TASKS = "BuildRequestedTasks";
         private static final String USER_NAMED_VALUE = "UserNamedValue";
         private static final String BUILD_FINISHED = "BuildFinished";
-        private static final String ALL = BUILD_REQUESTED_TASKS + "," + USER_NAMED_VALUE + "," + BUILD_FINISHED;
+        private static final String ALL = PROJECT_STRUCTURE + "," + BUILD_REQUESTED_TASKS + "," + USER_NAMED_VALUE + "," + BUILD_FINISHED;
     }
 
     private static final ObjectMapper MAPPER = new ObjectMapper()
@@ -76,6 +77,7 @@ public class ExportApiClient {
         private final URL gradleEnterpriseServerUrl;
         private final String buildScanId;
         private final CustomValueKeys customValueKeys;
+        private final CompletableFuture<String> rootProjectName = new CompletableFuture<>();
         private final CompletableFuture<String> gitUrl = new CompletableFuture<>();
         private final CompletableFuture<String> gitBranch = new CompletableFuture<>();
         private final CompletableFuture<String> gitCommitId = new CompletableFuture<>();
@@ -90,6 +92,7 @@ public class ExportApiClient {
 
         public BuildValidationData getBuildValidationData() throws ExecutionException, InterruptedException {
             return new BuildValidationData(
+                rootProjectName.get(),
                 buildScanId,
                 gradleEnterpriseServerUrl,
                 gitUrl.get(),
@@ -105,16 +108,25 @@ public class ExportApiClient {
             if (BUILD_EVENT.equals(type)) {
                 var event = toJsonNode(data);
                 var eventType = event.get("type").get("eventType").asText();
-                if (EventTypes.BUILD_REQUESTED_TASKS.equals(eventType)) {
-                    onBuildRequestedTasks(event.get("data"));
-                }
-                if (EventTypes.USER_NAMED_VALUE.equals(eventType)) {
-                    onUserNamedValue(event.get("data"));
-                }
-                if (EventTypes.BUILD_FINISHED.equals(eventType)) {
-                    onBuildFinished(event.get("data"));
+                switch(eventType) {
+                    case EventTypes.PROJECT_STRUCTURE:
+                        onProjectStructure(event.get("data"));
+                        break;
+                    case EventTypes.BUILD_REQUESTED_TASKS:
+                        onBuildRequestedTasks(event.get("data"));
+                        break;
+                    case EventTypes.USER_NAMED_VALUE:
+                        onUserNamedValue(event.get("data"));
+                        break;
+                    case EventTypes.BUILD_FINISHED:
+                        onBuildFinished(event.get("data"));
+                        break;
                 }
             }
+        }
+
+        private void onProjectStructure(JsonNode eventData) {
+            rootProjectName.complete(eventData.get("rootProjectName").asText());
         }
 
         private void onBuildRequestedTasks(JsonNode eventData) {
@@ -148,8 +160,8 @@ public class ExportApiClient {
         public void onClosed(@NotNull EventSource eventSource) {
             // If the event stream is closed before we have completed all of the completeable futures, then we can
             // assume that the build scan doesn't have that data
-
-            // complete set the value only if the CompletableFuture hasn't already been completed.
+            // CompletableFuture.complete() sets the value only if the CompletableFuture hasn't already been completed.
+            rootProjectName.complete("");
             gitUrl.complete("");
             gitBranch.complete("");
             gitCommitId.complete("");

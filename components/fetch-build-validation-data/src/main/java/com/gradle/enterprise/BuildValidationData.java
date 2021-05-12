@@ -5,6 +5,7 @@ import java.net.URL;
 import java.util.List;
 
 public class BuildValidationData {
+    private final String rootProjectName;
     private final String buildScanId;
     private final URL gradleEnterpriseServerUrl;
     private final String gitUrl;
@@ -13,7 +14,8 @@ public class BuildValidationData {
     private final List<String> requestedTasks;
     private final Boolean buildSuccessful;
 
-    public BuildValidationData(String buildScanId, URL gradleEnterpriseServerUrl, String gitUrl, String gitBranch, String gitCommitId, List<String> requestedTasks, Boolean buildSuccessful) {
+    public BuildValidationData(String rootProjectName, String buildScanId, URL gradleEnterpriseServerUrl, String gitUrl, String gitBranch, String gitCommitId, List<String> requestedTasks, Boolean buildSuccessful) {
+        this.rootProjectName = rootProjectName;
         this.buildScanId = buildScanId;
         this.gradleEnterpriseServerUrl = gradleEnterpriseServerUrl;
         this.gitUrl = gitUrl;
@@ -21,6 +23,10 @@ public class BuildValidationData {
         this.gitCommitId = gitCommitId;
         this.requestedTasks = requestedTasks;
         this.buildSuccessful = buildSuccessful;
+    }
+
+    public String getRootProjectName() {
+        return rootProjectName;
     }
 
     public String getBuildScanId() {
