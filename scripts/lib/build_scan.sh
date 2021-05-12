@@ -124,6 +124,7 @@ fetch_and_read_build_validation_data() {
   # but we control the CSV so we don't have to worry about various CSV edge cases
   local args fetched_data header_row_read
   args=()
+  #shellcheck disable=SC2154 #not all scripts set this value...which is fine, we're checking for it before using it
   if [ -n "${mapping_file}" ]; then
     args+=(-m "${mapping_file}")
   fi
