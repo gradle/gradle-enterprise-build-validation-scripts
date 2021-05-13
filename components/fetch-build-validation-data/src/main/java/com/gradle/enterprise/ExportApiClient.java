@@ -5,6 +5,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.common.base.Throwables;
 import okhttp3.Authenticator;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -58,7 +59,7 @@ public class ExportApiClient {
         this.customValueKeys = customValueKeys;
     }
 
-    public BuildValidationData fetchBuildValidationData(String buildScanId) throws Exception {
+    public BuildValidationData fetchBuildValidationData(String buildScanId) {
         var request = new Request.Builder()
             .url(endpointFor(buildScanId))
             .build();
@@ -72,8 +73,9 @@ public class ExportApiClient {
         try {
             return new URL(baseUrl, "/build-export/v1/build/" + buildScanId + "/events?eventTypes=" + EventTypes.ALL);
         } catch (MalformedURLException e) {
-            // TODO do something better here
-            throw new RuntimeException(e.getMessage(), e);
+            // It is highly unlikely this exception will ever be thrown. If it is thrown, then it is likely due to a
+            // programming mistake (._.)
+            throw new UnexpectedExceptionWhileFetchingBuildScan(buildScanId, baseUrl, e);
         }
     }
 
@@ -98,17 +100,28 @@ public class ExportApiClient {
             this.customValueKeys = customValueKeys;
         }
 
-        public BuildValidationData getBuildValidationData() throws ExecutionException, InterruptedException {
-            return new BuildValidationData(
-                rootProjectName.get(),
-                buildScanId,
-                gradleEnterpriseServerUrl,
-                gitUrl.get(),
-                gitBranch.get(),
-                gitCommitId.get(),
-                requestedTasks.get(),
-                buildSuccessful.get()
-            );
+        public BuildValidationData getBuildValidationData() {
+            try {
+                return new BuildValidationData(
+                    rootProjectName.get(),
+                    buildScanId,
+                    gradleEnterpriseServerUrl,
+                    gitUrl.get(),
+                    gitBranch.get(),
+                    gitCommitId.get(),
+                    requestedTasks.get(),
+                    buildSuccessful.get()
+                );
+            } catch (ExecutionException e) {
+                if (e.getCause() == null) {
+                    throw new UnexpectedExceptionWhileFetchingBuildScan(buildScanId, gradleEnterpriseServerUrl, e);
+                } else {
+                    Throwables.throwIfUnchecked(e.getCause());
+                    throw new UnexpectedExceptionWhileFetchingBuildScan(buildScanId, gradleEnterpriseServerUrl, e.getCause());
+                }
+            } catch (InterruptedException e) {
+                throw new InterruptedWhileFetchingBuildScan(buildScanId, gradleEnterpriseServerUrl, e);
+            }
         }
 
         @Override
@@ -166,8 +179,8 @@ public class ExportApiClient {
 
         @Override
         public void onClosed(@NotNull EventSource eventSource) {
-            // If the event stream is closed before we have completed all of the completeable futures, then we can
-            // assume that the build scan doesn't have that data
+            // If the event stream is closed before we have completed all of the completable futures, then we can
+            // assume that the build scan doesn't have the data
             // CompletableFuture.complete() sets the value only if the CompletableFuture hasn't already been completed.
             rootProjectName.complete("");
             gitUrl.complete("");
@@ -186,7 +199,7 @@ public class ExportApiClient {
                         error = new BuildScanNotFound(buildScanId, gradleEnterpriseServerUrl);
                         break;
                     default:
-                        error = new RuntimeException("The response was not successful. Response:" + response.toString());
+                        error = new UnexpectedResponse(buildScanId, gradleEnterpriseServerUrl, response);
                 }
             }
 
@@ -198,17 +211,8 @@ public class ExportApiClient {
             try {
                 return MAPPER.readTree(data);
             } catch (JsonProcessingException e) {
-                // TODO throw a better exception
-                throw new RuntimeException(e);
+                throw new UnparsableBuildScanEvent(buildScanId, gradleEnterpriseServerUrl, data, e);
             }
-        }
-    }
-
-    public static class BuildScanNotFound extends RuntimeException {
-        public BuildScanNotFound(String buildScanId, URL gradleEnterpriseServer) {
-            super(String.format("Build scan %s was not found on %s. This could happen if you provided an invalid " +
-                    "build scan or if you do not have permission to use the Export API.",
-                buildScanId, gradleEnterpriseServer));
         }
     }
 }

@@ -54,42 +54,55 @@ public class FetchBuildValidationData implements Callable<Integer> {
     }
 
     private BuildValidationData fetchBuildValidationData(URL buildScanUrl, CustomValueKeys customValueKeys) {
-        try {
-            var accessKey = lookupAccessKey(buildScanUrl);
-            if (accessKey.isEmpty()) {
-                // TODO do something better here
-                throw new RuntimeException("An access key is currently required.");
-            }
-
-            var baseUrl = baseUrlFrom(buildScanUrl);
-            var apiClient = new ExportApiClient(baseUrl, Authenticators.accessKey(accessKey.get()), customValueKeys);
-
-            var buildScanId = buildScanIdFrom(buildScanUrl);
-            return apiClient.fetchBuildValidationData(buildScanId);
-        } catch (Exception e) {
-            // TODO Yuck!
-            throw new RuntimeException(e.getMessage(), e);
+        var accessKey = lookupAccessKey(buildScanUrl);
+        if (accessKey.isEmpty()) {
+            // TODO do something better here
+            throw new RuntimeException("An access key is currently required.");
         }
+
+        var baseUrl = baseUrlFrom(buildScanUrl);
+        var apiClient = new ExportApiClient(baseUrl, Authenticators.accessKey(accessKey.get()), customValueKeys);
+
+        var buildScanId = buildScanIdFrom(buildScanUrl);
+        return apiClient.fetchBuildValidationData(buildScanId);
     }
 
-    private Optional<String> lookupAccessKey(URL buildScan) throws IOException {
+    private Optional<String> lookupAccessKey(URL buildScan) {
         var accessKeysFile = Paths.get(System.getProperty("user.home"), ".gradle/enterprise/keys.properties");
 
-        try (var in = Files.newBufferedReader(accessKeysFile)) {
-            var accessKeys = new Properties();
-            accessKeys.load(in);
-            return Optional.of(accessKeys.getProperty(buildScan.getHost()));
+        if (Files.isRegularFile(accessKeysFile)) {
+            try (var in = Files.newBufferedReader(accessKeysFile)) {
+                var accessKeys = new Properties();
+                accessKeys.load(in);
+                return Optional.of(accessKeys.getProperty(buildScan.getHost()));
+            } catch (IOException e) {
+                // TODO Is there a better way to print a warning?
+                System.err.println(String.format("WARNING: Unable to read %s: %s", accessKeysFile, e.getMessage()));
+                return Optional.empty();
+            }
+        } else {
+            // TODO Print a warning here?
+            return Optional.empty();
         }
     }
 
-    private URL baseUrlFrom(URL buildScanUrl) throws MalformedURLException {
-        var port = (buildScanUrl.getPort() != -1) ? ":" + buildScanUrl.getPort() : "";
-        return new URL(buildScanUrl.getProtocol() + "://" + buildScanUrl.getHost() + port);
+    private URL baseUrlFrom(URL buildScanUrl) {
+        try {
+            var port = (buildScanUrl.getPort() != -1) ? ":" + buildScanUrl.getPort() : "";
+            return new URL(buildScanUrl.getProtocol() + "://" + buildScanUrl.getHost() + port);
+        } catch (MalformedURLException e) {
+            // It is highly unlikely this exception will ever be thrown. If it is thrown, then it is likely due to a
+            // programming mistake (._.)
+            throw new BadBuildScanUrl(buildScanUrl, e);
+        }
     }
 
     private String buildScanIdFrom(URL buildScanUrl) {
         var pathSegments = buildScanUrl.getPath().split("/");
-        // TODO handle the case where there are no path segments
+
+        if (pathSegments.length == 0) {
+            throw new BadBuildScanUrl(buildScanUrl);
+        }
         return pathSegments[pathSegments.length - 1];
     }
 
@@ -112,7 +125,7 @@ public class FetchBuildValidationData implements Callable<Integer> {
     }
 
     private CustomValueKeys loadCustomValueKeys(Optional<Path> customValueMappingFile) throws IOException {
-        if(customValueMappingFile.isEmpty()) {
+        if (customValueMappingFile.isEmpty()) {
             return CustomValueKeys.DEFAULT;
         } else {
             return CustomValueKeys.loadFromFile(customValueMappingFile.get());
@@ -120,7 +133,9 @@ public class FetchBuildValidationData implements Callable<Integer> {
     }
 
     public static void main(String[] args) {
-        int exitCode = new CommandLine(new FetchBuildValidationData()).execute(args);
+        int exitCode = new CommandLine(new FetchBuildValidationData())
+            .setExecutionExceptionHandler(new PrintExceptionHandler())
+            .execute(args);
         System.exit(exitCode);
     }
 }
