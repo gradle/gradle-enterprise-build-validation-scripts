@@ -34,6 +34,10 @@ public class ExportApiClient {
         private static final String ALL = PROJECT_STRUCTURE + "," + BUILD_REQUESTED_TASKS + "," + USER_NAMED_VALUE + "," + BUILD_FINISHED;
     }
 
+    private static class StatusCodes {
+        private static final int NOT_FOUND = 404;
+    }
+
     private static final ObjectMapper MAPPER = new ObjectMapper()
         .disable(DeserializationFeature.READ_DATE_TIMESTAMPS_AS_NANOSECONDS);
 
@@ -77,12 +81,16 @@ public class ExportApiClient {
         private final URL gradleEnterpriseServerUrl;
         private final String buildScanId;
         private final CustomValueKeys customValueKeys;
+
         private final CompletableFuture<String> rootProjectName = new CompletableFuture<>();
         private final CompletableFuture<String> gitUrl = new CompletableFuture<>();
         private final CompletableFuture<String> gitBranch = new CompletableFuture<>();
         private final CompletableFuture<String> gitCommitId = new CompletableFuture<>();
         private final CompletableFuture<List<String>> requestedTasks = new CompletableFuture<>();
         private final CompletableFuture<Boolean> buildSuccessful = new CompletableFuture<>();
+
+        private final List<CompletableFuture<?>> completables = List.of(
+            rootProjectName, gitUrl, gitBranch, gitCommitId, requestedTasks, buildSuccessful);
 
         private BuildValidationDataEventListener(URL gradleEnterpriseServerUrl, String buildScanId, CustomValueKeys customValueKeys) {
             this.gradleEnterpriseServerUrl = gradleEnterpriseServerUrl;
@@ -171,9 +179,19 @@ public class ExportApiClient {
 
         @Override
         public void onFailure(@NotNull EventSource eventSource, @Nullable Throwable t, @Nullable Response response) {
-            if (t != null) throw new RuntimeException(t.getMessage(), t);
-            if (response != null && !response.isSuccessful())
-                throw new RuntimeException("The response was not successful. Response:" + response.toString());
+            var error = t;
+            if (error == null) {
+                switch(response.code()) {
+                    case StatusCodes.NOT_FOUND:
+                        error = new BuildScanNotFound(buildScanId, gradleEnterpriseServerUrl);
+                        break;
+                    default:
+                        error = new RuntimeException("The response was not successful. Response:" + response.toString());
+                }
+            }
+
+            for(var completable: completables) completable.completeExceptionally(error);
+            eventSource.cancel();
         }
 
         private JsonNode toJsonNode(String data) {
@@ -183,6 +201,14 @@ public class ExportApiClient {
                 // TODO throw a better exception
                 throw new RuntimeException(e);
             }
+        }
+    }
+
+    public static class BuildScanNotFound extends RuntimeException {
+        public BuildScanNotFound(String buildScanId, URL gradleEnterpriseServer) {
+            super(String.format("Build scan %s was not found on %s. This could happen if you provided an invalid " +
+                    "build scan or if you do not have permission to use the Export API.",
+                buildScanId, gradleEnterpriseServer));
         }
     }
 }
