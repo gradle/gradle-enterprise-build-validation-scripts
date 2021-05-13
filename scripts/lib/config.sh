@@ -13,6 +13,9 @@ process_arguments() {
   enable_ge="${_arg_enable_gradle_enterprise}"
   ge_server="${_arg_gradle_enterprise_server}"
   interactive_mode="${_arg_interactive}"
+  export_api_username="${_arg_username}"
+  export_api_password="${_arg_password}"
+  export_api_access_key="${_arg_access_key}"
 }
 
 validate_required_config() {
@@ -27,6 +30,18 @@ validate_required_config() {
     if [ -z "${ge_server}" ]; then
       _PRINT_HELP=yes die "ERROR: --gradle-enterprise-server is required when using --enable-gradle-enterprise."
     fi
+  fi
+}
+
+validate_export_api_config() {
+  if [ -n "${export_api_username}" ] && [ -z "${export_api_password}" ]; then
+      _PRINT_HELP=yes die "ERROR: --password is required when --username is provided." 1
+  fi
+  if [ -z "${export_api_username}" ] && [ -n "${export_api_password}" ]; then
+      _PRINT_HELP=yes die "ERROR: --username is required when --password is provided." 1
+  fi
+  if [ -n "${export_api_access_key}" ] && [ -n "${export_api_password}" ]; then
+      _PRINT_HELP=yes die "ERROR: --access-key cannot be passed when --username and --password are also passed." 1
   fi
 }
 

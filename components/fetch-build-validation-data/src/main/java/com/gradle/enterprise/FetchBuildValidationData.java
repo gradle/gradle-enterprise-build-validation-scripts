@@ -1,10 +1,12 @@
 package com.gradle.enterprise;
 
 import picocli.CommandLine;
+import picocli.CommandLine.ArgGroup;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
 import picocli.CommandLine.Parameters;
 
+import javax.naming.AuthenticationException;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -31,11 +33,24 @@ public class FetchBuildValidationData implements Callable<Integer> {
     @Parameters(paramLabel = "BUILD_SCAN", description = "The build scans to fetch.", arity = "1..*")
     private List<URL> buildScanUrls;
 
-    @Option(names = {"-u", "--username"}, description = "Specifies the username to use when authenticating with Gradle Enterprise. If provided, HTTP Basic authentication will be used.")
-    private String username;
+    @ArgGroup(exclusive = true)
+    private AuthenticationArgs authenticationArgs;
 
-    @Option(names = {"-p", "--password"}, description = "Specifies the password to use when authenticating with Gradle Enterprise. If provided, HTTP Basic authentication will be used.")
-    private String password;
+    private static class AuthenticationArgs {
+        @Option(names = {"-A", "--access-key"}, description = "Specifies the access key to use when authenticating with Gradle Enterprise.")
+        private String accessKey;
+
+        @ArgGroup(exclusive = false)
+        private UsernamePassword usernamePassword;
+
+        private static class UsernamePassword {
+            @Option(names = {"-U", "--username"}, required = true, description = "Specifies the username to use when authenticating with Gradle Enterprise.")
+            private String username;
+
+            @Option(names = {"-P", "--password"}, required = true, description = "Specifies the password to use when authenticating with Gradle Enterprise.")
+            private String password;
+        }
+    }
 
     @Option(names = {"-m", "--mapping-file"}, description = "Specifies a mapping file that configures the keys used to fetch important custom values.")
     private Optional<Path> customValueMappingFile;
@@ -57,36 +72,40 @@ public class FetchBuildValidationData implements Callable<Integer> {
     }
 
     private BuildValidationData fetchBuildValidationData(URL buildScanUrl, CustomValueKeys customValueKeys) {
-        var accessKey = lookupAccessKey(buildScanUrl);
-        if (accessKey.isEmpty()) {
-            // TODO do something better here
-            throw new RuntimeException("An access key is currently required.");
-        }
-
         var baseUrl = baseUrlFrom(buildScanUrl);
-        var apiClient = new ExportApiClient(baseUrl, Authenticators.accessKey(accessKey.get()), customValueKeys);
+        var apiClient = new ExportApiClient(baseUrl, createAuthenticator(buildScanUrl), customValueKeys);
 
         var buildScanId = buildScanIdFrom(buildScanUrl);
         return apiClient.fetchBuildValidationData(buildScanId);
     }
 
-    private Optional<String> lookupAccessKey(URL buildScan) {
+    private okhttp3.Authenticator createAuthenticator(URL buildScanUrl) {
+        if(authenticationArgs != null && authenticationArgs.usernamePassword != null) {
+            return Authenticators.basic(authenticationArgs.usernamePassword.username, authenticationArgs.usernamePassword.password);
+        }
+        else if(authenticationArgs != null && authenticationArgs.accessKey != null) {
+            return Authenticators.accessKey(authenticationArgs.accessKey);
+        }
+        return Authenticators.accessKey(lookupAccessKey(buildScanUrl));
+    }
+
+    private String lookupAccessKey(URL buildScan) {
         var accessKeysFile = Paths.get(System.getProperty("user.home"), ".gradle/enterprise/keys.properties");
 
         if (Files.isRegularFile(accessKeysFile)) {
             try (var in = Files.newBufferedReader(accessKeysFile)) {
                 var accessKeys = new Properties();
                 accessKeys.load(in);
-                return Optional.of(accessKeys.getProperty(buildScan.getHost()));
+
+                if (!accessKeys.containsKey(buildScan.getHost())) {
+                    throw new AccessKeyNotFound(buildScan);
+                }
+                return accessKeys.getProperty(buildScan.getHost());
             } catch (IOException e) {
-                // TODO Is there a better way to print a warning?
-                System.err.println(String.format("WARNING: Unable to read %s: %s", accessKeysFile, e.getMessage()));
-                return Optional.empty();
+                throw new AccessKeyNotFound(buildScan, e);
             }
-        } else {
-            // TODO Print a warning here?
-            return Optional.empty();
         }
+        throw new AccessKeyNotFound(buildScan);
     }
 
     private URL baseUrlFrom(URL buildScanUrl) {
