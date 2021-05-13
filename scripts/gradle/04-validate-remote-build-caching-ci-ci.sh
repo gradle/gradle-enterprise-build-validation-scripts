@@ -136,12 +136,12 @@ print_summary() {
 print_experiment_info() {
  info "Summary"
  info "-------"
- summary_row "Project:" "$(print_values "${project_names[@]}")"
- summary_row "Git repo:" "$(print_values "${git_repos[@]}")"
- summary_row "Git branch:" "$(print_values "${git_branches[@]}")"
- summary_row "Git commit id:" "$(print_values "${git_commit_ids[@]}")"
+ comparison_summary_row "Project:" "${project_names[@]}"
+ comparison_summary_row "Git repo:" "${git_repos[@]}"
+ comparison_summary_row "Git branch:" "${git_branches[@]}"
+ comparison_summary_row "Git commit id:" "${git_commit_ids[@]}"
  summary_row "Project dir:" ""
- summary_row "Gradle tasks:" "$(print_values "${requested_tasks[@]}")"
+ comparison_summary_row "Gradle tasks:" "${requested_tasks[@]}"
  summary_row "Gradle arguments:" ""
  summary_row "Experiment:" "${EXP_NO} ${EXP_NAME}"
  summary_row "Experiment id:" "${EXP_SCAN_TAG}"
@@ -149,15 +149,20 @@ print_experiment_info() {
  summary_row "Experiment artifact dir:" "<not applicable>"
 }
 
-print_values() {
+comparison_summary_row() {
+    local header value
+    header="$1"
+    shift;
+
   if [[ "$1" == "$2" ]]; then
-    echo "$1"
+    value="$1"
   else
     value_mismatch_detected=true
-    echo "${ORANGE}${1} | ${2}${RESTORE}"
+    value="${ORANGE}${1} | ${2}${RESTORE}"
   fi
-}
 
+  summary_row "${header}" "${value}"
+}
 
 print_build_scans() {
  summary_row "Build scan first build:" "${build_scan_urls[0]}"
@@ -176,7 +181,7 @@ print_quick_links() {
 }
 
 print_warning_if_values_different() {
-  if [ -z "${value_mismatch_detected}" ]; then
+  if [[ "${value_mismatch_detected}" == "true" ]]; then
     print_bl
     info "${ORANGE}WARNING: Differences were detected between the two builds (highlighted above in orange).${RESTORE}"
   fi
