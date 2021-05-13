@@ -13,8 +13,12 @@ process_arguments() {
   enable_ge="${_arg_enable_gradle_enterprise}"
   ge_server="${_arg_gradle_enterprise_server}"
   interactive_mode="${_arg_interactive}"
+
+  #shellcheck disable=SC2154 # Only the remote caching scripts use/set this
   export_api_username="${_arg_username}"
+  #shellcheck disable=SC2154 # Only the remote caching scripts use/set this
   export_api_password="${_arg_password}"
+  #shellcheck disable=SC2154 # Only the remote caching scripts use/set this
   export_api_access_key="${_arg_access_key}"
 }
 
