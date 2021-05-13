@@ -130,6 +130,11 @@ fetch_and_read_build_validation_data() {
   if [ -n "${mapping_file}" ]; then
     args+=(-m "${mapping_file}")
   fi
+
+  if [[ "$_arg_debug" == "on" ]]; then
+    args+=("--debug")
+  fi
+
   args+=( "$@" )
   fetched_data="$(fetch_build_validation_data "${args[@]}")"
 

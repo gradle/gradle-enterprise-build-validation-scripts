@@ -6,7 +6,11 @@ public class PrintExceptionHandler implements CommandLine.IExecutionExceptionHan
 
     @Override
     public int handleExecutionException(Exception e, CommandLine cmd, CommandLine.ParseResult parseResult) throws Exception {
-        cmd.getErr().println(cmd.getColorScheme().errorText(e.getMessage()));
+        if (parseResult.hasMatchedOption("debug")) {
+            cmd.getErr().println(cmd.getColorScheme().stackTraceText(e));
+        } else {
+            cmd.getErr().println(cmd.getColorScheme().errorText(e.getMessage()));
+        }
 
         int returnCode = cmd.getCommandSpec().exitCodeOnExecutionException();
         if (cmd.getExitCodeExceptionMapper() != null) {

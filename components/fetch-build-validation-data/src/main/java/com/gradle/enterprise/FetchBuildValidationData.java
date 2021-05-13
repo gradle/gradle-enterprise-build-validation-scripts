@@ -20,7 +20,7 @@ import java.util.stream.Collectors;
 @Command(
     name = "fetch-build-validation-data",
     mixinStandardHelpOptions = true,
-    description = "Fetches data relevant to validating a build from the given build scans."
+    description = "Fetches data relevant to build validation from the given build scans."
 )
 public class FetchBuildValidationData implements Callable<Integer> {
 
@@ -31,14 +31,17 @@ public class FetchBuildValidationData implements Callable<Integer> {
     @Parameters(paramLabel = "BUILD_SCAN", description = "The build scans to fetch.", arity = "1..*")
     private List<URL> buildScanUrls;
 
-    @Option(names = {"-u", "--username"}, description = "Specifies the username to use when authenticating with Gradle Enterprise.")
+    @Option(names = {"-u", "--username"}, description = "Specifies the username to use when authenticating with Gradle Enterprise. If provided, HTTP Basic authentication will be used.")
     private String username;
 
-    @Option(names = {"-p", "--password"}, description = "Specifies the password to use when authenticating with Gradle Enterprise.")
+    @Option(names = {"-p", "--password"}, description = "Specifies the password to use when authenticating with Gradle Enterprise. If provided, HTTP Basic authentication will be used.")
     private String password;
 
-    @Option(names = {"-m", "--mapping-file"}, description = "Specifies a file that configures the keys of various custom values.")
+    @Option(names = {"-m", "--mapping-file"}, description = "Specifies a mapping file that configures the keys used to fetch important custom values.")
     private Optional<Path> customValueMappingFile;
+
+    @Option(names = {"--debug"}, description = "Prints additional debugging information while running.")
+    private Boolean debug;
 
     @Override
     public Integer call() throws Exception {
