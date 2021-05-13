@@ -9,7 +9,7 @@ public class PrintExceptionHandler implements CommandLine.IExecutionExceptionHan
         if (parseResult.hasMatchedOption("debug")) {
             cmd.getErr().println(cmd.getColorScheme().stackTraceText(e));
         } else {
-            cmd.getErr().println(cmd.getColorScheme().errorText(e.getMessage()));
+            cmd.getErr().println(cmd.getColorScheme().errorText("ERROR: " + e.getMessage()));
         }
 
         int returnCode = cmd.getCommandSpec().exitCodeOnExecutionException();

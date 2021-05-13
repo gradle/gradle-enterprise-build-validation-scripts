@@ -109,7 +109,7 @@ fi
 
   CLASSPATH="${LIB_DIR}/fetch-build-validation-data-1.0.0-SNAPSHOT-all.jar"
   # Collect all arguments for the java command, following the shell quoting and substitution rules
-  eval set -- -jar "\"$CLASSPATH\"" "$APP_ARGS"
+  eval set -- -Dpicocli.ansi=true -jar "\"$CLASSPATH\"" "$APP_ARGS"
 
   if [[ "$_arg_debug" == "on" ]]; then
     info "$JAVACMD $*" 1>&2
