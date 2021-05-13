@@ -36,6 +36,7 @@ public class ExportApiClient {
     }
 
     private static class StatusCodes {
+        private static final int UNAUTHORIZED = 401;
         private static final int NOT_FOUND = 404;
     }
 
@@ -195,6 +196,9 @@ public class ExportApiClient {
             var error = t;
             if (error == null) {
                 switch(response.code()) {
+                    case StatusCodes.UNAUTHORIZED:
+                        error = new AuthenticationFailed(buildScanId, gradleEnterpriseServerUrl);
+                        break;
                     case StatusCodes.NOT_FOUND:
                         error = new BuildScanNotFound(buildScanId, gradleEnterpriseServerUrl);
                         break;
