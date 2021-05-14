@@ -13,6 +13,9 @@ process_arguments() {
   enable_ge="${_arg_enable_gradle_enterprise}"
   ge_server="${_arg_gradle_enterprise_server}"
   interactive_mode="${_arg_interactive}"
+
+  #shellcheck disable=SC2154 # This is used only by the remote caching experiments
+  mapping_file="${_arg_mapping_file}"
 }
 
 validate_required_config() {

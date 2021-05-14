@@ -89,7 +89,6 @@ validate_required_args() {
   fi
   build_scan_urls+=("${_arg_first_build}")
   build_scan_urls+=("${_arg_second_build}")
-  mapping_file="${_arg_mapping_file}"
 }
 
 parse_build_scan_urls() {
