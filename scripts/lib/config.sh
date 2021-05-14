@@ -71,36 +71,72 @@ prompt_for_setting() {
 }
 
 collect_git_details() {
-  prompt_for_setting "What is the URL for the Git repository that contains the project to validate?" "${git_repo}" '' git_repo
+  collect_git_repo
+  collect_git_branch
+}
 
+collect_git_repo() {
+  prompt_for_setting "What is the URL for the Git repository that contains the project to validate?" "${git_repo}" '' git_repo
+  project_name=$(basename -s .git "${git_repo}")
+}
+
+collect_git_branch() {
   local default_branch="<the repository's default branch>"
   prompt_for_setting "What is the branch for the Git repository that contains the project to validate?" "${git_branch}" "${default_branch}" git_branch
 
   if [[ "${git_branch}" == "${default_branch}" ]]; then
     git_branch=''
   fi
-  project_name=$(basename -s .git "${git_repo}")
 }
 
 collect_gradle_details() {
+  collect_gradle_root_project_directory
+  collect_gradle_tasks
+  collect_gradle_extra_args
+}
+
+collect_gradle_root_project_directory() {
   local default_project_dir="<the repository's root directory>"
-  local default_extra_args="<none>"
   prompt_for_setting "Which directory contains the Gradle root project?" "${project_dir}" "${default_project_dir}" project_dir
-  prompt_for_setting "What are the Gradle tasks to invoke?" "${tasks}" "assemble" tasks
-  prompt_for_setting "What are additional cmd line arguments to pass to the Gradle invocation?" "${extra_args}" "${default_extra_args}" extra_args
   if [[ "${project_dir}" == "${default_project_dir}" ]]; then
     project_dir=''
   fi
+}
+
+collect_gradle_tasks() {
+  prompt_for_setting "What are the Gradle tasks to invoke?" "${tasks}" "assemble" tasks
+}
+
+collect_gradle_extra_args() {
+  local default_extra_args="<none>"
+  prompt_for_setting "What are additional cmd line arguments to pass to the Gradle invocation?" "${extra_args}" "${default_extra_args}" extra_args
   if [[ "${extra_args}" == "${default_extra_args}" ]]; then
     extra_args=''
   fi
 }
 
 collect_maven_details() {
+  collect_maven_goals
+  collect_maven_extra_args
+}
+
+collect_maven_goals() {
   prompt_for_setting "What are the Maven goals to invoke?" "${tasks}" "package" tasks
-  prompt_for_setting "What are additional cmd line arguments to pass to the Maven invocation?" "${extra_args}" "*none*" extra_args
-  if [[ "${extra_args}" == "*none*" ]]; then
+}
+
+collect_maven_extra_args() {
+  local default_extra_args="<none>"
+  prompt_for_setting "What are additional cmd line arguments to pass to the Maven invocation?" "${extra_args}" "${default_extra_args}" extra_args
+  if [[ "${extra_args}" == "${default_extra_args}" ]]; then
     extra_args=''
+  fi
+}
+
+collect_mapping_file() {
+  local default_mapping_file="<use default mapping>"
+  prompt_for_setting "What custom value mapping file should be used?" "${mapping_file}" "${default_mapping_file}" mapping_file
+  if [[ "${mapping_file}" == "${default_mapping_file}" ]]; then
+    mapping_file=''
   fi
 }
 
