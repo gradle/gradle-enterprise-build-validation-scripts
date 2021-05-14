@@ -122,13 +122,20 @@ The scripts accept the following command line arguments:
 
 ## Custom Value Mapping File
 
-Some of the build validation scripts look up data about existing build scans. Some of the data is extracted from custom values published with the build scans:
+Some of the build validation scripts look up data about existing build scans.
+Some of the data is extracted from custom values published with the build
+scans:
 
    * The Git repository
    * The Git branch
    * The Git commit
 
- All of custom values are published by the Common Custom User Data Gradle Plugin and the Common Custom User Data Maven Extension by default. If your builds do not use these plugins but your builds make some or all of these values available, then you can specify a Custom Value mapping file to tell the scripts what custom values contain the data.  Below is an example custom value mapping file:
+All of custom values are published by the Common Custom User Data Gradle Plugin
+and the Common Custom User Data Maven Extension by default. If your builds do
+not use these plugins but your builds make some or all of these values
+available, then you can specify a Custom Value mapping file to tell the scripts
+what custom values contain the data.  Below is an example custom value mapping
+file:
 
 ```
 git.repository=Git repository
@@ -136,10 +143,38 @@ git.branch=Git branch
 git.commitId=Git commit id
 ```
 
-The following scirpts accept a custom mapping file using the `-m/--mapping-file` command line argument:
+The following scirpts accept a custom mapping file using the
+`-m/--mapping-file` command line argument:
 
   * Gradle 04-validate-remote-build-caching-ci-ci.sh
   * Gradle 05-validate-remote-build-caching-ci-local.sh
   * Maven 03-validate-remote-build-caching-ci-ci.sh
   * Maven 04-validate-remote-build-caching-ci-local.sh
+
+## Authenticating with Gradle Enterprise to retrieve build scan data
+
+Some of the build validation scripts use the 
+[Gradle Enterprise Export API](https://docs.gradle.com/enterprise/export-api/)
+to look up data about existing build scans. In order for the the lookup to
+succeed, you will need the 'Access build data via the Export API' permission.
+Additionally, this scripts need an access key to authenticate with Gradle
+Enterprise. By default, the scripts try to find the access key in the
+`enterprise/keys.properties` file within the Gradle user home directory
+(`~/.gradle` by default). 
+
+See [Authenticating with Gradle Enterprise](https://docs.gradle.com/enterprise/gradle-plugin/#authenticating_with_gradle_enterprise)
+for details on how to create an access key.
+
+Alternatively, the access key can be specified via the
+`GRADLE_ENTERPRISE_ACCESS_KEY` environment variable, but this is less secure
+and therefore not recommended.
+
+You can also authenticate with the Export API using a username and password
+instead bu setting the `GRADLE_ENTERPRISE_USERNAME` and
+`GRADLE_ENTERPRISE_PASSWORD` environment variables.
+
+_WARNING: When using a username and password, the scripts authenticate with
+Gradle Enterprise using HTTP Basic Authentication._
+
+If all three environment variables are present, then the access key is used.
 
