@@ -76,7 +76,7 @@ public class FetchBuildValidationData implements Callable<Integer> {
     }
 
     private String lookupAccessKey(URL buildScan) {
-        var accessKeysFile = Paths.get(System.getProperty("user.home"), ".gradle/enterprise/keys.properties");
+        var accessKeysFile = getGradleUserHomeDirectory().resolve("enterprise/keys.properties");
 
         if (Files.isRegularFile(accessKeysFile)) {
             try (var in = Files.newBufferedReader(accessKeysFile)) {
@@ -92,6 +92,13 @@ public class FetchBuildValidationData implements Callable<Integer> {
             }
         }
         throw new AccessKeyNotFound(buildScan);
+    }
+
+    private Path getGradleUserHomeDirectory() {
+        if (Strings.isNullOrEmpty(System.getenv("GRADLE_USER_HOME"))) {
+            return Paths.get(System.getProperty("user.home"), ".gradle");
+        }
+        return Paths.get(System.getenv("GRADLE_USER_HOME"));
     }
 
     private URL baseUrlFrom(URL buildScanUrl) {
