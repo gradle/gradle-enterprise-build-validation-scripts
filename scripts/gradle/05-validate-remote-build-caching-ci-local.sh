@@ -73,14 +73,28 @@ wizard_execute() {
   explain_collect_build_scan
   print_bl
   collect_build_scan
+  collect_mapping_file
+
+  print_bl
+  explain_ready_to_fetch_build_scan
+  print_bl
   fetch_build_scan_data
 
-  collect_git_details
+  print_bl
+  explain_collect_git_details
+  print_bl
+  explain_git_repo_fetched_from_build_scan
+  collect_git_repo
+  explain_git_commit_fetched_from_build_scan
+  collect_git_commit
 
   print_bl
   explain_collect_gradle_details
   print_bl
-  collect_gradle_details
+  collect_gradle_root_project_directory
+  explain_gradle_tasks_fetched_from_build_scan
+  collect_gradle_tasks
+  collect_gradle_extra_args
 
   print_bl
   explain_clone_project
@@ -178,8 +192,8 @@ In this experiment, you will validate how well a given project leverages
 Gradle's remote caching functionality to avoid doing unnecessary work that has
 already been done on a CI server.
 
-A build is considered fully remote cache enabled if all tasks avoid performing any
-work because:
+A build is considered fully remote cache enabled if all tasks avoid performing
+any work because:
 
   * The tasks' inputs have not changed since their last invocation and
   * The tasks' outputs are present in the remote cache
@@ -215,23 +229,114 @@ EOF
   wait_for_enter
 }
 
-collect_build_scan() {
-  prompt_for_setting "What is the build scan for the CI server build?" "${_arg_build_scan}" "" ci_build_scan_url
-}
-
 explain_collect_build_scan() {
   local text
   IFS='' read -r -d '' text <<EOF
 $(print_separator)
-${HEADER_COLOR}Configure experiment${RESTORE}
+${HEADER_COLOR}Fetch build scan${RESTORE}
+
 Data from the CI build scan (the build scan generated in step 1) will be used to
-to lookup:
+to lookup some of the parameters we will use to run the local build.
 
-  * the commit ID the CI build ran against
-  * the tasks and arguments the CI build invoked Gradle with
-
+Some of the data is stored as custom values on the build scans. By default, this
+script assumes the values have been created by the Common Custom User Data
+Gradle plugin. If you are not using the plugin but the builds still publish the
+same data using different names, then you can provide a mapping file so that the
+script can still find the data.
 EOF
   print_wizard_text "${text}"
+}
+
+collect_build_scan() {
+  prompt_for_setting "What is the build scan for the CI server build?" "${_arg_build_scan}" "" ci_build_scan_url
+}
+
+explain_ready_to_fetch_build_scan() {
+  local text
+  IFS='' read -r -d '' text <<EOF
+${USER_ACTION_COLOR}Press <Enter> to fetch the build scan.${RESTORE}
+EOF
+  print_wizard_text "${text}"
+  wait_for_enter
+}
+
+# This overrides explain_collect_git_details found in lib/wizard.sh
+explain_collect_git_details() {
+  local text
+  IFS='' read -r -d '' text <<EOF
+$(print_separator)
+${HEADER_COLOR}Configure local build${RESTORE}
+
+The experiment will run against a fresh checkout of a given project stored in
+Git. The fresh checkout ensures reproducibility of the experiment across
+machines and users since no local changes and commits will be accidentally
+included in the validation process.
+
+The local build should be executed against the same commit the CI build ran
+against.
+EOF
+  print_wizard_text "${text}"
+}
+
+explain_git_repo_fetched_from_build_scan() {
+  if [ -n "${git_repos[0]}" ]; then
+    wizard "The Git repository URL was extracted from the CI build scan. Press enter to use the same URL."
+    print_bl
+  fi
+}
+
+explain_git_commit_fetched_from_build_scan() {
+  if [ -n "${git_commit_ids[0]}" ]; then
+    print_bl
+    wizard "The Git commit was extracted from the CI build scan. Press enter to build against the same commit."
+    print_bl
+  fi
+}
+
+collect_git_commit() {
+  prompt_for_setting "What Git commit should the local build run against?" "${commit_id}" "" commit_id
+}
+
+# This overrides explain_collect_gradle_details found in lib/wizard.sh
+explain_collect_gradle_details() {
+  local text
+  IFS='' read -r -d '' text <<EOF
+Once the project is checked out from Git, the experiment will invoke the
+project’s contained Gradle build with a given set of tasks and an optional set
+of arguments. The Gradle tasks to invoke should be the same, or very similar to
+the tasks invoked by the CI build.
+
+The build will be invoked from the project’s root directory or from a given
+sub-directory.
+EOF
+  print_wizard_text "${text}"
+}
+
+explain_gradle_tasks_fetched_from_build_scan() {
+  if [ -n "${requested_tasks[0]}" ]; then
+    print_bl
+    wizard "The Gradle tasks to invoke were extracted from the CI build scan. Press enter to run the local build \
+with the same Gradle tasks, or enter a different set of tasks if it is not appropriate to use the the \
+same tasks locally."
+    print_bl
+  fi
+}
+
+# This overrides explain_collect_gradle_details found in lib/wizard.sh
+explain_clone_project() {
+  local text
+  IFS='' read -r -d '' text <<EOF
+$(print_separator)
+${HEADER_COLOR}Check out project from Git${RESTORE}
+
+All configuration to run the local build has been collected. In the next
+step of the experiment, the Git repository that contains the project to
+validate will be checked out.
+
+${USER_ACTION_COLOR}Press <Enter> to check out the project from Git.${RESTORE}
+EOF
+  print_wizard_text "${text}"
+  wait_for_enter
 }
 
 explain_build() {
