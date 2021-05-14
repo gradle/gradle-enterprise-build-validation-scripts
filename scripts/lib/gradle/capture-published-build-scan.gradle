@@ -1,5 +1,6 @@
 import org.gradle.util.GradleVersion
 
+// Don't run against the included builds (if the main build has any).
 def isTopLevelBuild = gradle.getParent() == null
 if (isTopLevelBuild) {
     def version = GradleVersion.current().baseVersion
@@ -23,8 +24,6 @@ if (isTopLevelBuild) {
     } else {
         throw new IllegalStateException("Build validation not supported for Gradle ${GradleVersion.current()}. Upgrade your project's build to Gradle 5 or newer.")
     }
-} else {
-    throw new IllegalStateException("Build validation only supported on top-level Gradle build.")
 }
 
 def registerCallbacks(gradleEnterprise, rootProjectName) {

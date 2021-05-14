@@ -1,3 +1,4 @@
+// Don't run against the included builds (if the main build has any).
 def isTopLevelBuild = gradle.getParent() == null
 if (isTopLevelBuild) {
     settingsEvaluated { settings ->
@@ -12,8 +13,6 @@ if (isTopLevelBuild) {
             }
         }
     }
-} else {
-    throw new IllegalStateException("Build validation only supported on top-level Gradle build.")
 }
 
 File getExperimentDir() {
