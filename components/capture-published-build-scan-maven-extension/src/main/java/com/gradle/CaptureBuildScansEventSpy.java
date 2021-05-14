@@ -3,6 +3,7 @@ package com.gradle;
 import com.gradle.maven.extension.api.scan.BuildScanApi;
 import org.apache.maven.eventspy.AbstractEventSpy;
 import org.apache.maven.eventspy.EventSpy;
+import org.apache.maven.execution.ExecutionEvent;
 import org.apache.maven.execution.MavenExecutionResult;
 import org.apache.maven.project.MavenProject;
 import org.codehaus.plexus.PlexusContainer;
@@ -19,12 +20,14 @@ import java.io.PrintWriter;
 public class CaptureBuildScansEventSpy  extends AbstractEventSpy {
 
     private final PlexusContainer container;
+    private final RootProjectExtractor rootProjectExtractor;
     private final Logger logger;
     private String rootProjectName = "";
 
     @Inject
-    public CaptureBuildScansEventSpy(PlexusContainer container, Logger logger) {
+    public CaptureBuildScansEventSpy(PlexusContainer container, RootProjectExtractor rootProjectExtractor, Logger logger) {
         this.container = container;
+        this.rootProjectExtractor = rootProjectExtractor;
         this.logger = logger;
     }
 
@@ -56,12 +59,10 @@ public class CaptureBuildScansEventSpy  extends AbstractEventSpy {
 
     @Override
     public void onEvent(Object event) throws Exception {
-        if(event instanceof MavenExecutionResult) {
-            MavenExecutionResult mavenExecutionResult = (MavenExecutionResult) event;
-
-            if (mavenExecutionResult.getProject() != null) {
-                MavenProject rootProject = walkToRootProject(mavenExecutionResult.getProject());
-
+        if(event instanceof ExecutionEvent) {
+            ExecutionEvent executionEvent = (ExecutionEvent) event;
+            if (executionEvent.getType() == ExecutionEvent.Type.SessionStarted) {
+                MavenProject rootProject = rootProjectExtractor.extractRootProject(executionEvent);
                 synchronized (rootProjectName) {
                     rootProjectName = rootProject.getName();
                 }
