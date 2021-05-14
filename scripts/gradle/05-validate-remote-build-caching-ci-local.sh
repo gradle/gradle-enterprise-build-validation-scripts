@@ -147,6 +147,7 @@ execute_build() {
 print_summary() {
  read_build_scan_metadata
  print_experiment_info
+ summary_row "Custom value mapping file:" "${mapping_file:-<none>}"
  print_build_scans
  print_bl
  print_quick_links

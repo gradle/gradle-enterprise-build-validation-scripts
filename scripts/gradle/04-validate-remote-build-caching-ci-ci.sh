@@ -147,6 +147,7 @@ print_experiment_info() {
  summary_row "Experiment id:" "${EXP_SCAN_TAG}"
  summary_row "Experiment run id:" "<not applicable>"
  summary_row "Experiment artifact dir:" "<not applicable>"
+ summary_row "Custom value mapping file:" "${mapping_file:-<none>}"
 }
 
 comparison_summary_row() {
