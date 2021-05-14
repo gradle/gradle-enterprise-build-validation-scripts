@@ -49,7 +49,6 @@ main() {
 execute() {
   print_bl
   validate_required_args
-  validate_export_api_config
   fetch_build_scan_data
   validate_required_config
 
@@ -67,7 +66,6 @@ execute() {
 }
 
 wizard_execute() {
-  validate_export_api_config
   print_bl
   print_introduction
 

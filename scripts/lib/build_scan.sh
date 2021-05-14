@@ -135,15 +135,6 @@ fetch_and_read_build_validation_data() {
   if [ -n "${mapping_file}" ]; then
     args+=(-m "${mapping_file}")
   fi
-  if [ -n "${export_api_access_key}" ]; then
-    args+=(-A "${export_api_access_key}")
-  fi
-  if [ -n "${export_api_username}" ]; then
-    args+=(-U "${export_api_username}")
-  fi
-  if [ -n "${export_api_password}" ]; then
-    args+=(-P "${export_api_password}")
-  fi
 
   args+=( "$@" )
   fetched_data="$(fetch_build_validation_data "${args[@]}")"

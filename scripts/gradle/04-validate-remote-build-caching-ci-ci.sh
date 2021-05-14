@@ -44,7 +44,6 @@ main() {
 execute() {
   print_bl
   validate_required_args
-  validate_export_api_config
 
   parse_build_scan_urls
   fetch_extended_build_scan_data
@@ -57,8 +56,6 @@ execute() {
 
 wizard_execute() {
   print_bl
-  validate_export_api_config
-
   print_introduction
 
   print_bl
