@@ -1,12 +1,12 @@
 package com.gradle.enterprise;
 
+import com.google.common.base.Strings;
+import okhttp3.Authenticator;
 import picocli.CommandLine;
-import picocli.CommandLine.ArgGroup;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
 import picocli.CommandLine.Parameters;
 
-import javax.naming.AuthenticationException;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -32,25 +32,6 @@ public class FetchBuildValidationData implements Callable<Integer> {
 
     @Parameters(paramLabel = "BUILD_SCAN", description = "The build scans to fetch.", arity = "1..*")
     private List<URL> buildScanUrls;
-
-    @ArgGroup(exclusive = true)
-    private AuthenticationArgs authenticationArgs;
-
-    private static class AuthenticationArgs {
-        @Option(names = {"-A", "--access-key"}, description = "Specifies the access key to use when authenticating with Gradle Enterprise.")
-        private String accessKey;
-
-        @ArgGroup(exclusive = false)
-        private UsernamePassword usernamePassword;
-
-        private static class UsernamePassword {
-            @Option(names = {"-U", "--username"}, required = true, description = "Specifies the username to use when authenticating with Gradle Enterprise.")
-            private String username;
-
-            @Option(names = {"-P", "--password"}, required = true, description = "Specifies the password to use when authenticating with Gradle Enterprise.")
-            private String password;
-        }
-    }
 
     @Option(names = {"-m", "--mapping-file"}, description = "Specifies a mapping file that configures the keys used to fetch important custom values.")
     private Optional<Path> customValueMappingFile;
@@ -79,13 +60,18 @@ public class FetchBuildValidationData implements Callable<Integer> {
         return apiClient.fetchBuildValidationData(buildScanId);
     }
 
-    private okhttp3.Authenticator createAuthenticator(URL buildScanUrl) {
-        if(authenticationArgs != null && authenticationArgs.usernamePassword != null) {
-            return Authenticators.basic(authenticationArgs.usernamePassword.username, authenticationArgs.usernamePassword.password);
+    private Authenticator createAuthenticator(URL buildScanUrl) {
+        var accessKey = System.getenv("GRADLE_ENTERPRISE_ACCESS_KEY");
+        if(!Strings.isNullOrEmpty(accessKey)) {
+            return Authenticators.accessKey(accessKey);
         }
-        else if(authenticationArgs != null && authenticationArgs.accessKey != null) {
-            return Authenticators.accessKey(authenticationArgs.accessKey);
+
+        var username = System.getenv("GRADLE_ENTERPRISE_USERNAME");
+        var password = System.getenv("GRADLE_ENTERPRISE_PASSWORD");
+        if(!Strings.isNullOrEmpty(username) && !Strings.isNullOrEmpty(password)) {
+            return Authenticators.basic(username, password);
         }
+
         return Authenticators.accessKey(lookupAccessKey(buildScanUrl));
     }
 
