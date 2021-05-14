@@ -63,12 +63,22 @@ wizard_execute() {
 
   print_bl
   explain_first_build
+  print_bl
   collect_first_build_scan
 
   print_bl
   explain_second_build
+  print_bl
   collect_second_build_scan
 
+  print_bl
+  explain_collect_mapping_file
+  print_bl
+  collect_mapping_file
+
+  print_bl
+  explain_fetch_build_scan_data
+  print_bl
   parse_build_scan_urls
   fetch_extended_build_scan_data
   make_experiment_dir
@@ -265,7 +275,6 @@ project.
 
 Once the build completes, make a note of the commit the build ran against, and
 enter the URL to the build scan produced by the build.
-
 EOF
   print_wizard_text "${text}"
 }
@@ -287,7 +296,6 @@ run the second build with --rerun-tasks. Otherwise, the second build will not
 use the remote cache entries populated by the first build.
 
 Once the build completes, enter the URL to the build scan produced by the build.
-
 EOF
   print_wizard_text "${text}"
 }
@@ -297,15 +305,42 @@ collect_second_build_scan() {
   build_scan_urls+=("${build_scan_url}")
 }
 
+explain_collect_mapping_file() {
+  local text
+  IFS='' read -r -d '' text <<EOF
+$(print_separator)
+${HEADER_COLOR}Fetch build scan data${RESTORE}
+
+This script is going to fetch the build scans you have provided and extract some
+information from the build scans to assist you in your investigation.
+
+Some of the data is stored as custom values on the build scan. By default, this
+script assumes the values have been created by the Common Custom User Data
+Gradle plugin. If you are not using the plugin but the builds still publish the
+same data using different names, then you can provide a mapping file so that the
+script can still find the data.
+EOF
+  print_wizard_text "${text}"
+}
+
+explain_fetch_build_scan_data() {
+  local text
+  IFS='' read -r -d '' text <<EOF
+${USER_ACTION_COLOR}Press <Enter> to fetch the build scans.${RESTORE}
+EOF
+  print_wizard_text "${text}"
+  wait_for_enter
+}
+
+
 explain_measure_build_results() {
   local text
   IFS='' read -r -d '' text <<EOF
 $(print_separator)
 ${HEADER_COLOR}Measure build results${RESTORE}
 
-Now that the second build has finished successfully, you are ready to measure in
-Gradle Enterprise how well your build leverages Gradle’s remote build cache for
-the invoked set of Gradle tasks.
+At this point, you are ready to measure in Gradle Enterprise how well your build
+leverages Gradle’s remote build cache for the invoked set of Gradle tasks.
 
 ${USER_ACTION_COLOR}Press <Enter> to measure the build results.${RESTORE}
 EOF
