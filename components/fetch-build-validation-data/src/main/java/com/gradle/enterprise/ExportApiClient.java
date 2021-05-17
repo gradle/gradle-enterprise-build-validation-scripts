@@ -34,6 +34,7 @@ public class ExportApiClient {
         private static final String BUILD_FINISHED = "BuildFinished";
         private static final String MVN_PROJECT_STRUCTURE = "MvnProjectStructure";
         private static final String MVN_REQUESTED_GOALS = "MvnBuildRequestedGoals";
+        private static final String MVN_USER_NAMED_VALUE = "MvnUserNamedValue";
         private static final String MVN_BUILD_FINISHED = "MvnBuildFinished";
         private static final String ALL =
             PROJECT_STRUCTURE +
@@ -42,6 +43,7 @@ public class ExportApiClient {
             "," + BUILD_FINISHED +
             "," + MVN_PROJECT_STRUCTURE +
             "," + MVN_REQUESTED_GOALS +
+            "," + MVN_USER_NAMED_VALUE +
             "," + MVN_BUILD_FINISHED;
     }
 
@@ -154,6 +156,7 @@ public class ExportApiClient {
                         onBuildRequestedTasks(event.get("data"), "goals");
                         break;
                     case EventTypes.USER_NAMED_VALUE:
+                    case EventTypes.MVN_USER_NAMED_VALUE:
                         onUserNamedValue(event.get("data"));
                         break;
                     case EventTypes.BUILD_FINISHED:
