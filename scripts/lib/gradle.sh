@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 invoke_gradle() {
-  local args ge_server_arg
+  local args
   args=()
 
   pushd "${project_dir}" > /dev/null 2>&1 || die "ERROR: The subdirectory ${project_dir} (set with --project-dir) does not exist in ${project_name}." 3
@@ -22,7 +22,7 @@ invoke_gradle() {
   fi
 
   args+=(-Pcom.gradle.enterprise.init.script.experimentDir="${EXP_DIR}")
-  args+=(-Pcom.gradle.enterprise.init.script.expId=${EXP_SCAN_TAG})
+  args+=(-Pcom.gradle.enterprise.init.script.expId="${EXP_SCAN_TAG}")
   args+=(-Pcom.gradle.enterprise.init.script.runId="${RUN_ID}")
   args+=(-Dscan.capture-task-input-files)
 
