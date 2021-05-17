@@ -10,6 +10,7 @@ invoke_maven() {
 
   args+=(
     -Dmaven.ext.class.path="${CAPTURE_SCANS_EXTENSION_JAR}"
+    -Dcom.gradle.enterprise.build_validation.experimentDir="${EXP_DIR}"
     -Dscan.tag."${EXP_SCAN_TAG}"
     -Dscan.tag."${RUN_ID}"
     -Dorg.slf4j.simpleLogger.log.gradle.goal.cache=debug

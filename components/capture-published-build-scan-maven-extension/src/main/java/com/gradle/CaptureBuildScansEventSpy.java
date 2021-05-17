@@ -18,6 +18,7 @@ import java.io.PrintWriter;
 
 @Component( role = EventSpy.class, hint = "capture-build-scans" )
 public class CaptureBuildScansEventSpy  extends AbstractEventSpy {
+    private static final String EXPERIMENT_DIR=System.getProperty("com.gradle.enterprise.build_validation.experimentDir");
 
     private final PlexusContainer container;
     private final RootProjectExtractor rootProjectExtractor;
@@ -45,7 +46,7 @@ public class CaptureBuildScansEventSpy  extends AbstractEventSpy {
                 String port = scan.getBuildScanUri().getPort() != -1 ? ":" + scan.getBuildScanUri().getPort() : "";
                 String baseUrl = String.format("%s://%s%s", scan.getBuildScanUri().getScheme(), scan.getBuildScanUri().getHost(), port);
 
-                try (FileWriter fw = new FileWriter("../build-scans.csv", true);
+                try (FileWriter fw = new FileWriter(EXPERIMENT_DIR + "/build-scans.csv", true);
                      BufferedWriter bw = new BufferedWriter(fw);
                      PrintWriter out = new PrintWriter(bw)) {
                     out.println(String.format("%s,%s,%s,%s", rootProjectName, baseUrl, scan.getBuildScanUri(), scan.getBuildScanId()));
