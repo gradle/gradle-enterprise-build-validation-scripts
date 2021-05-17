@@ -8,6 +8,9 @@ process_arguments() {
   project_name="$(basename -s .git "${git_repo}")"
   project_dir="${_arg_project_dir}"
   tasks="${_arg_tasks}"
+  if [ -n "${_arg_goals}" ]; then
+    tasks="${_arg_goals}"
+  fi
   extra_args="${_arg_args}"
   #shellcheck disable=SC2154 # The maven scripts don't yet support _arg_gradle_enterprise_server
   enable_ge="${_arg_enable_gradle_enterprise}"
@@ -23,7 +26,11 @@ validate_required_config() {
     _PRINT_HELP=yes die "ERROR: Missing required argument: --git-repo" 1
   fi
   if [ -z "${tasks}" ]; then
-    _PRINT_HELP=yes die "ERROR: Missing required argument: --tasks" 1
+    if [[ "${BUILD_TOOL}" == "Maven" ]]; then
+      _PRINT_HELP=yes die "ERROR: Missing required argument: --goals" 1
+    else
+      _PRINT_HELP=yes die "ERROR: Missing required argument: --tasks" 1
+    fi
   fi
 
   if [[ "${enable_ge}" == "on" ]]; then
@@ -158,7 +165,12 @@ print_command_to_repeat_experiment() {
     cmd+=("-p" "${project_dir}")
   fi
 
-  cmd+=("-t" "${tasks}")
+  if [[ "${BUILD_TOOL}" == "Gradle" ]]; then
+    cmd+=("-t" "${tasks}")
+  fi
+  if [[ "${BUILD_TOOL}" == "Maven" ]]; then
+    cmd+=("-g" "${tasks}")
+  fi
 
   if [ -n "${extra_args}" ]; then
     cmd+=("-a" "${extra_args}")

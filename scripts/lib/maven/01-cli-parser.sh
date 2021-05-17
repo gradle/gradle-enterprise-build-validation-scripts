@@ -23,7 +23,7 @@ die()
 
 begins_with_short_option()
 {
-  local first_option all_short_options='hvbsrpiat'
+  local first_option all_short_options='hvbsrpiag'
   first_option="${1:0:1}"
   test "$all_short_options" = "${all_short_options/$first_option/}" && return 1 || return 0
 }
@@ -36,13 +36,13 @@ _arg_project_dir=
 _arg_interactive="off"
 _arg_debug="off"
 _arg_args=
-_arg_tasks=
+_arg_goals=
 
 
 print_help()
 {
   printf '%s\n' "This function is overridden later on."
-  printf 'Usage: %s [-h|--help] [-v|--version] [-b|--git-branch <arg>] [-s|--gradle-enterprise-server <arg>] [-r|--git-repo <arg>] [-p|--project-dir <arg>] [-i|--(no-)interactive] [--(no-)debug] [-a|--args <arg>] [-t|--tasks <arg>]\n' "$0"
+  printf 'Usage: %s [-h|--help] [-v|--version] [-b|--git-branch <arg>] [-s|--gradle-enterprise-server <arg>] [-r|--git-repo <arg>] [-p|--project-dir <arg>] [-i|--(no-)interactive] [--(no-)debug] [-a|--args <arg>] [-g|--goals <arg>]\n' "$0"
   printf '\t%s\n' "-h, --help: Prints help"
   printf '\t%s\n' "-v, --version: Prints version"
 }
@@ -159,18 +159,18 @@ parse_commandline()
         _arg_args="${_key##-a}"
         _args_common_opt+=("$_key")
         ;;
-      -t|--tasks)
+      -g|--goals)
         test $# -lt 2 && die "Missing value for the optional argument '$_key'." 1
-        _arg_tasks="$2"
+        _arg_goals="$2"
         _args_common_opt+=("${_key}" "$2")
         shift
         ;;
-      --tasks=*)
-        _arg_tasks="${_key##--tasks=}"
+      --goals=*)
+        _arg_goals="${_key##--goals=}"
         _args_common_opt+=("$_key")
         ;;
-      -t*)
-        _arg_tasks="${_key##-t}"
+      -g*)
+        _arg_goals="${_key##-g}"
         _args_common_opt+=("$_key")
         ;;
       *)
@@ -196,8 +196,8 @@ function print_help() {
   print_option_usage -r
   print_option_usage -b
   print_option_usage -p
-  print_option_usage "-t, --tasks" "Declares the Maven goals to invoke."
-  print_option_usage "-a, --args" "Sets additional arguments to pass to Maven."
+  print_option_usage -g
+  print_option_usage -a
   print_option_usage -s
   print_option_usage -v
   print_option_usage -h
