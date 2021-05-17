@@ -14,6 +14,10 @@ invoke_maven() {
     -Dscan.tag."${RUN_ID}"
     -Dorg.slf4j.simpleLogger.log.gradle.goal.cache=debug
   )
+  if [ -n "${ge_server}" ]; then
+    args+=("-Dgradle.enterprise.url=${ge_server}")
+  fi
+
   # shellcheck disable=SC2206
   args+=(${extra_args})
   args+=("$@")
