@@ -8,6 +8,7 @@ process_arguments() {
   project_name="$(basename -s .git "${git_repo}")"
   project_dir="${_arg_project_dir}"
   tasks="${_arg_tasks}"
+  # shellcheck disable=SC2154 # _arg_goals is only defined by the Maven scripts
   if [ -n "${_arg_goals}" ]; then
     tasks="${_arg_goals}"
   fi
