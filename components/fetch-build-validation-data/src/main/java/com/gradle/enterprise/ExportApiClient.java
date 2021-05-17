@@ -32,7 +32,13 @@ public class ExportApiClient {
         private static final String BUILD_REQUESTED_TASKS = "BuildRequestedTasks";
         private static final String USER_NAMED_VALUE = "UserNamedValue";
         private static final String BUILD_FINISHED = "BuildFinished";
-        private static final String ALL = PROJECT_STRUCTURE + "," + BUILD_REQUESTED_TASKS + "," + USER_NAMED_VALUE + "," + BUILD_FINISHED;
+        private static final String MVN_PROJECT_STRUCTURE = "MvnProjectStructure";
+        private static final String ALL =
+            PROJECT_STRUCTURE +
+            "," + BUILD_REQUESTED_TASKS +
+            "," + USER_NAMED_VALUE +
+            "," + BUILD_FINISHED +
+            "," + MVN_PROJECT_STRUCTURE;
     }
 
     private static class StatusCodes {
@@ -132,7 +138,10 @@ public class ExportApiClient {
                 var eventType = event.get("type").get("eventType").asText();
                 switch(eventType) {
                     case EventTypes.PROJECT_STRUCTURE:
-                        onProjectStructure(event.get("data"));
+                        onProjectStructure(event.get("data"), "rootProjectName");
+                        break;
+                    case EventTypes.MVN_PROJECT_STRUCTURE:
+                        onProjectStructure(event.get("data"), "topLevelProjectName");
                         break;
                     case EventTypes.BUILD_REQUESTED_TASKS:
                         onBuildRequestedTasks(event.get("data"));
@@ -147,8 +156,8 @@ public class ExportApiClient {
             }
         }
 
-        private void onProjectStructure(JsonNode eventData) {
-            rootProjectName.complete(eventData.get("rootProjectName").asText());
+        private void onProjectStructure(JsonNode eventData, String rootProjectPropertyName) {
+            rootProjectName.complete(eventData.get(rootProjectPropertyName).asText());
         }
 
         private void onBuildRequestedTasks(JsonNode eventData) {
