@@ -102,10 +102,10 @@ public class ExportApiClient {
         private final CompletableFuture<String> gitBranch = new CompletableFuture<>();
         private final CompletableFuture<String> gitCommitId = new CompletableFuture<>();
         private final CompletableFuture<List<String>> requestedTasks = new CompletableFuture<>();
-        private final CompletableFuture<Boolean> buildSuccessful = new CompletableFuture<>();
+        private final CompletableFuture<String> buildOutcome = new CompletableFuture<>();
 
         private final List<CompletableFuture<?>> completables = List.of(
-            rootProjectName, gitUrl, gitBranch, gitCommitId, requestedTasks, buildSuccessful);
+            rootProjectName, gitUrl, gitBranch, gitCommitId, requestedTasks, buildOutcome);
 
         private BuildValidationDataEventListener(URL gradleEnterpriseServerUrl, String buildScanId, CustomValueKeys customValueKeys) {
             this.gradleEnterpriseServerUrl = gradleEnterpriseServerUrl;
@@ -123,7 +123,7 @@ public class ExportApiClient {
                     gitBranch.get(),
                     gitCommitId.get(),
                     requestedTasks.get(),
-                    buildSuccessful.get()
+                    buildOutcome.get()
                 );
             } catch (ExecutionException e) {
                 if (e.getCause() == null) {
@@ -195,14 +195,14 @@ public class ExportApiClient {
         }
 
         private void onBuildFinished(JsonNode eventData) {
-            buildSuccessful.complete(
-                !eventData.hasNonNull("failure")
+            buildOutcome.complete(
+                eventData.hasNonNull("failure") ? "FAILED" : "SUCCESS"
             );
         }
 
         private void onMvnBuildFinished(JsonNode eventData) {
-            buildSuccessful.complete(
-                eventData.hasNonNull("failed") && !eventData.get("failed").asBoolean()
+            buildOutcome.complete(
+                eventData.hasNonNull("failed") && eventData.get("failed").asBoolean() ? "FAILED" : "SUCCESS"
             );
         }
 
@@ -216,7 +216,7 @@ public class ExportApiClient {
             gitBranch.complete("");
             gitCommitId.complete("");
             requestedTasks.complete(Collections.emptyList());
-            buildSuccessful.complete(false);
+            buildOutcome.complete("");
         }
 
         @Override

@@ -12,9 +12,9 @@ public class BuildValidationData {
     private final String gitBranch;
     private final String gitCommitId;
     private final List<String> requestedTasks;
-    private final Boolean buildSuccessful;
+    private final String buildOutcome;
 
-    public BuildValidationData(String rootProjectName, String buildScanId, URL gradleEnterpriseServerUrl, String gitUrl, String gitBranch, String gitCommitId, List<String> requestedTasks, Boolean buildSuccessful) {
+    public BuildValidationData(String rootProjectName, String buildScanId, URL gradleEnterpriseServerUrl, String gitUrl, String gitBranch, String gitCommitId, List<String> requestedTasks, String buildOutcome) {
         this.rootProjectName = rootProjectName;
         this.buildScanId = buildScanId;
         this.gradleEnterpriseServerUrl = gradleEnterpriseServerUrl;
@@ -22,7 +22,7 @@ public class BuildValidationData {
         this.gitBranch = gitBranch;
         this.gitCommitId = gitCommitId;
         this.requestedTasks = requestedTasks;
-        this.buildSuccessful = buildSuccessful;
+        this.buildOutcome = buildOutcome;
     }
 
     public String getRootProjectName() {
@@ -61,7 +61,7 @@ public class BuildValidationData {
         return requestedTasks;
     }
 
-    public Boolean getBuildSuccessful() {
-        return buildSuccessful;
+    public String getBuildOutcome() {
+        return buildOutcome;
     }
 }
