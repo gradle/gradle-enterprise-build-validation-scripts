@@ -33,12 +33,14 @@ public class ExportApiClient {
         private static final String USER_NAMED_VALUE = "UserNamedValue";
         private static final String BUILD_FINISHED = "BuildFinished";
         private static final String MVN_PROJECT_STRUCTURE = "MvnProjectStructure";
+        private static final String MVN_REQUESTED_GOALS = "MvnBuildRequestedGoals";
         private static final String ALL =
             PROJECT_STRUCTURE +
             "," + BUILD_REQUESTED_TASKS +
             "," + USER_NAMED_VALUE +
             "," + BUILD_FINISHED +
-            "," + MVN_PROJECT_STRUCTURE;
+            "," + MVN_PROJECT_STRUCTURE +
+            "," + MVN_REQUESTED_GOALS;
     }
 
     private static class StatusCodes {
@@ -144,7 +146,10 @@ public class ExportApiClient {
                         onProjectStructure(event.get("data"), "topLevelProjectName");
                         break;
                     case EventTypes.BUILD_REQUESTED_TASKS:
-                        onBuildRequestedTasks(event.get("data"));
+                        onBuildRequestedTasks(event.get("data"), "requested");
+                        break;
+                    case EventTypes.MVN_REQUESTED_GOALS:
+                        onBuildRequestedTasks(event.get("data"), "goals");
                         break;
                     case EventTypes.USER_NAMED_VALUE:
                         onUserNamedValue(event.get("data"));
@@ -160,8 +165,8 @@ public class ExportApiClient {
             rootProjectName.complete(eventData.get(rootProjectPropertyName).asText());
         }
 
-        private void onBuildRequestedTasks(JsonNode eventData) {
-            var requestedTasksNode = eventData.get("requested");
+        private void onBuildRequestedTasks(JsonNode eventData, String requestedTasksProperty) {
+            var requestedTasksNode = eventData.get(requestedTasksProperty);
             requestedTasks.complete(MAPPER.convertValue(requestedTasksNode, new TypeReference<List<String>>() {
             }));
         }
