@@ -32,9 +32,7 @@ invoke_gradle() {
 
   rm -f "${EXP_DIR}/build-scan-publish-error.txt"
 
-  if [[ "$_arg_debug" == "on" ]]; then
-    echo ./gradlew "${args[@]}"
-  fi
+  debug ./gradlew "${args[@]}"
 
   # shellcheck disable=SC2086
   ./gradlew "${args[@]}" || die "ERROR: The experiment cannot continue because the build failed." $?

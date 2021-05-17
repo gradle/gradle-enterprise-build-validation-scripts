@@ -6,6 +6,7 @@ readonly RESTORE=$(echo -en '\033[0m')
 readonly YELLOW=$(echo -en '\033[00;33m')
 readonly BLUE=$(echo -en '\033[00;34m')
 readonly CYAN=$(echo -en '\033[00;36m')
+readonly LIGHTGRAY=$(echo -en '\033[00;37m')
 readonly WHITE=$(echo -en '\033[01;37m')
 readonly RED=$(echo -en '\033[00;31m')
 readonly ORANGE=$(echo -en '\033[38;5;202m')
@@ -19,4 +20,5 @@ readonly USER_ACTION_COLOR="${WHITE}"
 readonly INFO_COLOR="${YELLOW}${BOLD}"
 readonly ERROR_COLOR="${RED}${BOLD}"
 readonly HEADER_COLOR="${WHITE}${BOLD}"
+readonly DEBUG_COLOR="${DIM}"
 

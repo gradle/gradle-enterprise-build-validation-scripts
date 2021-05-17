@@ -112,7 +112,7 @@ fi
   eval set -- -Dpicocli.ansi=true -jar "\"$CLASSPATH\"" "$APP_ARGS"
 
   if [[ "$_arg_debug" == "on" ]]; then
-    info "$JAVACMD $*" 1>&2
+    debug "$JAVACMD $*" 1>&2
     print_bl 1>&2
   fi
 
@@ -139,12 +139,10 @@ fetch_and_read_build_validation_data() {
   args+=( "$@" )
   fetched_data="$(fetch_build_validation_data "${args[@]}")"
 
-  if [[ "$_arg_debug" == "on" ]]; then
-    info "Raw fetched data"
-    info "----------------"
-    info "${fetched_data}"
-    print_bl
-  fi
+  debug "Raw fetched data"
+  debug "----------------"
+  debug "${fetched_data}"
+  debug ""
 
   header_row_read=false
   while IFS=, read -r field_1 field_2 field_3 field_4 field_5 field_6 field_7 field_8 field_9; do

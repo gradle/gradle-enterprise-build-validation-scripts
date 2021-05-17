@@ -16,13 +16,19 @@ infof() {
   printf "${INFO_COLOR}${format_string}${RESTORE}\n" "$@"
 }
 
+debug() {
+  if [[ "$_arg_debug" == "on" ]]; then
+    echo "${DEBUG_COLOR}$*${RESTORE}"
+  fi
+}
+
 summary_row() {
     infof "${SUMMARY_FMT}" "$1" "${2:-<unknown>}"
 }
 
 print_bl() {
   if [[ "$_arg_debug" == "on" ]]; then
-    echo "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
+    debug "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
   else
     echo
   fi
