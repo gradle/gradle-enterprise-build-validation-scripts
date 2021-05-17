@@ -3,7 +3,7 @@
 readonly SUMMARY_FMT="%-30s%s"
 
 info() {
-  printf "${INFO_COLOR}%s${RESTORE}\n" "$1"
+  echo "${INFO_COLOR}$*${RESTORE}"
 }
 
 infof() {
