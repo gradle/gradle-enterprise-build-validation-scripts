@@ -34,13 +34,15 @@ public class ExportApiClient {
         private static final String BUILD_FINISHED = "BuildFinished";
         private static final String MVN_PROJECT_STRUCTURE = "MvnProjectStructure";
         private static final String MVN_REQUESTED_GOALS = "MvnBuildRequestedGoals";
+        private static final String MVN_BUILD_FINISHED = "MvnBuildFinished";
         private static final String ALL =
             PROJECT_STRUCTURE +
             "," + BUILD_REQUESTED_TASKS +
             "," + USER_NAMED_VALUE +
             "," + BUILD_FINISHED +
             "," + MVN_PROJECT_STRUCTURE +
-            "," + MVN_REQUESTED_GOALS;
+            "," + MVN_REQUESTED_GOALS +
+            "," + MVN_BUILD_FINISHED;
     }
 
     private static class StatusCodes {
@@ -157,6 +159,9 @@ public class ExportApiClient {
                     case EventTypes.BUILD_FINISHED:
                         onBuildFinished(event.get("data"));
                         break;
+                    case EventTypes.MVN_BUILD_FINISHED:
+                        onMvnBuildFinished(event.get("data"));
+                        break;
                 }
             }
         }
@@ -189,6 +194,12 @@ public class ExportApiClient {
         private void onBuildFinished(JsonNode eventData) {
             buildSuccessful.complete(
                 !eventData.hasNonNull("failure")
+            );
+        }
+
+        private void onMvnBuildFinished(JsonNode eventData) {
+            buildSuccessful.complete(
+                eventData.hasNonNull("failed") && !eventData.get("failed").asBoolean()
             );
         }
 
