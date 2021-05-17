@@ -56,8 +56,8 @@ void configureGradleEnterprise(gradleEnterprise) {
     gradleEnterprise.with {
         buildScan {
             def projectProperties = gradle.startParameter.projectProperties
-            if (projectProperties.containsKey("com.gradle.enterprise.init.script.server")) {
-                server = projectProperties.get("com.gradle.enterprise.init.script.server")
+            if (projectProperties.containsKey("com.gradle.enterprise.build_validation.server")) {
+                server = projectProperties.get("com.gradle.enterprise.build_validation.server")
             }
 
             if (!server) {
@@ -76,11 +76,11 @@ void configureGradleEnterprise(gradleEnterprise) {
 void addCustomData(buildScan) {
     def projectProperties = gradle.startParameter.projectProperties
 
-    def expId = projectProperties.get("com.gradle.enterprise.init.script.expId")
+    def expId = projectProperties.get("com.gradle.enterprise.build_validation.expId")
     addCustomValueAndSearchLink(buildScan, "Experiment id", expId)
     buildScan.tag(expId)
 
-    def runId = projectProperties.get("com.gradle.enterprise.init.script.runId")
+    def runId = projectProperties.get("com.gradle.enterprise.build_validation.runId")
     addCustomValueAndSearchLink(buildScan, "Experiment run id", runId)
 }
 
@@ -116,5 +116,5 @@ void clearWarnings() {
 
 File getExperimentDir() {
     def projectProperties = gradle.startParameter.projectProperties
-    new File(projectProperties.get("com.gradle.enterprise.init.script.experimentDir"))
+    new File(projectProperties.get("com.gradle.enterprise.build_validation.experimentDir"))
 }

@@ -18,12 +18,12 @@ invoke_gradle() {
   args+=(--init-script "${lib_dir_rel}/gradle/capture-published-build-scan.gradle")
 
   if [ -n "${ge_server}" ]; then
-    args+=("-Pcom.gradle.enterprise.init.script.server=${ge_server}")
+    args+=("-Pcom.gradle.enterprise.build_validation.server=${ge_server}")
   fi
 
-  args+=(-Pcom.gradle.enterprise.init.script.experimentDir="${EXP_DIR}")
-  args+=(-Pcom.gradle.enterprise.init.script.expId="${EXP_SCAN_TAG}")
-  args+=(-Pcom.gradle.enterprise.init.script.runId="${RUN_ID}")
+  args+=(-Pcom.gradle.enterprise.build_validation.experimentDir="${EXP_DIR}")
+  args+=(-Pcom.gradle.enterprise.build_validation.expId="${EXP_SCAN_TAG}")
+  args+=(-Pcom.gradle.enterprise.build_validation.runId="${RUN_ID}")
   args+=(-Dscan.capture-task-input-files)
 
   # shellcheck disable=SC2206

@@ -47,5 +47,5 @@ def registerCallbacks(gradleEnterprise, rootProjectName) {
 
 File getExperimentDir() {
     def projectProperties = gradle.startParameter.projectProperties
-    new File(projectProperties.get("com.gradle.enterprise.init.script.experimentDir"))
+    new File(projectProperties.get("com.gradle.enterprise.build_validation.experimentDir"))
 }
