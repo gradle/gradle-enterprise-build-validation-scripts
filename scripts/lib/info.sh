@@ -16,6 +16,10 @@ infof() {
   printf "${INFO_COLOR}${format_string}${RESTORE}\n" "$@"
 }
 
+warn() {
+  echo "${WARN_COLOR}WARNING: $*${RESTORE}"
+}
+
 debug() {
   if [[ "$_arg_debug" == "on" ]]; then
     echo "${DEBUG_COLOR}$*${RESTORE}"
@@ -55,7 +59,7 @@ print_warnings() {
   if [ -f "${warnings_file}" ]; then
     while read -r l; do
       print_bl
-      printf "${YELLOW}${BOLD}WARNING: %s${RESTORE}\n" "$l"
+      warn "$1"
     done <"${warnings_file}"
   fi
 }
