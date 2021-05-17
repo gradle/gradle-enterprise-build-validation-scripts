@@ -19,7 +19,7 @@ print_option_usage() {
        _print_option_usage "-b, --git-branch" "Specifies the branch for the Git repository to validate."
        ;;
     -e)
-       _print_option_usage "-e, --enable-gradle-enterprise" "Enables Gradle Enterprise on a project that it is not already enabled on."
+       _print_option_usage "-e, --enable-gradle-enterprise" "Enables Gradle Enterprise on a project not already connected."
        ;;
     -g)
        _print_option_usage "-g, --goals" "Declares the Maven goals to invoke."
@@ -43,7 +43,7 @@ print_option_usage() {
        _print_option_usage "-r, --git-repo" "Specifies the URL for the Git repository to validate."
        ;;
     -s)
-       _print_option_usage "-s, --gradle-enterprise-server" "Enables Gradle Enterprise on a project not already connected."
+       _print_option_usage "-s, --gradle-enterprise-server" "Specifies the URL for the Gradle Enterprise server to connect to."
        ;;
     -t)
        _print_option_usage "-t, --tasks" "Declares the Gradle tasks to invoke."
