@@ -13,8 +13,11 @@ invoke_maven() {
     -Dscan.tag."${EXP_SCAN_TAG}"
     -Dscan.tag."${RUN_ID}"
     -Dorg.slf4j.simpleLogger.log.gradle.goal.cache=debug
-    "$@"
   )
+  # shellcheck disable=SC2206
+  args+=(${extra_args})
+  args+=("$@")
+
   debug ./mvnw "${args[@]}"
   ./mvnw "${args[@]}" || die "ERROR: The experiment cannot continue because the build failed." $?
 
