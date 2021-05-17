@@ -35,7 +35,7 @@ git_get_commit_id() {
 }
 
 git_checkout_commit() {
-  local commit clone_dir rc
+  local commit clone_dir
   commit="$1"
 
   info "Cloning ${project_name} and checking out commit ${commit}"
