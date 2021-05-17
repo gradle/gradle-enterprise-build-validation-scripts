@@ -7,6 +7,7 @@ process_arguments() {
   git_branch="${_arg_git_branch}"
   project_name="$(basename -s .git "${git_repo}")"
   project_dir="${_arg_project_dir}"
+  # shellcheck disable=SC2154 # _arg_tasks is only defined by the Gradle scripts
   tasks="${_arg_tasks}"
   # shellcheck disable=SC2154 # _arg_goals is only defined by the Maven scripts
   if [ -n "${_arg_goals}" ]; then
