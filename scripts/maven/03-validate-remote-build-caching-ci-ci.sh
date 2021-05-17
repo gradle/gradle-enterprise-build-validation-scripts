@@ -137,6 +137,7 @@ print_summary() {
  print_experiment_info
  print_build_scans
  print_warning_if_values_different
+ print_warnings_for_failed_builds
  print_bl
  print_quick_links
 }
@@ -193,7 +194,18 @@ print_quick_links() {
 print_warning_if_values_different() {
   if [[ "${value_mismatch_detected}" == "true" ]]; then
     print_bl
-    info "${ORANGE}WARNING: Differences were detected between the two builds (highlighted above in orange).${RESTORE}"
+    warn "Differences were detected between the two builds (highlighted above in orange)."
+  fi
+}
+
+print_warnings_for_failed_builds() {
+  if [[ "${build_outcomes[0]}" == "FAILED" ]]; then
+    print_bl
+    warn "The first build (${build_scan_ids[0]}) failed."
+  fi
+  if [[ "${build_outcomes[1]}" == "FAILED" ]]; then
+    print_bl
+    warn "The second build (${build_scan_ids[2]}) failed."
   fi
 }
 
