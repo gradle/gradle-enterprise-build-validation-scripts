@@ -196,7 +196,7 @@ public class ExportApiClient {
 
         private void onBuildFinished(JsonNode eventData) {
             buildOutcome.complete(
-                eventData.hasNonNull("failure") ? "FAILED" : "SUCCESS"
+                eventData.hasNonNull("failureId") || eventData.hasNonNull("failure") ? "FAILED" : "SUCCESS"
             );
         }
 
