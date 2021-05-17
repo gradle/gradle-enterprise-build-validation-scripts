@@ -59,7 +59,7 @@ print_warnings() {
   if [ -f "${warnings_file}" ]; then
     while read -r l; do
       print_bl
-      warn "$1"
+      warn "$l"
     done <"${warnings_file}"
   fi
 }
