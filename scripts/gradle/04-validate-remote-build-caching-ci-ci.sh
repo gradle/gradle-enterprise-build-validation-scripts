@@ -169,7 +169,7 @@ comparison_summary_row() {
     value="$1"
   else
     value_mismatch_detected=true
-    value="${ORANGE}${1} | ${2}${RESTORE}"
+    value="${ORANGE}${1:-<unknown>} | ${2:-<unknown>}${RESTORE}"
   fi
 
   summary_row "${header}" "${value}"
