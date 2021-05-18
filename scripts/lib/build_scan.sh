@@ -166,4 +166,41 @@ fetch_and_read_build_validation_data() {
      requested_tasks+=("$field_8")
      build_outcomes+=("$field_9")
   done <<< "${fetched_data}"
+
+  detect_warnings_from_build_scans
+}
+
+detect_warnings_from_build_scans() {
+  local unknown_values=false
+  for (( i=0; i<2; i++ )); do
+    if [ -z "${project_names[i]}" ] ||
+       [ -z "${git_repos[i]}" ] ||
+       [ -z "${git_branches[i]}" ] ||
+       [ -z "${git_commit_ids[i]}" ] ||
+       [ -z "${requested_tasks[i]}" ]; then
+      unknown_values=true
+    fi
+  done
+
+  local value_mismatch=false
+  if [[ "${project_names[0]}" != "${project_names[2]}" ]] ||
+     [[ "${git_repos[0]}" != "${git_repos[2]}" ]] ||
+     [[ "${git_branches[0]}" != "${git_branches[2]}" ]] ||
+     [[ "${git_commit_ids[0]}" != "${git_commit_ids[2]}" ]] ||
+     [[ "${requested_tasks[0]}" != "${requested_tasks[2]}" ]]; then
+    value_mismatch=true
+  fi
+
+  if [[ "${value_mismatch}" == "true" ]]; then
+    warnings+=("Differences were detected between the two builds that may skew the outcome of the experiment.")
+  fi
+  if [[ "${unknown_values}" == "true" ]]; then
+    warnings+=("Some of the properties could not be determined, making it unclear if the experiment has run correctly.")
+  fi
+  if [[ "${build_outcomes[0]}" == "FAILED" ]]; then
+    warnings+=("The first build failed and may skew the outcome of the experiment.")
+  fi
+  if [[ "${build_outcomes[1]}" == "FAILED" ]]; then
+    warnings+=("The second build failed and may skew the outcome of the experiment.")
+  fi
 }

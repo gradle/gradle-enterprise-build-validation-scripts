@@ -136,7 +136,7 @@ fetch_extended_build_scan_data() {
 print_summary() {
   print_experiment_info
   print_build_scans
-  print_build_scan_data_warnings
+  print_warnings
   print_bl
   print_quick_links
 }
@@ -196,37 +196,6 @@ print_quick_links() {
   summary_row "Executed non-cacheable goals:" "${base_urls[0]}/s/${build_scan_ids[1]}/timeline?cacheability=any_non-cacheable&outcome=successful,failed&sort=longest"
   summary_row "Build caching statistics:" "${base_urls[0]}/s/${build_scan_ids[1]}/performance/build-cache"
   summary_row "Goal inputs comparison:" "${base_urls[0]}/c/${build_scan_ids[0]}/${build_scan_ids[1]}/goal-inputs?cacheability=cacheable"
-}
-
-print_build_scan_data_warnings() {
-  local warnings
-  warnings=()
-
-  local unknown_values=false
-  for (( i=0; i<2; i++ )); do
-    if [ -z "${project_names[i]}" ] ||
-       [ -z "${git_repos[i]}" ] ||
-       [ -z "${git_branches[i]}" ] ||
-       [ -z "${git_commit_ids[i]}" ] ||
-       [ -z "${requested_tasks[i]}" ]; then
-      unknown_values=true
-    fi
-  done
-
-  if [[ "${value_mismatch_detected}" == "true" ]]; then
-    warnings+=("Differences were detected between the two builds that may skew the outcome of the experiment.")
-  fi
-  if [[ "${unknown_values}" == "true" ]]; then
-    warnings+=("Some of the properties could not be determined, making it unclear if the experiment has run correctly.")
-  fi
-  if [[ "${build_outcomes[0]}" == "FAILED" ]]; then
-    warnings+=("The first build failed and may skew the outcome of the experiment.")
-  fi
-  if [[ "${build_outcomes[1]}" == "FAILED" ]]; then
-    warnings+=("The second build failed and may skew the outcome of the experiment.")
-  fi
-
-  print_warnings
 }
 
 print_introduction() {
