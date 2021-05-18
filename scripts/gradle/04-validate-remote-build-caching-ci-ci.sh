@@ -202,8 +202,22 @@ print_build_scan_data_warnings() {
   local warnings
   warnings=()
 
+  local unknown_values=false
+  for (( i=0; i<2; i++ )); do
+    if [ -z "${project_names[i]}" ] ||
+       [ -z "${git_repos[i]}" ] ||
+       [ -z "${git_branches[i]}" ] ||
+       [ -z "${git_commit_ids[i]}" ] ||
+       [ -z "${requested_tasks[i]}" ]; then
+      unknown_values=true
+    fi
+  done
+
   if [[ "${value_mismatch_detected}" == "true" ]]; then
     warnings+=("Differences were detected between the two builds that may skew the outcome of the experiment.")
+  fi
+  if [[ "${unknown_values}" == "true" ]]; then
+    warnings+=("Some of the properties could not be determined, making it unclear if the experiment has run correctly.")
   fi
   if [[ "${build_outcomes[0]}" == "FAILED" ]]; then
     warnings+=("The first build failed and may skew the outcome of the experiment.")
