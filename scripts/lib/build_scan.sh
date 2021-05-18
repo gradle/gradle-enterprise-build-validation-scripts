@@ -183,11 +183,11 @@ detect_warnings_from_build_scans() {
   done
 
   local value_mismatch=false
-  if [[ "${project_names[0]}" != "${project_names[2]}" ]] ||
-     [[ "${git_repos[0]}" != "${git_repos[2]}" ]] ||
-     [[ "${git_branches[0]}" != "${git_branches[2]}" ]] ||
-     [[ "${git_commit_ids[0]}" != "${git_commit_ids[2]}" ]] ||
-     [[ "${requested_tasks[0]}" != "${requested_tasks[2]}" ]]; then
+  if [[ "${project_names[0]}" != "${project_names[1]}" ]] ||
+     [[ "${git_repos[0]}" != "${git_repos[1]}" ]] ||
+     [[ "${git_branches[0]}" != "${git_branches[1]}" ]] ||
+     [[ "${git_commit_ids[0]}" != "${git_commit_ids[1]}" ]] ||
+     [[ "${requested_tasks[0]}" != "${requested_tasks[1]}" ]]; then
     value_mismatch=true
   fi
 
