@@ -10,7 +10,7 @@ print_option_usage() {
 
   case "$key" in
     -a)
-       _print_option_usage "-a, --args" "Declares additional arguments to pass to ${BUILD_TOOL}."
+       _print_option_usage "-a, --args" "Specifies additional arguments to pass to ${BUILD_TOOL}."
        ;;
     -A)
        _print_option_usage "-A, --access-key" "Specifies the access key to use when authenticating with Gradle Enterprise to fetch build scan data."
@@ -22,7 +22,7 @@ print_option_usage() {
        _print_option_usage "-e, --enable-gradle-enterprise" "Enables Gradle Enterprise on a project not already connected."
        ;;
     -g)
-       _print_option_usage "-g, --goals" "Declares the Maven goals to invoke."
+       _print_option_usage "-g, --goals" "Specifies the Maven goals to invoke."
        ;;
     -h)
        _print_option_usage "-h, --help" "Shows this help message."
@@ -46,7 +46,7 @@ print_option_usage() {
        _print_option_usage "-s, --gradle-enterprise-server" "Specifies the URL for the Gradle Enterprise server to connect to."
        ;;
     -t)
-       _print_option_usage "-t, --tasks" "Declares the Gradle tasks to invoke."
+       _print_option_usage "-t, --tasks" "Specifies the Gradle tasks to invoke."
        ;;
     -U)
        _print_option_usage "-U, --username" "Specifies the username to use when authenticating with Gradle Enterprise to fetch build scan data."
