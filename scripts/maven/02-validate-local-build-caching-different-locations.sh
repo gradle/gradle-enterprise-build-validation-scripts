@@ -235,9 +235,10 @@ explain_first_build() {
 $(print_separator)
 ${HEADER_COLOR}Run first build${RESTORE}
 
-Now that the project has been checked out, the first build can be run with the
-given Maven goals. The build will be invoked with the ‘clean’ goal included and
-local build caching enabled. An empty local build cache will be used.
+Now that the project has been checked out and copied to a different location,
+the first build can be run with the given Maven goals. The build will be
+invoked with the ‘clean’ goal included and local build caching enabled. An empty
+local build cache will be used.
 
 ${USER_ACTION_COLOR}Press <Enter> to run the first build of the experiment.${RESTORE}
 EOF
@@ -266,11 +267,10 @@ explain_second_build() {
 $(print_separator)
 ${HEADER_COLOR}Run second build${RESTORE}
 
-Now that the first build has finished successfully and the project has been
-copied into a different location, the second build can be run with the same
-Maven goals. The build will again be invoked with the ‘clean’ goal included
-and local build caching enabled. The local build cache populated during the
-first build will be used.
+Now that the first build has finished successfully, the second build can be run
+with the same Maven goals. The build will again be invoked with the ‘clean’
+goal included and local build caching enabled. The local build cache populated
+during the first build will be used.
 
 ${USER_ACTION_COLOR}Press <Enter> to run the second build.${RESTORE}
 EOF
