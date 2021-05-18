@@ -53,11 +53,15 @@ public class FetchBuildValidationData implements Callable<Integer> {
     }
 
     private BuildValidationData fetchBuildValidationData(URL buildScanUrl, CustomValueKeys customValueKeys) {
+        System.err.print("Fetching build scan data for " + buildScanUrl);
         var baseUrl = baseUrlFrom(buildScanUrl);
         var apiClient = new ExportApiClient(baseUrl, createAuthenticator(buildScanUrl), customValueKeys);
 
         var buildScanId = buildScanIdFrom(buildScanUrl);
-        return apiClient.fetchBuildValidationData(buildScanId);
+        var data = apiClient.fetchBuildValidationData(buildScanId);
+
+        System.err.println(" DONE");
+        return data;
     }
 
     private Authenticator createAuthenticator(URL buildScanUrl) {
