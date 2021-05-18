@@ -48,9 +48,9 @@ execute() {
 
   make_experiment_dir
   make_local_cache_dir
-  git_clone_project "/1"
+  git_clone_project "first-build/${project_name}"
   print_bl
-  git_copy_project "${project_name}/1" "${project_name}/2"
+  git_copy_project "first-build/${project_name}" "second-build"
 
   print_bl
   execute_first_build
@@ -83,12 +83,12 @@ wizard_execute() {
   print_bl
   make_experiment_dir
   make_local_cache_dir
-  git_clone_project "/1"
+  git_clone_project "first-build/${project_name}"
 
   print_bl
   explain_copy_project
   print_bl
-  git_copy_project "${project_name}/1" "${project_name}/2"
+  git_copy_project "first-build/${project_name}" "second-build"
 
   print_bl
   explain_first_build
@@ -126,7 +126,7 @@ execute_second_build() {
   info "Running second build:"
   info "./mvnw -Dscan.tag.${EXP_SCAN_TAG} -Dscan.value.runId=${RUN_ID} clean ${tasks}$(print_extra_args)"
 
-  cd "${EXP_DIR}/${project_name}/2" || die "Unable to cd to ${EXP_DIR}/${project_name}/2" 2
+  cd "${EXP_DIR}/second-build/${project_name}" || die "Unable to cd to ${EXP_DIR}/second-build/${project_name}" 2
 
   # shellcheck disable=SC2086  # we want tasks to expand with word splitting in this case
   invoke_maven \

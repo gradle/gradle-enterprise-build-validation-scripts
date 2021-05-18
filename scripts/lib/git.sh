@@ -1,10 +1,14 @@
 #!/usr/bin/env bash
 
 git_clone_project() {
-   suffix="$1"
+   local target_subdir="$1"
+   if [ -z "${target_subdir}" ]; then
+       target_subdir="${project_name}"
+   fi
+
    info "Cloning ${project_name}"
 
-   local clone_dir="${EXP_DIR:?}/${project_name:?}${suffix}"
+   local clone_dir="${EXP_DIR:?}/${target_subdir:?}"
 
    local branch=""
    if [ -n "${git_branch}" ]; then
@@ -20,11 +24,12 @@ git_clone_project() {
 git_copy_project() {
    local original_repo copy_repo num_files
    original_repo="$1"
-   copy_repo="$2"
+   copy_dest="$2"
    info "Copying ${project_name}"
 
-   rm -rf "${EXP_DIR:?}/${copy_repo:?}"
-   num_files=$(cp -R -v "${EXP_DIR:?}/${original_repo:?}" "${EXP_DIR:?}/${copy_repo:?}" | wc -l)
+   rm -rf "${EXP_DIR:?}/${copy_dest:?}"
+   mkdir -p "${EXP_DIR:?}/${copy_dest:?}"
+   num_files=$(cp -R -v "${EXP_DIR:?}/${original_repo:?}" "${EXP_DIR:?}/${copy_dest:?}" | wc -l)
    printf "Copied %'d files.\n" "${num_files}"
 }
 
