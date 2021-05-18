@@ -2,6 +2,8 @@
 
 readonly SUMMARY_FMT="%-30s%s"
 
+warnings=()
+
 info() {
   echo "${INFO_COLOR}$*${RESTORE}"
 }
@@ -54,13 +56,22 @@ die() {
   exit "${_ret}"
 }
 
-print_warnings() {
+read_build_warnings() {
   local warnings_file="${EXP_DIR}/warnings.txt"
   if [ -f "${warnings_file}" ]; then
     while read -r l; do
-      print_bl
-      warn "$l"
+      warnings+=("$l")
     done <"${warnings_file}"
+  fi
+}
+
+print_warnings() {
+  read_build_warnings
+  if [[ ${#warnings[@]} -gt 0 ]]; then
+    print_bl
+    for (( i=0; i<${#warnings[@]}; i++ )); do
+      warn "${warnings[i]}"
+    done
   fi
 }
 

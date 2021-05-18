@@ -226,12 +226,7 @@ print_build_scan_data_warnings() {
     warnings+=("The second build failed and may skew the outcome of the experiment.")
   fi
 
-  if [[ ${#warnings[@]} > 0 ]]; then
-    print_bl
-    for (( i=0; i<${#warnings[@]}; i++ )); do
-      warn "${warnings[i]}"
-    done
-  fi
+  print_warnings
 }
 
 print_introduction() {

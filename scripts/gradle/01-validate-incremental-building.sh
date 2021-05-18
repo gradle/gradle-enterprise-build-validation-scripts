@@ -54,7 +54,6 @@ execute() {
   print_bl
   execute_second_build
 
-  print_warnings
   print_bl
   print_summary
   print_bl
@@ -90,9 +89,6 @@ wizard_execute() {
   print_bl
   execute_second_build
 
-  print_warnings
-  explain_warnings
-
   print_bl
   explain_measure_build_results
   print_bl
@@ -117,24 +113,25 @@ execute_second_build() {
 }
 
 print_summary() {
- read_build_scan_metadata
- print_experiment_info
- print_build_scans
- print_bl
- print_quick_links
+  read_build_scan_metadata
+  print_experiment_info
+  print_build_scans
+  print_warnings
+  print_bl
+  print_quick_links
 }
 
 print_build_scans() {
- summary_row "Build scan first build:" "${build_scan_urls[0]}"
- summary_row "Build scan second build:" "${build_scan_urls[1]}"
+  summary_row "Build scan first build:" "${build_scan_urls[0]}"
+  summary_row "Build scan second build:" "${build_scan_urls[1]}"
 }
 
 print_quick_links() {
- info "Investigation Quick Links"
- info "-------------------------"
- summary_row "Task execution overview:" "${base_urls[0]}/s/${build_scan_ids[1]}/performance/execution"
- summary_row "Executed tasks timeline:" "${base_urls[0]}/s/${build_scan_ids[1]}/timeline?outcome=SUCCESS,FAILED&sort=longest"
- summary_row "Task inputs comparison:" "${base_urls[0]}/c/${build_scan_ids[0]}/${build_scan_ids[1]}/task-inputs"
+  info "Investigation Quick Links"
+  info "-------------------------"
+  summary_row "Task execution overview:" "${base_urls[0]}/s/${build_scan_ids[1]}/performance/execution"
+  summary_row "Executed tasks timeline:" "${base_urls[0]}/s/${build_scan_ids[1]}/timeline?outcome=SUCCESS,FAILED&sort=longest"
+  summary_row "Task inputs comparison:" "${base_urls[0]}/c/${build_scan_ids[0]}/${build_scan_ids[1]}/task-inputs"
 }
 
 print_introduction() {

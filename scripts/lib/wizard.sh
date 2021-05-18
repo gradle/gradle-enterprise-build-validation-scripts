@@ -110,21 +110,3 @@ EOF
   print_wizard_text "${text}"
   wait_for_enter
 }
-
-explain_warnings() {
-  local warnings_file="${EXP_DIR}/${project_name}/warnings.txt"
-
-  if [ -f "${warnings_file}" ]; then
-    local text
-    IFS='' read -r -d '' text <<EOF
-$(print_separator)
-When running the builds, some suboptimal configurations where detected which
-are listed above. These aren't necessarily problems, but resolving these
-warnings will allow you to take full advantage of Gradle Enterprise.
-
-${USER_ACTION_COLOR}Press <Enter> to continue.${RESTORE}
-EOF
-    print_wizard_text "${text}"
-    wait_for_enter
- fi
-}

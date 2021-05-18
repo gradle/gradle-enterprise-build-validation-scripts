@@ -58,7 +58,6 @@ execute() {
   print_bl
   execute_second_build
 
-  print_warnings
   print_bl
   print_summary
   print_bl
@@ -100,9 +99,6 @@ wizard_execute() {
   print_bl
   execute_second_build
 
-  print_warnings
-  explain_warnings
-
   print_bl
   explain_measure_build_results
   print_bl
@@ -137,27 +133,28 @@ execute_second_build() {
 }
 
 print_summary() {
- read_build_scan_metadata
- print_experiment_info
- print_build_scans
- print_bl
- print_quick_links
+  read_build_scan_metadata
+  print_experiment_info
+  print_build_scans
+  print_warnings
+  print_bl
+  print_quick_links
 }
 
 print_build_scans() {
- summary_row "Build scan first build:" "${build_scan_urls[0]}"
- summary_row "Build scan second build:" "${build_scan_urls[1]}"
+  summary_row "Build scan first build:" "${build_scan_urls[0]}"
+  summary_row "Build scan second build:" "${build_scan_urls[1]}"
 }
 
 print_quick_links() {
- info "Investigation Quick Links"
- info "-------------------------"
- summary_row "Goal execution overview:" "${base_urls[0]}/s/${build_scan_ids[1]}/performance/execution"
- summary_row "Executed goals timeline:" "${base_urls[0]}/s/${build_scan_ids[1]}/timeline?outcome=successful,failed&sort=longest"
- summary_row "Executed cacheable goals:" "${base_urls[0]}/s/${build_scan_ids[1]}/timeline?cacheability=cacheable&outcome=successful,failed&sort=longest"
- summary_row "Executed non-cacheable goals:" "${base_urls[0]}/s/${build_scan_ids[1]}/timeline?cacheability=any_non-cacheable&outcome=successful,failed&sort=longest"
- summary_row "Build caching statistics:" "${base_urls[0]}/s/${build_scan_ids[1]}/performance/build-cache"
- summary_row "Goal inputs comparison:" "${base_urls[0]}/c/${build_scan_ids[0]}/${build_scan_ids[1]}/goal-inputs?cacheability=cacheable"
+  info "Investigation Quick Links"
+  info "-------------------------"
+  summary_row "Goal execution overview:" "${base_urls[0]}/s/${build_scan_ids[1]}/performance/execution"
+  summary_row "Executed goals timeline:" "${base_urls[0]}/s/${build_scan_ids[1]}/timeline?outcome=successful,failed&sort=longest"
+  summary_row "Executed cacheable goals:" "${base_urls[0]}/s/${build_scan_ids[1]}/timeline?cacheability=cacheable&outcome=successful,failed&sort=longest"
+  summary_row "Executed non-cacheable goals:" "${base_urls[0]}/s/${build_scan_ids[1]}/timeline?cacheability=any_non-cacheable&outcome=successful,failed&sort=longest"
+  summary_row "Build caching statistics:" "${base_urls[0]}/s/${build_scan_ids[1]}/performance/build-cache"
+  summary_row "Goal inputs comparison:" "${base_urls[0]}/c/${build_scan_ids[0]}/${build_scan_ids[1]}/goal-inputs?cacheability=cacheable"
 }
 
 print_introduction() {
