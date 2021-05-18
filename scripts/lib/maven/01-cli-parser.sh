@@ -189,7 +189,7 @@ _args_common=("${_args_common_opt[@]}" "${_args_common_pos[@]}")
 # [ <-- needed because of Argbash
 function print_help() {
   print_version
-  echo "Assists in validating that a Maven build is optimized for using the local build cache (while building in the same location)."
+  echo "Assists in validating that a Maven build is optimized for local build caching when invoked from the same location."
   print_bl
   print_script_usage
   print_option_usage -i
