@@ -134,30 +134,29 @@ fetch_extended_build_scan_data() {
 }
 
 print_summary() {
- print_experiment_info
- print_build_scans
- print_warning_if_values_different
- print_warnings_for_failed_builds
- print_bl
- print_quick_links
+  print_experiment_info
+  print_build_scans
+  print_build_scan_data_warnings
+  print_bl
+  print_quick_links
 }
 
 # Overrides the info.sh#print_experiment_info
 print_experiment_info() {
- info "Summary"
- info "-------"
- comparison_summary_row "Project:" "${project_names[@]}"
- comparison_summary_row "Git repo:" "${git_repos[@]}"
- comparison_summary_row "Git branch:" "${git_branches[@]}"
- comparison_summary_row "Git commit id:" "${git_commit_ids[@]}"
- summary_row "Project dir:" ""
- comparison_summary_row "Gradle tasks:" "${requested_tasks[@]}"
- summary_row "Gradle arguments:" ""
- summary_row "Experiment:" "${EXP_NO} ${EXP_NAME}"
- summary_row "Experiment id:" "${EXP_SCAN_TAG}"
- summary_row "Experiment run id:" "<not applicable>"
- summary_row "Experiment artifact dir:" "<not applicable>"
- summary_row "Custom value mapping file:" "${mapping_file:-<none>}"
+  info "Summary"
+  info "-------"
+  comparison_summary_row "Project:" "${project_names[@]}"
+  comparison_summary_row "Git repo:" "${git_repos[@]}"
+  comparison_summary_row "Git branch:" "${git_branches[@]}"
+  comparison_summary_row "Git commit id:" "${git_commit_ids[@]}"
+  summary_row "Project dir:" ""
+  comparison_summary_row "Gradle tasks:" "${requested_tasks[@]}"
+  summary_row "Gradle arguments:" ""
+  summary_row "Experiment:" "${EXP_NO} ${EXP_NAME}"
+  summary_row "Experiment id:" "${EXP_SCAN_TAG}"
+  summary_row "Experiment run id:" "<not applicable>"
+  summary_row "Experiment artifact dir:" "<not applicable>"
+  summary_row "Custom value mapping file:" "${mapping_file:-<none>}"
 }
 
 comparison_summary_row() {
@@ -189,31 +188,35 @@ print_build_scans() {
 }
 
 print_quick_links() {
- info "Investigation Quick Links"
- info "-------------------------"
- summary_row "Task execution overview:" "${base_urls[0]}/s/${build_scan_ids[1]}/performance/execution"
- summary_row "Executed tasks timeline:" "${base_urls[0]}/s/${build_scan_ids[1]}/timeline?outcome=SUCCESS,FAILED&sort=longest"
- summary_row "Executed cacheable tasks:" "${base_urls[0]}/s/${build_scan_ids[1]}/timeline?cacheability=cacheable,overlapping_outputs,validation_failure&outcome=SUCCESS,FAILED&sort=longest"
- summary_row "Executed non-cacheable tasks:" "${base_urls[0]}/s/${build_scan_ids[1]}/timeline?cacheability=any_non-cacheable&outcome=SUCCESS,FAILED&sort=longest"
- summary_row "Build caching statistics:" "${base_urls[0]}/s/${build_scan_ids[1]}/performance/build-cache"
- summary_row "Task inputs comparison:" "${base_urls[0]}/c/${build_scan_ids[0]}/${build_scan_ids[1]}/task-inputs?cacheability=cacheable"
+  info "Investigation Quick Links"
+  info "-------------------------"
+  summary_row "Task execution overview:" "${base_urls[0]}/s/${build_scan_ids[1]}/performance/execution"
+  summary_row "Executed tasks timeline:" "${base_urls[0]}/s/${build_scan_ids[1]}/timeline?outcome=SUCCESS,FAILED&sort=longest"
+  summary_row "Executed cacheable tasks:" "${base_urls[0]}/s/${build_scan_ids[1]}/timeline?cacheability=cacheable,overlapping_outputs,validation_failure&outcome=SUCCESS,FAILED&sort=longest"
+  summary_row "Executed non-cacheable tasks:" "${base_urls[0]}/s/${build_scan_ids[1]}/timeline?cacheability=any_non-cacheable&outcome=SUCCESS,FAILED&sort=longest"
+  summary_row "Build caching statistics:" "${base_urls[0]}/s/${build_scan_ids[1]}/performance/build-cache"
+  summary_row "Task inputs comparison:" "${base_urls[0]}/c/${build_scan_ids[0]}/${build_scan_ids[1]}/task-inputs?cacheability=cacheable"
 }
 
-print_warning_if_values_different() {
+print_build_scan_data_warnings() {
+  local warnings
+  warnings=()
+
   if [[ "${value_mismatch_detected}" == "true" ]]; then
-    print_bl
-    warn "Differences were detected between the two builds that may skew the outcome of the experiment."
+    warnings+=("Differences were detected between the two builds that may skew the outcome of the experiment.")
   fi
-}
-
-print_warnings_for_failed_builds() {
   if [[ "${build_outcomes[0]}" == "FAILED" ]]; then
-    print_bl
-    warn "The first build failed and may skew the outcome of the experiment."
+    warnings+=("The first build failed and may skew the outcome of the experiment.")
   fi
   if [[ "${build_outcomes[1]}" == "FAILED" ]]; then
+    warnings+=("The second build failed and may skew the outcome of the experiment.")
+  fi
+
+  if [[ ${#warnings[@]} > 0 ]]; then
     print_bl
-    warn "The second build failed and may skew the outcome of the experiment."
+    for (( i=0; i<${#warnings[@]}; i++ )); do
+      warn "${warnings[i]}"
+    done
   fi
 }
 
