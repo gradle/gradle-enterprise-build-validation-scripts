@@ -22,7 +22,7 @@ git_clone_project() {
 }
 
 git_copy_project() {
-   local original_repo copy_repo num_files
+   local original_repo copy_dest num_files
    original_repo="$1"
    copy_dest="$2"
    info "Copying ${project_name}"
