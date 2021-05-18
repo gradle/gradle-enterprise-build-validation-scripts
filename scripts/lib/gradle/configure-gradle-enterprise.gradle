@@ -1,5 +1,4 @@
 import org.gradle.util.GradleVersion
-import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 
 initscript {
@@ -17,10 +16,6 @@ initscript {
 // Don't run against the included builds (if the main build has any).
 def isTopLevelBuild = gradle.getParent() == null
 if (isTopLevelBuild) {
-    settingsEvaluated { settings ->
-        println("Init script invoked on a top-level project ${settings.rootProject.name}")
-    }
-
     def version = GradleVersion.current().baseVersion
     def atLeastGradle5 = version >= GradleVersion.version("5.0")
     def atLeastGradle6 = version >= GradleVersion.version("6.0")
@@ -71,7 +66,6 @@ void configureGradleEnterprise(gradleEnterprise) {
         addCustomData(buildScan)
     }
 }
-
 
 void addCustomData(buildScan) {
     def projectProperties = gradle.startParameter.projectProperties
