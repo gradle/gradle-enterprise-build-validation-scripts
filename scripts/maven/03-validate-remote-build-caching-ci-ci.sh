@@ -176,8 +176,16 @@ comparison_summary_row() {
 }
 
 print_build_scans() {
- summary_row "Build scan first build:" "${build_scan_urls[0]}"
- summary_row "Build scan second build:" "${build_scan_urls[1]}"
+ if [[ "${build_outcomes[0]}" == "FAILED" ]]; then
+   summary_row "Build scan first build:" "${WARNING_COLOR}${build_scan_urls[0]} FAILED${RESTORE}"
+ else
+   summary_row "Build scan first build:" "${build_scan_urls[0]}"
+ fi
+ if [[ "${build_outcomes[2]}" == "FAILED" ]]; then
+   summary_row "Build scan second build:" "${WARNING_COLOR}${build_scan_urls[1]} FAILED${RESTORE}"
+ else
+   summary_row "Build scan second build:" "${build_scan_urls[1]}"
+ fi
 }
 
 print_quick_links() {
@@ -194,18 +202,18 @@ print_quick_links() {
 print_warning_if_values_different() {
   if [[ "${value_mismatch_detected}" == "true" ]]; then
     print_bl
-    warn "Differences were detected between the two builds (highlighted above in orange)."
+    warn "Differences were detected between the two builds that may skew the outcome of the experiment."
   fi
 }
 
 print_warnings_for_failed_builds() {
   if [[ "${build_outcomes[0]}" == "FAILED" ]]; then
     print_bl
-    warn "The first build (${build_scan_ids[0]}) failed."
+    warn "The first build failed and may skew the outcome of the experiment."
   fi
   if [[ "${build_outcomes[1]}" == "FAILED" ]]; then
     print_bl
-    warn "The second build (${build_scan_ids[2]}) failed."
+    warn "The second build failed and may skew the outcome of the experiment."
   fi
 }
 

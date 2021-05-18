@@ -1,9 +1,15 @@
 #!/usr/bin/env bash
 
+# Arrays used by callers to access the fetched build scan data
 project_names=()
 base_urls=()
 build_scan_urls=()
 build_scan_ids=()
+git_repos+=()
+git_branches+=()
+git_commit_ids+=()
+requested_tasks+=()
+build_outcomes+=()
 
 read_build_scan_metadata() {
   # This isn't the most robust way to read a CSV,
