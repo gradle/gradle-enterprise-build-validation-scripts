@@ -47,7 +47,7 @@ git_checkout_commit() {
 
   info "Cloning ${project_name} and checking out commit ${commit}"
 
-  clone_dir="${EXP_DIR:?}/${project_name:?}${suffix}"
+  clone_dir="${EXP_DIR:?}/${project_name:?}"
 
   rm -rf "${clone_dir:?}"
   mkdir -p "${clone_dir}"
