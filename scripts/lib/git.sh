@@ -18,12 +18,14 @@ git_clone_project() {
 }
 
 git_copy_project() {
+   local original_repo copy_repo num_files
    original_repo="$1"
    copy_repo="$2"
-   info "Making a copy of ${project_name}"
+   info "Copying ${project_name}"
 
    rm -rf "${EXP_DIR:?}/${copy_repo:?}"
-   cp -R "${EXP_DIR:?}/${original_repo:?}" "${EXP_DIR:?}/${copy_repo:?}"
+   num_files=$(cp -R -v "${EXP_DIR:?}/${original_repo:?}" "${EXP_DIR:?}/${copy_repo:?}" | wc -l)
+   printf "Copied %'d files.\n" "${num_files}"
 }
 
 git_get_branch() {

@@ -49,6 +49,7 @@ execute() {
   make_experiment_dir
   make_local_cache_dir
   git_clone_project "/1"
+  print_bl
   git_copy_project "${project_name}/1" "${project_name}/2"
 
   print_bl
