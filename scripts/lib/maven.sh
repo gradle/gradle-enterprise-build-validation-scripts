@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
 readonly CAPTURE_SCANS_EXTENSION_JAR="${LIB_DIR}/maven/capture-published-build-scan-maven-extension-1.0.0-SNAPSHOT.jar"
+build_counter=0
 
 invoke_maven() {
   local args
@@ -24,9 +25,11 @@ invoke_maven() {
   args+=("$@")
 
   debug ./mvnw "${args[@]}"
-  ./mvnw "${args[@]}" || die "ERROR: The experiment cannot continue because the build failed." $?
-
+  if ./mvnw "${args[@]}"; then
+    build_outcomes+=("SUCCESSFUL")
+  else
+    build_outcomes+=("FAILED")
+  fi
   #shellcheck disable=SC2164  # This is extremely unlikely to fail, and even if it does, nothing terrible will happen.
   popd > /dev/null 2>&1
 }
-

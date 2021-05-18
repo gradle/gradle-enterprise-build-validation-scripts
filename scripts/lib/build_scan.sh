@@ -197,10 +197,4 @@ detect_warnings_from_build_scans() {
   if [[ "${unknown_values}" == "true" ]]; then
     warnings+=("Some of the properties could not be determined, making it unclear if the experiment has run correctly.")
   fi
-  if [[ "${build_outcomes[0]}" == "FAILED" ]]; then
-    warnings+=("The first build failed and may skew the outcome of the experiment.")
-  fi
-  if [[ "${build_outcomes[1]}" == "FAILED" ]]; then
-    warnings+=("The second build failed and may skew the outcome of the experiment.")
-  fi
 }

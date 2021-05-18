@@ -34,8 +34,11 @@ invoke_gradle() {
 
   debug ./gradlew "${args[@]}"
 
-  # shellcheck disable=SC2086
-  ./gradlew "${args[@]}" || die "ERROR: The experiment cannot continue because the build failed." $?
+  if ./gradlew "${args[@]}"; then
+      build_outcomes+=("SUCCESSFUL")
+  else
+      build_outcomes+=("FAILED")
+  fi
 
   if [ -f "${EXP_DIR}/build-scan-publish-error.txt" ]; then
     die "ERROR: The experiment cannot continue because publishing the build scan failed." 2
