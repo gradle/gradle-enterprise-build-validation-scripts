@@ -1,9 +1,7 @@
 package com.gradle.enterprise;
 
-import com.google.common.base.Strings;
 import com.gradle.enterprise.export_api.client.Authenticators;
 import com.gradle.enterprise.export_api.client.ExportApiClient;
-import okhttp3.Authenticator;
 import picocli.CommandLine;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
@@ -15,8 +13,6 @@ import java.net.URL;
 import java.nio.file.Path;
 import java.util.*;
 import java.util.concurrent.Callable;
-
-import static com.gradle.enterprise.export_api.client.Authenticators.lookupAccessKey;
 
 @Command(
     name = "fetch-build-validation-data",
@@ -67,7 +63,7 @@ public class FetchBuildValidationDataCommand implements Callable<Integer> {
             baseUrl = baseUrlFrom(buildScanUrl);
             buildScanId = buildScanIdFrom(buildScanUrl);
 
-            var apiClient = new ExportApiClient(baseUrl, createAuthenticator(buildScanUrl), customValueNames);
+            var apiClient = new ExportApiClient(baseUrl, Authenticators.createAuthenticator(buildScanUrl), customValueNames);
             var data = apiClient.fetchBuildValidationData(buildScanId);
 
             System.err.println(", done.");
@@ -112,21 +108,6 @@ public class FetchBuildValidationDataCommand implements Callable<Integer> {
             case 10: return "tenth";
             default: return String.valueOf(i);
         }
-    }
-
-    private Authenticator createAuthenticator(URL buildScanUrl) {
-        var accessKey = System.getenv("GRADLE_ENTERPRISE_ACCESS_KEY");
-        if(!Strings.isNullOrEmpty(accessKey)) {
-            return Authenticators.accessKey(accessKey);
-        }
-
-        var username = System.getenv("GRADLE_ENTERPRISE_USERNAME");
-        var password = System.getenv("GRADLE_ENTERPRISE_PASSWORD");
-        if(!Strings.isNullOrEmpty(username) && !Strings.isNullOrEmpty(password)) {
-            return Authenticators.basic(username, password);
-        }
-
-        return Authenticators.accessKey(lookupAccessKey(buildScanUrl));
     }
 
     private URL baseUrlFrom(URL buildScanUrl) {

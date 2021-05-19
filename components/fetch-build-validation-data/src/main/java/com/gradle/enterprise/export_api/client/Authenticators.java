@@ -14,6 +14,27 @@ import java.util.Base64;
 import java.util.Properties;
 
 public class Authenticators {
+    public static final class EnvVars {
+        public static final String ACCESS_KEY = "GRADLE_ENTERPRISE_ACCESS_KEY";
+        public static final String USERNAME = "GRADLE_ENTERPRISE_USERNAME";
+        public static final String PASSWORD = "GRADLE_ENTERPRISE_PASSWORD";
+    }
+
+    public static Authenticator createAuthenticator(URL buildScanUrl) {
+        var accessKey = System.getenv(EnvVars.ACCESS_KEY);
+        if(!Strings.isNullOrEmpty(accessKey)) {
+            return accessKey(accessKey);
+        }
+
+        var username = System.getenv(EnvVars.USERNAME);
+        var password = System.getenv(EnvVars.PASSWORD);
+        if(!Strings.isNullOrEmpty(username) && !Strings.isNullOrEmpty(password)) {
+            return basic(username, password);
+        }
+
+        return accessKey(lookupAccessKey(buildScanUrl));
+    }
+
     public static Authenticator basic(String username, String password) {
         return (route, response) -> {
             if (response.request().header("Authorization") != null) {
