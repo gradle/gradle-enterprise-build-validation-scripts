@@ -146,8 +146,7 @@ print_experiment_info() {
   summary_row "Maven arguments:" ""
   summary_row "Experiment:" "${EXP_NO} ${EXP_NAME}"
   summary_row "Experiment id:" "${EXP_SCAN_TAG}"
-  summary_row "Experiment run id:" "<not applicable>"
-  summary_row "Experiment artifact dir:" "<not applicable>"
+  summary_row "Experiment artifact dir:" "$(relative_path "${SCRIPT_DIR}" "${EXP_DIR}")"
   summary_row "Custom value mapping file:" "${mapping_file:-<none>}"
 }
 
