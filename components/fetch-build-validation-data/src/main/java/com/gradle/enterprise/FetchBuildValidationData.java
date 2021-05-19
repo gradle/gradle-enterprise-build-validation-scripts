@@ -57,7 +57,7 @@ public class FetchBuildValidationData implements Callable<Integer> {
         return ExitCode.OK;
     }
 
-    private BuildValidationData fetchBuildValidationData(int index, URL buildScanUrl, CustomValueKeys customValueKeys) {
+    private BuildValidationData fetchBuildValidationData(int index, URL buildScanUrl, CustomValueNames customValueNames) {
         System.err.print(fetchingMessageFor(index));
         URL baseUrl = null;
         String buildScanId = "";
@@ -65,7 +65,7 @@ public class FetchBuildValidationData implements Callable<Integer> {
             baseUrl = baseUrlFrom(buildScanUrl);
             buildScanId = buildScanIdFrom(buildScanUrl);
 
-            var apiClient = new ExportApiClient(baseUrl, createAuthenticator(buildScanUrl), customValueKeys);
+            var apiClient = new ExportApiClient(baseUrl, createAuthenticator(buildScanUrl), customValueNames);
             var data = apiClient.fetchBuildValidationData(buildScanId);
 
             System.err.println(", done.");
@@ -198,11 +198,11 @@ public class FetchBuildValidationData implements Callable<Integer> {
         return object.toString();
     }
 
-    private CustomValueKeys loadCustomValueKeys(Optional<Path> customValueMappingFile) throws IOException {
+    private CustomValueNames loadCustomValueKeys(Optional<Path> customValueMappingFile) throws IOException {
         if (customValueMappingFile.isEmpty()) {
-            return CustomValueKeys.DEFAULT;
+            return CustomValueNames.DEFAULT;
         } else {
-            return CustomValueKeys.loadFromFile(customValueMappingFile.get());
+            return CustomValueNames.loadFromFile(customValueMappingFile.get());
         }
     }
 
