@@ -19,9 +19,10 @@ public class Authenticators {
         public static final String ACCESS_KEY = "GRADLE_ENTERPRISE_ACCESS_KEY";
         public static final String USERNAME = "GRADLE_ENTERPRISE_USERNAME";
         public static final String PASSWORD = "GRADLE_ENTERPRISE_PASSWORD";
+        public static final String GRADLE_USER_HOME = "GRADLE_USER_HOME";
     }
 
-    public static Authenticator createAuthenticator(URL buildScanUrl) {
+    public static Authenticator createForUrl(URL url) {
         var accessKey = System.getenv(EnvVars.ACCESS_KEY);
         if(!Strings.isNullOrEmpty(accessKey)) {
             return accessKey(accessKey);
@@ -33,7 +34,7 @@ public class Authenticators {
             return basic(username, password);
         }
 
-        return accessKey(lookupAccessKey(buildScanUrl));
+        return accessKey(lookupAccessKey(url));
     }
 
     public static Authenticator basic(String username, String password) {
@@ -62,7 +63,7 @@ public class Authenticators {
         };
     }
 
-    public static String lookupAccessKey(URL buildScan) {
+    public static String lookupAccessKey(URL url) {
         var accessKeysFile = getGradleUserHomeDirectory().resolve("enterprise/keys.properties");
 
         if (Files.isRegularFile(accessKeysFile)) {
@@ -70,21 +71,21 @@ public class Authenticators {
                 var accessKeys = new Properties();
                 accessKeys.load(in);
 
-                if (!accessKeys.containsKey(buildScan.getHost())) {
-                    throw new AccessKeyNotFoundException(buildScan);
+                if (!accessKeys.containsKey(url.getHost())) {
+                    throw new AccessKeyNotFoundException(url);
                 }
-                return accessKeys.getProperty(buildScan.getHost());
+                return accessKeys.getProperty(url.getHost());
             } catch (IOException e) {
-                throw new AccessKeyNotFoundException(buildScan, e);
+                throw new AccessKeyNotFoundException(url, e);
             }
         }
-        throw new AccessKeyNotFoundException(buildScan);
+        throw new AccessKeyNotFoundException(url);
     }
 
     private static Path getGradleUserHomeDirectory() {
-        if (Strings.isNullOrEmpty(System.getenv("GRADLE_USER_HOME"))) {
+        if (Strings.isNullOrEmpty(System.getenv(EnvVars.GRADLE_USER_HOME))) {
             return Paths.get(System.getProperty("user.home"), ".gradle");
         }
-        return Paths.get(System.getenv("GRADLE_USER_HOME"));
+        return Paths.get(System.getenv(EnvVars.GRADLE_USER_HOME));
     }
 }

@@ -63,7 +63,7 @@ public class FetchBuildValidationDataCommand implements Callable<Integer> {
             baseUrl = baseUrlFrom(buildScanUrl);
             buildScanId = buildScanIdFrom(buildScanUrl);
 
-            var apiClient = new ExportApiClient(baseUrl, Authenticators.createAuthenticator(buildScanUrl), customValueNames);
+            var apiClient = new ExportApiClient(baseUrl, Authenticators.createForUrl(buildScanUrl), customValueNames);
             var data = apiClient.fetchBuildValidationData(buildScanId);
 
             System.err.println(", done.");
