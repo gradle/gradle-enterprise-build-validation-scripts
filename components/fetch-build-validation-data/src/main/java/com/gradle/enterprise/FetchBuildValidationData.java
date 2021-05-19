@@ -13,10 +13,7 @@ import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.Properties;
+import java.util.*;
 import java.util.concurrent.Callable;
 
 @Command(
@@ -25,6 +22,12 @@ import java.util.concurrent.Callable;
     description = "Fetches data relevant to build validation from the given build scans."
 )
 public class FetchBuildValidationData implements Callable<Integer> {
+
+    private final CommandLine.Help.ColorScheme colorScheme;
+
+    public FetchBuildValidationData(CommandLine.Help.ColorScheme colorScheme) {
+        this.colorScheme = colorScheme;
+    }
 
     public static class ExitCode {
         public static final int OK = 0;
@@ -37,7 +40,7 @@ public class FetchBuildValidationData implements Callable<Integer> {
     private Optional<Path> customValueMappingFile;
 
     @Option(names = {"--debug"}, description = "Prints additional debugging information while running.")
-    private Boolean debug;
+    private boolean debug;
 
     @Override
     public Integer call() throws Exception {
@@ -56,21 +59,41 @@ public class FetchBuildValidationData implements Callable<Integer> {
 
     private BuildValidationData fetchBuildValidationData(int index, URL buildScanUrl, CustomValueKeys customValueKeys) {
         System.err.print(fetchingMessageFor(index));
-        var baseUrl = baseUrlFrom(buildScanUrl);
-        var apiClient = new ExportApiClient(baseUrl, createAuthenticator(buildScanUrl), customValueKeys);
+        URL baseUrl = null;
+        String buildScanId = "";
+        try {
+            baseUrl = baseUrlFrom(buildScanUrl);
+            buildScanId = buildScanIdFrom(buildScanUrl);
 
-        var buildScanId = buildScanIdFrom(buildScanUrl);
-        var data = apiClient.fetchBuildValidationData(buildScanId);
+            var apiClient = new ExportApiClient(baseUrl, createAuthenticator(buildScanUrl), customValueKeys);
+            var data = apiClient.fetchBuildValidationData(buildScanId);
 
-        System.err.println(", done.");
-        return data;
+            System.err.println(", done.");
+            return data;
+        } catch (FetchBuildValidationDataException e) {
+            if (debug) {
+                System.err.println(" " + colorScheme.stackTraceText(e));
+            } else {
+                System.err.println(colorScheme.errorText(" ERROR: " + e.getMessage()));
+            }
+            return new BuildValidationData(
+                "",
+                buildScanId,
+                baseUrl,
+                "",
+                "",
+                "",
+                Collections.emptyList(),
+                ""
+            );
+        }
     }
 
     private String fetchingMessageFor(int index) {
         if (buildScanUrls.size() <= 10) {
             return String.format("Fetching %s build scan", integerToWord(index));
         }
-        return String.format("Fetching build scan %s", index);
+        return String.format("Fetching build scan %s", index + 1);
     }
 
     private String integerToWord(int i) {
@@ -157,8 +180,8 @@ public class FetchBuildValidationData implements Callable<Integer> {
     private void printRow(BuildValidationData buildValidationData) {
         System.out.println(String.format("%s,%s,%s,%s,%s,%s,%s,%s,%s",
             buildValidationData.getRootProjectName(),
-            buildValidationData.getGradleEnterpriseServerUrl(),
-            buildValidationData.getBuildScanUrl(),
+            toStringSafely(buildValidationData.getGradleEnterpriseServerUrl()),
+            toStringSafely(buildValidationData.getBuildScanUrl()),
             buildValidationData.getBuildScanId(),
             buildValidationData.getGitUrl(),
             buildValidationData.getGitBranch(),
@@ -166,6 +189,13 @@ public class FetchBuildValidationData implements Callable<Integer> {
             String.join(" ", buildValidationData.getRequestedTasks()),
             buildValidationData.getBuildOutcome()
         ));
+    }
+
+    private String toStringSafely(Object object) {
+        if (object == null) {
+            return "";
+        }
+        return object.toString();
     }
 
     private CustomValueKeys loadCustomValueKeys(Optional<Path> customValueMappingFile) throws IOException {
@@ -177,8 +207,10 @@ public class FetchBuildValidationData implements Callable<Integer> {
     }
 
     public static void main(String[] args) {
-        int exitCode = new CommandLine(new FetchBuildValidationData())
+        var colorScheme = CommandLine.Help.defaultColorScheme(CommandLine.Help.Ansi.AUTO);
+        int exitCode = new CommandLine(new FetchBuildValidationData(colorScheme))
             .setExecutionExceptionHandler(new PrintExceptionHandler())
+            .setColorScheme(colorScheme)
             .execute(args);
         System.exit(exitCode);
     }
