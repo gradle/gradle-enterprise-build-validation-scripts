@@ -1,10 +1,17 @@
 package com.gradle.enterprise.export_api.client;
 
+import com.google.common.base.Strings;
 import okhttp3.Authenticator;
 import okhttp3.Credentials;
 
+import java.io.IOException;
+import java.net.URL;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Base64;
+import java.util.Properties;
 
 public class Authenticators {
     public static Authenticator basic(String username, String password) {
@@ -31,5 +38,31 @@ public class Authenticators {
                 .header("Authorization", "Bearer " + encoded)
                 .build();
         };
+    }
+
+    public static String lookupAccessKey(URL buildScan) {
+        var accessKeysFile = getGradleUserHomeDirectory().resolve("enterprise/keys.properties");
+
+        if (Files.isRegularFile(accessKeysFile)) {
+            try (var in = Files.newBufferedReader(accessKeysFile)) {
+                var accessKeys = new Properties();
+                accessKeys.load(in);
+
+                if (!accessKeys.containsKey(buildScan.getHost())) {
+                    throw new AccessKeyNotFoundException(buildScan);
+                }
+                return accessKeys.getProperty(buildScan.getHost());
+            } catch (IOException e) {
+                throw new AccessKeyNotFoundException(buildScan, e);
+            }
+        }
+        throw new AccessKeyNotFoundException(buildScan);
+    }
+
+    private static Path getGradleUserHomeDirectory() {
+        if (Strings.isNullOrEmpty(System.getenv("GRADLE_USER_HOME"))) {
+            return Paths.get(System.getProperty("user.home"), ".gradle");
+        }
+        return Paths.get(System.getenv("GRADLE_USER_HOME"));
     }
 }
