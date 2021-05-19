@@ -133,17 +133,6 @@ fetch_extended_build_scan_data() {
   fetch_and_read_build_validation_data "${build_scan_urls[@]}"
 }
 
-# Overrides info.sh#print_summary
-print_summary() {
-  read_build_scan_metadata
-  print_experiment_info
-  summary_row "Custom value mapping file:" "${mapping_file:-<none>}"
-  print_build_scans
-  print_warnings
-  print_bl
-  print_quick_links
-}
-
 # Overrides info.sh#print_experiment_info
 print_experiment_info() {
   info "Summary"
