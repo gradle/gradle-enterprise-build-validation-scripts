@@ -70,7 +70,7 @@ public class FetchBuildValidationDataCommand implements Callable<Integer> {
 
             System.err.println(", done.");
             return data;
-        } catch (ExportApiClientException e) {
+        } catch (RuntimeException e) {
             if (debug) {
                 System.err.println(" " + colorScheme.stackTraceText(e));
             } else {
