@@ -141,7 +141,7 @@ print_experiment_info() {
   comparison_summary_row "Git repo:" "${git_repos[@]}"
   comparison_summary_row "Git branch:" "${git_branches[@]}"
   comparison_summary_row "Git commit id:" "${git_commit_ids[@]}"
-  summary_row "Project dir:" ""
+  summary_row "Project dir:" "<not available>"
   comparison_summary_row "Maven goals:" "${requested_tasks[@]}"
   summary_row "Maven arguments:" ""
   summary_row "Experiment:" "${EXP_NO} ${EXP_NAME}"
