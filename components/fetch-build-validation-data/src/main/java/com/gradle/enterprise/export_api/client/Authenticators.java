@@ -1,6 +1,7 @@
 package com.gradle.enterprise.export_api.client;
 
 import com.google.common.base.Strings;
+import com.google.common.net.HttpHeaders;
 import okhttp3.Authenticator;
 import okhttp3.Credentials;
 
@@ -37,26 +38,26 @@ public class Authenticators {
 
     public static Authenticator basic(String username, String password) {
         return (route, response) -> {
-            if (response.request().header("Authorization") != null) {
+            if (response.request().header(HttpHeaders.AUTHORIZATION) != null) {
                 return null; // Give up, we've already attempted to authenticate.
             }
 
             return response.request().newBuilder()
-                .header("Authorization", Credentials.basic(username, password))
+                .header(HttpHeaders.AUTHORIZATION, Credentials.basic(username, password))
                 .build();
         };
     }
 
     public static Authenticator accessKey(String accessKey) {
         return (route, response) -> {
-            if (response.request().header("Authorization") != null) {
+            if (response.request().header(HttpHeaders.AUTHORIZATION) != null) {
                 return null; // Give up, we've already attempted to authenticate.
             }
 
             var encoded = Base64.getEncoder().encodeToString(accessKey.getBytes(StandardCharsets.UTF_8));
 
             return response.request().newBuilder()
-                .header("Authorization", "Bearer " + encoded)
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + encoded)
                 .build();
         };
     }
