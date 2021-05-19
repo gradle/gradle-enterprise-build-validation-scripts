@@ -41,7 +41,7 @@ tasks.compileJava {
 }
 
 application {
-    mainClass.set("com.gradle.enterprise.FetchBuildValidationData")
+    mainClass.set("com.gradle.enterprise.Main")
 }
 
 publishing {
