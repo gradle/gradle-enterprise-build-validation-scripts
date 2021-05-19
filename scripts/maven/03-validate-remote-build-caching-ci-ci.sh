@@ -133,15 +133,18 @@ fetch_extended_build_scan_data() {
   fetch_and_read_build_validation_data "${build_scan_urls[@]}"
 }
 
+# Overrides info.sh#print_summary
 print_summary() {
+  read_build_scan_metadata
   print_experiment_info
+  summary_row "Custom value mapping file:" "${mapping_file:-<none>}"
   print_build_scans
   print_warnings
   print_bl
   print_quick_links
 }
 
-# Overrides the info.sh#print_experiment_info
+# Overrides info.sh#print_experiment_info
 print_experiment_info() {
   info "Summary"
   info "-------"
@@ -157,34 +160,6 @@ print_experiment_info() {
   summary_row "Experiment run id:" "<not applicable>"
   summary_row "Experiment artifact dir:" "<not applicable>"
   summary_row "Custom value mapping file:" "${mapping_file:-<none>}"
-}
-
-comparison_summary_row() {
-    local header value
-    header="$1"
-    shift;
-
-  if [[ "$1" == "$2" ]]; then
-    value="$1"
-  else
-    value_mismatch_detected=true
-    value="${ORANGE}${1} | ${2}${RESTORE}"
-  fi
-
-  summary_row "${header}" "${value}"
-}
-
-print_build_scans() {
- if [[ "${build_outcomes[0]}" == "FAILED" ]]; then
-   summary_row "Build scan first build:" "${WARNING_COLOR}${build_scan_urls[0]} FAILED${RESTORE}"
- else
-   summary_row "Build scan first build:" "${build_scan_urls[0]}"
- fi
- if [[ "${build_outcomes[2]}" == "FAILED" ]]; then
-   summary_row "Build scan second build:" "${WARNING_COLOR}${build_scan_urls[1]} FAILED${RESTORE}"
- else
-   summary_row "Build scan second build:" "${build_scan_urls[1]}"
- fi
 }
 
 print_quick_links() {

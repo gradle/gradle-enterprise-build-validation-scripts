@@ -128,20 +128,6 @@ execute_second_build() {
      clean ${tasks}
 }
 
-print_summary() {
-  read_build_scan_metadata
-  print_experiment_info
-  print_build_scans
-  print_warnings
-  print_bl
-  print_quick_links
-}
-
-print_build_scans() {
-  summary_row "Build scan first build:" "${build_scan_urls[0]}"
-  summary_row "Build scan second build:" "${build_scan_urls[1]}"
-}
-
 print_quick_links() {
   info "Investigation Quick Links"
   info "-------------------------"

@@ -32,6 +32,21 @@ summary_row() {
     infof "${SUMMARY_FMT}" "$1" "${2:-<unknown>}"
 }
 
+comparison_summary_row() {
+    local header value
+    header="$1"
+    shift;
+
+  if [[ "$1" == "$2" ]]; then
+    value="$1"
+  else
+    value_mismatch_detected=true
+    value="${WARN_COLOR}${1:-<unknown>} | ${2:-<unknown>}${RESTORE}"
+  fi
+
+  summary_row "${header}" "${value}"
+}
+
 print_bl() {
   if [[ "$_arg_debug" == "on" ]]; then
     debug "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
@@ -82,9 +97,13 @@ print_warnings() {
   fi
 }
 
-# This function should be overridden by each top-level build validation script
 print_summary() {
-    print_bl
+  read_build_scan_metadata
+  print_experiment_info
+  print_build_scans
+  print_warnings
+  print_bl
+  print_quick_links
 }
 
 print_experiment_info() {
@@ -111,6 +130,19 @@ print_experiment_info() {
  summary_row "Experiment id:" "${EXP_SCAN_TAG}"
  summary_row "Experiment run id:" "${RUN_ID}"
  summary_row "Experiment artifact dir:" "$(relative_path "${SCRIPT_DIR}" "${EXP_DIR}")"
+}
+
+print_build_scans() {
+ if [[ "${build_outcomes[0]}" == "FAILED" ]]; then
+   summary_row "Build scan first build:" "${WARN_COLOR}${build_scan_urls[0]} FAILED${RESTORE}"
+ else
+   summary_row "Build scan first build:" "${build_scan_urls[0]}"
+ fi
+ if [[ "${build_outcomes[1]}" == "FAILED" ]]; then
+   summary_row "Build scan second build:" "${WARN_COLOR}${build_scan_urls[1]} FAILED${RESTORE}"
+ else
+   summary_row "Build scan second build:" "${build_scan_urls[1]}"
+ fi
 }
 
 create_receipt_file() {
