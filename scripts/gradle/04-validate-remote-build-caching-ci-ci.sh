@@ -143,7 +143,7 @@ print_experiment_info() {
   comparison_summary_row "Git commit id:" "${git_commit_ids[@]}"
   summary_row "Project dir:" "<not available>"
   comparison_summary_row "Gradle tasks:" "${requested_tasks[@]}"
-  summary_row "Gradle arguments:" ""
+  summary_row "Gradle arguments:" "<not available>"
   summary_row "Experiment:" "${EXP_NO} ${EXP_NAME}"
   summary_row "Experiment id:" "${EXP_SCAN_TAG}"
   summary_row "Experiment artifact dir:" "$(relative_path "${SCRIPT_DIR}" "${EXP_DIR}")"
