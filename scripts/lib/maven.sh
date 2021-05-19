@@ -1,7 +1,6 @@
 #!/usr/bin/env bash
 
 readonly CAPTURE_SCANS_EXTENSION_JAR="${LIB_DIR}/maven/capture-published-build-scan-maven-extension-1.0.0-SNAPSHOT.jar"
-build_counter=0
 
 invoke_maven() {
   local args

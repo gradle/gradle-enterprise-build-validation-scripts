@@ -40,7 +40,6 @@ comparison_summary_row() {
   if [[ "$1" == "$2" ]]; then
     value="$1"
   else
-    value_mismatch_detected=true
     value="${WARN_COLOR}${1:-<unknown>} | ${2:-<unknown>}${RESTORE}"
   fi
 
