@@ -13,11 +13,11 @@ import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Properties;
 import java.util.concurrent.Callable;
-import java.util.stream.Collectors;
 
 @Command(
     name = "fetch-build-validation-data",
@@ -42,9 +42,11 @@ public class FetchBuildValidationData implements Callable<Integer> {
     @Override
     public Integer call() throws Exception {
         var customValueKeys = loadCustomValueKeys(customValueMappingFile);
-        var buildValidationData = buildScanUrls.stream()
-            .map((URL buildScanUrl) -> fetchBuildValidationData(buildScanUrl, customValueKeys))
-            .collect(Collectors.toList());
+        var buildValidationData = new ArrayList<BuildValidationData>();
+        for (int i = 0; i < buildScanUrls.size(); i++) {
+            BuildValidationData validationData = fetchBuildValidationData(i, buildScanUrls.get(i), customValueKeys);
+            buildValidationData.add(validationData);
+        }
 
         printHeader();
         buildValidationData.stream().forEach(this::printRow);
@@ -52,8 +54,8 @@ public class FetchBuildValidationData implements Callable<Integer> {
         return ExitCode.OK;
     }
 
-    private BuildValidationData fetchBuildValidationData(URL buildScanUrl, CustomValueKeys customValueKeys) {
-        System.err.print("Fetching build scan data for " + buildScanUrl);
+    private BuildValidationData fetchBuildValidationData(int index, URL buildScanUrl, CustomValueKeys customValueKeys) {
+        System.err.print(fetchingMessageFor(index));
         var baseUrl = baseUrlFrom(buildScanUrl);
         var apiClient = new ExportApiClient(baseUrl, createAuthenticator(buildScanUrl), customValueKeys);
 
@@ -62,6 +64,29 @@ public class FetchBuildValidationData implements Callable<Integer> {
 
         System.err.println(", done.");
         return data;
+    }
+
+    private String fetchingMessageFor(int index) {
+        if (buildScanUrls.size() <= 10) {
+            return String.format("Fetching %s build scan", integerToWord(index));
+        }
+        return String.format("Fetching build scan %s", index);
+    }
+
+    private String integerToWord(int i) {
+        switch(i + 1) {
+            case 1: return "first";
+            case 2: return "second";
+            case 3: return "third";
+            case 4: return "fourth";
+            case 5: return "fifth";
+            case 6: return "sixth";
+            case 7: return "seventh";
+            case 8: return "eighth";
+            case 9: return "nineth";
+            case 10: return "tenth";
+            default: return String.valueOf(i);
+        }
     }
 
     private Authenticator createAuthenticator(URL buildScanUrl) {
