@@ -3,23 +3,23 @@ package com.gradle.enterprise;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-public class FetchBuildValidationDataException extends RuntimeException {
-    public FetchBuildValidationDataException() {
+public class ExportApiClientException extends RuntimeException {
+    public ExportApiClientException() {
     }
 
-    public FetchBuildValidationDataException(String message) {
+    public ExportApiClientException(String message) {
         super(message);
     }
 
-    public FetchBuildValidationDataException(String message, Throwable cause) {
+    public ExportApiClientException(String message, Throwable cause) {
         super(message, cause);
     }
 
-    public FetchBuildValidationDataException(Throwable cause) {
+    public ExportApiClientException(Throwable cause) {
         super(cause);
     }
 
-    public FetchBuildValidationDataException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace) {
+    public ExportApiClientException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace) {
         super(message, cause, enableSuppression, writableStackTrace);
     }
 

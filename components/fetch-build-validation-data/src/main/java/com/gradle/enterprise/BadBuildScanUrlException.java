@@ -2,7 +2,7 @@ package com.gradle.enterprise;
 
 import java.net.URL;
 
-public class BadBuildScanUrlException extends FetchBuildValidationDataException {
+public class BadBuildScanUrlException extends ExportApiClientException {
     public BadBuildScanUrlException(URL buildScanUrl) {
         this(buildScanUrl, null);
     }
