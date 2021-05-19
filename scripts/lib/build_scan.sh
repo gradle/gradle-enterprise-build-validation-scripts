@@ -194,9 +194,9 @@ detect_warnings_from_build_scans() {
   fi
 
   if [[ "${value_mismatch}" == "true" ]]; then
-    warnings+=("Differences were detected between the two builds that may skew the outcome of the experiment.")
+    warnings+=("Differences were detected between the two builds. This may skew the outcome of the experiment.")
   fi
   if [[ "${unknown_values}" == "true" ]]; then
-    warnings+=("Some of the properties could not be determined, making it unclear if the experiment has run correctly.")
+    warnings+=("Some of the build properties could not be determined. This makes it uncertain if the experiment has run correctly.")
   fi
 }
