@@ -88,7 +88,7 @@ public class ExportApiClient {
         } catch (MalformedURLException e) {
             // It is highly unlikely this exception will ever be thrown. If it is thrown, then it is likely due to a
             // programming mistake (._.)
-            throw new UnexpectedExceptionWhileFetchingBuildScan(buildScanId, baseUrl, e);
+            throw new FetchingBuildScanUnexpectedException(buildScanId, baseUrl, e);
         }
     }
 
@@ -127,13 +127,13 @@ public class ExportApiClient {
                 );
             } catch (ExecutionException e) {
                 if (e.getCause() == null) {
-                    throw new UnexpectedExceptionWhileFetchingBuildScan(buildScanId, gradleEnterpriseServerUrl, e);
+                    throw new FetchingBuildScanUnexpectedException(buildScanId, gradleEnterpriseServerUrl, e);
                 } else {
                     Throwables.throwIfUnchecked(e.getCause());
-                    throw new UnexpectedExceptionWhileFetchingBuildScan(buildScanId, gradleEnterpriseServerUrl, e.getCause());
+                    throw new FetchingBuildScanUnexpectedException(buildScanId, gradleEnterpriseServerUrl, e.getCause());
                 }
             } catch (InterruptedException e) {
-                throw new InterruptedWhileFetchingBuildScan(buildScanId, gradleEnterpriseServerUrl, e);
+                throw new FetchingBuildScanInterruptedException(buildScanId, gradleEnterpriseServerUrl, e);
             }
         }
 
@@ -225,13 +225,13 @@ public class ExportApiClient {
             if (error == null) {
                 switch(response.code()) {
                     case StatusCodes.UNAUTHORIZED:
-                        error = new AuthenticationFailed(buildScanId, gradleEnterpriseServerUrl);
+                        error = new AuthenticationFailedException(buildScanId, gradleEnterpriseServerUrl);
                         break;
                     case StatusCodes.NOT_FOUND:
-                        error = new BuildScanNotFound(buildScanId, gradleEnterpriseServerUrl);
+                        error = new BuildScanNotFoundException(buildScanId, gradleEnterpriseServerUrl);
                         break;
                     default:
-                        error = new UnexpectedResponse(buildScanId, gradleEnterpriseServerUrl, response);
+                        error = new UnexpectedResponseException(buildScanId, gradleEnterpriseServerUrl, response);
                 }
             }
 
@@ -243,7 +243,7 @@ public class ExportApiClient {
             try {
                 return MAPPER.readTree(data);
             } catch (JsonProcessingException e) {
-                throw new UnparsableBuildScanEvent(buildScanId, gradleEnterpriseServerUrl, data, e);
+                throw new UnparsableBuildScanEventException(buildScanId, gradleEnterpriseServerUrl, data, e);
             }
         }
     }

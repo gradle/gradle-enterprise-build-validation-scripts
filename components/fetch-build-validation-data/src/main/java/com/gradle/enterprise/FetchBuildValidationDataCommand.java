@@ -136,14 +136,14 @@ public class FetchBuildValidationDataCommand implements Callable<Integer> {
                 accessKeys.load(in);
 
                 if (!accessKeys.containsKey(buildScan.getHost())) {
-                    throw new AccessKeyNotFound(buildScan);
+                    throw new AccessKeyNotFoundException(buildScan);
                 }
                 return accessKeys.getProperty(buildScan.getHost());
             } catch (IOException e) {
-                throw new AccessKeyNotFound(buildScan, e);
+                throw new AccessKeyNotFoundException(buildScan, e);
             }
         }
-        throw new AccessKeyNotFound(buildScan);
+        throw new AccessKeyNotFoundException(buildScan);
     }
 
     private Path getGradleUserHomeDirectory() {
@@ -160,7 +160,7 @@ public class FetchBuildValidationDataCommand implements Callable<Integer> {
         } catch (MalformedURLException e) {
             // It is highly unlikely this exception will ever be thrown. If it is thrown, then it is likely due to a
             // programming mistake (._.)
-            throw new BadBuildScanUrl(buildScanUrl, e);
+            throw new BadBuildScanUrlException(buildScanUrl, e);
         }
     }
 
@@ -168,7 +168,7 @@ public class FetchBuildValidationDataCommand implements Callable<Integer> {
         var pathSegments = buildScanUrl.getPath().split("/");
 
         if (pathSegments.length == 0) {
-            throw new BadBuildScanUrl(buildScanUrl);
+            throw new BadBuildScanUrlException(buildScanUrl);
         }
         return pathSegments[pathSegments.length - 1];
     }
