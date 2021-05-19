@@ -91,12 +91,12 @@ public class FetchBuildValidationData implements Callable<Integer> {
 
     private String fetchingMessageFor(int index) {
         if (buildScanUrls.size() <= 10) {
-            return String.format("Fetching %s build scan", integerToWord(index));
+            return String.format("Fetching build scan data for %s build", buildScanIndexToWord(index));
         }
-        return String.format("Fetching build scan %s", index + 1);
+        return String.format("Fetching build scan data for build %s", index + 1);
     }
 
-    private String integerToWord(int i) {
+    private String buildScanIndexToWord(int i) {
         switch(i + 1) {
             case 1: return "first";
             case 2: return "second";
@@ -106,7 +106,7 @@ public class FetchBuildValidationData implements Callable<Integer> {
             case 6: return "sixth";
             case 7: return "seventh";
             case 8: return "eighth";
-            case 9: return "nineth";
+            case 9: return "ninth";
             case 10: return "tenth";
             default: return String.valueOf(i);
         }
