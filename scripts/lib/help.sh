@@ -31,7 +31,7 @@ print_option_usage() {
        _print_option_usage "-i, --interactive" "Enables interactive mode."
        ;;
     -m)
-       _print_option_usage "-m, --mapping-file" "Specifies a mapping file for the names of the custom values used to retrieve certain build properties."
+       _print_option_usage "-m, --mapping-file" "Specifies the mapping file for the custom value names used in the build scans."
        ;;
     -p)
        _print_option_usage "-p, --project-dir" "Specifies the build invocation directory within the Git repository."
