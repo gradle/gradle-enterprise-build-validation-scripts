@@ -14,7 +14,7 @@ build_outcomes+=()
 read_build_scan_metadata() {
   # This isn't the most robust way to read a CSV,
   # but we control the CSV so we don't have to worry about various CSV edge cases
-  if [ -f ""${BUILD_SCAN_FILE}"" ]; then
+  if [ -f "${BUILD_SCAN_FILE}" ]; then
     while IFS=, read -r field_1 field_2 field_3 field_4; do
        project_names=("$field_1")
        base_urls+=("$field_2")
