@@ -1,4 +1,4 @@
-package com.gradle.enterprise;
+package com.gradle.enterprise.export_api.client;
 
 import okhttp3.Authenticator;
 import okhttp3.Credentials;

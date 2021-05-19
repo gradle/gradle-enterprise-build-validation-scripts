@@ -1,4 +1,4 @@
-package com.gradle.enterprise;
+package com.gradle.enterprise.export_api.client;
 
 import java.net.URL;
 

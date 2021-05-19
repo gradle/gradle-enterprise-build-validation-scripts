@@ -1,4 +1,4 @@
-package com.gradle.enterprise;
+package com.gradle.enterprise.export_api.client;
 
 import java.net.MalformedURLException;
 import java.net.URL;

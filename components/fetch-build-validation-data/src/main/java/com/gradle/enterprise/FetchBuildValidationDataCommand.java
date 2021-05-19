@@ -1,6 +1,8 @@
 package com.gradle.enterprise;
 
 import com.google.common.base.Strings;
+import com.gradle.enterprise.export_api.client.Authenticators;
+import com.gradle.enterprise.export_api.client.ExportApiClient;
 import okhttp3.Authenticator;
 import picocli.CommandLine;
 import picocli.CommandLine.Command;
