@@ -12,9 +12,6 @@ print_option_usage() {
     -a)
        _print_option_usage "-a, --args" "Specifies additional arguments to pass to ${BUILD_TOOL}."
        ;;
-    -A)
-       _print_option_usage "-A, --access-key" "Specifies the access key to use when authenticating with Gradle Enterprise to fetch build scan data."
-       ;;
     -b)
        _print_option_usage "-b, --git-branch" "Specifies the branch for the Git repository to validate."
        ;;
@@ -36,9 +33,6 @@ print_option_usage() {
     -p)
        _print_option_usage "-p, --project-dir" "Specifies the build invocation directory within the Git repository."
        ;;
-    -P)
-       _print_option_usage "-P, --password" "Specifies the password to use when authenticating with Gradle Enterprise to fetch build scan data."
-       ;;
     -r)
        _print_option_usage "-r, --git-repo" "Specifies the URL for the Git repository to validate."
        ;;
@@ -47,9 +41,6 @@ print_option_usage() {
        ;;
     -t)
        _print_option_usage "-t, --tasks" "Specifies the Gradle tasks to invoke."
-       ;;
-    -U)
-       _print_option_usage "-U, --username" "Specifies the username to use when authenticating with Gradle Enterprise to fetch build scan data."
        ;;
     -v)
        _print_option_usage "-v, --version" "Prints version info."
