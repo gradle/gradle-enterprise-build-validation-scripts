@@ -21,11 +21,11 @@ import java.util.concurrent.Callable;
     mixinStandardHelpOptions = true,
     description = "Fetches data relevant to build validation from the given build scans."
 )
-public class FetchBuildValidationData implements Callable<Integer> {
+public class FetchBuildValidationDataCommand implements Callable<Integer> {
 
     private final CommandLine.Help.ColorScheme colorScheme;
 
-    public FetchBuildValidationData(CommandLine.Help.ColorScheme colorScheme) {
+    public FetchBuildValidationDataCommand(CommandLine.Help.ColorScheme colorScheme) {
         this.colorScheme = colorScheme;
     }
 
