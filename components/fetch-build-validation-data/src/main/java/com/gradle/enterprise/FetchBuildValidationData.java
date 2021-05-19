@@ -60,7 +60,7 @@ public class FetchBuildValidationData implements Callable<Integer> {
         var buildScanId = buildScanIdFrom(buildScanUrl);
         var data = apiClient.fetchBuildValidationData(buildScanId);
 
-        System.err.println(" DONE");
+        System.err.println(", done.");
         return data;
     }
 

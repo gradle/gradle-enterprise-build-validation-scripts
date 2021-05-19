@@ -9,7 +9,7 @@ public class AccessKeyNotFound extends FetchBuildValidationDataException {
     }
 
     public AccessKeyNotFound(URL buildScanUrl, Throwable cause) {
-        super(String.format("An error occurred while trying to find an access key for %s: %s.",
+        super(String.format("An error occurred while trying to find an access key for %s:%n%s.",
             buildScanUrl.getHost(), cause.getMessage()), cause);
     }
 }
