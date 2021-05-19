@@ -43,6 +43,7 @@ public class FetchBuildValidationDataCommand implements Callable<Integer> {
     @Override
     public Integer call() throws Exception {
         var customValueKeys = loadCustomValueKeys(customValueMappingFile);
+
         var buildValidationData = new ArrayList<BuildValidationData>();
         for (int i = 0; i < buildScanUrls.size(); i++) {
             BuildValidationData validationData = fetchBuildValidationData(i, buildScanUrls.get(i), customValueKeys);
@@ -50,7 +51,7 @@ public class FetchBuildValidationDataCommand implements Callable<Integer> {
         }
 
         printHeader();
-        buildValidationData.stream().forEach(this::printRow);
+        buildValidationData.forEach(this::printRow);
 
         return ExitCode.OK;
     }
@@ -135,7 +136,7 @@ public class FetchBuildValidationDataCommand implements Callable<Integer> {
     }
 
     private void printRow(BuildValidationData buildValidationData) {
-        System.out.println(String.format("%s,%s,%s,%s,%s,%s,%s,%s,%s",
+        System.out.printf("%s,%s,%s,%s,%s,%s,%s,%s,%s%n",
             buildValidationData.getRootProjectName(),
             toStringSafely(buildValidationData.getGradleEnterpriseServerUrl()),
             toStringSafely(buildValidationData.getBuildScanUrl()),
@@ -145,7 +146,7 @@ public class FetchBuildValidationDataCommand implements Callable<Integer> {
             buildValidationData.getGitCommitId(),
             String.join(" ", buildValidationData.getRequestedTasks()),
             buildValidationData.getBuildOutcome()
-        ));
+        );
     }
 
     private String toStringSafely(Object object) {
