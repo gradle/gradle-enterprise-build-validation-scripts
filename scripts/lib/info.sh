@@ -73,10 +73,10 @@ die() {
 
 read_build_warnings() {
   if [[ "${build_outcomes[0]}" == "FAILED" ]]; then
-    warnings+=("The first build failed and may skew the outcome of the experiment.")
+    warnings+=("The first build failed. This may skew the outcome of the experiment.")
   fi
   if [[ "${build_outcomes[1]}" == "FAILED" ]]; then
-    warnings+=("The second build failed and may skew the outcome of the experiment.")
+    warnings+=("The second build failed. This may skew the outcome of the experiment.")
   fi
 
   local warnings_file="${EXP_DIR}/warnings.txt"
