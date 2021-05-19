@@ -29,7 +29,7 @@ debug() {
 }
 
 summary_row() {
-    infof "${SUMMARY_FMT}" "$1" "${2:-<unknown>}"
+    infof "${SUMMARY_FMT}" "$1" "${2:-${WARN_COLOR}<unknown>${RESTORE}}"
 }
 
 comparison_summary_row() {
