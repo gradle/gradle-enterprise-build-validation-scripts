@@ -228,9 +228,9 @@ public class ExportApiClient {
                     case StatusCodes.UNAUTHORIZED:
                         error = new AuthenticationFailedException(buildScanId, gradleEnterpriseServerUrl);
                         break;
-                    case StatusCodes.NOT_FOUND:
-                        error = new BuildScanNotFoundException(buildScanId, gradleEnterpriseServerUrl);
-                        break;
+//                    case StatusCodes.NOT_FOUND:
+//                        error = new BuildScanNotFoundException(buildScanId, gradleEnterpriseServerUrl);
+//                        break;
                     default:
                         error = new UnexpectedResponseException(buildScanId, gradleEnterpriseServerUrl, response);
                 }

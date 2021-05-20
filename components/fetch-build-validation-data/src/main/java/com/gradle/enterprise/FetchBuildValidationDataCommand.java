@@ -90,12 +90,12 @@ public class FetchBuildValidationDataCommand implements Callable<Integer> {
 
     private String fetchingMessageFor(int index) {
         if (buildScanUrls.size() <= 10) {
-            return String.format("Fetching build scan data for %s build", buildScanIndexToWord(index));
+            return String.format("Fetching build scan data for the %s build", buildScanIndexToOrdinal(index));
         }
         return String.format("Fetching build scan data for build %s", index + 1);
     }
 
-    private String buildScanIndexToWord(int i) {
+    private String buildScanIndexToOrdinal(int i) {
         switch(i + 1) {
             case 1: return "first";
             case 2: return "second";
