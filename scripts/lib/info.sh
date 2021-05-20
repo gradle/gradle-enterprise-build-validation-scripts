@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
 readonly SUMMARY_FMT="%-30s%s"
+readonly ORDINALS=( first second third fourth fifth sixth seventh eighth ninth tenth)
 
 warnings=()
 
@@ -106,42 +107,41 @@ print_summary() {
 }
 
 print_experiment_info() {
- local branch commit_id
- branch=$(git_get_branch)
- commit_id=$(git_get_commit_id)
+  local branch commit_id
+  branch=$(git_get_branch)
+  commit_id=$(git_get_commit_id)
 
- info "Summary"
- info "-------"
- summary_row "Project:" "${project_names[0]}"
- summary_row "Git repo:" "${git_repo}"
- summary_row "Git branch:" "${branch}"
- summary_row "Git commit id:" "${commit_id}"
- summary_row "Project dir:" "${project_dir:-<root directory>}"
+  info "Summary"
+  info "-------"
+  summary_row "Project:" "${project_names[0]}"
+  summary_row "Git repo:" "${git_repo}"
+  summary_row "Git branch:" "${branch}"
+  summary_row "Git commit id:" "${commit_id}"
+  summary_row "Project dir:" "${project_dir:-<root directory>}"
 
- if [[ "${BUILD_TOOL}" == "Maven" ]]; then
-   summary_row "Maven goals:" "${tasks}"
-   summary_row "Maven arguments:" "${extra_args:-<none>}"
- else
-   summary_row "Gradle tasks:" "${tasks}"
-   summary_row "Gradle arguments:" "${extra_args:-<none>}"
- fi
- summary_row "Experiment:" "${EXP_NO} ${EXP_NAME}"
- summary_row "Experiment id:" "${EXP_SCAN_TAG}"
- summary_row "Experiment run id:" "${RUN_ID}"
- summary_row "Experiment artifact dir:" "$(relative_path "${SCRIPT_DIR}" "${EXP_DIR}")"
+  if [[ "${BUILD_TOOL}" == "Maven" ]]; then
+    summary_row "Maven goals:" "${tasks}"
+    summary_row "Maven arguments:" "${extra_args:-<none>}"
+  else
+    summary_row "Gradle tasks:" "${tasks}"
+    summary_row "Gradle arguments:" "${extra_args:-<none>}"
+  fi
+  summary_row "Experiment:" "${EXP_NO} ${EXP_NAME}"
+  summary_row "Experiment id:" "${EXP_SCAN_TAG}"
+  summary_row "Experiment run id:" "${RUN_ID}"
+  summary_row "Experiment artifact dir:" "$(relative_path "${SCRIPT_DIR}" "${EXP_DIR}")"
 }
 
 print_build_scans() {
- if [[ "${build_outcomes[0]}" == "FAILED" ]]; then
-   summary_row "Build scan first build:" "${WARN_COLOR}${build_scan_urls[0]} FAILED${RESTORE}"
- else
-   summary_row "Build scan first build:" "${build_scan_urls[0]}"
- fi
- if [[ "${build_outcomes[1]}" == "FAILED" ]]; then
-   summary_row "Build scan second build:" "${WARN_COLOR}${build_scan_urls[1]} FAILED${RESTORE}"
- else
-   summary_row "Build scan second build:" "${build_scan_urls[1]}"
- fi
+  for (( i=0; i<2; i++ )); do
+    if [ -z "${build_outcomes[i]}" ]; then
+      summary_row "Build scan ${ORDINALS[i]} build:" "${WARN_COLOR}${build_scan_urls[i]} UNAVAILABLE${RESTORE}"
+    elif [[ "${build_outcomes[i]}" == "FAILED" ]]; then
+      summary_row "Build scan ${ORDINALS[i]} build:" "${WARN_COLOR}${build_scan_urls[i]} FAILED${RESTORE}"
+    else
+      summary_row "Build scan ${ORDINALS[i]} build:" "${build_scan_urls[i]}"
+    fi
+  done
 }
 
 create_receipt_file() {

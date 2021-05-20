@@ -182,6 +182,9 @@ detect_warnings_from_build_scans() {
        [ -z "${requested_tasks[i]}" ]; then
       unknown_values=true
     fi
+    if [ -z "${build_outcomes[i]}" ]; then
+      warnings+=("Failed to fetch the build scan data for the ${ORDINALS[i]} build.")
+    fi
   done
 
   local value_mismatch=false
