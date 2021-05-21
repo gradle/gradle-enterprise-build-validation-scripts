@@ -52,8 +52,8 @@ execute() {
   fetch_build_scan_data
   validate_required_config
 
+  print_bl
   make_experiment_dir
-
   git_checkout_commit "${commit_id}"
   print_bl
   execute_build
@@ -117,6 +117,7 @@ validate_required_args() {
     _PRINT_HELP=yes die "ERROR: Missing required argument: --build-scan" 1
   fi
   ci_build_scan_url="${_arg_build_scan}"
+  remote_cache_url="${_arg_remote_cache_url}"
 }
 
 fetch_build_scan_data() {
@@ -140,18 +141,22 @@ fetch_build_scan_data() {
 
 execute_build() {
   # The gradle --init-script flag only accepts a relative directory path. ¯\_(ツ)_/¯
-  local lib_dir_rel
+  local lib_dir_rel args
   lib_dir_rel="$(relative_lib_path)"
+
+  args=(--build-cache --init-script "${lib_dir_rel}/gradle/configure-remote-build-caching.gradle" ${tasks})
+  if [ -n "${remote_cache_url}" ]; then
+    args+=("-Pcom.gradle.enterprise.build_validation.remoteCacheUrl=${remote_cache_url}")
+  fi
+
+  # shellcheck disable=SC2206  # we want tasks to expand with word splitting in this case
+  args+=(${tasks})
 
   info
   info "Running build:"
   info "./gradlew --build-cache -Dscan.tag.${EXP_SCAN_TAG} -Dscan.value.runId=${RUN_ID} ${tasks}$(print_extra_args)"
 
-  # shellcheck disable=SC2086  # we want tasks to expand with word splitting in this case
-  invoke_gradle \
-     --build-cache \
-     --init-script "${lib_dir_rel}/gradle/configure-remote-build-caching.gradle" \
-     ${tasks}
+  invoke_gradle "${args[@]}"
 }
 
 # Overrides info.sh#print_summary

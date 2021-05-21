@@ -9,6 +9,10 @@ if (isTopLevelBuild) {
             remote(HttpBuildCache) {
                 enabled = true
                 push = false
+                def projectProperties = gradle.startParameter.projectProperties
+                if (projectProperties.containsKey("com.gradle.enterprise.build_validation.remoteCacheUrl")) {
+                    url = projectProperties.get("com.gradle.enterprise.build_validation.remoteCacheUrl")
+                }
             }
         }
     }

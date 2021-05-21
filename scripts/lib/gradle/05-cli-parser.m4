@@ -6,6 +6,7 @@
 # ARGBASH_WRAP([common])
 # ARG_OPTIONAL_SINGLE([build-scan],[B],[])
 # ARG_OPTIONAL_SINGLE([mapping-file],[m],[])
+# ARG_OPTIONAL_SINGLE([remote-cache-url],[c],[])
 # ARGBASH_SET_INDENT([  ])
 # ARGBASH_PREPARE()
 # needed because of Argbash --> m4_ignore([
@@ -26,6 +27,7 @@ function print_help() {
   print_option_usage -a
   print_option_usage "-B, --build-scan" "Specifies the build scan URL."
   print_option_usage -m
+  print_option_usage "-c, --remote-cache-url" "Specifies the remote cache node URL."
   print_option_usage -s
   print_option_usage -e
   print_option_usage -v
