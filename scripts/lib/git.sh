@@ -55,10 +55,16 @@ git_checkout_commit() {
   git init > /dev/null || die "ERROR: Unable initialize git" 2
   git remote add origin "${git_repo}" || die "ERROR: Unable to fetch from ${git_repo}" 2
 
-  if ! git fetch --depth 1 origin "${commit}"; then
-    # Older versions of git don't support using --depth 1 with fetch, so try again without the shallow checkout
-    git fetch origin "${commit}" || die "ERROR: Unable to fetch commit ${commit}" 2
-  fi
+  if [[ "${#commit}" -lt 40 ]]; then
+    # We have a short commit SHA. Unfortunately, we need the full commit history to fetch by a short SHA
+    git fetch origin
+    git -c advice.detachedHead=false checkout "${commit}"
+  else
+    if ! git fetch --depth 1 origin "${commit}"; then
+      # Older versions of git don't support using --depth 1 with fetch, so try again without the shallow checkout
+      git fetch origin "${commit}" || die "ERROR: Unable to fetch commit ${commit}" 2
+    fi
 
-  git -c advice.detachedHead=false checkout FETCH_HEAD || die "ERROR: Unable to checkout commit ${commit}" 2
+    git -c advice.detachedHead=false checkout FETCH_HEAD || die "ERROR: Unable to checkout commit ${commit}" 2
+  fi
 }
