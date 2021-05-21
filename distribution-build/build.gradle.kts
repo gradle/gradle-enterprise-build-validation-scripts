@@ -121,12 +121,12 @@ tasks.register<Zip>("assembleGradleScripts") {
     group = "build"
     description = "Packages the Gradle experiment scripts in a zip archive."
     archiveBaseName.set("gradle-enterprise-gradle-build-validation")
-    archiveFileName.set("${archiveBaseName}.zip")
+    archiveFileName.set("${archiveBaseName.get()}.zip")
 
     from(layout.buildDirectory.dir("scripts/gradle")) {
         exclude("**/.data")
     }
-    into(archiveBaseName)
+    into(archiveBaseName.get())
     dependsOn("generateBashCliParsers")
     dependsOn("copyGradleScripts")
 }
@@ -135,13 +135,13 @@ tasks.register<Zip>("assembleMavenScripts") {
     group = "build"
     description = "Packages the Maven experiment scripts in a zip archive."
     archiveBaseName.set("gradle-enterprise-maven-build-validation")
-    archiveFileName.set("${archiveBaseName}.zip")
+    archiveFileName.set("${archiveBaseName.get()}.zip")
 
     from(layout.buildDirectory.dir("scripts/maven")) {
         filter { line: String -> line.replace("/../lib", "/lib") }
         exclude("**/.data")
     }
-    into(archiveBaseName)
+    into(archiveBaseName.get())
     dependsOn("generateBashCliParsers")
     dependsOn("copyMavenScripts")
 }
