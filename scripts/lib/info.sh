@@ -135,7 +135,7 @@ print_experiment_info() {
 print_build_scans() {
   for (( i=0; i<2; i++ )); do
     if [ -z "${build_outcomes[i]}" ]; then
-      summary_row "Build scan ${ORDINALS[i]} build:" "${WARN_COLOR}${build_scan_urls[i]} UNAVAILABLE${RESTORE}"
+      summary_row "Build scan ${ORDINALS[i]} build:" "${WARN_COLOR}${build_scan_urls[i]} BUILD SCAN DATA FETCH FAILED${RESTORE}"
     elif [[ "${build_outcomes[i]}" == "FAILED" ]]; then
       summary_row "Build scan ${ORDINALS[i]} build:" "${WARN_COLOR}${build_scan_urls[i]} FAILED${RESTORE}"
     else
