@@ -17,9 +17,9 @@ readonly SCRIPT_DIR="$(cd "$(dirname "$(readlink -e "${BASH_SOURCE[0]}")")" && p
 readonly LIB_DIR="${SCRIPT_DIR}/../lib"
 
 # Include and parse the command line arguments
-# shellcheck source=build-validation/scripts/lib/gradle/01-cli-parser.sh
+# shellcheck source=lib/gradle/01-cli-parser.sh
 source "${LIB_DIR}/gradle/${EXP_NO}-cli-parser.sh" || { echo "Couldn't find '${LIB_DIR}/gradle/${EXP_NO}-cli-parser.sh' library."; exit 1; }
-# shellcheck source=build-validation/scripts/lib/libs.sh
+# shellcheck source=lib/libs.sh
 source "${LIB_DIR}/libs.sh" || { echo "Couldn't find '${LIB_DIR}/libs.sh'"; exit 1; }
 
 # These will be set by the config functions (see lib/config.sh)
