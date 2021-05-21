@@ -223,16 +223,28 @@ public class ExportApiClient {
         @Override
         public void onFailure(@NotNull EventSource eventSource, @Nullable Throwable t, @Nullable Response response) {
             var error = t;
-            if (error == null) {
+            if (error == null && response != null) {
                 switch(response.code()) {
                     case StatusCodes.UNAUTHORIZED:
-                        error = new AuthenticationFailedException(buildScanId, gradleEnterpriseServerUrl);
+                        error = new AuthenticationFailedException(
+                            buildScanId,
+                            gradleEnterpriseServerUrl,
+                            eventSource.request(),
+                            response);
                         break;
                     case StatusCodes.NOT_FOUND:
-                        error = new BuildScanNotFoundException(buildScanId, gradleEnterpriseServerUrl);
+                        error = new BuildScanNotFoundException(
+                            buildScanId,
+                            gradleEnterpriseServerUrl,
+                            eventSource.request(),
+                            response);
                         break;
                     default:
-                        error = new UnexpectedResponseException(buildScanId, gradleEnterpriseServerUrl, response);
+                        error = new UnexpectedResponseException(
+                            buildScanId,
+                            gradleEnterpriseServerUrl,
+                            eventSource.request(),
+                            response);
                 }
             }
 

@@ -2,6 +2,7 @@ package com.gradle.enterprise;
 
 import com.gradle.enterprise.export_api.client.Authenticators;
 import com.gradle.enterprise.export_api.client.ExportApiClient;
+import com.gradle.enterprise.export_api.client.FailedRequestException;
 import picocli.CommandLine;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
@@ -70,11 +71,7 @@ public class FetchBuildValidationDataCommand implements Callable<Integer> {
             System.err.println(", done.");
             return data;
         } catch (RuntimeException e) {
-            if (debug) {
-                System.err.println(" " + colorScheme.stackTraceText(e));
-            } else {
-                System.err.println(colorScheme.errorText(" ERROR: " + e.getMessage()));
-            }
+            printException(e);
             return new BuildValidationData(
                 "",
                 buildScanId,
@@ -85,6 +82,33 @@ public class FetchBuildValidationDataCommand implements Callable<Integer> {
                 Collections.emptyList(),
                 ""
             );
+        }
+    }
+
+    private void printException(RuntimeException e) {
+        if (debug) {
+            System.err.println(colorScheme.errorText(" " + colorScheme.stackTraceText(e)));
+            if (e instanceof FailedRequestException) {
+                printFailedRequestDetails((FailedRequestException) e);
+            }
+        } else {
+            System.err.println(colorScheme.errorText(" ERROR: " + e.getMessage()));
+        }
+    }
+
+    private void printFailedRequestDetails(FailedRequestException e) {
+        System.err.println(colorScheme.errorText("Request " + e.getRequest()));
+        System.err.println(colorScheme.errorText("--------------------------"));
+        if(e.getRequest().body() != null) {
+            System.err.println(colorScheme.errorText(e.getRequest().body().toString()));
+            System.err.println(colorScheme.errorText("--------------------------"));
+        }
+        System.err.println(colorScheme.errorText("Response " + e.getResponse()));
+        System.err.println(colorScheme.errorText("--------------------------"));
+        if(e.getResponseBody() != null) {
+            System.err.println("Response body:");
+            System.err.println(colorScheme.errorText(e.getResponseBody()));
+            System.err.println(colorScheme.errorText("--------------------------"));
         }
     }
 
