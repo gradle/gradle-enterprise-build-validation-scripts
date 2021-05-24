@@ -88,6 +88,7 @@ tasks.register<Copy>("copyMavenScripts") {
 
     from(layout.projectDirectory.dir("../scripts/maven")) {
         exclude(".data/")
+        filter { line: String -> line.replace("/../lib", "/lib").replace("<HEAD>","${project.version}") }
     }
     from(layout.projectDirectory.dir("../scripts/")) {
         include("lib/**")
@@ -138,7 +139,6 @@ tasks.register<Zip>("assembleMavenScripts") {
     archiveFileName.set("${archiveBaseName.get()}.zip")
 
     from(layout.buildDirectory.dir("scripts/maven")) {
-        filter { line: String -> line.replace("/../lib", "/lib") }
         exclude("**/.data")
     }
     into(archiveBaseName.get())
