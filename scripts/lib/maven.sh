@@ -29,6 +29,10 @@ invoke_maven() {
   else
     build_outcomes+=("FAILED")
   fi
+
+  # defined in build_scan.sh
+  read_build_data_from_current_dir
+
   #shellcheck disable=SC2164  # This is extremely unlikely to fail, and even if it does, nothing terrible will happen.
   popd > /dev/null 2>&1
 }

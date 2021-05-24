@@ -22,6 +22,8 @@ source "${LIB_DIR}/gradle/${EXP_NO}-cli-parser.sh" || { echo "Couldn't find '${L
 # shellcheck source=build-validation/scripts/lib/libs.sh
 source "${LIB_DIR}/libs.sh" || { echo "Couldn't find '${LIB_DIR}/libs.sh'"; exit 1; }
 
+readonly RUN_ID=$(generate_run_id)
+
 # These will be set by the config functions (see lib/config.sh)
 git_repo=''
 project_name=''
@@ -159,15 +161,9 @@ execute_build() {
   invoke_gradle "${args[@]}"
 }
 
-# Overrides info.sh#print_summary
-print_summary() {
-  read_build_scan_metadata
-  print_experiment_info
+# Overrides info.sh#print_experiment_specific_info
+print_experiment_specific_info() {
   summary_row "Custom value mapping file:" "${mapping_file:-<none>}"
-  print_build_scans
-  print_warnings
-  print_bl
-  print_quick_links
 }
 
 print_quick_links() {

@@ -98,8 +98,15 @@ print_warnings() {
 }
 
 print_summary() {
+  #defined in build_scan.sh
   read_build_scan_metadata
+  #defined in build_scan.sh
+  detect_warnings_from_build_scans
+
+  info "Summary"
+  info "-------"
   print_experiment_info
+  print_experiment_specific_info
   print_build_scans
   print_warnings
   print_bl
@@ -107,29 +114,25 @@ print_summary() {
 }
 
 print_experiment_info() {
-  local branch commit_id
-  branch=$(git_get_branch)
-  commit_id=$(git_get_commit_id)
-
-  info "Summary"
-  info "-------"
-  summary_row "Project:" "${project_names[0]}"
-  summary_row "Git repo:" "${git_repo}"
-  summary_row "Git branch:" "${branch}"
-  summary_row "Git commit id:" "${commit_id}"
+  comparison_summary_row "Project:" "${project_names[@]}"
+  comparison_summary_row "Git repo:" "${git_repos[@]}"
+  comparison_summary_row "Git branch:" "${git_branches[@]}"
+  comparison_summary_row "Git commit id:" "${git_commit_ids[@]}"
   summary_row "Project dir:" "${project_dir:-<root directory>}"
-
-  if [[ "${BUILD_TOOL}" == "Maven" ]]; then
-    summary_row "Maven goals:" "${tasks}"
-    summary_row "Maven arguments:" "${extra_args:-<none>}"
-  else
-    summary_row "Gradle tasks:" "${tasks}"
-    summary_row "Gradle arguments:" "${extra_args:-<none>}"
-  fi
+  comparison_summary_row "${BUILD_TOOL} ${BUILD_TOOL_TASK}s:" "${requested_tasks[@]}"
+  summary_row "${BUILD_TOOL} arguments:" "${extra_args:-<none>}"
   summary_row "Experiment:" "${EXP_NO} ${EXP_NAME}"
   summary_row "Experiment id:" "${EXP_SCAN_TAG}"
-  summary_row "Experiment run id:" "${RUN_ID}"
+  if [ -n "${RUN_ID}" ]; then
+    summary_row "Experiment run id:" "${RUN_ID}"
+  fi
   summary_row "Experiment artifact dir:" "$(relative_path "${SCRIPT_DIR}" "${EXP_DIR}")"
+}
+
+print_experiment_specific_info() {
+  # this function is intended to be overridden by experiments as-needed
+  # have one command to satisfy shellcheck
+  true
 }
 
 print_build_scans() {

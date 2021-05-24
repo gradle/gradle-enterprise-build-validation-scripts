@@ -41,6 +41,10 @@ git_get_commit_id() {
   git rev-parse --short=8 --verify HEAD
 }
 
+git_get_remote_url() {
+  git remote get-url origin
+}
+
 git_checkout_commit() {
   local commit clone_dir
   commit="$1"

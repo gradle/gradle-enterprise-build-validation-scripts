@@ -3,24 +3,50 @@
 process_arguments() {
   parse_commandline "$@"
 
-  git_repo="${_arg_git_repo}"
-  git_branch="${_arg_git_branch}"
-  project_name="$(basename -s .git "${git_repo}")"
-  project_dir="${_arg_project_dir}"
-  # shellcheck disable=SC2154 # _arg_tasks is only defined by the Gradle scripts
-  tasks="${_arg_tasks}"
-  # shellcheck disable=SC2154 # _arg_goals is only defined by the Maven scripts
-  if [ -n "${_arg_goals}" ]; then
+  if [ -n "${_arg_git_repo+x}" ]; then
+    git_repo="${_arg_git_repo}"
+    project_name="$(basename -s .git "${git_repo}")"
+  fi
+
+  if [ -n "${_arg_git_branch+x}" ]; then
+    git_branch="${_arg_git_branch}"
+  fi
+
+  if [ -n "${_arg_project_dir+x}" ]; then
+    project_dir="${_arg_project_dir}"
+  fi
+
+  # shellcheck disable=SC2154
+  if [ -n "${_arg_tasks+x}" ]; then
+    tasks="${_arg_tasks}"
+  fi
+
+  # shellcheck disable=SC2154
+  if [ -n "${_arg_goals+x}" ]; then
     tasks="${_arg_goals}"
   fi
-  extra_args="${_arg_args}"
-  #shellcheck disable=SC2154 # The maven scripts don't yet support _arg_gradle_enterprise_server
-  enable_ge="${_arg_enable_gradle_enterprise}"
-  ge_server="${_arg_gradle_enterprise_server}"
-  interactive_mode="${_arg_interactive}"
 
-  #shellcheck disable=SC2154 # This is used only by the remote caching experiments
-  mapping_file="${_arg_mapping_file}"
+  if [ -n "${_arg_args+x}" ]; then
+    extra_args="${_arg_args}"
+  fi
+
+  #shellcheck disable=SC2154
+  if [ -n "${_arg_enable_gradle_enterprise+x}" ]; then
+    enable_ge="${_arg_enable_gradle_enterprise}"
+  fi
+
+  if [ -n "${_arg_gradle_enterprise_server+x}" ]; then
+    ge_server="${_arg_gradle_enterprise_server}"
+  fi
+
+  if [ -n "${_arg_interactive+x}" ]; then
+    interactive_mode="${_arg_interactive}"
+  fi
+
+  #shellcheck disable=SC2154
+  if [ -n "${_arg_mapping_file+x}" ]; then
+    mapping_file="${_arg_mapping_file}"
+  fi
 }
 
 validate_required_config() {

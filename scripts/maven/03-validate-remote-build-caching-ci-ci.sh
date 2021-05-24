@@ -133,20 +133,8 @@ fetch_extended_build_scan_data() {
   fetch_and_read_build_validation_data "${build_scan_urls[@]}"
 }
 
-# Overrides info.sh#print_experiment_info
-print_experiment_info() {
-  info "Summary"
-  info "-------"
-  comparison_summary_row "Project:" "${project_names[@]}"
-  comparison_summary_row "Git repo:" "${git_repos[@]}"
-  comparison_summary_row "Git branch:" "${git_branches[@]}"
-  comparison_summary_row "Git commit id:" "${git_commit_ids[@]}"
-  summary_row "Project dir:" "<not available>"
-  comparison_summary_row "Maven goals:" "${requested_tasks[@]}"
-  summary_row "Maven arguments:" "<not available>"
-  summary_row "Experiment:" "${EXP_NO} ${EXP_NAME}"
-  summary_row "Experiment id:" "${EXP_SCAN_TAG}"
-  summary_row "Experiment artifact dir:" "$(relative_path "${SCRIPT_DIR}" "${EXP_DIR}")"
+# Overrides info.sh#print_experiment_specific_info
+print_experiment_specific_info() {
   summary_row "Custom value mapping file:" "${mapping_file:-<none>}"
 }
 

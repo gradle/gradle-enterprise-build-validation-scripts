@@ -5,23 +5,30 @@ project_names=()
 base_urls=()
 build_scan_urls=()
 build_scan_ids=()
-git_repos+=()
-git_branches+=()
-git_commit_ids+=()
-requested_tasks+=()
-build_outcomes+=()
+git_repos=()
+git_branches=()
+git_commit_ids=()
+requested_tasks=()
+build_outcomes=()
 
 read_build_scan_metadata() {
   # This isn't the most robust way to read a CSV,
   # but we control the CSV so we don't have to worry about various CSV edge cases
   if [ -f "${BUILD_SCAN_FILE}" ]; then
     while IFS=, read -r field_1 field_2 field_3 field_4; do
-       project_names=("$field_1")
+       project_names+=("$field_1")
        base_urls+=("$field_2")
        build_scan_urls+=("$field_3")
        build_scan_ids+=("$field_4")
     done < "${BUILD_SCAN_FILE}"
   fi
+}
+
+read_build_data_from_current_dir() {
+  git_repos+=("$(git_get_remote_url)")
+  git_branches+=("${git_branch:-$(git_get_branch)}")
+  git_commit_ids+=("$(git_get_commit_id)")
+  requested_tasks+=("${tasks}")
 }
 
 fetch_build_validation_data() {
@@ -168,8 +175,6 @@ fetch_and_read_build_validation_data() {
      requested_tasks+=("$field_8")
      build_outcomes+=("$field_9")
   done <<< "${fetched_data}"
-
-  detect_warnings_from_build_scans
 }
 
 detect_warnings_from_build_scans() {
