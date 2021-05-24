@@ -1,8 +1,10 @@
 import de.undercouch.gradle.tasks.download.Download
+import com.felipefzdz.gradle.shellcheck.Shellcheck
 
 plugins {
     id("base")
     id("de.undercouch.download") version "4.1.1"
+    id("com.felipefzdz.gradle.shellcheck") version "1.4.3"
 }
 
 repositories {
@@ -18,6 +20,11 @@ dependencies {
 }
 
 val argbashVersion by extra("2.10.0")
+
+shellcheck {
+    additionalArguments = "-a -x"
+    shellcheckVersion = "v0.7.2"
+}
 
 tasks.register<Download>("downloadArgbash") {
     group = "argbash"
@@ -149,4 +156,47 @@ tasks.register<Zip>("assembleMavenScripts") {
 tasks.named("assemble") {
     dependsOn("assembleGradleScripts")
     dependsOn("assembleMavenScripts")
+}
+
+tasks.register<Shellcheck>("shellcheckGradleScripts") {
+    group = "verification"
+    description = "Perform quality checks on Gradle build validation scripts using Shellcheck."
+    sourceFiles = fileTree("${buildDir}/scripts/gradle") {
+        include("**/*.sh")
+        exclude("lib/")
+    }
+    workingDir = file("${buildDir}/scripts/gradle")
+
+    reports {
+        html.destination = file("${buildDir}/reports/shellcheck-gradle/shellcheck.html")
+        xml.destination = file("${buildDir}/reports/shellcheck-gradle/shellcheck.xml")
+        txt.destination = file("${buildDir}/reports/shellcheck-gradle/shellcheck.txt")
+    }
+
+    dependsOn("generateBashCliParsers")
+    dependsOn("copyGradleScripts")
+}
+
+tasks.register<Shellcheck>("shellcheckMavenScripts") {
+    group = "verification"
+    description = "Perform quality checks on Maven build validation scripts using Shellcheck."
+    sourceFiles = fileTree("${buildDir}/scripts/maven") {
+        include("**/*.sh")
+        exclude("lib/")
+    }
+    workingDir = file("${buildDir}/scripts/maven")
+
+    reports {
+        html.destination = file("${buildDir}/reports/shellcheck-maven/shellcheck.html")
+        xml.destination = file("${buildDir}/reports/shellcheck-maven/shellcheck.xml")
+        txt.destination = file("${buildDir}/reports/shellcheck-maven/shellcheck.txt")
+    }
+
+    dependsOn("generateBashCliParsers")
+    dependsOn("copyMavenScripts")
+}
+
+tasks.named("check") {
+    dependsOn("shellcheckGradleScripts")
+    dependsOn("shellcheckMavenScripts")
 }
