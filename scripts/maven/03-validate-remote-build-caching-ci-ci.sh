@@ -27,8 +27,9 @@ source "${LIB_DIR}/libs.sh" || { echo "Couldn't find '${LIB_DIR}/libs.sh'"; exit
 git_repo=''
 project_name=''
 git_branch=''
-project_dir=''
+project_dir='<not available>'
 tasks=''
+extra_args='<not available>'
 interactive_mode=''
 mapping_file=''
 
