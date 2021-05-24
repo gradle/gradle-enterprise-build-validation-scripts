@@ -17,9 +17,9 @@ readonly SCRIPT_DIR="$(cd "$(dirname "$(readlink -e "${BASH_SOURCE[0]}")")" && p
 readonly LIB_DIR="${SCRIPT_DIR}/../lib"
 
 # Include and parse the command line arguments
-# shellcheck source=build-validation/scripts/lib/maven/03-cli-parser.sh
+# shellcheck source=lib/maven/03-cli-parser.sh
 source "${LIB_DIR}/maven/${EXP_NO}-cli-parser.sh" || { echo "Couldn't find '${LIB_DIR}/maven/${EXP_NO}-cli-parser.sh' parsing library."; exit 1; }
-# shellcheck source=build-validation/scripts/lib/libs.sh
+# shellcheck source=lib/libs.sh
 # shellcheck disable=SC2154 # the libs include scripts that reference CLI arguments that this script does not create
 source "${LIB_DIR}/libs.sh" || { echo "Couldn't find '${LIB_DIR}/libs.sh'"; exit 1; }
 
