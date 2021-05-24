@@ -126,6 +126,7 @@ fi
   # Collect all arguments for the java command, following the shell quoting and substitution rules
   eval set -- -Dpicocli.ansi=true -jar "\"$CLASSPATH\"" "$APP_ARGS"
 
+  # shellcheck disable=SC2154
   if [[ "$_arg_debug" == "on" ]]; then
     debug "$JAVACMD $*" 1>&2
     print_bl 1>&2

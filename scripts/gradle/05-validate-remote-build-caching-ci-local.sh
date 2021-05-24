@@ -12,8 +12,10 @@ readonly BUILD_TOOL="Gradle"
 readonly SCRIPT_VERSION="<HEAD>"
 
 # Needed to bootstrap the script
-readonly SCRIPT_NAME=$(basename "$0")
-readonly SCRIPT_DIR="$(cd "$(dirname "$(readlink -e "${BASH_SOURCE[0]}")")" && pwd)"
+SCRIPT_NAME=$(basename "$0")
+readonly SCRIPT_NAME
+SCRIPT_DIR="$(cd "$(dirname "$(readlink -e "${BASH_SOURCE[0]}")")" && pwd)"
+readonly SCRIPT_DIR
 readonly LIB_DIR="${SCRIPT_DIR}/../lib"
 
 # Include and parse the command line arguments
@@ -22,7 +24,9 @@ source "${LIB_DIR}/gradle/${EXP_NO}-cli-parser.sh" || { echo "Couldn't find '${L
 # shellcheck source=lib/libs.sh
 source "${LIB_DIR}/libs.sh" || { echo "Couldn't find '${LIB_DIR}/libs.sh'"; exit 1; }
 
-readonly RUN_ID=$(generate_run_id)
+RUN_ID=$(generate_run_id)
+readonly RUN_ID
+
 
 # These will be set by the config functions (see lib/config.sh)
 git_repo=''
@@ -146,7 +150,7 @@ execute_build() {
   local lib_dir_rel args
   lib_dir_rel="$(relative_lib_path)"
 
-  args=(--build-cache --init-script "${lib_dir_rel}/gradle/configure-remote-build-caching.gradle" ${tasks})
+  args=(--build-cache --init-script "${lib_dir_rel}/gradle/configure-remote-build-caching.gradle")
   if [ -n "${remote_cache_url}" ]; then
     args+=("-Pcom.gradle.enterprise.build_validation.remoteCacheUrl=${remote_cache_url}")
   fi

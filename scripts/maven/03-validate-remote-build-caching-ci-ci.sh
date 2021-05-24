@@ -12,8 +12,10 @@ readonly BUILD_TOOL="Maven"
 readonly SCRIPT_VERSION="<HEAD>"
 
 # Needed to bootstrap the script
-readonly SCRIPT_NAME=$(basename "$0")
-readonly SCRIPT_DIR="$(cd "$(dirname "$(readlink -e "${BASH_SOURCE[0]}")")" && pwd)"
+SCRIPT_NAME=$(basename "$0")
+readonly SCRIPT_NAME
+SCRIPT_DIR="$(cd "$(dirname "$(readlink -e "${BASH_SOURCE[0]}")")" && pwd)"
+readonly SCRIPT_DIR
 readonly LIB_DIR="${SCRIPT_DIR}/../lib"
 
 # Include and parse the command line arguments

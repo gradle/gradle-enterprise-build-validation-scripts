@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 
+# shellcheck disable=SC2034 # not all of the variables set in this function are used by all scripts
 process_arguments() {
   parse_commandline "$@"
 

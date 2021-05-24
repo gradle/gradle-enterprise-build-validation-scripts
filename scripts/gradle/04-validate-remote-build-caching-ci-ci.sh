@@ -12,8 +12,10 @@ readonly BUILD_TOOL="Gradle"
 readonly SCRIPT_VERSION="<HEAD>"
 
 # Needed to bootstrap the script
-readonly SCRIPT_NAME=$(basename "$0")
-readonly SCRIPT_DIR="$(cd "$(dirname "$(readlink -e "${BASH_SOURCE[0]}")")" && pwd)"
+SCRIPT_NAME=$(basename "$0")
+readonly SCRIPT_NAME
+SCRIPT_DIR="$(cd "$(dirname "$(readlink -e "${BASH_SOURCE[0]}")")" && pwd)"
+readonly SCRIPT_DIR
 readonly LIB_DIR="${SCRIPT_DIR}/../lib"
 
 # Include and parse the command line arguments
@@ -30,6 +32,8 @@ git_branch=''
 project_dir='<not available>'
 extra_args='<not available>'
 tasks=''
+enable_ge=''
+ge_server=''
 interactive_mode=''
 mapping_file=''
 
