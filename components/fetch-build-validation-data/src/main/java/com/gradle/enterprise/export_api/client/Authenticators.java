@@ -23,11 +23,6 @@ public class Authenticators {
     }
 
     public static Authenticator createForUrl(URL url) {
-        var accessKey = System.getenv(EnvVars.ACCESS_KEY);
-        if(!Strings.isNullOrEmpty(accessKey)) {
-            return accessKey(accessKey);
-        }
-
         var username = System.getenv(EnvVars.USERNAME);
         var password = System.getenv(EnvVars.PASSWORD);
         if(!Strings.isNullOrEmpty(username) && !Strings.isNullOrEmpty(password)) {
@@ -64,22 +59,24 @@ public class Authenticators {
     }
 
     public static String lookupAccessKey(URL url) {
-        var accessKeysFile = getGradleUserHomeDirectory().resolve("enterprise/keys.properties");
+        try {
+            var accessKeysByHost = new Properties();
+            accessKeysByHost.putAll(loadMavenHomeAccessKeys());
+            accessKeysByHost.putAll(loadGradleHomeAccessKeys());
+            accessKeysByHost.putAll(loadFromEnvVar());
 
-        if (Files.isRegularFile(accessKeysFile)) {
-            try (var in = Files.newBufferedReader(accessKeysFile)) {
-                var accessKeys = new Properties();
-                accessKeys.load(in);
-
-                if (!accessKeys.containsKey(url.getHost())) {
-                    throw new AccessKeyNotFoundException(url);
-                }
-                return accessKeys.getProperty(url.getHost());
-            } catch (IOException e) {
-                throw new AccessKeyNotFoundException(url, e);
+            if (!accessKeysByHost.containsKey(url.getHost())) {
+                throw new AccessKeyNotFoundException(url);
             }
+            return accessKeysByHost.getProperty(url.getHost());
+        } catch (IOException e) {
+            throw new AccessKeyNotFoundException(url, e);
         }
-        throw new AccessKeyNotFoundException(url);
+    }
+
+    private static Properties loadGradleHomeAccessKeys() throws IOException {
+        var accessKeysFile = getGradleUserHomeDirectory().resolve("enterprise/keys.properties");
+        return loadAccessKeysFromFile(accessKeysFile);
     }
 
     private static Path getGradleUserHomeDirectory() {
@@ -87,5 +84,60 @@ public class Authenticators {
             return Paths.get(System.getProperty("user.home"), ".gradle");
         }
         return Paths.get(System.getenv(EnvVars.GRADLE_USER_HOME));
+    }
+
+    private static Properties loadMavenHomeAccessKeys() throws IOException {
+        var accessKeysFile = getMavenStorageDirectory().resolve("keys.properties");
+        return loadAccessKeysFromFile(accessKeysFile);
+    }
+
+    private static Path getMavenStorageDirectory() {
+        String defaultLocation = System.getProperty("user.home") + "/.m2/.gradle-enterprise";
+        return Paths.get(System.getProperty("gradle.enterprise.storage.directory", defaultLocation));
+    }
+
+    private static Properties loadAccessKeysFromFile(Path accessKeysFile) throws IOException {
+        var accessKeysByHost = new Properties();
+        if (Files.isRegularFile(accessKeysFile)) {
+            try (var in = Files.newBufferedReader(accessKeysFile)) {
+                accessKeysByHost.load(in);
+            }
+        }
+        return accessKeysByHost;
+    }
+
+    private static Properties loadFromEnvVar() {
+        var accessKeys = new Properties();
+        var value = System.getenv(EnvVars.ACCESS_KEY);
+
+        if(Strings.isNullOrEmpty(value)) {
+            return accessKeys;
+        }
+
+        var entries = value.split(";");
+        for(var entry: entries) {
+            if(entry == null) throw new MalformedEnvironmentVariableException();
+
+            var parts = entry.split("=", 2);
+            if (parts.length < 2) throw new MalformedEnvironmentVariableException();
+
+            var joinedServers = parts[0].trim();
+            var accessKey = parts[1].trim();
+
+            if(joinedServers.isEmpty() || Strings.isNullOrEmpty(accessKey)) throw new MalformedEnvironmentVariableException();
+            for(var server: joinedServers.split(",")) {
+                server = server.trim();
+                if (server.isEmpty()) throw new MalformedEnvironmentVariableException();
+                accessKeys.put(server, accessKey);
+            }
+        }
+
+        return accessKeys;
+    }
+
+    public static class MalformedEnvironmentVariableException extends ExportApiClientException {
+        public MalformedEnvironmentVariableException() {
+            super("Environment variable " + EnvVars.ACCESS_KEY + " is malformed (expected format: 'server-host=access-key' or 'server-host1=access-key1;server-host2=access-key2')");
+        }
     }
 }
