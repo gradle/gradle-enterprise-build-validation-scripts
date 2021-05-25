@@ -85,7 +85,7 @@ public class ExportApiClient {
 
     private URL endpointFor(String buildScanId) {
         try {
-            return new URL(baseUrl, "/build-export/v1/build/" + buildScanId + "/events?eventTypes=" + EventTypes.ALL);
+            return new URL(baseUrl, "/build-export/v2/build/" + buildScanId + "/events?eventTypes=" + EventTypes.ALL);
         } catch (MalformedURLException e) {
             // It is highly unlikely this exception will ever be thrown. If it is thrown, then it is likely due to a
             // programming mistake (._.)
