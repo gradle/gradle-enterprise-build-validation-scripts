@@ -266,8 +266,8 @@ $(print_separator)
 ${HEADER_COLOR}Run second build on another CI agent${RESTORE}
 
 Now that the first build has finished successfully, the second build can be
-triggered on another CI against. Make sure to invoke the same CI configuration
-and the same commit id as for the first build.
+triggered on another CI agent for the same CI configuration and with the same
+commit id as the first build ran against.
 
 Make sure the CI configuration performs a fresh checkout to avoid any build
 artifacts lingering around from a previous build that could influence the
