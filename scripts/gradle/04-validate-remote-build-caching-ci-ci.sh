@@ -160,35 +160,44 @@ print_introduction() {
 $(print_introduction_title)
 
 In this experiment, you will validate how well a given project leverages
-Gradle's remote caching functionality in your CI environment to avoid doing
-unnecessary work that has already been done on a CI server.
+Gradle's remote build caching functionality when running the build from
+different CI agents. A build is considered fully cacheable if it can be
+invoked twice in a row with build caching enabled and all cacheable tasks
+avoid performing any work because:
 
-A build is considered fully remote cache enabled if all tasks avoid performing
-any work because:
-
+  * No cacheable tasks were excluded from build caching to ensure correctness and
   * The tasks' inputs have not changed since their last invocation and
   * The tasks' outputs are present in the remote cache
 
-The goal of the experiment is to first identify those tasks that do not reuse
-outputs from the remote cache, to then make an informed decision which of those
+The experiment will reveal tasks with volatile inputs, for example tasks that
+contain a timestamp in one of their inputs. It will also reveal tasks that produce
+non-deterministic outputs consumed by cacheable tasks downstream, for example
+tasks generating code with non-deterministic method ordering or tasks producing
+artifacts that include timestamps.
+
+The experiment will assist you to first identify those tasks whose outputs are
+not taken from the remote build cache due to changed inputs or to ensure
+correctness of the build, to then make an informed decision which of those
 tasks are worth improving to make your build faster, to then investigate why
-they did not reuse outputs, and to finally fix them once you understand the root
-cause.
+they are not taken from the remote build cache, and to finally fix them once you
+understand the root cause.
 
-This experiment consists of the following steps:
+The experiment needs to be run in your CI environment. It logically consists of
+the following steps:
 
-	1. On a CI server, run the Gradle build with a typical task invocation
-	2. On a CI server, run the Gradle build against the same commit with the same task invocation
-	3. Determine which tasks are still executed in the second run and why
-	4. Assess which of the executed tasks are worth improving
+  1. Enable remote build caching and use an empty remote build cache node
+  2. On a given CI agent, run the Gradle build with a typical task including the ‘clean’ task
+  3. On another CI agent, run the Gradle build with the same commit id and task invocation including the ‘clean’ task
+  4. Determine which tasks are still executed in the second run and why
+  5. Assess which of the executed tasks are worth improving
 
-Unlike other scripts, the script you have invoked does not automate the
-execution of step 1 and step 2. You will need to complete step 1 and 2. This
-script will provide a list of quick links to support your investigation in step
-3 and step 4.
+The script you have invoked does not automate the execution of step 1, step 2,
+and step 3. You will need to complete these steps manually. Build scans support
+your investigation in step 4 and step 5.
 
-After improving the build to make it more incremental, you can run the
-experiment again. This creates a cycle of run → measure → improve → run → …
+After improving the build to make it better leverage the remote build cache, you
+can push your changes and run the experiment again. This creates a cycle of run
+→ measure → improve → run.
 
 ${USER_ACTION_COLOR}Press <Enter> to get started with the experiment.${RESTORE}
 EOF
@@ -201,20 +210,20 @@ explain_prerequisites() {
   local text
   IFS='' read -r -d '' text <<EOF
 $(print_separator)
-${HEADER_COLOR}Purge remote build cache and disable the local build cache${RESTORE}
+${HEADER_COLOR}Purge remote build cache node and configure build caching${RESTORE}
 
-Before you can run the first build, you should purge the remote cache on your
-Gradle Enterprise server to ensure any existing cache entries do not influence
-the experiment.
+Before running the first build, you need to purge the remote build cache node
+that your build is configured to connect to. This will ensure that any existing
+build cache entries do not influence the experiment.
 
-Alternatively, run the first Gradle build with --rerun-tasks command line
-argument. This will ensure that the first build does not use any existing build
-cache entries.
+Alternatively, if you do not want to affect the build caching benefits for all
+your ongoing CI builds, set up an extra, empty build cache node that is used
+exclusively for this experiment and configure your build to connect to it.
 
-For this experiment, you also need to disable the local build cache so that only
-the remote build cache is used.
+In addition, configure your build with remote build caching enabled and local
+build caching disabled.
 
-${USER_ACTION_COLOR}Press <Enter> when you have purged the remote cache and disabled the local cache.${RESTORE}
+${USER_ACTION_COLOR}Press <Enter> once you have purged the remote build cache node and disabled local caching.${RESTORE}
 EOF
   print_wizard_text "${text}"
   wait_for_enter
@@ -224,20 +233,20 @@ explain_first_build() {
   local text
   IFS='' read -r -d '' text <<EOF
 $(print_separator)
-${HEADER_COLOR}Run first build on CI${RESTORE}
+${HEADER_COLOR}Run first build on CI agent${RESTORE}
 
-It is now time to run the first build on the CI server. The Gradle tasks to
-invoked by the build should resemble what CI typically invokes when building the
-project.
+You can now trigger the first build on one of your CI agents. The invoked CI
+configuration should be a configuration that is typically triggered when
+building the project as part of your pipeline during daily development.
 
-Once the build completes, make a note of the commit the build ran against, and
-enter the URL to the build scan produced by the build.
+Once the build completes, make a note of the commit id that the build ran
+against, and enter the URL of the build scan produced by the build.
 EOF
   print_wizard_text "${text}"
 }
 
 collect_first_build_scan() {
-  prompt_for_setting "What is the build scan for the first CI server build?" "${_arg_first_build}" "" build_scan_url
+  prompt_for_setting "What is the build scan URL of the first build?" "${_arg_first_build}" "" build_scan_url
   build_scan_urls+=("${build_scan_url}")
 }
 
@@ -245,20 +254,19 @@ explain_second_build() {
   local text
   IFS='' read -r -d '' text <<EOF
 $(print_separator)
-${HEADER_COLOR}Run second build on CI${RESTORE}
+${HEADER_COLOR}Run second build on another CI agent${RESTORE}
 
-Now that the first build has finished successfully, the second build can be run
-on CI against the same commit and with the same Gradle tasks. Make sure to NOT
-run the second build with --rerun-tasks. Otherwise, the second build will not
-use the remote cache entries populated by the first build.
+Now that the first build has finished successfully, the second build can be
+triggered on another CI against. Make sure to invoke the same CI configuration
+and the same commit id as for the first build.
 
-Once the build completes, enter the URL to the build scan produced by the build.
+Once the build completes, enter the URL of the build scan produced by the build.
 EOF
   print_wizard_text "${text}"
 }
 
 collect_second_build_scan() {
-  prompt_for_setting "What is the build scan for the second CI server build?" "${_arg_second_build}" "" build_scan_url
+  prompt_for_setting "What is the build scan URL of the second build?" "${_arg_second_build}" "" build_scan_url
   build_scan_urls+=("${build_scan_url}")
 }
 
@@ -268,14 +276,21 @@ explain_collect_mapping_file() {
 $(print_separator)
 ${HEADER_COLOR}Fetch build scan data${RESTORE}
 
-This script is going to fetch the build scans you have provided and extract some
-information from the build scans to assist you in your investigation.
+Now that the second build has finished successfully, some of the build scan
+data will be fetched from the two provided build scans to assist you in your
+investigation.
 
-Some of the data is stored as custom values on the build scan. By default, this
-script assumes the values have been created by the Common Custom User Data
-Gradle plugin. If you are not using the plugin but the builds still publish the
-same data using different names, then you can provide a mapping file so that the
-script can still find the data.
+Some of the fetched build scan data is expected to be present as custom values.
+By default, the script assumes these custom values have been created by the
+Common Custom User Data Gradle plugin that Gradle provides as a free,
+open-source add-on.
+
+https://github.com/gradle/gradle-enterprise-build-config-samples/tree/master/common-custom-user-data-gradle-plugin
+
+If you are not using that plugin but your build still captures the same data
+under different custom value names, you can provide a mapping file so that the
+script can still extract the data from your build scans. An example mapping file
+can be found at the same location as the script under `mapping.example`.
 EOF
   print_wizard_text "${text}"
 }
@@ -283,7 +298,7 @@ EOF
 explain_fetch_build_scan_data() {
   local text
   IFS='' read -r -d '' text <<EOF
-${USER_ACTION_COLOR}Press <Enter> to fetch the build scans.${RESTORE}
+${USER_ACTION_COLOR}Press <Enter> to fetch the build scan data.${RESTORE}
 EOF
   print_wizard_text "${text}"
   wait_for_enter
@@ -297,7 +312,7 @@ $(print_separator)
 ${HEADER_COLOR}Measure build results${RESTORE}
 
 At this point, you are ready to measure in Gradle Enterprise how well your build
-leverages Gradle’s remote build cache for the invoked set of Gradle tasks.
+leverages Gradle’s remote build cache for the invoked CI configuration.
 
 ${USER_ACTION_COLOR}Press <Enter> to measure the build results.${RESTORE}
 EOF
