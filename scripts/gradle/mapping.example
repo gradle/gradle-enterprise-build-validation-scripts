@@ -1,0 +1,8 @@
+# This file serves as an example of how to define a custom mapping for the names of the custom values 
+# that are extracted from the build scans that are fetched when running experiment 04 and 05.
+# 
+# The mapping below shows the default custom value names used by the experiments. Override none or
+# one or more of them as appropriate.
+git.repository=Git repository
+git.branch=Git branch
+git.commitId=Git commit id
