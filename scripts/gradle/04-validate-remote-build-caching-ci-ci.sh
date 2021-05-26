@@ -161,25 +161,25 @@ $(print_introduction_title)
 
 In this experiment, you will validate how well a given project leverages
 Gradle's remote build caching functionality when running the build from
-different CI agents. A build is considered fully cacheable if it can be
-invoked twice in a row with build caching enabled and all cacheable tasks
-avoid performing any work because:
+different CI agents. A build is considered fully cacheable if it can be invoked
+twice in a row with build caching enabled and all cacheable tasks avoid
+performing any work because:
 
   * No cacheable tasks were excluded from build caching to ensure correctness and
   * The tasks' inputs have not changed since their last invocation and
   * The tasks' outputs are present in the remote build cache
 
 The experiment will reveal tasks with volatile inputs, for example tasks that
-contain a timestamp in one of their inputs. It will also reveal tasks that produce
-non-deterministic outputs consumed by cacheable tasks downstream, for example
-tasks generating code with non-deterministic method ordering or tasks producing
-artifacts that include timestamps.
+contain a timestamp in one of their inputs. It will also reveal tasks that
+produce non-deterministic outputs consumed by cacheable tasks downstream, for
+example tasks generating code with non-deterministic method ordering or tasks
+producing artifacts that include timestamps.
 
 The experiment will assist you to first identify those tasks whose outputs are
 not taken from the remote build cache due to changed inputs or to ensure
-correctness of the build, to then make an informed decision which of those
-tasks are worth improving to make your build faster, to then investigate why
-they are not taken from the remote build cache, and to finally fix them once you
+correctness of the build, to then make an informed decision which of those tasks
+are worth improving to make your build faster, to then investigate why they are
+not taken from the remote build cache, and to finally fix them once you
 understand the root cause.
 
 The experiment needs to be run in your CI environment. It logically consists of
@@ -218,15 +218,16 @@ node that your build is configured to connect to. This will minimize the risk
 that any build cache entries from other builds influence the experiment.
 
 Alternatively, if you do not want to affect the build caching benefits for all
-your ongoing CI builds by purging the connected remote build cache node, you
-can set up an extra, empty build cache node that is used exclusively for this
+your ongoing CI builds by purging the connected remote build cache node, you can
+set up an extra, empty build cache node that is used exclusively for this
 experiment, and configure your build to connect to it.
 
 In addition, configure your build with remote build caching enabled and local
 build caching disabled.
 
-The build configuration changes mentioned above are best made on a dedicated branch
-in order to not impact your CI pipeline and your team's daily development.
+The build configuration changes mentioned above are best made on a dedicated
+branch in order to not impact your CI pipeline and your team's daily
+development.
 
 ${USER_ACTION_COLOR}Press <Enter> once you have purged the remote build cache node, enabled remote build caching, and disabled local build caching.${RESTORE}
 EOF
@@ -248,8 +249,8 @@ Make sure the CI configuration performs a fresh checkout to avoid any build
 artifacts lingering around from a previous build that could influence the
 experiment.
 
-Once the build completes, make a note of the commit id that the build ran
-against, and enter the URL of the build scan produced by the build.
+Once the build completes, make a note of the commit id the build ran against,
+and enter the URL of the build scan produced by the build.
 EOF
   print_wizard_text "${text}"
 }
@@ -267,7 +268,7 @@ ${HEADER_COLOR}Run second build on another CI agent${RESTORE}
 
 Now that the first build has finished successfully, the second build can be
 triggered on another CI agent for the same CI configuration and with the same
-commit id as the first build ran against.
+commit id the first build ran against.
 
 Make sure the CI configuration performs a fresh checkout to avoid any build
 artifacts lingering around from a previous build that could influence the
@@ -289,21 +290,21 @@ explain_collect_mapping_file() {
 $(print_separator)
 ${HEADER_COLOR}Fetch build scan data${RESTORE}
 
-Now that the second build has finished successfully, some of the build scan
-data will be fetched from the two provided build scans to assist you in your
+Now that the second build has finished successfully, some of the build scan data
+will be fetched from the two provided build scans to assist you in your
 investigation.
 
 Some of the fetched build scan data is expected to be present as custom values.
-By default, the script assumes that these custom values have been created by
-the Common Custom User Data Gradle plugin that Gradle provides as a free,
+By default, the script assumes that these custom values have been created by the
+Common Custom User Data Gradle plugin that Gradle provides as a free,
 open-source add-on.
 
 https://plugins.gradle.org/plugin/com.gradle.common-custom-user-data-gradle-plugin
 
 If you are not using that plugin but your build still captures the same data
 under different custom value names, you can provide a mapping file so that the
-script can still extract that data from your build scans. An example mapping file
-named `mapping.example` can be found at the same location as the script.
+script can still extract that data from your build scans. An example mapping
+file named 'mapping.example' can be found at the same location as the script.
 EOF
   print_wizard_text "${text}"
 }
@@ -351,8 +352,8 @@ explain_and_print_summary() {
   IFS='' read -r -d '' text <<EOF
 The 'Summary' section below captures the configuration of the experiment and the
 two build scans that were published as part of running the experiment. The build
-scan of the second build is particularly interesting since this is where
-you can inspect what tasks were not leveraging Gradle’s remote build cache.
+scan of the second build is particularly interesting since this is where you can
+inspect what tasks were not leveraging Gradle’s remote build cache.
 
 The ‘Investigation Quick Links’ section below allows quick navigation to the
 most relevant views in build scans to investigate what tasks were avoided due to
