@@ -156,37 +156,46 @@ print_introduction() {
   local text
   IFS='' read -r -d '' text <<EOF
 $(print_introduction_title)
-
 In this experiment, you will validate how well a given project leverages
-Gradle Enterprise's remote caching functionality in your CI environment to avoid doing
-unnecessary work that has already been done on a CI server.
+Gradle Enterprise's remote build caching functionality when running the build from
+different CI agents. A build is considered fully cacheable if it can be invoked
+twice in a row with build caching enabled and all cacheable goals avoid
+performing any work because:
 
-A build is considered fully remote cache enabled if all tasks avoid performing
-any work because:
-
+  * No cacheable goals were excluded from build caching to ensure correctness and
   * The goals' inputs have not changed since their last invocation and
-  * The goals' outputs are present in the remote cache
+  * The goals' outputs are present in the remote build cache
 
-The goal of the experiment is to first identify those goals that do not reuse
-outputs from the remote cache, to then make an informed decision which of those
-goals are worth improving to make your build faster, to then investigate why
-they did not reuse outputs, and to finally fix them once you understand the root
-cause.
+The experiment will reveal goals with volatile inputs, for example goals that
+contain a timestamp in one of their inputs. It will also reveal goals that
+produce non-deterministic outputs consumed by cacheable goals downstream, for
+example goals generating code with non-deterministic method ordering or goals
+producing artifacts that include timestamps.
 
-This experiment consists of the following steps:
+The experiment will assist you to first identify those goals whose outputs are
+not taken from the remote build cache due to changed inputs or to ensure
+correctness of the build, to then make an informed decision which of those goals
+are worth improving to make your build faster, to then investigate why they are
+not taken from the remote build cache, and to finally fix them once you
+understand the root cause.
 
-	1. On a CI server, run the Maven build with a typical goal invocation
-	2. On a CI server, run the Maven build against the same commit with the same goal invocation
-	3. Determine which goals are still executed in the second run and why
-	4. Assess which of the executed goals are worth improving
+The experiment needs to be run in your CI environment. It logically consists of
+the following steps:
 
-Unlike other scripts, the script you have invoked does not automate the
-execution of step 1 and step 2. You will need to complete step 1 and 2. This
-script will provide a list of quick links to support your investigation in step
-3 and step 4.
+  1. Enable remote build caching and use an empty remote build cache node
+  2. On a given CI agent, run a typical CI configuration from a fresh checkout
+  3. On another CI agent, run the same CI configuration with the same commit id from a fresh checkout
+  4. Determine which cacheable goals are still executed in the second run and why
+  5. Assess which of the executed goals are worth improving
+  6. Fix identified goals
 
-After improving the build to make it more incremental, you can run the
-experiment again. This creates a cycle of run → measure → improve → run → …
+The script you have invoked does not automate the execution of step 1, step 2,
+and step 3. You will need to complete these steps manually. Build scans support
+your investigation in step 4 and step 5.
+
+After improving the build to make it better leverage the remote build cache, you
+can push your changes and run the experiment again. This creates a cycle of run
+→ measure → improve → run.
 
 ${USER_ACTION_COLOR}Press <Enter> to get started with the experiment.${RESTORE}
 EOF
@@ -199,20 +208,25 @@ explain_prerequisites() {
   local text
   IFS='' read -r -d '' text <<EOF
 $(print_separator)
-${HEADER_COLOR}Purge remote build cache and disable the local build cache${RESTORE}
+${HEADER_COLOR}Purge remote build cache node and configure build caching${RESTORE}
 
-Before you can run the first build, you should purge the remote cache on your
-Gradle Enterprise server to ensure any existing cache entries do not influence
-the experiment.
+Right before running the first build, you need to purge the remote build cache
+node that your build is configured to connect to. This will minimize the risk
+that any build cache entries from other builds influence the experiment.
 
-Alternatively, run the first Maven build with -DrerunGoals command line
-argument. This will ensure that the first build does not use any existing build
-cache entries.
+Alternatively, if you do not want to affect the build caching benefits for all
+your ongoing CI builds by purging the connected remote build cache node, you can
+set up an extra, empty build cache node that is used exclusively for this
+experiment, and configure your build to connect to it.
 
-For this experiment, you also need to disable the local build cache so that only
-the remote build cache is used.
+In addition, configure your build with remote build caching enabled and local
+build caching disabled.
 
-${USER_ACTION_COLOR}Press <Enter> when you have purged the remote cache and disabled the local cache.${RESTORE}
+The build configuration changes mentioned above are best made on a dedicated
+branch in order to not impact your CI pipeline and your team's daily
+development.
+
+${USER_ACTION_COLOR}Press <Enter> once you have purged the remote build cache node, enabled remote build caching, and disabled local build caching.${RESTORE}
 EOF
   print_wizard_text "${text}"
   wait_for_enter
@@ -222,14 +236,18 @@ explain_first_build() {
   local text
   IFS='' read -r -d '' text <<EOF
 $(print_separator)
-${HEADER_COLOR}Run first build on CI${RESTORE}
+${HEADER_COLOR}Run first build on CI agent${RESTORE}
 
-It is now time to run the first build on the CI server. The Maven goals to
-invoked by the build should resemble what CI typically invokes when building the
-project.
+You can now trigger the first build on one of your CI agents. The invoked CI
+configuration should be a configuration that is typically triggered when
+building the project as part of your pipeline during daily development.
 
-Once the build completes, make a note of the commit the build ran against, and
-enter the URL to the build scan produced by the build.
+Make sure the CI configuration performs a fresh checkout to avoid any build
+artifacts lingering around from a previous build that could influence the
+experiment.
+
+Once the build completes, make a note of the commit id the build ran against,
+and enter the URL of the build scan produced by the build.
 EOF
   print_wizard_text "${text}"
 }
@@ -243,14 +261,17 @@ explain_second_build() {
   local text
   IFS='' read -r -d '' text <<EOF
 $(print_separator)
-${HEADER_COLOR}Run second build on CI${RESTORE}
+${HEADER_COLOR}Run second build on another CI agent${RESTORE}
 
-Now that the first build has finished successfully, the second build can be run
-on CI against the same commit and with the same Maven goals. Make sure to NOT
-run the second build with -DrerunGoals. Otherwise, the second build will not
-use the remote cache entries populated by the first build.
+Now that the first build has finished successfully, the second build can be
+triggered on another CI agent for the same CI configuration and with the same
+commit id the first build ran against.
 
-Once the build completes, enter the URL to the build scan produced by the build.
+Make sure the CI configuration performs a fresh checkout to avoid any build
+artifacts lingering around from a previous build that could influence the
+experiment.
+
+Once the build completes, enter the URL of the build scan produced by the build.
 EOF
   print_wizard_text "${text}"
 }
@@ -266,14 +287,21 @@ explain_collect_mapping_file() {
 $(print_separator)
 ${HEADER_COLOR}Fetch build scan data${RESTORE}
 
-This script is going to fetch the build scans you have provided and extract some
-information from the build scans to assist you in your investigation.
+Now that the second build has finished successfully, some of the build scan data
+will be fetched from the two provided build scans to assist you in your
+investigation.
 
-Some of the data is stored as custom values on the build scan. By default, this
-script assumes the values have been created by the Common Custom User Data
-Maven extension. If you are not using the plugin but the builds still publish the
-same data using different names, then you can provide a mapping file so that the
-script can still find the data.
+Some of the fetched build scan data is expected to be present as custom values.
+By default, the script assumes that these custom values have been created by the
+Common Custom User Data Maven extension that Gradle provides as a free,
+open-source add-on.
+
+https://github.com/gradle/gradle-enterprise-build-config-samples/tree/master/common-custom-user-data-maven-extension
+
+If you are not using that extension but your build still captures the same data
+under different custom value names, you can provide a mapping file so that the
+script can still extract that data from your build scans. An example mapping
+file named 'mapping.example' can be found at the same location as the script.
 EOF
   print_wizard_text "${text}"
 }
