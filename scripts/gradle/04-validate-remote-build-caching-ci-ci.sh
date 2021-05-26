@@ -167,7 +167,7 @@ avoid performing any work because:
 
   * No cacheable tasks were excluded from build caching to ensure correctness and
   * The tasks' inputs have not changed since their last invocation and
-  * The tasks' outputs are present in the remote cache
+  * The tasks' outputs are present in the remote build cache
 
 The experiment will reveal tasks with volatile inputs, for example tasks that
 contain a timestamp in one of their inputs. It will also reveal tasks that produce
@@ -186,10 +186,11 @@ The experiment needs to be run in your CI environment. It logically consists of
 the following steps:
 
   1. Enable remote build caching and use an empty remote build cache node
-  2. On a given CI agent, run the Gradle build with a typical task including the ‘clean’ task
-  3. On another CI agent, run the Gradle build with the same commit id and task invocation including the ‘clean’ task
-  4. Determine which tasks are still executed in the second run and why
+  2. On a given CI agent, run the build with a typical task invocation including the ‘clean’ task
+  3. On another CI agent, run the build with the same commit id and task invocation including the ‘clean’ task
+  4. Determine which cacheable tasks are still executed in the second run and why
   5. Assess which of the executed tasks are worth improving
+  6. Fix identified tasks
 
 The script you have invoked does not automate the execution of step 1, step 2,
 and step 3. You will need to complete these steps manually. Build scans support
@@ -212,18 +213,22 @@ explain_prerequisites() {
 $(print_separator)
 ${HEADER_COLOR}Purge remote build cache node and configure build caching${RESTORE}
 
-Before running the first build, you need to purge the remote build cache node
-that your build is configured to connect to. This will ensure that any existing
-build cache entries do not influence the experiment.
+Right before running the first build, you need to purge the remote build cache
+node that your build is configured to connect to. This will minimize the risk
+that any build cache entries from other builds influence the experiment.
 
 Alternatively, if you do not want to affect the build caching benefits for all
-your ongoing CI builds, set up an extra, empty build cache node that is used
-exclusively for this experiment and configure your build to connect to it.
+your ongoing CI builds by purging the connected remote build cache node, you
+can set up an extra, empty build cache node that is used exclusively for this
+experiment, and configure your build to connect to it.
 
 In addition, configure your build with remote build caching enabled and local
 build caching disabled.
 
-${USER_ACTION_COLOR}Press <Enter> once you have purged the remote build cache node and disabled local caching.${RESTORE}
+The build configuration changes mentioned above are best made on a dedicated branch
+in order to not influence your CI pipeline and your team's daily development.
+
+${USER_ACTION_COLOR}Press <Enter> once you have purged the remote build cache node, enabled remote build caching, and disabled local build caching.${RESTORE}
 EOF
   print_wizard_text "${text}"
   wait_for_enter
@@ -281,16 +286,16 @@ data will be fetched from the two provided build scans to assist you in your
 investigation.
 
 Some of the fetched build scan data is expected to be present as custom values.
-By default, the script assumes these custom values have been created by the
-Common Custom User Data Gradle plugin that Gradle provides as a free,
+By default, the script assumes that these custom values have been created by
+the Common Custom User Data Gradle plugin that Gradle provides as a free,
 open-source add-on.
 
-https://github.com/gradle/gradle-enterprise-build-config-samples/tree/master/common-custom-user-data-gradle-plugin
+https://plugins.gradle.org/plugin/com.gradle.common-custom-user-data-gradle-plugin
 
 If you are not using that plugin but your build still captures the same data
 under different custom value names, you can provide a mapping file so that the
-script can still extract the data from your build scans. An example mapping file
-can be found at the same location as the script under `mapping.example`.
+script can still extract that data from your build scans. An example mapping file
+named `mapping.example` can be found at the same location as the script.
 EOF
   print_wizard_text "${text}"
 }
@@ -303,7 +308,6 @@ EOF
   print_wizard_text "${text}"
   wait_for_enter
 }
-
 
 explain_measure_build_results() {
   local text
@@ -338,15 +342,15 @@ explain_and_print_summary() {
   local text
   IFS='' read -r -d '' text <<EOF
 The 'Summary' section below captures the configuration of the experiment and the
-two build scans that were published as part of running the experiment.  The
-build scan of the second build is particularly interesting since this is where
-you can inspect what tasks were not leveraging Gradle’s local build cache.
+two build scans that were published as part of running the experiment. The build
+scan of the second build is particularly interesting since this is where
+you can inspect what tasks were not leveraging Gradle’s remote build cache.
 
-The 'Investigation Quick Links' section below allows quick navigation to the
-most relevant views in build scans to investigate what task outputs were fetched
-from the remote cache and what tasks executed in the second build with cache
-misses, which of those tasks had the biggest impact on build performance, and
-what caused the cache misses.
+The ‘Investigation Quick Links’ section below allows quick navigation to the
+most relevant views in build scans to investigate what tasks were avoided due to
+remote build caching and what tasks executed in the second build, which of those
+tasks had the biggest impact on build performance, and what caused those tasks
+to not be taken from the remote build cache.
 
 The 'Command Line Invocation' section below demonstrates how you can rerun the
 experiment with the same configuration and in non-interactive mode.
