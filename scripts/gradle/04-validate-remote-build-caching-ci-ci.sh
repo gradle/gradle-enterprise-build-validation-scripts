@@ -186,8 +186,8 @@ The experiment needs to be run in your CI environment. It logically consists of
 the following steps:
 
   1. Enable remote build caching and use an empty remote build cache node
-  2. On a given CI agent, run the build with a typical task invocation including the ‘clean’ task
-  3. On another CI agent, run the build with the same commit id and task invocation including the ‘clean’ task
+  2. On a given CI agent, run a typical CI configuration from a fresh checkout
+  3. On another CI agent, run the same CI configuration with the same commit id from a fresh checkout
   4. Determine which cacheable tasks are still executed in the second run and why
   5. Assess which of the executed tasks are worth improving
   6. Fix identified tasks
@@ -226,7 +226,7 @@ In addition, configure your build with remote build caching enabled and local
 build caching disabled.
 
 The build configuration changes mentioned above are best made on a dedicated branch
-in order to not influence your CI pipeline and your team's daily development.
+in order to not impact your CI pipeline and your team's daily development.
 
 ${USER_ACTION_COLOR}Press <Enter> once you have purged the remote build cache node, enabled remote build caching, and disabled local build caching.${RESTORE}
 EOF
@@ -243,6 +243,10 @@ ${HEADER_COLOR}Run first build on CI agent${RESTORE}
 You can now trigger the first build on one of your CI agents. The invoked CI
 configuration should be a configuration that is typically triggered when
 building the project as part of your pipeline during daily development.
+
+Make sure the CI configuration performs a fresh checkout to avoid any build
+artifacts lingering around from a previous build that could influence the
+experiment.
 
 Once the build completes, make a note of the commit id that the build ran
 against, and enter the URL of the build scan produced by the build.
@@ -264,6 +268,10 @@ ${HEADER_COLOR}Run second build on another CI agent${RESTORE}
 Now that the first build has finished successfully, the second build can be
 triggered on another CI against. Make sure to invoke the same CI configuration
 and the same commit id as for the first build.
+
+Make sure the CI configuration performs a fresh checkout to avoid any build
+artifacts lingering around from a previous build that could influence the
+experiment.
 
 Once the build completes, enter the URL of the build scan produced by the build.
 EOF
