@@ -44,6 +44,7 @@ commit_id=''
 mapping_file=''
 
 main() {
+  process_script_arguments
   if [ "${interactive_mode}" == "on" ]; then
     wizard_execute
   else
@@ -54,9 +55,9 @@ main() {
 
 execute() {
   print_bl
-  validate_required_args
+  validate_required_script_arguments
   fetch_build_scan_data
-  validate_required_config
+  validate_build_config
 
   print_bl
   make_experiment_dir
@@ -118,16 +119,20 @@ wizard_execute() {
   print_bl
 }
 
-validate_required_args() {
-  if [ -z "${_arg_build_scan}" ]; then
-    _PRINT_HELP=yes die "ERROR: Missing required argument: --build-scan" 1
-  fi
+process_script_arguments() {
   ci_build_scan_url="${_arg_build_scan}"
   remote_cache_url="${_arg_remote_cache_url}"
+  commit_id="${_arg_git_commit_id}"
+  mapping_file="${_arg_mapping_file}"
+}
+
+validate_required_script_arguments() {
+  if [ -z "${ci_build_scan_url}" ]; then
+    _PRINT_HELP=yes die "ERROR: Missing required argument: --build-scan" 1
+  fi
 }
 
 fetch_build_scan_data() {
-  mapping_file="${_arg_mapping_file}"
   fetch_and_read_build_validation_data "${ci_build_scan_url}"
 
   if [ -z "${git_repo}" ]; then
@@ -142,6 +147,24 @@ fetch_build_scan_data() {
   fi
   if [ -z "${tasks}" ]; then
     tasks="${requested_tasks[0]}"
+  fi
+}
+
+validate_build_config() {
+  if [ -z "${git_repo}" ]; then
+    _PRINT_HELP=yes die "ERROR: The Git repository URL was not found in the build scan. Please specify --git-repo and try again." 1
+  fi
+  if [ -z "${tasks}" ]; then
+      _PRINT_HELP=yes die "ERROR: The Gradle tasks were not found in the build scan. Please specify --tasks and try again." 1
+  fi
+  if [ -z "${commit_id}" ]; then
+      _PRINT_HELP=yes die "ERROR: The Git commit id was not found in the build scan. Please specify --commit-id and try again." 1
+  fi
+
+  if [[ "${enable_ge}" == "on" ]]; then
+    if [ -z "${ge_server}" ]; then
+      _PRINT_HELP=yes die "ERROR: --gradle-enterprise-server is required when using --enable-gradle-enterprise."
+    fi
   fi
 }
 
