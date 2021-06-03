@@ -81,8 +81,6 @@ wizard_execute() {
   collect_mapping_file
 
   print_bl
-  explain_ready_to_fetch_build_scan
-  print_bl
   fetch_build_scan_data
 
   print_bl
@@ -270,15 +268,6 @@ EOF
 
 collect_build_scan() {
   prompt_for_setting "What is the build scan for the CI server build?" "${_arg_build_scan}" "" ci_build_scan_url
-}
-
-explain_ready_to_fetch_build_scan() {
-  local text
-  IFS='' read -r -d '' text <<EOF
-${USER_ACTION_COLOR}Press <Enter> to fetch the build scan.${RESTORE}
-EOF
-  print_wizard_text "${text}"
-  wait_for_enter
 }
 
 # This overrides explain_collect_git_details found in lib/wizard.sh

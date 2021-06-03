@@ -82,8 +82,6 @@ wizard_execute() {
   collect_mapping_file
 
   print_bl
-  explain_fetch_build_scan_data
-  print_bl
   parse_build_scan_urls
   fetch_extended_build_scan_data
   make_experiment_dir
@@ -307,15 +305,6 @@ script can still extract that data from your build scans. An example mapping
 file named 'mapping.example' can be found at the same location as the script.
 EOF
   print_wizard_text "${text}"
-}
-
-explain_fetch_build_scan_data() {
-  local text
-  IFS='' read -r -d '' text <<EOF
-${USER_ACTION_COLOR}Press <Enter> to fetch the build scan data.${RESTORE}
-EOF
-  print_wizard_text "${text}"
-  wait_for_enter
 }
 
 explain_measure_build_results() {
