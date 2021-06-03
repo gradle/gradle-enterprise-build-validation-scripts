@@ -98,6 +98,7 @@ wizard_execute() {
   explain_gradle_tasks_fetched_from_build_scan
   collect_gradle_tasks
   collect_gradle_extra_args
+  collect_remote_cache_url
 
   print_bl
   explain_clone_project
@@ -329,6 +330,15 @@ explain_gradle_tasks_fetched_from_build_scan() {
 with the same Gradle tasks, or enter a different set of tasks if it is not appropriate to use the the \
 same tasks locally."
     print_bl
+  fi
+}
+
+collect_remote_cache_url() {
+  local default_remote_cache="<the url configured in the build>"
+  prompt_for_setting "What is remote cache node URL?" "${remote_cache_url}" "${default_remote_cache}" remote_cache_url
+
+  if [[ "${remote_cache_url}" == "${default_remote_cache}" ]]; then
+    remote_cache_url=''
   fi
 }
 
