@@ -322,6 +322,7 @@ EOF
   wait_for_enter
 }
 
+#Overrides config.sh#print_command_to_repeat_experiment
 print_command_to_repeat_experiment() {
   local cmd
   cmd=("./${SCRIPT_NAME}")
@@ -336,6 +337,7 @@ print_command_to_repeat_experiment() {
   info "-----------------------"
   info "$(printf '%q ' "${cmd[@]}")"
 }
+
 explain_and_print_summary() {
   local text
   IFS='' read -r -d '' text <<EOF

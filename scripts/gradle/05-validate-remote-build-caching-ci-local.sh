@@ -380,6 +380,60 @@ EOF
   wait_for_enter
 }
 
+#Overrides config.sh#print_command_to_repeat_experiment
+print_command_to_repeat_experiment() {
+  local cmd
+  cmd=("./${SCRIPT_NAME}")
+
+  if [ -n "${git_repo}" ] && [[ "${git_repo}" != "${git_repos[0]}" ]]; then
+    cmd+=("-r" "${git_repo}")
+  fi
+
+  if [ -n "${git_branch}" ] && [[ "${git_branch}" != "${git_branches[0]}" ]]; then
+    cmd+=("-b" "${git_branch}")
+  fi
+
+  if [ -n "${commit_id}" ] && [[ "${commit_id}" != "${git_commit_ids[0]}" ]]; then
+    cmd+=("-C" "${commit_id}")
+  fi
+
+  if [ -n "${project_dir}" ]; then
+    cmd+=("-p" "${project_dir}")
+  fi
+
+  if [ -n "${tasks}" ] && [[ "${tasks}" != "${requested_tasks[0]}" ]]; then
+    cmd+=("-t" "${tasks}")
+  fi
+
+  if [ -n "${extra_args}" ]; then
+    cmd+=("-a" "${extra_args}")
+  fi
+
+  if [ -n "${ci_build_scan_url}" ]; then
+    cmd+=("-B" "${ci_build_scan_url}")
+  fi
+
+  if [ -n "${mapping_file}" ]; then
+    cmd+=("-m" "${mapping_file}")
+  fi
+
+  if [ -n "${remote_cache_url}" ]; then
+    cmd+=("-c" "${remote_cache_url}")
+  fi
+
+  if [ -n "${ge_server}" ]; then
+    cmd+=("-s" "${ge_server}")
+  fi
+
+  if [[ "${enable_ge}" == "on" ]]; then
+    cmd+=("-e")
+  fi
+
+  info "Command Line Invocation"
+  info "-----------------------"
+  info "$(printf '%q ' "${cmd[@]}")"
+}
+
 explain_and_print_summary() {
   read_build_scan_metadata
   local text
