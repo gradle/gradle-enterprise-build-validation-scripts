@@ -11,6 +11,8 @@ generate_run_id() {
 }
 
 # Init common constants
+RUN_ID=$(generate_run_id)
+readonly RUN_ID
 EXP_DIR="${SCRIPT_DIR}/.data/${SCRIPT_NAME%.*}/$(date +"%Y%m%dT%H%M%S")-${RUN_ID}"
 readonly EXP_DIR
 RECEIPT_FILE="${EXP_DIR}/${EXP_SCAN_TAG}-$(date +"%Y%m%dT%H%M%S").receipt"

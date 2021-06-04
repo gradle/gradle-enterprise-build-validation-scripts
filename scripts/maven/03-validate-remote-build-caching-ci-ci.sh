@@ -10,6 +10,7 @@ readonly EXP_NO="03"
 readonly EXP_SCAN_TAG=exp3-maven
 readonly BUILD_TOOL="Maven"
 readonly SCRIPT_VERSION="<HEAD>"
+readonly SHOW_RUN_ID=false
 
 # Needed to bootstrap the script
 SCRIPT_NAME=$(basename "$0")

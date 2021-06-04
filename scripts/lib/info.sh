@@ -123,7 +123,7 @@ print_experiment_info() {
   summary_row "${BUILD_TOOL} arguments:" "${extra_args:-<none>}"
   summary_row "Experiment:" "${EXP_NO} ${EXP_NAME}"
   summary_row "Experiment id:" "${EXP_SCAN_TAG}"
-  if [ -n "${RUN_ID}" ]; then
+  if [[ "${SHOW_RUN_ID}" == "true" ]]; then
     summary_row "Experiment run id:" "${RUN_ID}"
   fi
   summary_row "Experiment artifact dir:" "$(relative_path "${SCRIPT_DIR}" "${EXP_DIR}")"
