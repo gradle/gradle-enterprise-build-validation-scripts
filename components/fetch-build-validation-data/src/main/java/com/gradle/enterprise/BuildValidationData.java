@@ -3,8 +3,11 @@ package com.gradle.enterprise;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.List;
+import java.util.regex.Pattern;
 
 public class BuildValidationData {
+    private static Pattern REMOTE_BUILD_CACHE_SHARD_PATTERN = Pattern.compile(".*/cache/(.+)$");
+
     private final String rootProjectName;
     private final String buildScanId;
     private final URL gradleEnterpriseServerUrl;
@@ -69,5 +72,16 @@ public class BuildValidationData {
 
     public URL getRemoteBuildCacheUrl() {
         return remoteBuildCacheUrl;
+    }
+
+    public String getRemoteBuildCacheShard() {
+        if (remoteBuildCacheUrl == null) {
+            return "";
+        }
+        var matcher = REMOTE_BUILD_CACHE_SHARD_PATTERN.matcher(remoteBuildCacheUrl.getPath());
+        if (matcher.matches()) {
+            return matcher.group(1);
+        }
+        return "";
     }
 }

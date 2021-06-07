@@ -156,11 +156,11 @@ public class FetchBuildValidationDataCommand implements Callable<Integer> {
     }
 
     public void printHeader() {
-        System.out.println("Root Project Name,Gradle Enterprise Server,Build Scan,Build Scan ID,Git URL,Git Branch,Git Commit Id,Requested Tasks,Build Outcome,Remote Build Cache URL");
+        System.out.println("Root Project Name,Gradle Enterprise Server,Build Scan,Build Scan ID,Git URL,Git Branch,Git Commit Id,Requested Tasks,Build Outcome,Remote Build Cache URL,Remote Build Cache Shard");
     }
 
     private void printRow(BuildValidationData buildValidationData) {
-        System.out.printf("%s,%s,%s,%s,%s,%s,%s,%s,%s,%s%n",
+        System.out.printf("%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s%n",
             buildValidationData.getRootProjectName(),
             toStringSafely(buildValidationData.getGradleEnterpriseServerUrl()),
             toStringSafely(buildValidationData.getBuildScanUrl()),
@@ -170,7 +170,8 @@ public class FetchBuildValidationDataCommand implements Callable<Integer> {
             buildValidationData.getGitCommitId(),
             String.join(" ", buildValidationData.getRequestedTasks()),
             buildValidationData.getBuildOutcome(),
-            buildValidationData.getRemoteBuildCacheUrl() == null ? "" : buildValidationData.getRemoteBuildCacheUrl().toString()
+            buildValidationData.getRemoteBuildCacheUrl() == null ? "" : buildValidationData.getRemoteBuildCacheUrl().toString(),
+            buildValidationData.getRemoteBuildCacheShard()
         );
     }
 
