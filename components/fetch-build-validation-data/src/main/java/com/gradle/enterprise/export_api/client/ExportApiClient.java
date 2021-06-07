@@ -33,19 +33,23 @@ public class ExportApiClient {
         private static final String BUILD_REQUESTED_TASKS = "BuildRequestedTasks";
         private static final String USER_NAMED_VALUE = "UserNamedValue";
         private static final String BUILD_FINISHED = "BuildFinished";
+        private static final String BUILD_CACHE_CONFIGURATION = "BuildCacheConfiguration";
         private static final String MVN_PROJECT_STRUCTURE = "MvnProjectStructure";
         private static final String MVN_REQUESTED_GOALS = "MvnBuildRequestedGoals";
         private static final String MVN_USER_NAMED_VALUE = "MvnUserNamedValue";
         private static final String MVN_BUILD_FINISHED = "MvnBuildFinished";
+        private static final String MVN_BUILD_CACHE_CONFIGURATION = "MvnBuildCacheConfiguration";
         private static final String ALL =
             PROJECT_STRUCTURE +
             "," + BUILD_REQUESTED_TASKS +
             "," + USER_NAMED_VALUE +
             "," + BUILD_FINISHED +
+            "," + BUILD_CACHE_CONFIGURATION +
             "," + MVN_PROJECT_STRUCTURE +
             "," + MVN_REQUESTED_GOALS +
             "," + MVN_USER_NAMED_VALUE +
-            "," + MVN_BUILD_FINISHED;
+            "," + MVN_BUILD_FINISHED +
+            "," + MVN_BUILD_CACHE_CONFIGURATION;
     }
 
     private static class StatusCodes {
@@ -104,6 +108,7 @@ public class ExportApiClient {
         private final CompletableFuture<String> gitCommitId = new CompletableFuture<>();
         private final CompletableFuture<List<String>> requestedTasks = new CompletableFuture<>();
         private final CompletableFuture<String> buildOutcome = new CompletableFuture<>();
+        private final CompletableFuture<URL> remoteBuildCacheUrl = new CompletableFuture<>();
 
         private final List<CompletableFuture<?>> completables = List.of(
             rootProjectName, gitUrl, gitBranch, gitCommitId, requestedTasks, buildOutcome);
@@ -124,8 +129,8 @@ public class ExportApiClient {
                     gitBranch.get(),
                     gitCommitId.get(),
                     requestedTasks.get(),
-                    buildOutcome.get()
-                );
+                    buildOutcome.get(),
+                    remoteBuildCacheUrl.get());
             } catch (ExecutionException e) {
                 if (e.getCause() == null) {
                     throw new FetchingBuildScanUnexpectedException(buildScanId, gradleEnterpriseServerUrl, e);
@@ -166,6 +171,10 @@ public class ExportApiClient {
                     case EventTypes.MVN_BUILD_FINISHED:
                         onMvnBuildFinished(event.get("data"));
                         break;
+                    case EventTypes.BUILD_CACHE_CONFIGURATION:
+                        onBuildCacheConfiguration(event.get("data"));
+                    case EventTypes.MVN_BUILD_CACHE_CONFIGURATION:
+                        onMvnBuildCacheConfiguration(event.get("data"));
                 }
             }
         }
@@ -201,6 +210,35 @@ public class ExportApiClient {
             );
         }
 
+        private void onBuildCacheConfiguration(JsonNode eventData) {
+            var remote = eventData.get("remote");
+            if (remote.hasNonNull("config")) {
+                var config = remote.get("config");
+                if (config.hasNonNull("url")) {
+                    var url = config.get("url").asText();
+                    try {
+                        remoteBuildCacheUrl.complete(new URL(url));
+                    } catch (MalformedURLException e) {
+                        // TODO maybe log out this failure
+                        // Don't do anything on purpose. We'll return an empty URL later on in processing.
+                    }
+                }
+            }
+        }
+
+        private void onMvnBuildCacheConfiguration(JsonNode eventData) {
+            var remote = eventData.get("remote");
+            if (remote.hasNonNull("url")) {
+                var url = remote.get("url").asText();
+                try {
+                    remoteBuildCacheUrl.complete(new URL(url));
+                } catch (MalformedURLException e) {
+                    // TODO maybe log out this failure
+                    // Don't do anything on purpose. We'll return an empty URL later on in processing.
+                }
+            }
+        }
+
         private void onMvnBuildFinished(JsonNode eventData) {
             buildOutcome.complete(
                 eventData.hasNonNull("failed") && eventData.get("failed").asBoolean() ? "FAILED" : "SUCCESS"
@@ -218,6 +256,7 @@ public class ExportApiClient {
             gitCommitId.complete("");
             requestedTasks.complete(Collections.emptyList());
             buildOutcome.complete("");
+            remoteBuildCacheUrl.complete(null);
         }
 
         @Override

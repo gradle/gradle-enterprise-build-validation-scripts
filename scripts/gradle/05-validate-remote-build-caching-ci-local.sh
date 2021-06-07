@@ -139,6 +139,9 @@ fetch_build_scan_data() {
   if [ -z "${git_commit_id}" ]; then
     git_commit_id="${git_commit_ids[0]}"
   fi
+  if [ -z "${remote_cache_url}" ]; then
+    remote_cache_url="${remote_build_cache_urls[0]}"
+  fi
   if [ -z "${tasks}" ]; then
     tasks="${requested_tasks[0]}"
   fi

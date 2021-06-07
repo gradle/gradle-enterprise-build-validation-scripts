@@ -13,8 +13,9 @@ public class BuildValidationData {
     private final String gitCommitId;
     private final List<String> requestedTasks;
     private final String buildOutcome;
+    private final URL remoteBuildCacheUrl;
 
-    public BuildValidationData(String rootProjectName, String buildScanId, URL gradleEnterpriseServerUrl, String gitUrl, String gitBranch, String gitCommitId, List<String> requestedTasks, String buildOutcome) {
+    public BuildValidationData(String rootProjectName, String buildScanId, URL gradleEnterpriseServerUrl, String gitUrl, String gitBranch, String gitCommitId, List<String> requestedTasks, String buildOutcome, URL remoteBuildCacheUrl) {
         this.rootProjectName = rootProjectName;
         this.buildScanId = buildScanId;
         this.gradleEnterpriseServerUrl = gradleEnterpriseServerUrl;
@@ -23,6 +24,7 @@ public class BuildValidationData {
         this.gitCommitId = gitCommitId;
         this.requestedTasks = requestedTasks;
         this.buildOutcome = buildOutcome;
+        this.remoteBuildCacheUrl = remoteBuildCacheUrl;
     }
 
     public String getRootProjectName() {
@@ -63,5 +65,9 @@ public class BuildValidationData {
 
     public String getBuildOutcome() {
         return buildOutcome;
+    }
+
+    public URL getRemoteBuildCacheUrl() {
+        return remoteBuildCacheUrl;
     }
 }

@@ -10,6 +10,7 @@ git_branches=()
 git_commit_ids=()
 requested_tasks=()
 build_outcomes=()
+remote_build_cache_urls=()
 
 read_build_scan_metadata() {
   # This isn't the most robust way to read a CSV,
@@ -161,7 +162,7 @@ fetch_and_read_build_validation_data() {
   debug ""
 
   header_row_read=false
-  while IFS=, read -r field_1 field_2 field_3 field_4 field_5 field_6 field_7 field_8 field_9; do
+  while IFS=, read -r field_1 field_2 field_3 field_4 field_5 field_6 field_7 field_8 field_9 field_10; do
      if [[ "$header_row_read" == "false" ]]; then
          header_row_read=true
          continue;
@@ -175,6 +176,7 @@ fetch_and_read_build_validation_data() {
      git_commit_ids+=("$field_7")
      requested_tasks+=("$field_8")
      build_outcomes+=("$field_9")
+     remote_build_cache_urls=("${field_10}")
   done <<< "${fetched_data}"
 }
 
