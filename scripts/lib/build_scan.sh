@@ -10,7 +10,9 @@ git_branches=()
 git_commit_ids=()
 requested_tasks=()
 build_outcomes=()
+# shellcheck disable=SC2034 # not all scripts use this data
 remote_build_cache_urls=()
+# shellcheck disable=SC2034 # not all scripts use this data
 remote_build_cache_shards=()
 
 read_build_scan_metadata() {
@@ -177,7 +179,9 @@ fetch_and_read_build_validation_data() {
      git_commit_ids+=("$field_7")
      requested_tasks+=("$field_8")
      build_outcomes+=("$field_9")
+     # shellcheck disable=SC2034 # not all scripts use this data
      remote_build_cache_urls=("${field_10}")
+     # shellcheck disable=SC2034 # not all scripts use this data
      remote_build_cache_shards=("${field_11}")
   done <<< "${fetched_data}"
 }
