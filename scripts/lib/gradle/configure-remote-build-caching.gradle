@@ -1,3 +1,5 @@
+import java.net.URI;
+
 // Don't run against the included builds (if the main build has any).
 def isTopLevelBuild = gradle.getParent() == null
 if (isTopLevelBuild) {
@@ -10,11 +12,28 @@ if (isTopLevelBuild) {
                 enabled = true
                 push = false
                 def projectProperties = gradle.startParameter.projectProperties
-                if (projectProperties.containsKey("com.gradle.enterprise.build_validation.remoteCacheUrl")) {
-                    url = projectProperties.get("com.gradle.enterprise.build_validation.remoteCacheUrl")
+                if (url != null && projectProperties.containsKey("com.gradle.enterprise.build_validation.remoteBuildCacheShard")) {
+                    def shard = projectProperties.get("com.gradle.enterprise.build_validation.remoteBuildCacheShard");
+                    if ( !url.path.endsWith(shard) ) {
+                        url = appendPath(url, projectProperties.get("com.gradle.enterprise.build_validation.remoteBuildCacheShard"))
+                    }
                 }
             }
         }
     }
+}
+
+static String appendIfMissing(String str, String suffix) {
+    return str.endsWith(suffix) ? str : str + suffix;
+}
+
+static String stripPrefix(String prefix, String string) {
+    return string.startsWith(prefix) ? string.substring(prefix.length()) : string;
+}
+
+static URI appendPath(URI uri, String path) {
+    String normalizedPath = appendIfMissing(stripPrefix("/", path), "/");
+    String originalPath = appendIfMissing(Objects.requireNonNullElse(uri.getPath(), "/"), "/");
+    return uri.resolve(originalPath).resolve(normalizedPath);
 }
 
