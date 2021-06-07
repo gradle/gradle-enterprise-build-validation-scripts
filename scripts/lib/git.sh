@@ -38,7 +38,7 @@ git_get_branch() {
 }
 
 git_get_commit_id() {
-  git rev-parse --short=8 --verify HEAD
+  git rev-parse --verify HEAD
 }
 
 git_get_remote_url() {
