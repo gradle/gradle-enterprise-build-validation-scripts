@@ -115,7 +115,7 @@ wizard_execute() {
 }
 
 process_script_arguments() {
-  ci_build_scan_url="${_arg_build_scan}"
+  ci_build_scan_url="${_arg_first_ci_build}"
   remote_cache_url="${_arg_remote_cache_url}"
   mapping_file="${_arg_mapping_file}"
 }
@@ -263,7 +263,7 @@ EOF
 }
 
 collect_build_scan() {
-  prompt_for_setting "What is the build scan for the CI server build?" "${_arg_build_scan}" "" ci_build_scan_url
+  prompt_for_setting "What is the build scan for the CI server build?" "${_arg_first_ci_build}" "" ci_build_scan_url
 }
 
 # This overrides explain_collect_git_details found in lib/wizard.sh

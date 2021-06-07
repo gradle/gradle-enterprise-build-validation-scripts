@@ -4,7 +4,7 @@
 # ARG_HELP([This function is overridden later on.])
 # ARG_VERSION([print_version],[v],[version],[])
 # ARGBASH_WRAP([common])
-# ARG_OPTIONAL_SINGLE([build-scan],[B],[])
+# ARG_OPTIONAL_SINGLE([first-ci-build],[1],[])
 # ARG_OPTIONAL_SINGLE([mapping-file],[m],[])
 # ARG_OPTIONAL_SINGLE([remote-cache-url],[u],[])
 # ARGBASH_SET_INDENT([  ])
@@ -26,9 +26,9 @@ function print_help() {
   print_option_usage -p
   print_option_usage -t
   print_option_usage -a
-  print_option_usage "-B, --build-scan" "Specifies the build scan URL."
+  print_option_usage "-1, --first-ci-build" "Specifies the URL for the build scan of the first build run by a CI agent."
   print_option_usage -m
-  print_option_usage "-u, --remote-cache-url" "Specifies the remote cache node URL."
+  print_option_usage "-u, --remote-cache-url" "Specifies the URL for the remote build cache node to connect to."
   print_option_usage -s
   print_option_usage -e
   print_option_usage -v
