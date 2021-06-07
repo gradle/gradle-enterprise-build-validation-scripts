@@ -37,7 +37,6 @@ ge_server=''
 interactive_mode=''
 
 ci_build_scan_url=''
-commit_id=''
 mapping_file=''
 
 main() {
@@ -58,7 +57,7 @@ execute() {
 
   print_bl
   make_experiment_dir
-  git_checkout_commit "${commit_id}"
+  git_checkout_project ""
   print_bl
   execute_build
 
@@ -86,7 +85,7 @@ wizard_execute() {
   explain_git_repo_fetched_from_build_scan
   collect_git_repo
   explain_git_commit_fetched_from_build_scan
-  collect_git_commit
+  collect_git_commit_id
 
   print_bl
   explain_collect_gradle_details
@@ -101,7 +100,7 @@ wizard_execute() {
   explain_clone_project
   print_bl
   make_experiment_dir
-  git_checkout_commit "${commit_id}"
+  git_checkout_project ""
 
   print_bl
   explain_build
@@ -118,7 +117,6 @@ wizard_execute() {
 process_script_arguments() {
   ci_build_scan_url="${_arg_build_scan}"
   remote_cache_url="${_arg_remote_cache_url}"
-  commit_id="${_arg_git_commit_id}"
   mapping_file="${_arg_mapping_file}"
 }
 
@@ -138,8 +136,8 @@ fetch_build_scan_data() {
   if [ -z "${git_branch}" ]; then
     git_branch="${git_branches[0]}"
   fi
-  if [ -z "${commit_id}" ]; then
-    commit_id="${git_commit_ids[0]}"
+  if [ -z "${git_commit_id}" ]; then
+    git_commit_id="${git_commit_ids[0]}"
   fi
   if [ -z "${tasks}" ]; then
     tasks="${requested_tasks[0]}"
@@ -153,8 +151,8 @@ validate_build_config() {
   if [ -z "${tasks}" ]; then
       _PRINT_HELP=yes die "ERROR: The Gradle tasks were not found in the build scan. Please specify --tasks and try again." 1
   fi
-  if [ -z "${commit_id}" ]; then
-      _PRINT_HELP=yes die "ERROR: The Git commit id was not found in the build scan. Please specify --commit-id and try again." 1
+  if [ -z "${git_commit_id}" ]; then
+      _PRINT_HELP=yes die "ERROR: The Git commit id was not found in the build scan. Please specify --git-commit-id and try again." 1
   fi
 
   if [[ "${enable_ge}" == "on" ]]; then
@@ -301,8 +299,9 @@ explain_git_commit_fetched_from_build_scan() {
   fi
 }
 
-collect_git_commit() {
-  prompt_for_setting "What Git commit should the local build run against?" "${commit_id}" "" commit_id
+# This overrides config.sh#collect_git_commit_id
+collect_git_commit_id() {
+  prompt_for_setting "What Git commit should the local build run against?" "${git_commit_id}" "" git_commit_id
 }
 
 # This overrides explain_collect_gradle_details found in lib/wizard.sh
@@ -400,8 +399,8 @@ print_command_to_repeat_experiment() {
     cmd+=("-b" "${git_branch}")
   fi
 
-  if [ -n "${commit_id}" ] && [[ "${commit_id}" != "${git_commit_ids[0]}" ]]; then
-    cmd+=("-C" "${commit_id}")
+  if [ -n "${git_commit_id}" ] && [[ "${git_commit_id}" != "${git_commit_ids[0]}" ]]; then
+    cmd+=("-c" "${git_commit_id}")
   fi
 
   if [ -n "${project_dir}" ]; then
@@ -425,7 +424,7 @@ print_command_to_repeat_experiment() {
   fi
 
   if [ -n "${remote_cache_url}" ]; then
-    cmd+=("-c" "${remote_cache_url}")
+    cmd+=("-u" "${remote_cache_url}")
   fi
 
   if [ -n "${ge_server}" ]; then

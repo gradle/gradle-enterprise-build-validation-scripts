@@ -6,8 +6,7 @@
 # ARGBASH_WRAP([common])
 # ARG_OPTIONAL_SINGLE([build-scan],[B],[])
 # ARG_OPTIONAL_SINGLE([mapping-file],[m],[])
-# ARG_OPTIONAL_SINGLE([remote-cache-url],[c],[])
-# ARG_OPTIONAL_SINGLE([git-commit-id],[C],[])
+# ARG_OPTIONAL_SINGLE([remote-cache-url],[u],[])
 # ARGBASH_SET_INDENT([  ])
 # ARGBASH_PREPARE()
 # needed because of Argbash --> m4_ignore([
@@ -23,13 +22,13 @@ function print_help() {
   print_option_usage -i
   print_option_usage -r
   print_option_usage -b
-  print_option_usage "-C, --git-commit-id" "Specifies the Git commit id the first build was built against."
+  print_option_usage -c
   print_option_usage -p
   print_option_usage -t
   print_option_usage -a
   print_option_usage "-B, --build-scan" "Specifies the build scan URL."
   print_option_usage -m
-  print_option_usage "-c, --remote-cache-url" "Specifies the remote cache node URL."
+  print_option_usage "-u, --remote-cache-url" "Specifies the remote cache node URL."
   print_option_usage -s
   print_option_usage -e
   print_option_usage -v

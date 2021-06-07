@@ -15,6 +15,9 @@ print_option_usage() {
     -b)
        _print_option_usage "-b, --git-branch" "Specifies the branch for the Git repository to validate."
        ;;
+    -c)
+       _print_option_usage "-c, --git-commit-id" "Specifies the Git commit id for the Git repository to validate."
+       ;;
     -e)
        _print_option_usage "-e, --enable-gradle-enterprise" "Enables Gradle Enterprise on a project not already connected."
        ;;

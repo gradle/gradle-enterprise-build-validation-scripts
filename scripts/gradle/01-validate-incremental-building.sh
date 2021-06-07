@@ -50,7 +50,7 @@ execute() {
   validate_required_config
 
   make_experiment_dir
-  git_clone_project ""
+  git_checkout_project ""
 
   print_bl
   execute_first_build
@@ -80,7 +80,7 @@ wizard_execute() {
   explain_clone_project
   print_bl
   make_experiment_dir
-  git_clone_project ""
+  git_checkout_project ""
 
   print_bl
   explain_first_build

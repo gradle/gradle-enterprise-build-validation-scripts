@@ -51,7 +51,7 @@ execute() {
 
   make_experiment_dir
   make_local_cache_dir
-  git_clone_project ""
+  git_checkout_project ""
 
   print_bl
   execute_first_build
@@ -82,7 +82,7 @@ wizard_execute() {
   print_bl
   make_experiment_dir
   make_local_cache_dir
-  git_clone_project ""
+  git_checkout_project ""
 
   print_bl
   explain_first_build

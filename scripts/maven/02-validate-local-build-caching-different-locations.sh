@@ -50,7 +50,7 @@ execute() {
 
   make_experiment_dir
   make_local_cache_dir
-  git_clone_project "first-build/${project_name}"
+  git_checkout_project "first-build/${project_name}"
   print_bl
   git_copy_project "first-build/${project_name}" "second-build"
 
@@ -84,7 +84,7 @@ wizard_execute() {
   print_bl
   make_experiment_dir
   make_local_cache_dir
-  git_clone_project "first-build/${project_name}"
+  git_checkout_project "first-build/${project_name}"
 
   print_bl
   explain_copy_project

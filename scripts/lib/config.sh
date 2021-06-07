@@ -13,6 +13,10 @@ process_arguments() {
     git_branch="${_arg_git_branch}"
   fi
 
+  if [ -n "${_arg_git_commit_id+x}" ]; then
+    git_commit_id="${_arg_git_commit_id}"
+  fi
+
   if [ -n "${_arg_project_dir+x}" ]; then
     project_dir="${_arg_project_dir}"
   fi
@@ -109,6 +113,7 @@ prompt_for_setting() {
 collect_git_details() {
   collect_git_repo
   collect_git_branch
+  collect_git_commit_id
 }
 
 collect_git_repo() {
@@ -122,6 +127,15 @@ collect_git_branch() {
 
   if [[ "${git_branch}" == "${default_branch}" ]]; then
     git_branch=''
+  fi
+}
+
+collect_git_commit_id() {
+  local default_commit_id="<the branch's head>"
+  prompt_for_setting "What is the commit id for the Git repository that contains the project to validate?" "${git_commit_id}" "${default_commit_id}" git_commit_id
+
+    if [[ "${git_commit_id}" == "${default_commit_id}" ]]; then
+    git_commit_id=''
   fi
 }
 
@@ -188,6 +202,10 @@ print_command_to_repeat_experiment() {
 
   if [ -n "${git_branch}" ]; then
     cmd+=("-b" "${git_branch}")
+  fi
+
+  if [ -n "${git_commit_id}" ] && [[ "${git_commit_id}" != "${git_commit_ids[0]}" ]]; then
+    cmd+=("-c" "${git_commit_id}")
   fi
 
   if [ -n "${project_dir}" ]; then
