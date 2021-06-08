@@ -42,7 +42,7 @@ git_copy_project() {
 }
 
 git_get_branch() {
-  git symbolic-ref -q --short HEAD || git rev-parse --short HEAD
+  git symbolic-ref -q --short HEAD || echo "detached HEAD"
 }
 
 git_get_commit_id() {
