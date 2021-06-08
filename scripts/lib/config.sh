@@ -204,7 +204,7 @@ print_command_to_repeat_experiment() {
     cmd+=("-b" "${git_branch}")
   fi
 
-  if [ -n "${git_commit_id}" ] && [[ "${git_commit_id}" != "${git_commit_ids[0]}" ]]; then
+  if [ -n "${git_commit_id}" ]; then
     cmd+=("-c" "${git_commit_id}")
   fi
 
