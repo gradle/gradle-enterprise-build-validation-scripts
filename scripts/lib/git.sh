@@ -36,7 +36,6 @@ git_copy_project() {
    info "Copying ${project_name}"
 
    rm -rf "${EXP_DIR:?}/${copy_dest:?}"
-   mkdir -p "${EXP_DIR:?}/${copy_dest:?}"
    num_files=$(cp -R -v "${EXP_DIR:?}/${original_repo:?}" "${EXP_DIR:?}/${copy_dest:?}" | wc -l)
    printf "Copied %'d files.\n" "${num_files}"
 }
