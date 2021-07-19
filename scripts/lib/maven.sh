@@ -2,11 +2,24 @@
 
 readonly CAPTURE_SCANS_EXTENSION_JAR="${LIB_DIR}/maven/capture-published-build-scan-maven-extension-1.0.0-SNAPSHOT.jar"
 
+find_maven_executable() {
+  if [ -f "./mvnw" ]; then
+    echo "./mvnw"
+  elif command -v mvn &> /dev/null; then
+    echo "mvn"
+  fi
+}
+
 invoke_maven() {
-  local args
+  local args mvn
   args=()
 
   pushd "${project_dir}" > /dev/null 2>&1 || die "ERROR: The subdirectory ${project_dir} (set with --project-dir) does not exist in ${project_name}." 3
+
+  mvn=$(find_maven_executable)
+  if [ -z "$mvn" ]; then
+    die "Unable to find the Maven executable. Add MAVEN_INSTALL_DIR/bin to your PATH environment variable, or install the Maven Wrapper." 2
+  fi
 
   local extension_classpath
   extension_classpath="${CAPTURE_SCANS_EXTENSION_JAR}"
@@ -43,8 +56,8 @@ invoke_maven() {
   args+=("$@")
 
   debug "Current directory: $(pwd)"
-  debug ./mvnw "${args[@]}"
-  if ./mvnw "${args[@]}"; then
+  debug ${mvn} "${args[@]}"
+  if ${mvn} "${args[@]}"; then
     build_outcomes+=("SUCCESSFUL")
   else
     build_outcomes+=("FAILED")
