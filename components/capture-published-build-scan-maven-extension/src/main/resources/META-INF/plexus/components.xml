@@ -1,10 +1,10 @@
 <component-set>
   <components>
     <component>
-      <role>org.apache.maven.eventspy.EventSpy</role>
+      <role>com.gradle.maven.extension.api.GradleEnterpriseListener</role>
       <role-hint>capture-build-scans</role-hint>
-      <implementation>com.gradle.CaptureBuildScansEventSpy</implementation>
-      <description></description>
+      <implementation>com.gradle.CaptureBuildScansListener</implementation>
+      <description>Captures the URL to build scans produced from Maven builds.</description>
       <isolated-realm>false</isolated-realm>
     </component>
   </components>

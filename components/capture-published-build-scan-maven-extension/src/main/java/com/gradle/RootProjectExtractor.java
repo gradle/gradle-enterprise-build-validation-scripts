@@ -28,8 +28,12 @@ public class RootProjectExtractor {
     }
 
     public MavenProject extractRootProject(ExecutionEvent event) {
-        List<MavenProject> allProjects = discoverAllProjects(event.getSession().getAllProjects());
-        File workspaceDirectory = getWorkspaceDirectory(event.getSession());
+        return extractRootProject(event.getSession());
+    }
+
+    public MavenProject extractRootProject(MavenSession session) {
+        List<MavenProject> allProjects = discoverAllProjects(session.getAllProjects());
+        File workspaceDirectory = getWorkspaceDirectory(session);
 
         if (workspaceDirectory.equals(allProjects.get(0).getBasedir())) {
             return allProjects.get(0);
@@ -38,7 +42,7 @@ public class RootProjectExtractor {
         File workspaceDirectoryPom = modelProcessor.locatePom(workspaceDirectory);
         if (workspaceDirectoryPom.exists()) {
             try {
-                return projectBuilder.build(workspaceDirectoryPom, event.getSession().getProjectBuildingRequest()).getProject();
+                return projectBuilder.build(workspaceDirectoryPom, session.getProjectBuildingRequest()).getProject();
             } catch (ProjectBuildingException e) {
                 logger.error("Exception locating the top level project", e);
             }
