@@ -47,12 +47,12 @@ explain_collect_git_details() {
 $(print_separator)
 ${HEADER_COLOR}Configure experiment${RESTORE}
 
-The experiment will run against a fresh checkout of a given project stored in
+The experiment will run using a fresh checkout of a given project stored in
 Git. The fresh checkout ensures reproducibility of the experiment across
 machines and users since no local changes and commits will be accidentally
 included in the validation process.
 
-Optionally, the project can be validated and optimized against an existing
+Optionally, the project can be validated and optimized on an existing
 branch and only merged back to the main line once all improvements are
 completed.
 EOF

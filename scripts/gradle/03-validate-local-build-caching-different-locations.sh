@@ -161,12 +161,12 @@ $(print_introduction_title)
 In this experiment, you will validate how well a given project leverages
 Gradle’s local build caching functionality when running the build from different
 locations. A build is considered fully cacheable if it can be invoked twice in a
-row with build caching enabled and all cacheable tasks avoid performing any work
-because:
+row with build caching enabled and, during the second invocation, all cacheable
+tasks avoid performing any work because:
 
-  * No cacheable tasks were excluded from build caching to ensure correctness and
   * The cacheable tasks’ inputs have not changed since their last invocation and
-  * The cacheable tasks’ outputs are present in the local build cache
+  * The cacheable tasks’ outputs are present in the local build cache and
+  * No cacheable tasks were excluded from build caching to ensure correctness
 
 The experiment will reveal tasks with volatile inputs, for example tasks that
 contain a timestamp in one of their inputs. It will also reveal tasks that produce
