@@ -82,7 +82,7 @@ tasks.register<Copy>("copyGradleScripts") {
         into("lib/gradle/")
     }
     from(gradle.includedBuild("fetch-build-validation-data").projectDir.resolve("build/libs/fetch-build-validation-data-1.0.0-SNAPSHOT-all.jar")) {
-        into("lib/")
+        into("lib/build-scans/")
     }
     into(layout.buildDirectory.dir("scripts/gradle"))
     dependsOn(gradle.includedBuild("fetch-build-validation-data").task(":shadowJar"))
@@ -108,7 +108,7 @@ tasks.register<Copy>("copyMavenScripts") {
         into("lib/maven/")
     }
     from(gradle.includedBuild("fetch-build-validation-data").projectDir.resolve("build/libs/fetch-build-validation-data-1.0.0-SNAPSHOT-all.jar")) {
-        into("lib/")
+        into("lib/build-scans/")
     }
     from(mavenComponents) {
         into("lib/maven/")

@@ -126,7 +126,7 @@ fi
   }
   APP_ARGS=$(save "$@")
 
-  CLASSPATH="${LIB_DIR}/fetch-build-validation-data-1.0.0-SNAPSHOT-all.jar"
+  CLASSPATH="${LIB_DIR}/build-scans/fetch-build-validation-data-1.0.0-SNAPSHOT-all.jar"
   # Collect all arguments for the java command, following the shell quoting and substitution rules
   eval set -- -Dpicocli.ansi=true -jar "\"$CLASSPATH\"" "$APP_ARGS"
 
