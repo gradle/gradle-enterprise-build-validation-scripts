@@ -84,7 +84,7 @@ tasks.register<Copy>("copyGradleScripts") {
         into("lib/")
     }
     from(gradle.includedBuild("fetch-build-validation-data").projectDir.resolve("build/libs/fetch-build-validation-data-1.0.0-SNAPSHOT-all.jar")) {
-        into("lib/export-api/")
+        into("lib/export-api-clients/")
     }
     into(layout.buildDirectory.dir("scripts/gradle"))
 }
@@ -110,7 +110,7 @@ tasks.register<Copy>("copyMavenScripts") {
         into("lib/")
     }
     from(gradle.includedBuild("fetch-build-validation-data").projectDir.resolve("build/libs/fetch-build-validation-data-1.0.0-SNAPSHOT-all.jar")) {
-        into("lib/export-api/")
+        into("lib/export-api-clients/")
     }
     from(mavenComponents) {
         into("lib/maven/")
