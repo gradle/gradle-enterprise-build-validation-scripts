@@ -79,7 +79,7 @@ tasks.register<Copy>("copyGradleScripts") {
         filter { line: String -> line.replace("/../lib", "/lib").replace("<HEAD>","${project.version}") }
     }
     from(layout.buildDirectory.dir("generated/scripts/lib/gradle")) {
-        into("lib/gradle/")
+        into("lib/")
     }
     from(gradle.includedBuild("fetch-build-validation-data").projectDir.resolve("build/libs/fetch-build-validation-data-1.0.0-SNAPSHOT-all.jar")) {
         into("lib/build-scans/")
@@ -105,7 +105,7 @@ tasks.register<Copy>("copyMavenScripts") {
         filter { line: String -> line.replace("/../lib", "/lib").replace("<HEAD>","${project.version}") }
     }
     from(layout.buildDirectory.dir("generated/scripts/lib/maven")) {
-        into("lib/maven/")
+        into("lib/")
     }
     from(gradle.includedBuild("fetch-build-validation-data").projectDir.resolve("build/libs/fetch-build-validation-data-1.0.0-SNAPSHOT-all.jar")) {
         into("lib/build-scans/")
