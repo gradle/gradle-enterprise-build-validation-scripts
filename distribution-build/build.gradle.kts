@@ -66,6 +66,8 @@ tasks.register<ApplyArgbash>("generateBashCliParsers") {
 tasks.register<Copy>("copyGradleScripts") {
     group = "build"
     description = "Copies the Gradle source and generated scripts to output directory."
+    dependsOn(gradle.includedBuild("fetch-build-validation-data").task(":shadowJar"))
+    dependsOn("generateBashCliParsers")
 
     from(layout.projectDirectory.dir("../scripts/gradle")) {
         exclude(".data/")
@@ -74,24 +76,24 @@ tasks.register<Copy>("copyGradleScripts") {
     from(layout.projectDirectory.dir("../scripts")) {
         include("lib/**")
         exclude("maven")
-        exclude("lib/maven")
+        exclude("lib/cli-parsers")
         exclude("**/*.m4")
         filter { line: String -> line.replace("/../lib", "/lib").replace("<HEAD>","${project.version}") }
     }
-    from(layout.buildDirectory.dir("generated/scripts/lib/gradle")) {
+    from(layout.buildDirectory.dir("generated/scripts/lib/cli-parsers/gradle")) {
         into("lib/")
     }
     from(gradle.includedBuild("fetch-build-validation-data").projectDir.resolve("build/libs/fetch-build-validation-data-1.0.0-SNAPSHOT-all.jar")) {
-        into("lib/build-scans/")
+        into("lib/export-api/")
     }
     into(layout.buildDirectory.dir("scripts/gradle"))
-    dependsOn(gradle.includedBuild("fetch-build-validation-data").task(":shadowJar"))
-    dependsOn("generateBashCliParsers")
 }
 
 tasks.register<Copy>("copyMavenScripts") {
     group = "build"
     description = "Copies the Maven source and generated scripts to output directory."
+    dependsOn(gradle.includedBuild("fetch-build-validation-data").task(":shadowJar"))
+    dependsOn("generateBashCliParsers")
 
     from(layout.projectDirectory.dir("../scripts/maven")) {
         exclude(".data/")
@@ -100,22 +102,20 @@ tasks.register<Copy>("copyMavenScripts") {
     from(layout.projectDirectory.dir("../scripts/")) {
         include("lib/**")
         exclude("gradle")
-        exclude("lib/gradle")
+        exclude("lib/cli-parsers")
         exclude("**/*.m4")
         filter { line: String -> line.replace("/../lib", "/lib").replace("<HEAD>","${project.version}") }
     }
-    from(layout.buildDirectory.dir("generated/scripts/lib/maven")) {
+    from(layout.buildDirectory.dir("generated/scripts/lib/cli-parsers/maven")) {
         into("lib/")
     }
     from(gradle.includedBuild("fetch-build-validation-data").projectDir.resolve("build/libs/fetch-build-validation-data-1.0.0-SNAPSHOT-all.jar")) {
-        into("lib/build-scans/")
+        into("lib/export-api/")
     }
     from(mavenComponents) {
         into("lib/maven/")
     }
     into(layout.buildDirectory.dir("scripts/maven"))
-    dependsOn(gradle.includedBuild("fetch-build-validation-data").task(":shadowJar"))
-    dependsOn("generateBashCliParsers")
 }
 
 tasks.register<Task>("copyScripts") {

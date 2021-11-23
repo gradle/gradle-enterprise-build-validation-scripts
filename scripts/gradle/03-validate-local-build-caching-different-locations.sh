@@ -111,16 +111,16 @@ wizard_execute() {
 
 execute_first_build() {
   info "Running first build:"
-  # The gradle --init-script flag only accepts a relative directory path. ¯\_(ツ)_/¯
-  local lib_dir_rel
-  lib_dir_rel="$(relative_lib_path)"
+
+  local init_scripts_dir
+  init_scripts_dir="$(init_scripts_path)"
 
   info "./gradlew --build-cache -Dscan.tag.${EXP_SCAN_TAG} -Dscan.value.runId=${RUN_ID} clean ${tasks}$(print_extra_args)"
 
   # shellcheck disable=SC2086  # we want tasks to expand with word splitting in this case
   invoke_gradle \
      --build-cache \
-     --init-script "${lib_dir_rel}/gradle/configure-local-build-caching.gradle" \
+     --init-script "${init_scripts_dir}/configure-local-build-caching.gradle" \
      clean ${tasks}
 }
 
@@ -129,16 +129,15 @@ execute_second_build() {
 
   cd "${EXP_DIR}/second-build_${project_name}" || die "Unable to cd to ${EXP_DIR}/second-build_${project_name}" 2
 
-  # The gradle --init-script flag only accepts a relative directory path. ¯\_(ツ)_/¯
-  local lib_dir_rel
-  lib_dir_rel="$(relative_lib_path)"
+  local init_scripts_dir
+  init_scripts_dir="$(init_scripts_path)"
 
   info "./gradlew --build-cache -Dscan.tag.${EXP_SCAN_TAG} -Dscan.value.runId=${RUN_ID} clean ${tasks}$(print_extra_args)"
 
   # shellcheck disable=SC2086  # we want tasks to expand with word splitting in this case
   invoke_gradle \
      --build-cache \
-     --init-script "${lib_dir_rel}/gradle/configure-local-build-caching.gradle" \
+     --init-script "${init_scripts_dir}/configure-local-build-caching.gradle" \
      clean ${tasks}
 }
 

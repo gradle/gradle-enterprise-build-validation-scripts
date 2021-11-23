@@ -166,11 +166,10 @@ validate_build_config() {
 }
 
 execute_build() {
-  # The gradle --init-script flag only accepts a relative directory path. ¯\_(ツ)_/¯
-  local lib_dir_rel args
-  lib_dir_rel="$(relative_lib_path)"
+  local init_scripts_dir
+  init_scripts_dir="$(init_scripts_path)"
 
-  args=(--build-cache --init-script "${lib_dir_rel}/gradle/configure-remote-build-caching.gradle")
+  args=(--build-cache --init-script "${init_scripts_dir}/configure-remote-build-caching.gradle")
   if [ -n "${remote_build_cache_shard}" ]; then
     args+=("-Pcom.gradle.enterprise.build_validation.remoteBuildCacheShard=${remote_build_cache_shard}")
   fi
