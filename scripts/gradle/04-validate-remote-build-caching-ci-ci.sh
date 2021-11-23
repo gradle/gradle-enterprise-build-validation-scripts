@@ -327,8 +327,8 @@ EOF
 print_command_to_repeat_experiment() {
   local cmd
   cmd=("./${SCRIPT_NAME}")
-  cmd+=("--first-ci-build" "${build_scan_urls[0]}")
-  cmd+=("--second-ci-build" "${build_scan_urls[1]}")
+  cmd+=("-1" "${build_scan_urls[0]}")
+  cmd+=("-2" "${build_scan_urls[1]}")
 
   if [ -n "${mapping_file}" ]; then
     cmd+=("-m" "${mapping_file}")
