@@ -419,7 +419,7 @@ print_command_to_repeat_experiment() {
   fi
 
   if [ -n "${ci_build_scan_url}" ]; then
-    cmd+=("-B" "${ci_build_scan_url}")
+    cmd+=("-1" "${ci_build_scan_url}")
   fi
 
   if [ -n "${mapping_file}" ]; then
