@@ -269,10 +269,12 @@ b) If you are not in a position to purge the remote build cache, you can connect
 to a unique shard of the build cache each time you run the experiment (two
 build runs on CI make up one run of the experiment). A shard is accessed via an
 identifier that is appended to the remote build cache URL, for example
-https://ge.example.com/cache/exp4-2021-Dec31-take1 which encodes the experiment
+https://ge.example.com/cache/exp4-2021-Dec31-take1/ which encodes the experiment
 number, the current date, and a counter that needs be increased every time the
-experiment is run. Make sure to commit and push the change to the build cache
-URL in the build configuration.
+experiment is rerun. Using such an encoding schema ensures that for each run of
+the experiment an empty remote build cache will be used. Make sure to commit and
+push the change to the build cache URL in the build configuration every time
+before you run the experiment.
 
 If you choose option b) and do not want to interfere with an already existing
 configuration of the remote build cache in your build, you can override the
