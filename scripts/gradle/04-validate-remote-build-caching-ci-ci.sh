@@ -189,7 +189,7 @@ the following steps:
 
   1. Enable remote build caching and use an empty remote build cache
   2. On a given CI agent, run a typical CI configuration from a fresh checkout
-  3. On another CI agent, run the same CI configuration and commit id from a fresh checkout
+  3. On another CI agent, run the same CI configuration with the same commit id from a fresh checkout
   4. Determine which cacheable tasks are still executed in the second run and why
   5. Assess which of the executed tasks are worth improving
   6. Fix identified tasks
@@ -216,7 +216,7 @@ $(print_separator)
 ${HEADER_COLOR}Configure build for remote build caching${RESTORE}
 
 You must first configure your build for remote build caching. An extract of a
-typical build configuration is described below.
+typical build configuration when using Gradle 6+ is described below.
 
 gradle.properties:
 org.gradle.caching=true
@@ -229,7 +229,7 @@ buildCache {
     url = 'https://ge.example.com/cache/exp4/'  // adjust to your GE hostname, and note the trailing slash
     allowUntrustedServer = true                 // set to false if a trusted certificate is configured for the GE server
     credentials { creds ->
-      // inject credentials to read from and write to the remote build cache via env vars set in your CI environment
+      // inject credentials with read-write access to the remote build cache via env vars set in your CI environment
       creds.username = System.getenv('GRADLE_ENTERPRISE_CACHE_USERNAME')
       creds.password = System.getenv('GRADLE_ENTERPRISE_CACHE_PASSWORD')
     }
@@ -237,9 +237,8 @@ buildCache {
     push = isCI                                 // must be true when the build runs in CI
 }}
 
-Your updated build configuration needs to be committed and pushed to version
-control on a separate branch that is only used while going through the
-experiments.
+Your updated build configuration needs to be pushed to a separate branch that
+is only used while going through the experiments.
 
 ${USER_ACTION_COLOR}Press <Enter> once you have configured your build for remote build caching and pushed the changes.${RESTORE}
 EOF
@@ -251,7 +250,7 @@ explain_prerequisites_remote_build_cache() {
   local text
   IFS='' read -r -d '' text <<EOF
 $(print_separator)
-${HEADER_COLOR}Purge remote build cache{RESTORE}
+${HEADER_COLOR}Purge remote build cache${RESTORE}
 
 It is important to use an empty remote build cache and to avoid that other
 builds write to the same remote build cache while this experiment is running.
@@ -260,26 +259,26 @@ and reliability of the experiment. Two different ways to meet these conditions
 are described below.
 
 a) If none of your builds are yet writing to the remote build cache besides
-the builds of this experiment, purge the remote build cache node that your build
+the builds of this experiment, purge the remote build cache that your build
 is configured to connect to. You can purge the remote build cache by navigating
 in the browser to the 'Build Cache' admin section from the user menu of your
-Gradle Enterprise UI and then clicking the 'Purge cache' button.
+Gradle Enterprise UI, selecting the build cache node the build is pointing to,
+and then clicking the 'Purge cache' button.
 
 b) If you are not in a position to purge the remote build cache, you can connect
-to a unique shard of the build cache each time you run the experiment (two
-build runs on CI make up one run of the experiment). A shard is accessed via an
-identifier that is appended to the remote build cache URL, for example
-https://ge.example.com/cache/exp4-2021-Dec31-take1/ which encodes the experiment
-number, the current date, and a counter that needs be increased every time the
-experiment is rerun. Using such an encoding schema ensures that for each run of
-the experiment an empty remote build cache will be used. Make sure to commit and
-push the change to the build cache URL in the build configuration every time
-before you run the experiment.
+to a unique shard of the remote build cache each time you run this experiment.
+A shard is accessed via an identifier that is appended to the path of the remote
+build cache URL, for example https://ge.example.com/cache/exp4-2021-Dec31-take1/
+which encodes the experiment number, the current date, and a counter that needs
+to be increased every time the experiment is rerun. Using such an encoding
+schema ensures that for each run of the experiment an empty remote build cache
+will be used. Make sure to push the changes to the build cache URL in the build
+configuration every time before you run the experiment.
 
 If you choose option b) and do not want to interfere with an already existing
 configuration of the remote build cache in your build, you can override the
 local and remote build cache configuration via system properties or environment
-variables right when triggering the build configuration on CI. For details, see
+variables right when triggering the build on CI. For details, see
 https://github.com/gradle/gradle-enterprise-build-config-samples/blob/master/common-custom-user-data-gradle-plugin/README.md.
 
 ${USER_ACTION_COLOR}Press <Enter> once you have prepared the experiment to run with an empty remote build cache.${RESTORE}
