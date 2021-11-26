@@ -238,7 +238,7 @@ buildCache {
 }}
 
 Your updated build configuration needs to be pushed to a separate branch that
-is only used while going through the experiments.
+is only used for running the experiments.
 
 ${USER_ACTION_COLOR}Press <Enter> once you have configured your build for remote build caching and pushed the changes.${RESTORE}
 EOF
@@ -254,7 +254,7 @@ ${HEADER_COLOR}Purge remote build cache${RESTORE}
 
 It is important to use an empty remote build cache and to avoid that other
 builds write to the same remote build cache while this experiment is running.
-Ensuring that these two conditions are met will maximize the reproducibility
+Ensuring that these preconditions are met will maximize the reproducibility
 and reliability of the experiment. Two different ways to meet these conditions
 are described below.
 
@@ -276,9 +276,9 @@ will be used. You need to push the changes to the path of the remote build cache
 URL every time before you run the experiment.
 
 If you choose option b) and do not want to interfere with an already existing
-configuration of the remote build cache in your build, you can override the
-local and remote build cache configuration via system properties or environment
-variables right when triggering the build on CI. For details, see
+build caching configuration in your build, you can override the local and
+remote build cache configuration via system properties or environment variables
+right when triggering the build on CI. For details, see
 https://github.com/gradle/gradle-enterprise-build-config-samples/blob/master/common-custom-user-data-gradle-plugin/README.md#configuration-overrides.
 
 ${USER_ACTION_COLOR}Press <Enter> once you have prepared the experiment to run with an empty remote build cache.${RESTORE}
@@ -297,12 +297,12 @@ You can now trigger the first build on one of your CI agents. The invoked CI
 configuration should be a configuration that is typically triggered when
 building the project as part of your pipeline during daily development.
 
-Make sure the CI configuration performs a fresh checkout to avoid any build
-artifacts lingering around from a previous build that could influence the
-experiment.
+Make sure the CI configuration uses the proper branch and performs a fresh
+checkout to avoid any build artifacts lingering around from a previous build
+that could influence the experiment.
 
-Once the build completes, make a note of the commit id the build ran against,
-and enter the URL of the build scan produced by the build.
+Once the build completes, make a note of the commit id that was used, and enter
+the URL of the build scan produced by the build.
 EOF
   print_wizard_text "${text}"
 }
@@ -320,11 +320,11 @@ ${HEADER_COLOR}Run second build on another CI agent${RESTORE}
 
 Now that the first build has finished successfully, the second build can be
 triggered on another CI agent for the same CI configuration and with the same
-commit id the first build ran against.
+commit id as was used by the first build.
 
-Make sure the CI configuration performs a fresh checkout to avoid any build
-artifacts lingering around from a previous build that could influence the
-experiment.
+Make sure the CI configuration uses the proper branch and performs a fresh
+checkout to avoid any build artifacts lingering around from a previous build
+that could influence the experiment.
 
 Once the build completes, enter the URL of the build scan produced by the build.
 EOF
@@ -342,21 +342,24 @@ explain_collect_mapping_file() {
 $(print_separator)
 ${HEADER_COLOR}Fetch build scan data${RESTORE}
 
-Now that the second build has finished successfully, some of the build scan data
-will be fetched from the two provided build scans to assist you in your
-investigation.
+Now that the second build has finished successfully, some of the build scan
+data will be fetched from the two provided build scans to assist you in your
+investigation. The build scan data will be fetched via the Gradle Enterprise
+Export API. It is not strictly necessary that you have permission to call
+the Export API while doing this experiment, but the summary provided at the
+end of the experiment will be more complete if the build scan data is accessible.
 
 Some of the fetched build scan data is expected to be present as custom values.
-By default, the script assumes that these custom values have been created by the
-Common Custom User Data Gradle plugin that Gradle provides as a free,
+By default, this experiment assumes that these custom values have been created
+by the Common Custom User Data Gradle plugin that Gradle provides as a free,
 open-source add-on.
 
 https://plugins.gradle.org/plugin/com.gradle.common-custom-user-data-gradle-plugin
 
 If you are not using that plugin but your build still captures the same data
 under different custom value names, you can provide a mapping file so that the
-script can still extract that data from your build scans. An example mapping
-file named 'mapping.example' can be found at the same location as the script.
+required data can be extracted from your build scans. An example mapping file
+named 'mapping.example' can be found at the same location as the script.
 EOF
   print_wizard_text "${text}"
 }
