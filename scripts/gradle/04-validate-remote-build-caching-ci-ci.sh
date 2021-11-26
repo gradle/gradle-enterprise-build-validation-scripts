@@ -279,7 +279,7 @@ If you choose option b) and do not want to interfere with an already existing
 configuration of the remote build cache in your build, you can override the
 local and remote build cache configuration via system properties or environment
 variables right when triggering the build on CI. For details, see
-https://github.com/gradle/gradle-enterprise-build-config-samples/blob/master/common-custom-user-data-gradle-plugin/README.md.
+https://github.com/gradle/gradle-enterprise-build-config-samples/blob/master/common-custom-user-data-gradle-plugin/README.md#configuration-overrides.
 
 ${USER_ACTION_COLOR}Press <Enter> once you have prepared the experiment to run with an empty remote build cache.${RESTORE}
 EOF
