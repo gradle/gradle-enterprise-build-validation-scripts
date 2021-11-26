@@ -262,8 +262,8 @@ are described below.
 a) If none of your builds are yet writing to the remote build cache besides
 the builds of this experiment, purge the remote build cache node that your build
 is configured to connect to. You can purge the remote build cache by navigating
-in the browser to the `Build Cache` admin section from the user menu of your
-Gradle Enterprise UI and then clicking the `Purge cache` button.
+in the browser to the 'Build Cache' admin section from the user menu of your
+Gradle Enterprise UI and then clicking the 'Purge cache' button.
 
 b) If you are not in a position to purge the remote build cache, you can connect
 to a unique shard of the build cache each time you run the experiment (two
