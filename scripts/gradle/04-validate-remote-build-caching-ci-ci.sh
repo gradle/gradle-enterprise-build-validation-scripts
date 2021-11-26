@@ -65,10 +65,13 @@ wizard_execute() {
   print_introduction
 
   print_bl
-  explain_prerequisites_build
+  explain_prerequisites_ccud_gradle_plugin
 
   print_bl
-  explain_prerequisites_remote_build_cache
+  explain_prerequisites_remote_build_cache_config
+
+  print_bl
+  explain_prerequisites_empty_remote_build_cache
 
   print_bl
   explain_first_build
@@ -209,7 +212,34 @@ EOF
   wait_for_enter
 }
 
-explain_prerequisites_build() {
+explain_prerequisites_ccud_gradle_plugin() {
+  local text
+  IFS='' read -r -d '' text <<EOF
+$(print_separator)
+${HEADER_COLOR}Configure build with Common Custom User Data Gradle plugin${RESTORE}
+
+In order to get the most out of this experiment, it is advisable that you apply
+the Common Custom User Data Gradle plugin to your build, if not already the
+case. Gradle provides the Common Custom User Data Gradle plugin as a free,
+open-source add-on.
+
+https://plugins.gradle.org/plugin/com.gradle.common-custom-user-data-gradle-plugin
+
+An extract of a typical build configuration is described below.
+
+settings.gradle:
+plugins {
+    id 'com.gradle.enterprise' version '<latest version>'
+    id 'com.gradle.common-custom-user-data-gradle-plugin' version '<latest version>'
+}
+
+${USER_ACTION_COLOR}Press <Enter> once you have (optionally) configured your build with the Common Custom User Data Gradle plugin.${RESTORE}
+EOF
+  print_wizard_text "${text}"
+  wait_for_enter
+}
+
+explain_prerequisites_remote_build_cache_config() {
   local text
   IFS='' read -r -d '' text <<EOF
 $(print_separator)
@@ -246,7 +276,7 @@ EOF
   wait_for_enter
 }
 
-explain_prerequisites_remote_build_cache() {
+explain_prerequisites_empty_remote_build_cache() {
   local text
   IFS='' read -r -d '' text <<EOF
 $(print_separator)
@@ -276,10 +306,13 @@ will be used. You need to push the changes to the path of the remote build cache
 URL every time before you run the experiment.
 
 If you choose option b) and do not want to interfere with an already existing
-build caching configuration in your build, you can override the local and
-remote build cache configuration via system properties or environment variables
-right when triggering the build on CI. For details, see
-https://github.com/gradle/gradle-enterprise-build-config-samples/blob/master/common-custom-user-data-gradle-plugin/README.md#configuration-overrides.
+build caching configuration in your build and you are using the Common Custom
+User Data Gradle plugin, you can override the local and remote build cache
+configuration via system properties or environment variables right when
+triggering the build on CI. Details on how to provide the overrides are
+available from the documentation of the plugin.
+
+https://github.com/gradle/gradle-enterprise-build-config-samples/blob/master/common-custom-user-data-gradle-plugin/README.md#configuration-overrides
 
 ${USER_ACTION_COLOR}Press <Enter> once you have prepared the experiment to run with an empty remote build cache.${RESTORE}
 EOF
@@ -351,15 +384,11 @@ end of the experiment will be more complete if the build scan data is accessible
 
 Some of the fetched build scan data is expected to be present as custom values.
 By default, this experiment assumes that these custom values have been created
-by the Common Custom User Data Gradle plugin that Gradle provides as a free,
-open-source add-on.
-
-https://plugins.gradle.org/plugin/com.gradle.common-custom-user-data-gradle-plugin
-
-If you are not using that plugin but your build still captures the same data
-under different custom value names, you can provide a mapping file so that the
-required data can be extracted from your build scans. An example mapping file
-named 'mapping.example' can be found at the same location as the script.
+by the Common Custom User Data Gradle plugin. If you are not using that plugin
+but your build still captures the same data under different custom value names,
+you can provide a mapping file so that the required data can be extracted from
+your build scans. An example mapping file named 'mapping.example' can be found
+at the same location as the script.
 EOF
   print_wizard_text "${text}"
 }
