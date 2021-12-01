@@ -177,7 +177,6 @@ execute_build() {
   # shellcheck disable=SC2206  # we want tasks to expand with word splitting in this case
   args+=(${tasks})
 
-  info
   info "Running build:"
   info "./gradlew --build-cache -Dscan.tag.${EXP_SCAN_TAG} -Dscan.value.runId=${RUN_ID} ${tasks}$(print_extra_args)"
 
