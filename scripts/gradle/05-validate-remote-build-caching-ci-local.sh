@@ -85,6 +85,8 @@ wizard_execute() {
   print_bl
   explain_git_repo_fetched_from_build_scan
   collect_git_repo
+  explain_git_branch_fetched_from_build_scan
+  collect_git_branch
   explain_git_commit_fetched_from_build_scan
   collect_git_commit_id
 
@@ -289,6 +291,13 @@ EOF
 explain_git_repo_fetched_from_build_scan() {
   if [ -n "${git_repos[0]}" ]; then
     wizard "The Git repository URL was extracted from the CI build scan. Press enter to use the same URL."
+    print_bl
+  fi
+}
+
+explain_git_branch_fetched_from_build_scan() {
+  if [ -n "${git_branches[0]}" ]; then
+    wizard "The Git branch was extracted from the CI build scan. Press enter to use the same branch."
     print_bl
   fi
 }
