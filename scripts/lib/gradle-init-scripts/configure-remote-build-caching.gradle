@@ -12,11 +12,8 @@ if (isTopLevelBuild) {
                 enabled = true
                 push = false
                 def projectProperties = gradle.startParameter.projectProperties
-                if (url != null && projectProperties.containsKey("com.gradle.enterprise.build_validation.remoteBuildCacheShard")) {
-                    def shard = projectProperties.get("com.gradle.enterprise.build_validation.remoteBuildCacheShard");
-                    if ( !url.path.endsWith(shard) ) {
-                        url = appendPath(url, projectProperties.get("com.gradle.enterprise.build_validation.remoteBuildCacheShard"))
-                    }
+                if (projectProperties.containsKey("com.gradle.enterprise.build_validation.remoteBuildCacheUrl")) {
+                    url = projectProperties.get("com.gradle.enterprise.build_validation.remoteBuildCacheUrl")
                 }
             }
         }

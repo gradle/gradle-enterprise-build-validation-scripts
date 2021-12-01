@@ -37,6 +37,7 @@ ge_server=''
 interactive_mode=''
 
 ci_build_scan_url=''
+remote_build_cache_url=''
 mapping_file=''
 
 main() {
@@ -94,7 +95,7 @@ wizard_execute() {
   explain_gradle_tasks_fetched_from_build_scan
   collect_gradle_tasks
   collect_gradle_extra_args
-  collect_remote_build_cache_shard
+  collect_remote_build_cache_url
 
   print_bl
   explain_clone_project
@@ -116,7 +117,7 @@ wizard_execute() {
 
 process_script_arguments() {
   ci_build_scan_url="${_arg_first_ci_build}"
-  remote_build_cache_shard="${_arg_remote_build_cache_shard}"
+  remote_build_cache_url="${_arg_remote_build_cache_url}"
   mapping_file="${_arg_mapping_file}"
 }
 
@@ -139,8 +140,8 @@ fetch_build_scan_data() {
   if [ -z "${git_commit_id}" ]; then
     git_commit_id="${git_commit_ids[0]}"
   fi
-  if [ -z "${remote_build_cache_shard}" ]; then
-    remote_build_cache_shard="${remote_build_cache_shards[0]}"
+  if [ -z "${remote_build_cache_url}" ]; then
+    remote_build_cache_url="${remote_build_cache_urls[0]}"
   fi
   if [ -z "${tasks}" ]; then
     tasks="${requested_tasks[0]}"
@@ -170,8 +171,8 @@ execute_build() {
   init_scripts_dir="$(init_scripts_path)"
 
   args=(--build-cache --init-script "${init_scripts_dir}/configure-remote-build-caching.gradle")
-  if [ -n "${remote_build_cache_shard}" ]; then
-    args+=("-Pcom.gradle.enterprise.build_validation.remoteBuildCacheShard=${remote_build_cache_shard}")
+  if [ -n "${remote_build_cache_url}" ]; then
+    args+=("-Pcom.gradle.enterprise.build_validation.remoteBuildCacheUrl=${remote_build_cache_url}")
   fi
 
   # shellcheck disable=SC2206  # we want tasks to expand with word splitting in this case
@@ -330,12 +331,12 @@ same tasks locally."
   fi
 }
 
-collect_remote_build_cache_shard() {
-  local default_remote_cache="<none>"
-  prompt_for_setting "What is the remote build cache shard to use?" "${remote_build_cache_shard}" "${default_remote_cache}" remote_build_cache_shard
+collect_remote_build_cache_url() {
+  local default_remote_cache="<project default>"
+  prompt_for_setting "What is the remote build cache url to use?" "${remote_build_cache_url}" "${default_remote_cache}" remote_build_cache_url
 
-  if [[ "${remote_build_cache_shard}" == "${default_remote_cache}" ]]; then
-    remote_build_cache_shard=''
+  if [[ "${remote_build_cache_url}" == "${default_remote_cache}" ]]; then
+    remote_build_cache_url=''
   fi
 }
 
@@ -424,8 +425,8 @@ print_command_to_repeat_experiment() {
     cmd+=("-m" "${mapping_file}")
   fi
 
-  if [ -n "${remote_build_cache_shard}" ]; then
-    cmd+=("-u" "${remote_build_cache_shard}")
+  if [ -n "${remote_build_cache_url}" ]; then
+    cmd+=("-u" "${remote_build_cache_url}")
   fi
 
   if [ -n "${ge_server}" ]; then
