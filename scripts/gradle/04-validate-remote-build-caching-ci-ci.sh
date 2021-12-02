@@ -190,7 +190,7 @@ understand the root cause.
 The experiment needs to be run in your CI environment. It logically consists of
 the following steps:
 
-  1. Enable remote build caching and use an empty remote build cache
+  1. Enable only remote build caching and use an empty remote build cache
   2. On a given CI agent, run a typical CI configuration from a fresh checkout
   3. On another CI agent, run the same CI configuration with the same commit id from a fresh checkout
   4. Determine which cacheable tasks are still executed in the second run and why

@@ -173,7 +173,7 @@ understand the root cause.
 The experiment can be run on any developer’s machine. It logically consists of
 the following steps:
 
-  1. Enable local build caching and use an empty local build cache
+  1. Enable only local build caching and use an empty local build cache
   2. Run the build with a typical task invocation including the ‘clean’ task
   3. Run the build with the same task invocation including the ‘clean’ task
   4. Determine which cacheable tasks are still executed in the second run and why

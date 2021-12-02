@@ -151,7 +151,7 @@ and to finally fix them once you understand the root cause.
 The experiment can be run on any developer’s machine. It logically consists of
 the following steps:
 
-  1. Disable build caching
+  1. Disable build caching completely
   2. Run the build with a typical task invocation including the 'clean' task
   3. Run the build with the same task invocation but without the 'clean' task
   4. Determine which tasks are still executed in the second run and why
