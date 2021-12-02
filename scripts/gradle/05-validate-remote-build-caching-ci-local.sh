@@ -208,38 +208,48 @@ print_introduction() {
 $(print_introduction_title)
 
 In this experiment, you will validate how well a given project leverages
-Gradle's remote caching functionality to avoid doing unnecessary work that has
-already been done on a CI server.
+Gradle's remote build caching functionality when running the build from
+a CI agent and then on a local machine. A build is considered fully cacheable
+if it can be invoked twice in a row with build caching enabled and, during the
+second invocation, all cacheable tasks avoid performing any work because:
 
-A build is considered fully remote cache enabled if all tasks avoid performing
-any work because:
+  * The cacheable tasks' inputs have not changed since their last invocation and
+  * The cacheable tasks' outputs are present in the remote build cache and
+  * No cacheable tasks were excluded from build caching to ensure correctness
 
-  * The tasks' inputs have not changed since their last invocation and
-  * The tasks' outputs are present in the remote cache
+The experiment will reveal tasks with volatile inputs, for example tasks that
+contain a timestamp in one of their inputs. It will also reveal tasks that
+produce non-deterministic outputs consumed by cacheable tasks downstream, for
+example tasks generating code with non-deterministic method ordering or tasks
+producing artifacts that include timestamps. It will also reveal tasks that
+contain an absolute file path in one of their inputs.
 
-The goal of the experiment is to first identify those tasks that do not reuse
-outputs from the remote cache, to then make an informed decision which of those
-tasks are worth improving to make your build faster, to then investigate why
-they did not reuse outputs, and to finally fix them once you understand the root
-cause.
+The experiment will assist you to first identify those tasks whose outputs are
+not taken from the remote build cache due to changed inputs or to ensure
+correctness of the build, to then make an informed decision which of those tasks
+are worth improving to make your build faster, to then investigate why they are
+not taken from the remote build cache, and to finally fix them once you
+understand the root cause.
 
-This experiment consists of the following steps:
+The first part of the experiment runs in your CI environment and the second
+part of the experiment runs on any developer's machine. It logically consists of
+the following steps:
 
-  1. On a Continuous Integration server, run the Gradle build with a typical
-     task invocation
-  2. Locally, check out the same commit that was built on the Continuous
-     Integration server
-  3. Locally, run the Gradle build with the same typical task invocation
-     including the 'clean' task
-  4. Determine which tasks are still executed in the second run and why
-  5. Assess which of the executed tasks are worth improving
+  1. Enable only remote build caching and use an empty remote build cache
+  2. On a given CI agent, run a typical CI configuration from a fresh checkout
+  3. On a developer machine, run the build with the same task invocation including the ‘clean’ task with the same commit id
+  4. Determine which cacheable tasks are still executed in the second run and why
+  5. Assess which of the executed, cacheable tasks are worth improving
+  6. Fix identified tasks
 
-The script you have invoked automates the execution of step 2 and step 3,
-without modifying the project. Step 1 must be completed prior to running this
-script. Build scans support your investigation in step 4 and step 5.
+The script you have invoked does not automate the execution of step 1 and step 2.
+You will need to complete these steps manually. The script automates the
+execution of step 3 without modifying the project. Build scans support your
+investigation in step 4 and step 5.
 
-After improving the build to make it more incremental, you can run the
-experiment again. This creates a cycle of run → measure → improve → run → …
+After improving the build to make it better leverage the remote build cache, you
+can push your changes and run the experiment again. This creates a cycle of run
+→ measure → improve → run.
 
 ${USER_ACTION_COLOR}Press <Enter> to get started with the experiment.${RESTORE}
 EOF
