@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.base.Throwables;
+import com.google.common.collect.ImmutableList;
 import com.gradle.enterprise.*;
 import okhttp3.Authenticator;
 import okhttp3.OkHttpClient;
@@ -78,11 +79,11 @@ public class ExportApiClient {
     }
 
     public BuildValidationData fetchBuildValidationData(String buildScanId) {
-        var request = new Request.Builder()
+        Request request = new Request.Builder()
             .url(endpointFor(buildScanId))
             .build();
 
-        var eventListener = new BuildValidationDataEventListener(baseUrl, buildScanId, customValueNames);
+        BuildValidationDataEventListener eventListener = new BuildValidationDataEventListener(baseUrl, buildScanId, customValueNames);
         eventSourceFactory.newEventSource(request, eventListener);
         return eventListener.getBuildValidationData();
     }
@@ -110,7 +111,7 @@ public class ExportApiClient {
         private final CompletableFuture<String> buildOutcome = new CompletableFuture<>();
         private final CompletableFuture<URL> remoteBuildCacheUrl = new CompletableFuture<>();
 
-        private final List<CompletableFuture<?>> completables = List.of(
+        private final List<CompletableFuture<?>> completables = ImmutableList.of(
             rootProjectName, gitUrl, gitBranch, gitCommitId, requestedTasks, buildOutcome);
 
         private BuildValidationDataEventListener(URL gradleEnterpriseServerUrl, String buildScanId, CustomValueNames customValueNames) {
@@ -146,8 +147,8 @@ public class ExportApiClient {
         @Override
         public void onEvent(@NotNull EventSource eventSource, @Nullable String id, @Nullable String type, @NotNull String data) {
             if (BUILD_EVENT.equals(type)) {
-                var event = toJsonNode(data);
-                var eventType = event.get("type").get("eventType").asText();
+                JsonNode event = toJsonNode(data);
+                String eventType = event.get("type").get("eventType").asText();
                 switch(eventType) {
                     case EventTypes.PROJECT_STRUCTURE:
                         onProjectStructure(event.get("data"), "rootProjectName");
@@ -184,14 +185,14 @@ public class ExportApiClient {
         }
 
         private void onBuildRequestedTasks(JsonNode eventData, String requestedTasksProperty) {
-            var requestedTasksNode = eventData.get(requestedTasksProperty);
+            JsonNode requestedTasksNode = eventData.get(requestedTasksProperty);
             requestedTasks.complete(MAPPER.convertValue(requestedTasksNode, new TypeReference<List<String>>() {
             }));
         }
 
         private void onUserNamedValue(JsonNode eventData) {
-            var key = eventData.get("key").asText();
-            var value = eventData.get("value").asText();
+            String key = eventData.get("key").asText();
+            String value = eventData.get("value").asText();
 
             if (customValueNames.getGitRepositoryKey().equals(key)) {
                 this.gitUrl.complete(value);
@@ -211,11 +212,11 @@ public class ExportApiClient {
         }
 
         private void onBuildCacheConfiguration(JsonNode eventData) {
-            var remote = eventData.get("remote");
+            JsonNode remote = eventData.get("remote");
             if (remote.hasNonNull("config")) {
-                var config = remote.get("config");
+                JsonNode config = remote.get("config");
                 if (config.hasNonNull("url")) {
-                    var url = config.get("url").asText();
+                    String url = config.get("url").asText();
                     try {
                         remoteBuildCacheUrl.complete(new URL(url));
                     } catch (MalformedURLException e) {
@@ -227,9 +228,9 @@ public class ExportApiClient {
         }
 
         private void onMvnBuildCacheConfiguration(JsonNode eventData) {
-            var remote = eventData.get("remote");
+            JsonNode remote = eventData.get("remote");
             if (remote.hasNonNull("url")) {
-                var url = remote.get("url").asText();
+                String url = remote.get("url").asText();
                 try {
                     remoteBuildCacheUrl.complete(new URL(url));
                 } catch (MalformedURLException e) {
@@ -261,7 +262,7 @@ public class ExportApiClient {
 
         @Override
         public void onFailure(@NotNull EventSource eventSource, @Nullable Throwable t, @Nullable Response response) {
-            var error = t;
+            Throwable error = t;
             if (error == null && response != null) {
                 switch(response.code()) {
                     case StatusCodes.UNAUTHORIZED:
@@ -287,7 +288,7 @@ public class ExportApiClient {
                 }
             }
 
-            for(var completable: completables) completable.completeExceptionally(error);
+            for(CompletableFuture<?> completable: completables) completable.completeExceptionally(error);
             eventSource.cancel();
         }
 

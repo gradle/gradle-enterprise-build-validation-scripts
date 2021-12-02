@@ -3,6 +3,7 @@ package com.gradle.enterprise;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.List;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class BuildValidationData {
@@ -78,7 +79,7 @@ public class BuildValidationData {
         if (remoteBuildCacheUrl == null) {
             return "";
         }
-        var matcher = REMOTE_BUILD_CACHE_SHARD_PATTERN.matcher(remoteBuildCacheUrl.getPath());
+        Matcher matcher = REMOTE_BUILD_CACHE_SHARD_PATTERN.matcher(remoteBuildCacheUrl.getPath());
         if (matcher.matches()) {
             return matcher.group(1);
         }

@@ -1,5 +1,6 @@
 package com.gradle.enterprise;
 
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -11,8 +12,8 @@ public class CustomValueNames {
     );
 
     public static CustomValueNames loadFromFile(Path customValueMappingFile) throws IOException {
-        try (var in = Files.newBufferedReader(customValueMappingFile)) {
-            var mappingProps = new Properties();
+        try (BufferedReader in = Files.newBufferedReader(customValueMappingFile)) {
+            Properties mappingProps = new Properties();
             mappingProps.load(in);
             return new CustomValueNames(
                 mappingProps.getProperty("git.repository", DEFAULT.getGitRepositoryKey()),

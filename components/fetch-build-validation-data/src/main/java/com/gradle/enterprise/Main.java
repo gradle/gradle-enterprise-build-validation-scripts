@@ -1,10 +1,11 @@
 package com.gradle.enterprise;
 
 import picocli.CommandLine;
+import picocli.CommandLine.Help.ColorScheme;
 
 public class Main {
     public static void main(String[] args) {
-        var colorScheme = CommandLine.Help.defaultColorScheme(CommandLine.Help.Ansi.AUTO);
+        ColorScheme colorScheme = CommandLine.Help.defaultColorScheme(CommandLine.Help.Ansi.AUTO);
         int exitCode = new CommandLine(new FetchBuildValidationDataCommand(colorScheme))
             .setExecutionExceptionHandler(new PrintExceptionHandler())
             .setColorScheme(colorScheme)

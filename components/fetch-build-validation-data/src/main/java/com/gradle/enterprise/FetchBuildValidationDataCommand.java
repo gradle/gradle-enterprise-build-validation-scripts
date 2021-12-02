@@ -43,9 +43,9 @@ public class FetchBuildValidationDataCommand implements Callable<Integer> {
 
     @Override
     public Integer call() throws Exception {
-        var customValueKeys = loadCustomValueKeys(customValueMappingFile);
+        CustomValueNames customValueKeys = loadCustomValueKeys(customValueMappingFile);
 
-        var buildValidationData = new ArrayList<BuildValidationData>();
+        List<BuildValidationData> buildValidationData = new ArrayList<>();
         for (int i = 0; i < buildScanUrls.size(); i++) {
             BuildValidationData validationData = fetchBuildValidationData(i, buildScanUrls.get(i), customValueKeys);
             buildValidationData.add(validationData);
@@ -65,8 +65,8 @@ public class FetchBuildValidationDataCommand implements Callable<Integer> {
             baseUrl = baseUrlFrom(buildScanUrl);
             buildScanId = buildScanIdFrom(buildScanUrl);
 
-            var apiClient = new ExportApiClient(baseUrl, Authenticators.createForUrl(buildScanUrl), customValueNames);
-            var data = apiClient.fetchBuildValidationData(buildScanId);
+            ExportApiClient apiClient = new ExportApiClient(baseUrl, Authenticators.createForUrl(buildScanUrl), customValueNames);
+            BuildValidationData data = apiClient.fetchBuildValidationData(buildScanId);
 
             System.err.println(", done.");
             return data;
@@ -137,7 +137,7 @@ public class FetchBuildValidationDataCommand implements Callable<Integer> {
 
     private URL baseUrlFrom(URL buildScanUrl) {
         try {
-            var port = (buildScanUrl.getPort() != -1) ? ":" + buildScanUrl.getPort() : "";
+            String port = (buildScanUrl.getPort() != -1) ? ":" + buildScanUrl.getPort() : "";
             return new URL(buildScanUrl.getProtocol() + "://" + buildScanUrl.getHost() + port);
         } catch (MalformedURLException e) {
             // It is highly unlikely this exception will ever be thrown. If it is thrown, then it is likely due to a
@@ -147,7 +147,7 @@ public class FetchBuildValidationDataCommand implements Callable<Integer> {
     }
 
     private String buildScanIdFrom(URL buildScanUrl) {
-        var pathSegments = buildScanUrl.getPath().split("/");
+        String[] pathSegments = buildScanUrl.getPath().split("/");
 
         if (pathSegments.length == 0) {
             throw new BadBuildScanUrlException(buildScanUrl);
@@ -183,10 +183,10 @@ public class FetchBuildValidationDataCommand implements Callable<Integer> {
     }
 
     private CustomValueNames loadCustomValueKeys(Optional<Path> customValueMappingFile) throws IOException {
-        if (customValueMappingFile.isEmpty()) {
-            return CustomValueNames.DEFAULT;
-        } else {
+        if (customValueMappingFile.isPresent()) {
             return CustomValueNames.loadFromFile(customValueMappingFile.get());
+        } else {
+            return CustomValueNames.DEFAULT;
         }
     }
 }
