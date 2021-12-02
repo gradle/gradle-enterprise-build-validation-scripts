@@ -320,11 +320,6 @@ explain_git_commit_fetched_from_build_scan() {
   fi
 }
 
-# This overrides config.sh#collect_git_commit_id
-collect_git_commit_id() {
-  prompt_for_setting "What is the commit id for the Git repository that contains the project to validate?" "${git_commit_id}" "" git_commit_id
-}
-
 # This overrides explain_collect_gradle_details found in lib/wizard.sh
 explain_collect_gradle_details() {
   local text
