@@ -180,9 +180,9 @@ the following steps:
   5. Assess which of the executed, cacheable tasks are worth improving
   6. Fix identified tasks
 
-The script you have invoked automates the execution of step 1, step 2, and step
-3 without modifying the project. Build scans support your investigation in step
-4 and step 5.
+The script you have invoked automates the execution of step 1, step 2, and step 3
+without modifying the project. Build scans support your investigation in step 4
+and step 5.
 
 After improving the build to make it better leverage the local build cache, you
 can push your changes and run the experiment again. This creates a cycle of run
