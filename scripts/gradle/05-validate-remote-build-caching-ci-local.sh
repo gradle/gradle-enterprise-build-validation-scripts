@@ -84,6 +84,10 @@ wizard_execute() {
   explain_ci_build
   print_bl
   collect_ci_build_scan
+
+  print_bl
+  explain_collect_mapping_file
+  print_bl
   collect_mapping_file
 
   print_bl
@@ -399,6 +403,30 @@ EOF
 
 collect_ci_build_scan() {
   prompt_for_setting "What is the build scan URL of the build run on CI?" "${_arg_ci_build}" "" ci_build_scan_url
+}
+
+explain_collect_mapping_file() {
+  local text
+  IFS='' read -r -d '' text <<EOF
+$(print_separator)
+${HEADER_COLOR}Fetch build scan data${RESTORE}
+
+Now that the build on CI has finished successfully, some of the build scan
+data will be fetched from the provided build scan to assist you in your
+investigation. The build scan data will be fetched via the Gradle Enterprise
+Export API. It is not strictly necessary that you have permission to call
+the Export API while doing this experiment, but the summary provided at the
+end of the experiment will be more complete if the build scan data is accessible.
+
+Some of the fetched build scan data is expected to be present as custom values.
+By default, this experiment assumes that these custom values have been created
+by the Common Custom User Data Gradle plugin. If you are not using that plugin
+but your build still captures the same data under different custom value names,
+you can provide a mapping file so that the required data can be extracted from
+your build scans. An example mapping file named 'mapping.example' can be found
+at the same location as the script.
+EOF
+  print_wizard_text "${text}"
 }
 
 # This overrides explain_collect_git_details found in lib/wizard.sh
