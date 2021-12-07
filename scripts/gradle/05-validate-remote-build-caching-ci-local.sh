@@ -81,9 +81,9 @@ wizard_execute() {
   explain_prerequisites_empty_remote_build_cache
 
   print_bl
-  explain_collect_build_scan
+  explain_ci_build
   print_bl
-  collect_build_scan
+  collect_ci_build_scan
   collect_mapping_file
 
   print_bl
@@ -127,7 +127,7 @@ wizard_execute() {
 }
 
 process_script_arguments() {
-  ci_build_scan_url="${_arg_first_ci_build}"
+  ci_build_scan_url="${_arg_ci_build}"
   remote_build_cache_url="${_arg_remote_build_cache_url}"
   mapping_file="${_arg_mapping_file}"
 }
@@ -377,26 +377,28 @@ EOF
   wait_for_enter
 }
 
-explain_collect_build_scan() {
+explain_ci_build() {
   local text
   IFS='' read -r -d '' text <<EOF
 $(print_separator)
-${HEADER_COLOR}Fetch build scan${RESTORE}
+${HEADER_COLOR}Run first build on CI agent${RESTORE}
 
-Data from the CI build scan (the build scan generated in step 1) will be used to
-to lookup some of the parameters we will use to run the local build.
+You can now trigger the first build on one of your CI agents. The invoked CI
+configuration should be a configuration that is typically triggered when
+building the project as part of your pipeline during daily development.
 
-Some of the data is stored as custom values on the build scans. By default, this
-script assumes the values have been created by the Common Custom User Data
-Gradle plugin. If you are not using the plugin but the builds still publish the
-same data using different names, then you can provide a mapping file so that the
-script can still find the data.
+Make sure the CI configuration uses the proper branch and performs a fresh
+checkout to avoid any build artifacts lingering around from a previous build
+that could influence the experiment.
+
+Once the build completes, make a note of the commit id that was used, and enter
+the URL of the build scan produced by the build.
 EOF
   print_wizard_text "${text}"
 }
 
-collect_build_scan() {
-  prompt_for_setting "What is the build scan for the CI server build?" "${_arg_first_ci_build}" "" ci_build_scan_url
+collect_ci_build_scan() {
+  prompt_for_setting "What is the build scan URL of the build run on CI?" "${_arg_ci_build}" "" ci_build_scan_url
 }
 
 # This overrides explain_collect_git_details found in lib/wizard.sh
