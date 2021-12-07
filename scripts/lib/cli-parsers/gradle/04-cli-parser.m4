@@ -4,8 +4,8 @@
 # ARG_HELP([This function is overridden later on.])
 # ARG_VERSION([print_version],[v],[version],[])
 # ARG_OPTIONAL_BOOLEAN([interactive],[i],[],[off])
-# ARG_OPTIONAL_SINGLE([first-ci-build],[1],[])
-# ARG_OPTIONAL_SINGLE([second-ci-build],[2],[])
+# ARG_OPTIONAL_SINGLE([first-build-ci],[1],[])
+# ARG_OPTIONAL_SINGLE([second-build-ci],[2],[])
 # ARG_OPTIONAL_BOOLEAN([debug],[],[],[off])
 # ARG_OPTIONAL_SINGLE([mapping-file],[m],[])
 # ARGBASH_SET_INDENT([  ])
@@ -21,8 +21,8 @@ function print_help() {
   print_bl
   print_script_usage
   print_option_usage -i
-  print_option_usage "-1, --first-ci-build" "Specifies the URL for the build scan of the first build run by a CI agent."
-  print_option_usage "-2, --second-ci-build" "Specifies the URL for the build scan of the second build run by a CI agent."
+  print_option_usage "-1, --first-build-ci" "Specifies the URL for the build scan of the first build run by a CI agent."
+  print_option_usage "-2, --second-build-ci" "Specifies the URL for the build scan of the second build run by a CI agent."
   print_option_usage -m
   print_option_usage -v
   print_option_usage -h
