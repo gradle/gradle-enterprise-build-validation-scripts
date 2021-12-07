@@ -218,10 +218,10 @@ explain_prerequisites_ccud_gradle_plugin() {
 $(print_separator)
 ${HEADER_COLOR}Configure build with Common Custom User Data Gradle plugin${RESTORE}
 
-In order to get the most out of this experiment, it is advisable that you apply
-the Common Custom User Data Gradle plugin to your build, if not already the
-case. Gradle provides the Common Custom User Data Gradle plugin as a free,
-open-source add-on.
+To get the most out of this experiment and also when building with Gradle
+Enterprise during daily development, it is advisable that you apply the Common
+Custom User Data Gradle plugin to your build, if not already the case. Gradle
+provides the Common Custom User Data Gradle plugin as a free, open-source add-on.
 
 https://plugins.gradle.org/plugin/com.gradle.common-custom-user-data-gradle-plugin
 
@@ -233,7 +233,9 @@ plugins {
     id 'com.gradle.common-custom-user-data-gradle-plugin' version '<latest version>'
 }
 
-${USER_ACTION_COLOR}Press <Enter> once you have (optionally) configured your build with the Common Custom User Data Gradle plugin.${RESTORE}
+Your updated build configuration should be pushed before proceeding.
+
+${USER_ACTION_COLOR}Press <Enter> once you have (optionally) configured your build with the Common Custom User Data Gradle plugin and pushed the changes.${RESTORE}
 EOF
   print_wizard_text "${text}"
   wait_for_enter
