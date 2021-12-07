@@ -131,7 +131,7 @@ wizard_execute() {
 }
 
 process_script_arguments() {
-  ci_build_scan_url="${_arg_ci_build}"
+  ci_build_scan_url="${_arg_first_build_ci}"
   remote_build_cache_url="${_arg_remote_build_cache_url}"
   mapping_file="${_arg_mapping_file}"
 }
@@ -402,7 +402,7 @@ EOF
 }
 
 collect_ci_build_scan() {
-  prompt_for_setting "What is the build scan URL of the build run on CI?" "${_arg_ci_build}" "" ci_build_scan_url
+  prompt_for_setting "What is the build scan URL of the build run on CI?" "${_arg_first_build_ci}" "" ci_build_scan_url
 }
 
 explain_collect_mapping_file() {
