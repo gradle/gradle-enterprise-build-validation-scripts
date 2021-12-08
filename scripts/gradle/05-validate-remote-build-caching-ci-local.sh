@@ -96,20 +96,12 @@ wizard_execute() {
   print_bl
   explain_collect_git_details
   print_bl
-  explain_git_repo_fetched_from_build_scan
-  collect_git_repo
-  explain_git_branch_fetched_from_build_scan
-  collect_git_branch
-  explain_git_commit_fetched_from_build_scan
-  collect_git_commit_id
+  collect_git_details
 
   print_bl
   explain_collect_gradle_details
   print_bl
-  collect_gradle_root_project_directory
-  explain_gradle_tasks_fetched_from_build_scan
-  collect_gradle_tasks
-  collect_gradle_extra_args
+  collect_gradle_details
   collect_remote_build_cache_url
 
   print_bl
@@ -450,28 +442,6 @@ EOF
   print_wizard_text "${text}"
 }
 
-explain_git_repo_fetched_from_build_scan() {
-  if [ -n "${git_repos[0]}" ]; then
-    wizard "The Git repository URL was extracted from the CI build scan. Press enter to use the same URL."
-    print_bl
-  fi
-}
-
-explain_git_branch_fetched_from_build_scan() {
-  if [ -n "${git_branches[0]}" ]; then
-    wizard "The Git branch was extracted from the CI build scan. Press enter to use the same branch."
-    print_bl
-  fi
-}
-
-explain_git_commit_fetched_from_build_scan() {
-  if [ -n "${git_commit_ids[0]}" ]; then
-    print_bl
-    wizard "The Git commit was extracted from the CI build scan. Press enter to build against the same commit."
-    print_bl
-  fi
-}
-
 # This overrides explain_collect_gradle_details found in lib/wizard.sh
 explain_collect_gradle_details() {
   local text
@@ -487,16 +457,6 @@ EOF
   print_wizard_text "${text}"
 }
 
-explain_gradle_tasks_fetched_from_build_scan() {
-  if [ -n "${requested_tasks[0]}" ]; then
-    print_bl
-    wizard "The Gradle tasks to invoke were extracted from the CI build scan. Press enter to run the local build \
-with the same Gradle tasks, or enter a different set of tasks if it is not appropriate to use the the \
-same tasks locally."
-    print_bl
-  fi
-}
-
 collect_remote_build_cache_url() {
   local default_remote_cache="<project default>"
   prompt_for_setting "What is the remote build cache url to use?" "${remote_build_cache_url}" "${default_remote_cache}" remote_build_cache_url
@@ -506,7 +466,7 @@ collect_remote_build_cache_url() {
   fi
 }
 
-# This overrides explain_collect_gradle_details found in lib/wizard.sh
+# This overrides explain_clone_project found in lib/wizard.sh
 explain_clone_project() {
   local text
   IFS='' read -r -d '' text <<EOF
