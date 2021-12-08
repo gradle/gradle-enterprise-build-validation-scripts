@@ -159,8 +159,8 @@ fetch_and_read_build_validation_data() {
   args+=( "$@" )
   fetched_data="$(fetch_build_validation_data "${args[@]}")"
 
-  debug "Raw fetched data"
-  debug "----------------"
+  debug "Raw fetched build scan data"
+  debug "---------------------------"
   debug "${fetched_data}"
   debug ""
 
