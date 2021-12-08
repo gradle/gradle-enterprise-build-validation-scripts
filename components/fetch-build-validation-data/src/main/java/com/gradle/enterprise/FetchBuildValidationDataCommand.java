@@ -51,6 +51,8 @@ public class FetchBuildValidationDataCommand implements Callable<Integer> {
             buildValidationData.add(validationData);
         }
 
+        printFetchResults(buildValidationData, customValueKeys);
+
         printHeader();
         buildValidationData.forEach(this::printRow);
 
@@ -153,6 +155,30 @@ public class FetchBuildValidationDataCommand implements Callable<Integer> {
             throw new BadBuildScanUrlException(buildScanUrl);
         }
         return pathSegments[pathSegments.length - 1];
+    }
+
+    private void printFetchResults(List<BuildValidationData> buildValidationData, CustomValueNames customValueKeys) {
+        for (int i = 0; i < buildScanUrls.size(); i++) {
+            System.err.println();
+            BuildValidationData validationData = buildValidationData.get(i);
+
+            printFetchResultFor(i, "project name", validationData.isRootProjectNameFound());
+            printFetchResultFor(i, "Gradle tasks", validationData.isRequestedTasksFound());
+            printFetchResultFor(i, "Remote build cache URL", validationData.isRemoteBuildCacheUrlFound());
+            printFetchResultFor(i, "Git repository", customValueKeys.getGitRepositoryKey(), validationData.isGitUrlFound());
+            printFetchResultFor(i, "Git branch", customValueKeys.getGitBranchKey(), validationData.isGitBranchFound());
+            printFetchResultFor(i, "Git commit id", customValueKeys.getGitCommitIdKey(), validationData.isGitCommitIdFound());
+            printFetchResultFor(i, "build result", validationData.isBuildOutcomeFound());
+        }
+    }
+
+    private void printFetchResultFor(int index, String property, String customValueKey, boolean found) {
+        printFetchResultFor(index, String.format("%s from custom value with name '%s'", property, customValueKey), found);
+    }
+
+    private void printFetchResultFor(int index, String property, boolean found) {
+        String ordinal = buildScanIndexToOrdinal(index);
+        System.err.printf("Looking up %s from the %s build scan, %s.%n", property, ordinal, found ? "found": "not found");
     }
 
     public void printHeader() {

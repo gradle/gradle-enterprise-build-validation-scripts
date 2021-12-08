@@ -35,6 +35,10 @@ public class BuildValidationData {
         return rootProjectName;
     }
 
+    public boolean isRootProjectNameFound() {
+        return isFound(rootProjectName);
+    }
+
     public String getBuildScanId() {
         return buildScanId;
     }
@@ -55,24 +59,48 @@ public class BuildValidationData {
         return gitUrl;
     }
 
+    public boolean isGitUrlFound() {
+        return isFound(gitUrl);
+    }
+
     public String getGitBranch() {
         return gitBranch;
+    }
+
+    public boolean isGitBranchFound() {
+        return isFound(gitBranch);
     }
 
     public String getGitCommitId() {
         return gitCommitId;
     }
 
+    public boolean isGitCommitIdFound() {
+        return isFound(gitCommitId);
+    }
+
     public List<String> getRequestedTasks() {
         return requestedTasks;
+    }
+
+    public boolean isRequestedTasksFound() {
+        return !requestedTasks.isEmpty();
     }
 
     public String getBuildOutcome() {
         return buildOutcome;
     }
 
+    public boolean isBuildOutcomeFound() {
+        return isFound(buildOutcome);
+    }
+
     public URL getRemoteBuildCacheUrl() {
         return remoteBuildCacheUrl;
+    }
+
+    public boolean isRemoteBuildCacheUrlFound() {
+        return remoteBuildCacheUrl != null;
     }
 
     public String getRemoteBuildCacheShard() {
@@ -84,5 +112,9 @@ public class BuildValidationData {
             return matcher.group(1);
         }
         return "";
+    }
+
+    private static boolean isFound(String value) {
+        return !value.isEmpty();
     }
 }
