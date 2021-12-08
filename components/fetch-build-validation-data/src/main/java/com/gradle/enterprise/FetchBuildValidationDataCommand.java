@@ -162,23 +162,15 @@ public class FetchBuildValidationDataCommand implements Callable<Integer> {
             System.err.println();
             BuildValidationData validationData = buildValidationData.get(i);
 
-            printFetchResultFor(i, "project name", validationData.isRootProjectNameFound());
-            printFetchResultFor(i, "Gradle tasks", validationData.isRequestedTasksFound());
-            printFetchResultFor(i, "Remote build cache URL", validationData.isRemoteBuildCacheUrlFound());
             printFetchResultFor(i, "Git repository", customValueKeys.getGitRepositoryKey(), validationData.isGitUrlFound());
             printFetchResultFor(i, "Git branch", customValueKeys.getGitBranchKey(), validationData.isGitBranchFound());
             printFetchResultFor(i, "Git commit id", customValueKeys.getGitCommitIdKey(), validationData.isGitCommitIdFound());
-            printFetchResultFor(i, "build result", validationData.isBuildOutcomeFound());
         }
     }
 
     private void printFetchResultFor(int index, String property, String customValueKey, boolean found) {
-        printFetchResultFor(index, String.format("%s from custom value with name '%s'", property, customValueKey), found);
-    }
-
-    private void printFetchResultFor(int index, String property, boolean found) {
         String ordinal = buildScanIndexToOrdinal(index);
-        System.err.printf("Looking up %s from the %s build scan, %s.%n", property, ordinal, found ? "found": "not found");
+        System.err.printf("Looking up %s from custom value with name '%s from the %s build scan, %s.%n", property, customValueKey, ordinal, found ? "found": "not found");
     }
 
     public void printHeader() {
