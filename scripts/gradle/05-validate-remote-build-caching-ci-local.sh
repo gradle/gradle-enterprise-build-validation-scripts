@@ -410,8 +410,10 @@ Now that the build on CI has finished successfully, some of the build scan
 data will be fetched from the provided build scan to assist you in your
 investigation. The build scan data will be fetched via the Gradle Enterprise
 Export API. It is not strictly necessary that you have permission to call
-the Export API while doing this experiment, but the summary provided at the
-end of the experiment will be more complete if the build scan data is accessible.
+the Export API while doing this experiment, but the following local build
+invocation will already be properly pre-configured and the summary provided at
+the end of the experiment will be more complete if the build scan data is
+accessible.
 
 Some of the fetched build scan data is expected to be present as custom values.
 By default, this experiment assumes that these custom values have been created
