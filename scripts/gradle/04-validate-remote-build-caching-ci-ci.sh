@@ -357,9 +357,9 @@ Now that the first build has finished successfully, the second build can be
 triggered on another CI agent for the same CI configuration and with the same
 commit id as was used by the first build.
 
-Make sure the CI configuration uses the proper branch and performs a fresh
-checkout to avoid any build artifacts lingering around from a previous build
-that could influence the experiment.
+Make sure the CI configuration uses the proper branch and commit id and performs
+a fresh checkout to avoid any build artifacts lingering around from a previous
+build that could influence the experiment.
 
 Once the build completes, enter the URL of the build scan produced by the build.
 EOF

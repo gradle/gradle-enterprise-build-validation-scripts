@@ -433,13 +433,16 @@ explain_collect_git_details() {
 $(print_separator)
 ${HEADER_COLOR}Configure local build${RESTORE}
 
-The experiment will run using a fresh checkout of a given project stored in
-Git. The fresh checkout ensures reproducibility of the experiment across
-machines and users since no local changes and commits will be accidentally
-included in the validation process.
+Now that the first build has finished successfully on CI and the build scan data
+has been fetched, the second build will be run locally with the same commit id
+as was used by the first build.
 
-The local build should be executed against the same commit the CI build ran
-against.
+The local build will run after a fresh checkout of the given project stored in
+Git. The fresh checkout ensures reproducibility of the experiment across machines
+and users since no local changes and commits will be accidentally included in the
+validation process.
+
+Make sure the local build uses the proper branch and commit id.
 EOF
   print_wizard_text "${text}"
 }
@@ -473,7 +476,7 @@ explain_clone_project() {
   local text
   IFS='' read -r -d '' text <<EOF
 $(print_separator)
-${HEADER_COLOR}Check out project from Git${RESTORE}
+${HEADER_COLOR}Check out project from Git for local build${RESTORE}
 
 All configuration to run the local build has been collected. In the next
 step of the experiment, the Git repository that contains the project to
