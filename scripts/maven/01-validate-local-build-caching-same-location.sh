@@ -4,12 +4,13 @@
 #
 # Invoke this script with --help to get a description of the command line arguments
 #
-readonly EXP_NAME="Validate Maven Local Build Caching - Same project location"
+readonly EXP_NAME="Validate local build caching - same project location"
 readonly EXP_DESCRIPTION="Validating that a Maven build is optimized for local build caching when invoked from the same location"
 readonly EXP_NO="01"
 readonly EXP_SCAN_TAG=exp1-maven
 readonly BUILD_TOOL="Maven"
 readonly SCRIPT_VERSION="<HEAD>"
+readonly SHOW_RUN_ID=true
 
 # Needed to bootstrap the script
 SCRIPT_NAME=$(basename "$0")
@@ -80,8 +81,8 @@ wizard_execute() {
   explain_clone_project
   print_bl
   make_experiment_dir
-  git_checkout_project ""
   make_local_cache_dir
+  git_checkout_project ""
 
   print_bl
   explain_first_build
@@ -98,7 +99,6 @@ wizard_execute() {
   print_bl
   explain_and_print_summary
   print_bl
-
 }
 
 execute_first_build() {
@@ -122,20 +122,6 @@ execute_build() {
      clean ${tasks}
 }
 
-print_summary() {
-  read_build_scan_metadata
-  print_experiment_info
-  print_build_scans
-  print_warnings
-  print_bl
-  print_quick_links
-}
-
-print_build_scans() {
-  summary_row "Build scan first build:" "${build_scan_urls[0]}"
-  summary_row "Build scan second build:" "${build_scan_urls[1]}"
-}
-
 print_quick_links() {
   info "Investigation Quick Links"
   info "-------------------------"
@@ -155,17 +141,17 @@ $(print_introduction_title)
 In this experiment, you will validate how well a given project leverages
 Gradle Enterprise’s local build caching functionality when running the build in the same
 location. A build is considered fully cacheable if it can be invoked twice in a
-row with build caching enabled and all cacheable goals avoid performing any work
-because:
+row with build caching enabled and, during the second invocation, all cacheable
+tasks avoid performing any work because:
 
-  * No cacheable goals were excluded from build caching to ensure correctness and
   * The cacheable goals’ inputs have not changed since their last invocation and
-  * The cacheable goals’ outputs are present in the local build cache
+  * The cacheable goals’ outputs are present in the local build cache and
+  * No cacheable goals were excluded from build caching to ensure correctness
 
 The experiment will reveal goals with volatile inputs, for example goals that
-have a timestamp as one of their inputs. It will also reveal goals that produce
-non-deterministic outputs consumed by other goals downstream, for example goals
-generating code with non-deterministic method ordering or goals producing
+contain a timestamp in one of their inputs. It will also reveal goals that produce
+non-deterministic outputs consumed by cacheable goals downstream, for example
+goals generating code with non-deterministic method ordering or goals producing
 artifacts that include timestamps.
 
 The experiment will assist you to first identify those goals whose outputs are
@@ -178,16 +164,16 @@ understand the root cause.
 The experiment can be run on any developer’s machine. It logically consists of
 the following steps:
 
-  1. Enable local build caching and use an empty local build cache
+  1. Enable only local build caching and use an empty local build cache
   2. Run the build with a typical goal invocation including the ‘clean’ goal
   3. Run the build with the same goal invocation including the ‘clean’ goal
   4. Determine which cacheable goals are still executed in the second run and why
   5. Assess which of the executed, cacheable goals are worth improving
   6. Fix identified goals
 
-The script you have invoked automates the execution of step 1, step 2, and step
-3 without modifying the project. Build scans support your investigation in step
-4 and step 5.
+The script you have invoked automates the execution of step 1, step 2, and step 3
+without modifying the project. Build scans support your investigation in step 4
+and step 5.
 
 After improving the build to make it better leverage the local build cache, you
 can push your changes and run the experiment again. This creates a cycle of run
@@ -210,7 +196,7 @@ Now that the project has been checked out, the first build can be run with the
 given Maven goals. The build will be invoked with the ‘clean’ goal included and
 local build caching enabled. An empty local build cache will be used.
 
-${USER_ACTION_COLOR}Press <Enter> to run the first build.${RESTORE}
+${USER_ACTION_COLOR}Press <Enter> to run the first build of the experiment.${RESTORE}
 EOF
   print_wizard_text "${text}"
   wait_for_enter
@@ -227,7 +213,7 @@ with the same Maven goals. The build will again be invoked with the ‘clean’
 goal included and local build caching enabled. The local build cache populated
 during the first build will be used.
 
-${USER_ACTION_COLOR}Press <Enter> to run the second build.${RESTORE}
+${USER_ACTION_COLOR}Press <Enter> to run the second build of the experiment.${RESTORE}
 EOF
   print_wizard_text "$text"
   wait_for_enter
@@ -240,8 +226,8 @@ $(print_separator)
 ${HEADER_COLOR}Measure build results${RESTORE}
 
 Now that the second build has finished successfully, you are ready to measure in
-Gradle Enterprise how well your build leverages the local build cache for
-the invoked set of Maven goals.
+Gradle Enterprise how well your build leverages the local build caching
+functionality for the invoked set of Maven goals.
 
 ${USER_ACTION_COLOR}Press <Enter> to measure the build results.${RESTORE}
 EOF
@@ -253,18 +239,18 @@ explain_and_print_summary() {
   read_build_scan_metadata
   local text
   IFS='' read -r -d '' text <<EOF
-The 'Summary' section below captures the configuration of the experiment and the
-two build scans that were published as part of running the experiment.  The
-build scan of the second build is particularly interesting since this is where
-you can inspect what goals were not leveraging the local build cache.
+The ‘Summary’ section below captures the configuration of the experiment and the
+two build scans that were published as part of running the experiment. The build
+scan of the second build is particularly interesting since this is where you can
+inspect what goals were not leveraging the local build cache.
 
-The 'Investigation Quick Links' section below allows quick navigation to the
-most relevant views in build scans to investigate what goal outputs were fetched
-from the cache and what goals executed in the second build with cache misses,
-which of those goals had the biggest impact on build performance, and what
-caused the cache misses.
+The ‘Investigation Quick Links’ section below allows quick navigation to the
+most relevant views in build scans to investigate what goal were avoided due to
+local build caching and what goals executed in the second build, which of those
+goals had the biggest impact on build performance, and what caused those goals
+to not be taken from the local build cache.
 
-The 'Command Line Invocation' section below demonstrates how you can rerun the
+The ‘Command Line Invocation’ section below demonstrates how you can rerun the
 experiment with the same configuration and in non-interactive mode.
 
 $(print_summary)

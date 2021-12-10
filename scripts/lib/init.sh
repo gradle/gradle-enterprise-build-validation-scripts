@@ -24,7 +24,7 @@ readonly BUILD_CACHE_DIR
 
 if [[ "${BUILD_TOOL}" == "Gradle" ]]; then
   BUILD_TOOL_TASK="task"
-elif [[ "${BUILD_TOOL}" == "Gradle" ]]; then
+elif [[ "${BUILD_TOOL}" == "Maven" ]]; then
   BUILD_TOOL_TASK="goal"
 fi
 readonly BUILD_TOOL_TASK
