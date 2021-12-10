@@ -100,10 +100,10 @@ wizard_execute() {
 
 validate_required_args() {
   if [ -z "${_arg_first_build_ci}" ]; then
-    _PRINT_HELP=yes die "ERROR: Missing required argument: --first-ci-build" 1
+    _PRINT_HELP=yes die "ERROR: Missing required argument: --first-build-ci" 1
   fi
   if [ -z "${_arg_second_build_ci}" ]; then
-    _PRINT_HELP=yes die "ERROR: Missing required argument: --second-ci-build" 1
+    _PRINT_HELP=yes die "ERROR: Missing required argument: --second-build-ci" 1
   fi
   build_scan_urls+=("${_arg_first_build_ci}")
   build_scan_urls+=("${_arg_second_build_ci}")
