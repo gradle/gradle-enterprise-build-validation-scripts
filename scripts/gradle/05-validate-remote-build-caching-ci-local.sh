@@ -434,8 +434,8 @@ $(print_separator)
 ${HEADER_COLOR}Configure local build${RESTORE}
 
 Now that the first build has finished successfully on CI and the build scan data
-has been fetched, the second build will be run locally with the same commit id
-as was used by the first build.
+has been fetched, the second can be run locally with the same commit id as was
+used by the first build.
 
 The local build will run after a fresh checkout of the given project stored in
 Git. The fresh checkout ensures reproducibility of the experiment across machines
