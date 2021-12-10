@@ -31,8 +31,8 @@ git_repo=''
 project_name=''
 git_branch=''
 project_dir='<not available>'
-tasks=''
 extra_args='<not available>'
+tasks=''
 interactive_mode=''
 mapping_file=''
 
@@ -50,7 +50,7 @@ execute() {
   validate_required_args
 
   parse_build_scan_urls
-  fetch_extended_build_scan_data
+  fetch_build_scan_data
   make_experiment_dir
 
   print_bl
@@ -63,7 +63,13 @@ wizard_execute() {
   print_introduction
 
   print_bl
-  explain_prerequisites
+  explain_prerequisites_ccud_maven_plugin
+
+  print_bl
+  explain_prerequisites_remote_build_cache_config
+
+  print_bl
+  explain_prerequisites_empty_remote_build_cache
 
   print_bl
   explain_first_build
@@ -81,10 +87,8 @@ wizard_execute() {
   collect_mapping_file
 
   print_bl
-  explain_fetch_build_scan_data
-  print_bl
   parse_build_scan_urls
-  fetch_extended_build_scan_data
+  fetch_build_scan_data
   make_experiment_dir
 
   print_bl
@@ -95,14 +99,14 @@ wizard_execute() {
 }
 
 validate_required_args() {
-  if [ -z "${_arg_first_ci_build}" ]; then
+  if [ -z "${_arg_first_build_ci}" ]; then
     _PRINT_HELP=yes die "ERROR: Missing required argument: --first-ci-build" 1
   fi
-  if [ -z "${_arg_second_ci_build}" ]; then
+  if [ -z "${_arg_second_build_ci}" ]; then
     _PRINT_HELP=yes die "ERROR: Missing required argument: --second-ci-build" 1
   fi
-  build_scan_urls+=("${_arg_first_ci_build}")
-  build_scan_urls+=("${_arg_second_ci_build}")
+  build_scan_urls+=("${_arg_first_build_ci}")
+  build_scan_urls+=("${_arg_second_build_ci}")
 }
 
 parse_build_scan_urls() {
@@ -133,7 +137,7 @@ parse_build_scan_urls() {
   done
 }
 
-fetch_extended_build_scan_data() {
+fetch_build_scan_data() {
   fetch_and_read_build_validation_data "${build_scan_urls[@]}"
 }
 
@@ -157,15 +161,16 @@ print_introduction() {
   local text
   IFS='' read -r -d '' text <<EOF
 $(print_introduction_title)
+
 In this experiment, you will validate how well a given project leverages
 Gradle Enterprise's remote build caching functionality when running the build from
 different CI agents. A build is considered fully cacheable if it can be invoked
-twice in a row with build caching enabled and all cacheable goals avoid
-performing any work because:
+twice in a row with build caching enabled and, during the second invocation, all
+cacheable goals avoid performing any work because:
 
-  * No cacheable goals were excluded from build caching to ensure correctness and
   * The goals' inputs have not changed since their last invocation and
-  * The goals' outputs are present in the remote build cache
+  * The goals' outputs are present in the remote build cache and
+  * No cacheable goals were excluded from build caching to ensure correctness
 
 The experiment will reveal goals with volatile inputs, for example goals that
 contain a timestamp in one of their inputs. It will also reveal goals that
@@ -183,11 +188,11 @@ understand the root cause.
 The experiment needs to be run in your CI environment. It logically consists of
 the following steps:
 
-  1. Enable remote build caching and use an empty remote build cache node
+  1. Enable only remote build caching and use an empty remote build cache
   2. On a given CI agent, run a typical CI configuration from a fresh checkout
   3. On another CI agent, run the same CI configuration with the same commit id from a fresh checkout
   4. Determine which cacheable goals are still executed in the second run and why
-  5. Assess which of the executed goals are worth improving
+  5. Assess which of the executed, cacheable goals are worth improving
   6. Fix identified goals
 
 The script you have invoked does not automate the execution of step 1, step 2,
@@ -205,29 +210,123 @@ EOF
   wait_for_enter
 }
 
-explain_prerequisites() {
+explain_prerequisites_ccud_gradle_plugin() {
   local text
   IFS='' read -r -d '' text <<EOF
 $(print_separator)
-${HEADER_COLOR}Purge remote build cache node and configure build caching${RESTORE}
+${HEADER_COLOR}Configure build with Common Custom User Data Gradle plugin${RESTORE}
 
-Right before running the first build, you need to purge the remote build cache
-node that your build is configured to connect to. This will minimize the risk
-that any build cache entries from other builds influence the experiment.
+To get the most out of this experiment and also when building with Gradle
+Enterprise during daily development, it is advisable that you apply the Common
+Custom User Data Maven extension to your build, if not already the case. Gradle
+provides the Common Custom User Data Maven extension as a free, open-source add-on.
 
-Alternatively, if you do not want to affect the build caching benefits for all
-your ongoing CI builds by purging the connected remote build cache node, you can
-set up an extra, empty build cache node that is used exclusively for this
-experiment, and configure your build to connect to it.
+https://github.com/gradle/gradle-enterprise-build-config-samples/tree/master/common-custom-user-data-maven-extension
 
-In addition, configure your build with remote build caching enabled and local
-build caching disabled.
+An extract of a typical build configuration is described below.
 
-The build configuration changes mentioned above are best made on a dedicated
-branch in order to not impact your CI pipeline and your team's daily
-development.
+.mvn/extensions.xml:
+<?xml version="1.0" encoding="UTF-8"?>
+<extensions>
+    <extension>
+        <groupId>com.gradle</groupId>
+        <artifactId>gradle-enterprise-maven-extension</artifactId>
+        <version>1.11.1</version>
+    </extension>
+    <extension>
+        <groupId>com.gradle</groupId>
+        <artifactId>common-custom-user-data-maven-extension</artifactId>
+        <version>1.9</version>
+    </extension>
+</extensions>
 
-${USER_ACTION_COLOR}Press <Enter> once you have purged the remote build cache node, enabled remote build caching, and disabled local build caching.${RESTORE}
+Your updated build configuration should be pushed before proceeding.
+
+${USER_ACTION_COLOR}Press <Enter> once you have (optionally) configured your build with the Common Custom User Data Maven extension and pushed the changes.${RESTORE}
+EOF
+  print_wizard_text "${text}"
+  wait_for_enter
+}
+
+explain_prerequisites_remote_build_cache_config() {
+  local text
+  IFS='' read -r -d '' text <<EOF
+$(print_separator)
+${HEADER_COLOR}Configure build for remote build caching${RESTORE}
+
+You must first configure your build for remote build caching. An extract of a
+typical build configuration is described below.
+
+.mvn/gradle-enterprise.xml:
+<gradleEnterprise>
+  <buildCache>
+    <local>
+      <enabled>false</enabled>                         <!-- must be false for this experiment -->
+    </local>
+    <remote>
+      <server>
+        <url>https://ge.example.com/cache/exp3/</url>  <!-- adjust to your GE hostname, and note the trailing slash -->
+        <allowUntrusted>true</allowUntrusted>          <!-- set to false if a trusted certificate is configured for the GE server -->
+        <credentials>
+          <username>\${env.GRADLE_ENTERPRISE_CACHE_USERNAME}</username>
+          <password>\${env.GRADLE_ENTERPRISE_CACHE_PASSWORD}</password>
+        </credentials>
+      </server>
+      <enabled>true</enabled>                          <!-- must be true for this experiment -->
+    </remote>
+  </buildCache>
+</gradleEnterprise>
+
+On CI, you will also need to pass -Dgradle.cache.remote.storeEnabled=true to the Maven invocation
+so that the CI build populates the remote build cache.
+
+Your updated build configuration needs to be pushed to a separate branch that
+is only used for running the experiments.
+
+${USER_ACTION_COLOR}Press <Enter> once you have configured your build for remote build caching and pushed the changes.${RESTORE}
+EOF
+  print_wizard_text "${text}"
+  wait_for_enter
+}
+
+explain_prerequisites_empty_remote_build_cache() {
+  local text
+  IFS='' read -r -d '' text <<EOF
+$(print_separator)
+${HEADER_COLOR}Purge remote build cache${RESTORE}
+
+It is important to use an empty remote build cache and to avoid that other
+builds write to the same remote build cache while this experiment is running.
+Ensuring that these preconditions are met will maximize the reproducibility
+and reliability of the experiment. Two different ways to meet these conditions
+are described below.
+
+a) If none of your builds are yet writing to the remote build cache besides
+the builds of this experiment, purge the remote build cache that your build
+is configured to connect to. You can purge the remote build cache by navigating
+in the browser to the 'Build Cache' admin section from the user menu of your
+Gradle Enterprise UI, selecting the build cache node the build is pointing to,
+and then clicking the 'Purge cache' button.
+
+b) If you are not in a position to purge the remote build cache, you can connect
+to a unique shard of the remote build cache each time you run this experiment.
+A shard is accessed via an identifier that is appended to the path of the remote
+build cache URL, for example https://ge.example.com/cache/exp4-2021-Dec31-take1/
+which encodes the experiment type, the current date, and a counter that needs
+to be increased every time the experiment is rerun. Using such an encoding
+schema ensures that for each run of the experiment an empty remote build cache
+will be used. You need to push the changes to the path of the remote build cache
+URL every time before you run the experiment.
+
+If you choose option b) and do not want to interfere with an already existing
+build caching configuration in your build, you can override the local and
+remote build cache configuration via system properties or environment variables
+right when triggering the build on CI. Details on how to provide the overrides are
+available from the documentation of the Gradle Enterprise Maven Extension.
+
+https://docs.gradle.com/enterprise/maven-extension/#configuring_the_remote_cache
+
+${USER_ACTION_COLOR}Press <Enter> once you have prepared the experiment to run with an empty remote build cache.${RESTORE}
 EOF
   print_wizard_text "${text}"
   wait_for_enter
@@ -243,18 +342,18 @@ You can now trigger the first build on one of your CI agents. The invoked CI
 configuration should be a configuration that is typically triggered when
 building the project as part of your pipeline during daily development.
 
-Make sure the CI configuration performs a fresh checkout to avoid any build
-artifacts lingering around from a previous build that could influence the
-experiment.
+Make sure the CI configuration uses the proper branch and performs a fresh
+checkout to avoid any build artifacts lingering around from a previous build
+that could influence the experiment.
 
-Once the build completes, make a note of the commit id the build ran against,
-and enter the URL of the build scan produced by the build.
+Once the build completes, make a note of the commit id that was used, and enter
+the URL of the build scan produced by the build.
 EOF
   print_wizard_text "${text}"
 }
 
 collect_first_build_scan() {
-  prompt_for_setting "What is the build scan for the first CI server build?" "${_arg_first_ci_build}" "" build_scan_url
+  prompt_for_setting "What is the build scan URL of the first build?" "${_arg_first_build_ci}" "" build_scan_url
   build_scan_urls+=("${build_scan_url}")
 }
 
@@ -266,11 +365,11 @@ ${HEADER_COLOR}Run second build on another CI agent${RESTORE}
 
 Now that the first build has finished successfully, the second build can be
 triggered on another CI agent for the same CI configuration and with the same
-commit id the first build ran against.
+commit id as was used by the first build.
 
-Make sure the CI configuration performs a fresh checkout to avoid any build
-artifacts lingering around from a previous build that could influence the
-experiment.
+Make sure the CI configuration uses the proper branch and commit id and performs
+a fresh checkout to avoid any build artifacts lingering around from a previous
+build that could influence the experiment.
 
 Once the build completes, enter the URL of the build scan produced by the build.
 EOF
@@ -278,7 +377,7 @@ EOF
 }
 
 collect_second_build_scan() {
-  prompt_for_setting "What is the build scan for the second CI server build?" "${_arg_second_ci_build}" "" build_scan_url
+  prompt_for_setting "What is the build scan URL of the second build?" "${_arg_second_build_ci}" "" build_scan_url
   build_scan_urls+=("${build_scan_url}")
 }
 
@@ -288,34 +387,23 @@ explain_collect_mapping_file() {
 $(print_separator)
 ${HEADER_COLOR}Fetch build scan data${RESTORE}
 
-Now that the second build has finished successfully, some of the build scan data
-will be fetched from the two provided build scans to assist you in your
-investigation.
+Now that the second build has finished successfully, some of the build scan
+data will be fetched from the two provided build scans to assist you in your
+investigation. The build scan data will be fetched via the Gradle Enterprise
+Export API. It is not strictly necessary that you have permission to call
+the Export API while doing this experiment, but the summary provided at the
+end of the experiment will be more complete if the build scan data is accessible.
 
 Some of the fetched build scan data is expected to be present as custom values.
-By default, the script assumes that these custom values have been created by the
-Common Custom User Data Maven extension that Gradle provides as a free,
-open-source add-on.
-
-https://github.com/gradle/gradle-enterprise-build-config-samples/tree/master/common-custom-user-data-maven-extension
-
-If you are not using that extension but your build still captures the same data
-under different custom value names, you can provide a mapping file so that the
-script can still extract that data from your build scans. An example mapping
-file named 'mapping.example' can be found at the same location as the script.
+By default, this experiment assumes that these custom values have been created
+by the Common Custom User Data Maven extension. If you are not using that extension
+but your build still captures the same data under different custom value names,
+you can provide a mapping file so that the required data can be extracted from
+your build scans. An example mapping file named 'mapping.example' can be found
+at the same location as the script.
 EOF
   print_wizard_text "${text}"
 }
-
-explain_fetch_build_scan_data() {
-  local text
-  IFS='' read -r -d '' text <<EOF
-${USER_ACTION_COLOR}Press <Enter> to fetch the build scans.${RESTORE}
-EOF
-  print_wizard_text "${text}"
-  wait_for_enter
-}
-
 
 explain_measure_build_results() {
   local text
@@ -324,7 +412,7 @@ $(print_separator)
 ${HEADER_COLOR}Measure build results${RESTORE}
 
 At this point, you are ready to measure in Gradle Enterprise how well your build
-leverages the remote build cache for the invoked set of Maven goals.
+leverages Gradle’s remote build cache for the invoked CI configuration.
 
 ${USER_ACTION_COLOR}Press <Enter> to measure the build results.${RESTORE}
 EOF
@@ -332,6 +420,7 @@ EOF
   wait_for_enter
 }
 
+#Overrides config.sh#print_command_to_repeat_experiment
 print_command_to_repeat_experiment() {
   local cmd
   cmd=("./${SCRIPT_NAME}")
@@ -346,19 +435,20 @@ print_command_to_repeat_experiment() {
   info "-----------------------"
   info "$(printf '%q ' "${cmd[@]}")"
 }
+
 explain_and_print_summary() {
   local text
   IFS='' read -r -d '' text <<EOF
 The 'Summary' section below captures the configuration of the experiment and the
-two build scans that were published as part of running the experiment.  The
-build scan of the second build is particularly interesting since this is where
-you can inspect what goals were not leveraging the remote build cache.
+two build scans that were published as part of running the experiment. The build
+scan of the second build is particularly interesting since this is where you can
+inspect what goals were not leveraging the remote build cache.
 
-The 'Investigation Quick Links' section below allows quick navigation to the
-most relevant views in build scans to investigate what goal outputs were fetched
-from the remote cache and what goals executed in the second build with cache
-misses, which of those goals had the biggest impact on build performance, and
-what caused the cache misses.
+The ‘Investigation Quick Links’ section below allows quick navigation to the
+most relevant views in build scans to investigate what goals were avoided due to
+remote build caching and what goals executed in the second build, which of those
+goals had the biggest impact on build performance, and what caused those goals
+to not be taken from the remote build cache.
 
 The 'Command Line Invocation' section below demonstrates how you can rerun the
 experiment with the same configuration and in non-interactive mode.
