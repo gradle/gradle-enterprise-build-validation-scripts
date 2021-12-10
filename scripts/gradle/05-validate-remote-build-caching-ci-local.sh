@@ -180,6 +180,7 @@ execute_build() {
   local init_scripts_dir
   init_scripts_dir="$(init_scripts_path)"
 
+  local args
   args=(--build-cache --init-script "${init_scripts_dir}/configure-remote-build-caching.gradle")
   if [ -n "${remote_build_cache_url}" ]; then
     args+=("-Pcom.gradle.enterprise.build_validation.remoteBuildCacheUrl=${remote_build_cache_url}")
@@ -577,18 +578,18 @@ explain_and_print_summary() {
   read_build_scan_metadata
   local text
   IFS='' read -r -d '' text <<EOF
-The 'Summary' section below captures the configuration of the experiment and the
+The ‘Summary’ section below captures the configuration of the experiment and the
 two build scans that were published as part of running the experiment.  The
 build scan of the second build is particularly interesting since this is where
-you can inspect what tasks were not leveraging Gradle’s local build cache.
+you can inspect what tasks were not leveraging Gradle’s remote build cache.
 
-The 'Investigation Quick Links' section below allows quick navigation to the
+The ‘Investigation Quick Links’ section below allows quick navigation to the
 most relevant views in build scans to investigate what task outputs were fetched
 from the remote cache and what tasks executed in the second build with cache
 misses, which of those tasks had the biggest impact on build performance, and
 what caused the cache misses.
 
-The 'Command Line Invocation' section below demonstrates how you can rerun the
+The ‘Command Line Invocation’ section below demonstrates how you can rerun the
 experiment with the same configuration and in non-interactive mode.
 
 $(print_summary)
