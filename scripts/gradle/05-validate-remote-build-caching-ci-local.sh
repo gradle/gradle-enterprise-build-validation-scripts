@@ -4,7 +4,7 @@
 #
 # Invoke this script with --help to get a description of the command line arguments
 #
-readonly EXP_NAME="Validate Gradle Remote Build Caching - CI and Local"
+readonly EXP_NAME="Validate remote build caching - CI and local"
 readonly EXP_DESCRIPTION="Validating that a Gradle build is optimized for remote build caching when invoked on CI agent and local machine"
 readonly EXP_NO="05"
 readonly EXP_SCAN_TAG=exp5-gradle
@@ -130,7 +130,7 @@ process_script_arguments() {
 
 validate_required_script_arguments() {
   if [ -z "${ci_build_scan_url}" ]; then
-    _PRINT_HELP=yes die "ERROR: Missing required argument: --build-scan" 1
+    _PRINT_HELP=yes die "ERROR: Missing required argument: --first-build-ci" 1
   fi
 }
 
