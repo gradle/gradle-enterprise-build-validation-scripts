@@ -210,11 +210,11 @@ EOF
   wait_for_enter
 }
 
-explain_prerequisites_ccud_gradle_plugin() {
+explain_prerequisites_ccud_maven_plugin() {
   local text
   IFS='' read -r -d '' text <<EOF
 $(print_separator)
-${HEADER_COLOR}Configure build with Common Custom User Data Gradle plugin${RESTORE}
+${HEADER_COLOR}Configure build with Common Custom User Data Maven extension${RESTORE}
 
 To get the most out of this experiment and also when building with Gradle
 Enterprise during daily development, it is advisable that you apply the Common
