@@ -10,6 +10,7 @@ readonly EXP_NO="02"
 readonly EXP_SCAN_TAG=exp2-maven
 readonly BUILD_TOOL="Maven"
 readonly SCRIPT_VERSION="<HEAD>"
+readonly SHOW_RUN_ID=true
 
 # Needed to bootstrap the script
 SCRIPT_NAME=$(basename "$0")
@@ -134,20 +135,6 @@ execute_second_build() {
      clean ${tasks}
 }
 
-print_summary() {
-  read_build_scan_metadata
-  print_experiment_info
-  print_build_scans
-  print_warnings
-  print_bl
-  print_quick_links
-}
-
-print_build_scans() {
-  summary_row "Build scan first build:" "${build_scan_urls[0]}"
-  summary_row "Build scan second build:" "${build_scan_urls[1]}"
-}
-
 print_quick_links() {
   info "Investigation Quick Links"
   info "-------------------------"
@@ -167,12 +154,12 @@ $(print_introduction_title)
 In this experiment, you will validate how well a given project leverages
 Gradle Enterprise's local build caching functionality when running the build from different
 locations. A build is considered fully cacheable if it can be invoked twice in a
-row with build caching enabled and all cacheable goals avoid performing any work
-because:
+row with build caching enabled and, during the second invocation, all cacheable
+tasks avoid performing any work because:
 
-  * No cacheable goals were excluded from build caching to ensure correctness and
   * The cacheable goals’ inputs have not changed since their last invocation and
-  * The cacheable goals’ outputs are present in the local build cache
+  * The cacheable goals’ outputs are present in the local build cache and
+  * No cacheable goals were excluded from build caching to ensure correctness
 
 The experiment will reveal goals with volatile inputs, for example goals that
 contain a timestamp in one of their inputs. It will also reveal goals that produce
@@ -191,16 +178,16 @@ understand the root cause.
 The experiment can be run on any developer’s machine. It logically consists of
 the following steps:
 
-  1. Enable local build caching and use an empty local build cache
+  1. Enable only local build caching and use an empty local build cache
   2. Run the build with a typical goal invocation including the ‘clean’ goal
   3. Run the build from a different location with the same goal invocation including the ‘clean’ goal
   4. Determine which cacheable goals are still executed in the second run and why
   5. Assess which of the executed, cacheable goals are worth improving
   6. Fix identified goals
 
-The script you have invoked automates the execution of step 1, step 2, and step
-3 without modifying the project. Build scans support your investigation in step
-4 and step 5.
+The script you have invoked automates the execution of step 1, step 2, and step 3
+without modifying the project. Build scans support your investigation in step 4
+and step 5.
 
 After improving the build to make it better leverage the local build cache, you
 can push your changes and run the experiment again. This creates a cycle of run
