@@ -166,9 +166,9 @@ $(print_introduction_title)
 
 In this experiment, you will validate how well a given project leverages
 Gradle's remote build caching functionality when running the build from
-different CI agents. A build is considered fully cacheable if it can be invoked
-twice in a row with build caching enabled and, during the second invocation, all
-cacheable tasks avoid performing any work because:
+two different CI agents. A build is considered fully cacheable if it can be
+invoked twice in a row with build caching enabled and, during the second
+invocation, all cacheable tasks avoid performing any work because:
 
   * The cacheable tasks' inputs have not changed since their last invocation and
   * The cacheable tasks' outputs are present in the remote build cache and
