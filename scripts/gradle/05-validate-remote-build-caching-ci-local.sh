@@ -498,9 +498,8 @@ explain_clone_project() {
 $(print_separator)
 ${HEADER_COLOR}Check out project from Git for local build${RESTORE}
 
-All configuration to run the local build has been collected. In the next
-step of the experiment, the Git repository that contains the project to
-validate will be checked out.
+All configuration to run the local build has been collected. The Git repository
+that contains the project to validate will be checked out.
 
 ${USER_ACTION_COLOR}Press <Enter> to check out the project from Git.${RESTORE}
 EOF
