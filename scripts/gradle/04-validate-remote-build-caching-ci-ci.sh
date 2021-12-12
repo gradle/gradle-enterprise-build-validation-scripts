@@ -379,10 +379,17 @@ ${HEADER_COLOR}Fetch build scan data${RESTORE}
 
 Now that the second build has finished successfully, some of the build scan
 data will be fetched from the two provided build scans to assist you in your
-investigation. The build scan data will be fetched via the Gradle Enterprise
-Export API. It is not strictly necessary that you have permission to call
-the Export API while doing this experiment, but the summary provided at the
-end of the experiment will be more complete if the build scan data is accessible.
+investigation.
+
+The build scan data will be fetched via the Gradle Enterprise Export API. It is
+not strictly necessary that you have permission to call the Export API while
+doing this experiment, but the summary provided at the end of the experiment
+will be more comprehensive if the build scan data is accessible. You can check
+your granted permissions by navigating in the browser to the 'My Settings'
+section from the user menu of your Gradle Enterprise UI. Your Gradle Enterprise
+access key must be specified in the ~/.gradle/enterprise/keys.properties file.
+
+https://docs.gradle.com/enterprise/gradle-plugin/#via_file
 
 Some of the fetched build scan data is expected to be present as custom values.
 By default, this experiment assumes that these custom values have been created
