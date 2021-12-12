@@ -515,9 +515,9 @@ explain_measure_build_results() {
 $(print_separator)
 ${HEADER_COLOR}Measure build results${RESTORE}
 
-Now that the local build has finished successfully, you are ready to measure in
-Gradle Enterprise how well your build leverages Gradle’s remote build cache for
-the invoked set of Gradle tasks.
+At this point, you are ready to measure in Gradle Enterprise how well your
+build leverages Gradle’s remote build cache for the invoked CI configuration
+and local build.
 
 ${USER_ACTION_COLOR}Press <Enter> to measure the build results.${RESTORE}
 EOF
