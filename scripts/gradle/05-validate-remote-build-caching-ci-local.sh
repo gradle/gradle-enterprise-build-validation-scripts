@@ -439,9 +439,10 @@ explain_collect_git_details() {
 $(print_separator)
 ${HEADER_COLOR}Configure local build${RESTORE}
 
-Now that the first build has finished successfully on CI and the build scan data
-has been fetched, the second can be run locally with the same commit id as was
-used by the first build.
+Now that the first build has finished successfully on CI and the build scan
+data has been fetched or at least attempted to be fetched, the second build
+can be run locally with the same commit id, the same Gradle tasks, and the
+same remote build cache as was used by the first build.
 
 The local build will run after a fresh checkout of the given project stored in
 Git. The fresh checkout ensures reproducibility of the experiment across machines
@@ -460,7 +461,7 @@ explain_collect_gradle_details() {
 Once the project is checked out from Git, the experiment will invoke the
 project’s contained Gradle build with a given set of tasks and an optional set
 of arguments. The Gradle tasks to invoke should be the same, or very similar to
-the tasks invoked by the CI build.
+the tasks invoked by the previous CI build.
 
 The build will be invoked from the project’s root directory or from a given
 sub-directory.
