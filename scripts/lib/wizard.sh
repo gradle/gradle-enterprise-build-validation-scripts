@@ -65,7 +65,7 @@ explain_collect_gradle_details() {
 Once the project is checked out from Git, the experiment will invoke the
 project’s contained Gradle build with a given set of tasks and an optional
 set of arguments. The Gradle tasks to invoke should resemble what users
-and/or CI typically invoke when building the project.
+typically invoke when building the project.
 
 The build will be invoked from the project’s root directory or from a given
 sub-directory.
