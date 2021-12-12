@@ -102,6 +102,10 @@ wizard_execute() {
   explain_collect_gradle_details
   print_bl
   collect_gradle_details
+
+  print_bl
+  explain_remote_build_cache_url
+  print_bl
   collect_remote_build_cache_url
 
   print_bl
@@ -465,6 +469,15 @@ the tasks invoked by the previous CI build.
 
 The build will be invoked from the project’s root directory or from a given
 sub-directory.
+EOF
+  print_wizard_text "${text}"
+}
+
+explain_remote_build_cache_url() {
+  local text
+  IFS='' read -r -d '' text <<EOF
+The local build will connect to the given remote build cache. The remote build
+cache to use should be the same as the one used by the previous CI build.
 EOF
   print_wizard_text "${text}"
 }
