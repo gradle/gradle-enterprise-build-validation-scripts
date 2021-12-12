@@ -271,7 +271,7 @@ explain_prerequisites_ccud_gradle_plugin() {
   local text
   IFS='' read -r -d '' text <<EOF
 $(print_separator)
-${HEADER_COLOR}Configure build with Common Custom User Data Gradle plugin${RESTORE}
+${HEADER_COLOR}Preparation I. - Configure build with Common Custom User Data Gradle plugin${RESTORE}
 
 To get the most out of this experiment and also when building with Gradle
 Enterprise during daily development, it is advisable that you apply the Common
@@ -300,7 +300,7 @@ explain_prerequisites_remote_build_cache_config() {
   local text
   IFS='' read -r -d '' text <<EOF
 $(print_separator)
-${HEADER_COLOR}Configure build for remote build caching${RESTORE}
+${HEADER_COLOR}Preparation II. - Configure build for remote build caching${RESTORE}
 
 You must first configure your build for remote build caching. An extract of a
 typical build configuration is described below.
@@ -337,7 +337,7 @@ explain_prerequisites_empty_remote_build_cache() {
   local text
   IFS='' read -r -d '' text <<EOF
 $(print_separator)
-${HEADER_COLOR}Purge remote build cache${RESTORE}
+${HEADER_COLOR}Preparation III. - Purge remote build cache${RESTORE}
 
 It is important to use an empty remote build cache and to avoid that other
 builds write to the same remote build cache while this experiment is running.
