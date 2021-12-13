@@ -62,6 +62,17 @@ the script is run autonomously with all configuration passed at script invocatio
 ./01-validate-incremental-building.sh -r https://github.com/etiennestuder/java-ordered-properties -b master -t build
 ```
 
+#### Redirecting build scan publishing
+
+The scripts that generate one or more build scans can be configured to publish these build scans to a different
+Gradle Enterprise server than the one that the build points to by passing the `-s` or `--gradle-enterprise-server`
+command line argument. In the example below, the script will configure the build to publish the build scans
+to https://ge.example.io.
+
+```bash
+./01-validate-incremental-building.sh -i -s https://ge.example.io
+```
+
 ### Maven
 
 #### Installation
