@@ -24,20 +24,17 @@ a discrete step in the build validation process:
 - `04-validate-remote-build-caching-ci-ci.sh`
 - `05-validate-remote-build-caching-ci-local.sh`
 
-You can validate that a Gradle build is optimized for incremental building with
-the `01-validate-incremental-building.sh` script.
+<summary>Click to see more details on the purpose of each script in the table below.</summary>
 
-You can validate that a Gradle build is optimized for local build caching when invoked
-from the same location with the `02-validate-local-build-caching-same-location.sh` script.
-
-You can validate that a Gradle build is optimized for local build caching when invoked
-from different locations with the `03-validate-local-build-caching-different-locations.sh` script.
-
-You can validate that a Gradle build is optimized for remote build caching when invoked
-from different CI agents with the `04-validate-remote-build-caching-ci-ci.sh` script.
-
-You can validate that a Gradle build is optimized for remote build caching when invoked
-on CI agent and local machine with the `05-validate-remote-build-caching-ci-local.sh` script.
+<details>
+| Script | Purpose |
+| :----- | :------ |
+|`01-validate-incremental-building.sh` | Validates that a Gradle build is optimized for incremental building. |
+|`02-validate-local-build-caching-same-location.sh` | Validates that a Gradle build is optimized for local build caching when invoked from the same location. |
+|`03-validate-local-build-caching-different-locations.sh` | Validates that a Gradle build is optimized for local build caching when invoked from different locations. |
+|`04-validate-remote-build-caching-ci-ci.sh` | Validates that a Gradle build is optimized for remote build caching when invoked from different CI agents. |
+|`05-validate-remote-build-caching-ci-local.sh` | Validates that a Gradle build is optimized for remote build caching when invoked on CI agent and local machine. |
+</details>
 
 #### Invocation
 
