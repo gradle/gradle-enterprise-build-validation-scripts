@@ -3,20 +3,63 @@
 Intro on what this is about.
 
 ### Gradle
+
 #### Installation
+
+On macOS and Linux, use the following command to download and unpack the build validation scripts for Gradle to the current directory:
+
+```bash
+curl -s -L -O https://github.com/gradle/gradle-enterprise-build-config-samples/releases/download/build-validation-development-latest/gradle-enterprise-gradle-build-validation.zip && unzip -q -o gradle-enterprise-gradle-build-validation.zip
+```
+
+You can then navigate into the extracted folder that contains the validation scripts:
+
+```bash
+cd gradle-enterprise-gradle-build-validation
+```
+
 #### Validation
+
+There are five validation steps that you can perform, each one encoded in a separate script.
+
+- `01-validate-incremental-building.sh`: Validating that a Gradle build is optimized for incremental building.
+- `02-validate-local-build-caching-same-location.sh Validating that a Gradle`: Validating that a Gradle build is optimized for local build caching when invoked from the same
+  location.
+- `03-validate-local-build-caching-different-locations.sh`: Validating that a Gradle build is optimized for local build caching when invoked from different locations.
+- `04-validate-remote-build-caching-ci-ci.sh`: Validating that a Gradle build is optimized for remote build caching when invoked from different CI agents.
+- `05-validate-remote-build-caching-ci-local.sh`: Validating that a Gradle build is optimized for remote build caching when invoked on CI agent and local machine.
 
 Validation steps (incl. link to videos)
 Common functionality (-i, -h, -v)
 Example
 
 ### Maven
+
 #### Installation
+
+On macOS and Linux, use the following command to download and unpack the build validation scripts for Maven to the current directory:
+
+```bash
+curl -s -L -O https://github.com/gradle/gradle-enterprise-build-config-samples/releases/download/build-validation-development-latest/gradle-enterprise-maven-build-validation.zip && unzip -q -o gradle-enterprise-maven-build-validation.zip
+```
+
+You can then navigate into the extracted folder that contains the validation scripts:
+
+```bash
+cd gradle-enterprise-maven-build-validation
+```
+
 #### Executions
 
 Validation steps (incl. link to videos)
 Common functionality (-i, -h, -v)
 Example
+
+
+
+
+
+
 
 # Gradle Enterprise - Build Validation
 
@@ -38,16 +81,6 @@ You may want to repeat the experiments on a regular basis to validate any optimi
 regressions that may sneak into your builds over time.
 
 ## Validating Gradle Builds
-
-### Installing on Linux and MacOS
-
-Use the following command to download and unpack the validation scripts for Gradle:
-
-```bash
-curl -s -L -O https://github.com/gradle/gradle-enterprise-build-config-samples/releases/download/build-validation-development-latest/gradle-enterprise-gradle-build-validation.zip && unzip -q -o gradle-enterprise-gradle-build-validation.zip
-```
-
-The command will download and unpack the scripts to the current directory.
 
 ### Running the first validation for the first time
 
@@ -93,16 +126,6 @@ The scripts accept the following command line arguments:
 ```
 
 ## Validating Maven Builds
-
-### Installing on Linux and MacOS
-
-Use the following command to download and unpack the validation scripts for Maven:
-
-```bash
-curl -s -L -O https://github.com/gradle/gradle-enterprise-build-config-samples/releases/download/build-validation-development-latest/gradle-enterprise-maven-build-validation.zip && unzip -q -o gradle-enterprise-maven-build-validation.zip
-```
-
-The command will download and unpack the scripts to the current directory.
 
 ### Running the first validation for the first time
 
