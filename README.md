@@ -6,32 +6,64 @@ Intro on what this is about.
 
 #### Installation
 
-On macOS and Linux, use the following command to download and unpack the build validation scripts for Gradle to the current directory:
+On macOS and Linux, use the following command to download and unpack the build validation scripts
+for Gradle to the current directory:
 
 ```bash
 curl -s -L -O https://github.com/gradle/gradle-enterprise-build-config-samples/releases/download/build-validation-development-latest/gradle-enterprise-gradle-build-validation.zip && unzip -q -o gradle-enterprise-gradle-build-validation.zip
 ```
 
-You can then navigate into the extracted folder that contains the validation scripts:
+#### Structure
+
+In the top-level folder, there are five different scripts that you can execute, each one representing
+a discrete step in the build validation process:
+
+- `01-validate-incremental-building.sh`
+- `02-validate-local-build-caching-same-location.sh`
+- `03-validate-local-build-caching-different-locations.sh`
+- `04-validate-remote-build-caching-ci-ci.sh`
+- `05-validate-remote-build-caching-ci-local.sh`
+
+You can validate that a Gradle build is optimized for incremental building with
+the `01-validate-incremental-building.sh` script.
+
+You can validate that a Gradle build is optimized for local build caching when invoked
+from the same location with the `02-validate-local-build-caching-same-location.sh` script.
+
+You can validate that a Gradle build is optimized for local build caching when invoked
+from different locations with the `03-validate-local-build-caching-different-locations.sh` script.
+
+You can validate that a Gradle build is optimized for remote build caching when invoked
+from different CI agents with the `04-validate-remote-build-caching-ci-ci.sh` script.
+
+You can validate that a Gradle build is optimized for remote build caching when invoked
+on CI agent and local machine with the `05-validate-remote-build-caching-ci-local.sh` script.
+
+#### Invocation
+
+The scripts accept command line arguments of which some are the same for all scripts and some are
+specific to a given script. The following arguments are present on all scripts:
+
+- `-h`, `--help`: Shows a help message including all command line arguments supported by the script
+- `-v`, `--version`: Shows the version number of the script
+- `-i`, `--interactive`: Runs the script in interactive mode, providing extra context and guidance along the way
+
+It is recommended that you run a given script in _interactive_ mode for the first time. In the
+example below, the script is executed interactively and already provides the GitHub repository where
+the project to validate can be found.
 
 ```bash
 cd gradle-enterprise-gradle-build-validation
+./01-validate-incremental-building.sh -i -r https://github.com/etiennestuder/java-ordered-properties
 ```
 
-#### Validation
+Once you are familiar with a given script, you can run it in _non-interactive_ mode. In the example below,
+the script is run autonomously with all configuration passed at script invocation time.
 
-There are five validation steps that you can perform, each one encoded in a separate script.
-
-- `01-validate-incremental-building.sh`: Validating that a Gradle build is optimized for incremental building.
-- `02-validate-local-build-caching-same-location.sh`: Validating that a Gradle build is optimized for local build caching when invoked from the same
-  location.
-- `03-validate-local-build-caching-different-locations.sh`: Validating that a Gradle build is optimized for local build caching when invoked from different locations.
-- `04-validate-remote-build-caching-ci-ci.sh`: Validating that a Gradle build is optimized for remote build caching when invoked from different CI agents.
-- `05-validate-remote-build-caching-ci-local.sh`: Validating that a Gradle build is optimized for remote build caching when invoked on CI agent and local machine.
-
-Validation steps (incl. link to videos)
-Common functionality (-i, -h, -v)
-Example
+```bash
+cd gradle-enterprise-gradle-build-validation
+./01-validate-incremental-building.sh -r https://github.com/etiennestuder/java-ordered-properties -b master -t build
+```
 
 ### Maven
 
