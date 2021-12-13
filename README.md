@@ -23,7 +23,7 @@ cd gradle-enterprise-gradle-build-validation
 There are five validation steps that you can perform, each one encoded in a separate script.
 
 - `01-validate-incremental-building.sh`: Validating that a Gradle build is optimized for incremental building.
-- `02-validate-local-build-caching-same-location.sh Validating that a Gradle`: Validating that a Gradle build is optimized for local build caching when invoked from the same
+- `02-validate-local-build-caching-same-location.sh`: Validating that a Gradle build is optimized for local build caching when invoked from the same
   location.
 - `03-validate-local-build-caching-different-locations.sh`: Validating that a Gradle build is optimized for local build caching when invoked from different locations.
 - `04-validate-remote-build-caching-ci-ci.sh`: Validating that a Gradle build is optimized for remote build caching when invoked from different CI agents.
