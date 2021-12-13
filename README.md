@@ -47,9 +47,9 @@ specific to a given script. The following arguments are present on all scripts:
 - `-v`, `--version`: Shows the version number of the script
 - `-i`, `--interactive`: Runs the script in interactive mode, providing extra context and guidance along the way
 
-It is recommended that you run a given script in _interactive_ mode for the first time. In the
-example below, the script is executed interactively and already provides the GitHub repository where
-the project to validate can be found.
+It is recommended that you run a given script in _interactive_ mode for the first time by passing the `-i` or
+`--interactive` command line argument. In the example below, the script is executed interactively and already 
+provides the GitHub repository where the project to validate can be found.
 
 ```bash
 ./01-validate-incremental-building.sh -i -r https://github.com/etiennestuder/java-ordered-properties
@@ -64,10 +64,10 @@ the script is run autonomously with all configuration passed at script invocatio
 
 #### Redirecting build scan publishing
 
-The scripts that run one or more builds locally can be configured to publish the build scans to a different
+The scripts that run one or more builds locally can be configured to publish build scans to a different
 Gradle Enterprise server than the one that the builds point to by passing the `-s` or `--gradle-enterprise-server`
-command line argument. In the example below, the script will configure the local builds to publish the build scans
-to https://ge.example.io.
+command line argument. In the example below, the script will configure the local builds to publish their build scans
+to https://ge.example.io regardless of what server is configured in the build.
 
 ```bash
 ./01-validate-incremental-building.sh -i -s https://ge.example.io
@@ -76,9 +76,9 @@ to https://ge.example.io.
 #### Instrumenting build with Gradle Enterprise
 
 The scripts that run one or more builds locally can be configured to connect the builds to a Gradle Enterprise
-insttance in case the builds are not already connected to Gradle Enterprise by passing the `-e` or `--enable-gradle-enterprise`
+instance in case the builds are not already connected to Gradle Enterprise by passing the `-e` or `--enable-gradle-enterprise`
 command line argument. In the example below, the script will configure the non-instrumented build to connect to the
-Gradle Enrterprise server at https://ge.example.io.
+Gradle Enterprise server at https://ge.example.io.
 
 ```bash
 ./01-validate-incremental-building.sh -i -e -s https://ge.example.io
