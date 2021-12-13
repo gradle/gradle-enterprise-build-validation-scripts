@@ -1,4 +1,22 @@
-# Gradle Enterprise - Build Validation
+## Gradle Enterprise - Build Validation Scripts
+
+Intro on what this is about.
+
+### Gradle
+#### Installation
+#### Validation
+
+Validation steps (incl. link to videos)
+Common functionality (-i, -h, -v)
+Example
+
+### Maven
+#### Installation
+#### Executions
+
+Validation steps (incl. link to videos)
+Common functionality (-i, -h, -v)
+Example
 
 # Gradle Enterprise - Build Validation
 
