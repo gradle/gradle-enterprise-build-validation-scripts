@@ -8,8 +8,27 @@ invoke_maven() {
 
   pushd "${project_dir}" > /dev/null 2>&1 || die "ERROR: The subdirectory ${project_dir} (set with --project-dir) does not exist in ${project_name}." 3
 
+  local extension_classpath
+  extension_classpath="${CAPTURE_SCANS_EXTENSION_JAR}"
+
+  if [ "$enable_ge" == "on" ]; then
+    # Reset the extension classpath and add all of the jars in the lib/maven dir
+    # The lib/maven dir includes:
+    #  - the Gradle Enterprise Maven extension
+    #  - the Common Custom User Data Maven extension
+    #  - the capture-publish-build-scan Maven extension
+    extension_classpath=""
+    for jar in "${LIB_DIR}"/maven/*; do
+      if [ "${extension_classpath}" == "" ]; then
+        extension_classpath="${jar}"
+      else
+        extension_classpath="${extension_classpath}:${jar}"
+      fi
+    done
+  fi
+
   args+=(
-    -Dmaven.ext.class.path="${CAPTURE_SCANS_EXTENSION_JAR}"
+    -Dmaven.ext.class.path="${extension_classpath}"
     -Dcom.gradle.enterprise.build_validation.experimentDir="${EXP_DIR}"
     -Dscan.tag."${EXP_SCAN_TAG}"
     -Dscan.tag."${RUN_ID}"

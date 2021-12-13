@@ -30,6 +30,7 @@ function print_help() {
   print_option_usage -a
   print_option_usage "-u, --remote-build-cache-url" "Specifies the URL for the remote build cache to access in the second build run locally."
   print_option_usage -s
+  print_option_usage -e
   print_option_usage -v
   print_option_usage -h
 }
