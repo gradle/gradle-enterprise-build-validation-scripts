@@ -64,13 +64,24 @@ the script is run autonomously with all configuration passed at script invocatio
 
 #### Redirecting build scan publishing
 
-The scripts that generate one or more build scans can be configured to publish these build scans to a different
-Gradle Enterprise server than the one that the build points to by passing the `-s` or `--gradle-enterprise-server`
-command line argument. In the example below, the script will configure the build to publish the build scans
+The scripts that run one or more builds locally can be configured to publish the build scans to a different
+Gradle Enterprise server than the one that the builds point to by passing the `-s` or `--gradle-enterprise-server`
+command line argument. In the example below, the script will configure the local builds to publish the build scans
 to https://ge.example.io.
 
 ```bash
 ./01-validate-incremental-building.sh -i -s https://ge.example.io
+```
+
+#### Instrumenting build with Gradle Enterprise
+
+The scripts that run one or more builds locally can be configured to connect the builds to a Gradle Enterprise
+insttance in case the builds are not already connected to Gradle Enterprise by passing the `-e` or `--enable-gradle-enterprise`
+command line argument. In the example below, the script will configure the non-instrumented build to connect to the
+Gradle Enrterprise server at https://ge.example.io.
+
+```bash
+./01-validate-incremental-building.sh -i -e -s https://ge.example.io
 ```
 
 ### Maven
