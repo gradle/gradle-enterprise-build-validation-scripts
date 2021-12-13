@@ -36,6 +36,8 @@ a discrete step in the build validation process:
 | 05-validate-remote-build-caching-ci-local.sh | Validates that a Gradle build is optimized for remote build caching when invoked on CI agent and local machine. |
 </details>
 
+All intermediate and final output produced while running a given script is stored under ./.data/<script_name>/&lt;timestamp>-<run_id>.
+
 #### Invocation
 
 The scripts accept command line arguments of which some are the same for all scripts and some are
@@ -50,7 +52,6 @@ example below, the script is executed interactively and already provides the Git
 the project to validate can be found.
 
 ```bash
-cd gradle-enterprise-gradle-build-validation
 ./01-validate-incremental-building.sh -i -r https://github.com/etiennestuder/java-ordered-properties
 ```
 
@@ -58,7 +59,6 @@ Once you are familiar with a given script, you can run it in _non-interactive_ m
 the script is run autonomously with all configuration passed at script invocation time.
 
 ```bash
-cd gradle-enterprise-gradle-build-validation
 ./01-validate-incremental-building.sh -r https://github.com/etiennestuder/java-ordered-properties -b master -t build
 ```
 
