@@ -1,5 +1,7 @@
 # Gradle Enterprise - Build Validation
 
+# Gradle Enterprise - Build Validation
+
 A software development team can gain a lot of efficiency and productivity by optimizing their build to avoid performing
 unnecessary work, or work that has been performed already. Shorter builds allow software developers to get feedback
 quicker about their changes (does the code compile, do the tests pass?) and helps to reduce context switching (a known
@@ -153,14 +155,14 @@ The following scirpts accept a custom mapping file using the
 
 ## Authenticating with Gradle Enterprise to retrieve build scan data
 
-Some of the build validation scripts use the 
+Some of the build validation scripts use the
 [Gradle Enterprise Export API](https://docs.gradle.com/enterprise/export-api/)
 to look up data about existing build scans. In order for the the lookup to
 succeed, you will need the 'Access build data via the Export API' permission.
 Additionally, this scripts need an access key to authenticate with Gradle
 Enterprise. By default, the scripts try to find the access key in the
 `enterprise/keys.properties` file within the Gradle user home directory
-(`~/.gradle` by default). 
+(`~/.gradle` by default).
 
 See [Authenticating with Gradle Enterprise](https://docs.gradle.com/enterprise/gradle-plugin/#authenticating_with_gradle_enterprise)
 for details on how to create an access key.
