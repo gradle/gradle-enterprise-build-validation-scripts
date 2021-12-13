@@ -170,7 +170,7 @@ public class FetchBuildValidationDataCommand implements Callable<Integer> {
 
     private void printFetchResultFor(int index, String property, String customValueKey, boolean found) {
         String ordinal = buildScanIndexToOrdinal(index);
-        System.err.printf("Looking up %s from custom value with name '%s from the %s build scan, %s.%n", property, customValueKey, ordinal, found ? "found": "not found");
+        System.err.printf("Looking up %s from custom value with name '%s' from the %s build scan, %s.%n", property, customValueKey, ordinal, found ? "found": "not found");
     }
 
     public void printHeader() {
