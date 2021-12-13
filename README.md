@@ -47,9 +47,8 @@ specific to a given script. The following arguments are present on all scripts:
 - `-v`, `--version`: Shows the version number of the script
 - `-i`, `--interactive`: Runs the script in interactive mode, providing extra context and guidance along the way
 
-It is recommended that you run a given script in _interactive_ mode for the first time by passing the `-i` or
-`--interactive` command line argument. In the example below, the script is executed interactively and already 
-provides the GitHub repository where the project to validate can be found.
+It is recommended that you run a given script in _interactive_ mode for the first time. In the example below, 
+the script is executed interactively and already provides the GitHub repository where the project to validate can be found.
 
 ```bash
 ./01-validate-incremental-building.sh -i -r https://github.com/etiennestuder/java-ordered-properties
