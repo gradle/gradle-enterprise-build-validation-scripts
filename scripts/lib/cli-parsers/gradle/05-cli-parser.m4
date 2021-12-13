@@ -20,14 +20,14 @@ function print_help() {
   print_bl
   print_script_usage
   print_option_usage -i
+  print_option_usage "-1, --first-build-ci" "Specifies the URL for the build scan of the first build run by a CI agent."
+  print_option_usage -m
   print_option_usage -r
   print_option_usage -b
   print_option_usage -c
   print_option_usage -p
   print_option_usage -t
   print_option_usage -a
-  print_option_usage "-1, --first-build-ci" "Specifies the URL for the build scan of the first build run by a CI agent."
-  print_option_usage -m
   print_option_usage "-u, --remote-build-cache-url" "Specifies the URL for the remote build cache to access in the second build run locally."
   print_option_usage -s
   print_option_usage -e
