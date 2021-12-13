@@ -101,6 +101,10 @@ wizard_execute() {
   explain_collect_maven_details
   print_bl
   collect_maven_details
+
+  print_bl
+  explain_remote_build_cache_url
+  print_bl
   collect_remote_build_cache_url
 
   print_bl
@@ -268,7 +272,7 @@ explain_prerequisites_ccud_maven_plugin() {
   local text
   IFS='' read -r -d '' text <<EOF
 $(print_separator)
-${HEADER_COLOR}Configure build with Common Custom User Data Maven extension${RESTORE}
+${HEADER_COLOR}Preparation I. - Configure build with Common Custom User Data Maven extension${RESTORE}
 
 To get the most out of this experiment and also when building with Gradle
 Enterprise during daily development, it is advisable that you apply the Common
@@ -306,7 +310,7 @@ explain_prerequisites_remote_build_cache_config() {
   local text
   IFS='' read -r -d '' text <<EOF
 $(print_separator)
-${HEADER_COLOR}Configure build for remote build caching${RESTORE}
+${HEADER_COLOR}Preparation II. - Configure build for remote build caching${RESTORE}
 
 You must first configure your build for remote build caching. An extract of a
 typical build configuration is described below.
@@ -347,7 +351,7 @@ explain_prerequisites_empty_remote_build_cache() {
   local text
   IFS='' read -r -d '' text <<EOF
 $(print_separator)
-${HEADER_COLOR}Purge remote build cache${RESTORE}
+${HEADER_COLOR}Preparation III. - Purge remote build cache${RESTORE}
 
 It is important to use an empty remote build cache and to avoid that other
 builds write to the same remote build cache while this experiment is running.
@@ -373,10 +377,11 @@ will be used. You need to push the changes to the path of the remote build cache
 URL every time before you run the experiment.
 
 If you choose option b) and do not want to interfere with an already existing
-build caching configuration in your build, you can override the local and
-remote build cache configuration via system properties or environment variables
-right when triggering the build on CI. Details on how to provide the overrides are
-available from the documentation of the Gradle Enterprise Maven Extension.
+build caching configuration in your build and you are using the Common Custom
+User Data Maven extension, you can override the local and remote build cache
+configuration via system properties or environment variables right when
+triggering the build on CI. Details on how to provide the overrides are
+available from the documentation of the plugin.
 
 https://docs.gradle.com/enterprise/maven-extension/#configuring_the_remote_cache
 
@@ -418,12 +423,17 @@ ${HEADER_COLOR}Fetch build scan data${RESTORE}
 
 Now that the build on CI has finished successfully, some of the build scan
 data will be fetched from the provided build scan to assist you in your
-investigation. The build scan data will be fetched via the Gradle Enterprise
-Export API. It is not strictly necessary that you have permission to call
-the Export API while doing this experiment, but the following local build
-invocation will already be properly pre-configured and the summary provided at
-the end of the experiment will be more complete if the build scan data is
-accessible.
+investigation.
+
+The build scan data will be fetched via the Gradle Enterprise Export API. It is
+not strictly necessary that you have permission to call the Export API while
+doing this experiment, but the summary provided at the end of the experiment
+will be more comprehensive if the build scan data is accessible. You can check
+your granted permissions by navigating in the browser to the 'My Settings'
+section from the user menu of your Gradle Enterprise UI. Your Gradle Enterprise
+access key must be specified in the ~/.m2/.gradle-enterprise/keys.properties file.
+
+https://docs.gradle.com/enterprise/gradle-plugin/#via_file
 
 Some of the fetched build scan data is expected to be present as custom values.
 By default, this experiment assumes that these custom values have been created
@@ -443,9 +453,10 @@ explain_collect_git_details() {
 $(print_separator)
 ${HEADER_COLOR}Configure local build${RESTORE}
 
-Now that the first build has finished successfully on CI and the build scan data
-has been fetched, the second can be run locally with the same commit id as was
-used by the first build.
+Now that the first build has finished successfully on CI and the build scan
+data has been fetched or at least attempted to be fetched, the second build
+can be run locally with the same commit id, the same Gradle tasks, and the
+same remote build cache as was used by the first build.
 
 The local build will run after a fresh checkout of the given project stored in
 Git. The fresh checkout ensures reproducibility of the experiment across machines
@@ -472,6 +483,15 @@ EOF
   print_wizard_text "${text}"
 }
 
+explain_remote_build_cache_url() {
+  local text
+  IFS='' read -r -d '' text <<EOF
+The local build will connect to the given remote build cache. The remote build
+cache to use should be the same as the one used by the previous CI build.
+EOF
+  print_wizard_text "${text}"
+}
+
 collect_remote_build_cache_url() {
   local default_remote_cache="<project default>"
   prompt_for_setting "What is the remote build cache url to use?" "${remote_build_cache_url}" "${default_remote_cache}" remote_build_cache_url
@@ -488,9 +508,8 @@ explain_clone_project() {
 $(print_separator)
 ${HEADER_COLOR}Check out project from Git for local build${RESTORE}
 
-All configuration to run the local build has been collected. In the next
-step of the experiment, the Git repository that contains the project to
-validate will be checked out.
+All configuration to run the local build has been collected. The Git repository
+that contains the project to validate will be checked out.
 
 ${USER_ACTION_COLOR}Press <Enter> to check out the project from Git.${RESTORE}
 EOF
@@ -519,9 +538,9 @@ explain_measure_build_results() {
 $(print_separator)
 ${HEADER_COLOR}Measure build results${RESTORE}
 
-Now that the local build has finished successfully, you are ready to measure in
-Gradle Enterprise how well your build leverages Gradle’s remote build cache for
-the invoked set of Maven goals.
+At this point, you are ready to measure in Gradle Enterprise how well your
+build leverages Gradle Enterprise's remote build cache for the set of Gradle tasks invoked
+from a CI agent and then on a local machine.
 
 ${USER_ACTION_COLOR}Press <Enter> to measure the build results.${RESTORE}
 EOF
