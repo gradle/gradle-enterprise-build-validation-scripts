@@ -37,6 +37,7 @@ invoke_gradle() {
 
   rm -f "${EXP_DIR}/build-scan-publish-error.txt"
 
+  debug "Current directory: $(pwd)"
   debug ./gradlew "${args[@]}"
 
   if ./gradlew "${args[@]}"; then

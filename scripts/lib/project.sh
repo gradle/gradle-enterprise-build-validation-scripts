@@ -9,12 +9,15 @@ copy_project_dir() {
    if [ -z "${quietly}" ]; then
      info "Copying ${project_name}"
    fi
+   debug "Copying ${project_name} from ${original_repo} to ${copy_dest} "
 
    rm -rf "${EXP_DIR:?}/${copy_dest:?}"
    num_files=$(cp -R -v "${EXP_DIR:?}/${original_repo:?}" "${EXP_DIR:?}/${copy_dest:?}" | wc -l)
 
    if [ -z "${quietly}" ]; then
-     printf "Copied %'d files.\n" "${num_files}"
+     info "Copied ${num_files} files."
+   else
+     debug "Copied ${num_files} files."
    fi
 }
 

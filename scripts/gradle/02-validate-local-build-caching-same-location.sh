@@ -55,8 +55,10 @@ execute() {
 
   print_bl
   execute_first_build
+  copy_project_dir "build_${project_name}" "first-build_${project_name}" quietly
   print_bl
   execute_second_build
+  rename_project_dir "build_${project_name}" "second-build_${project_name}"
 
   print_bl
   print_summary
@@ -88,11 +90,13 @@ wizard_execute() {
   explain_first_build
   print_bl
   execute_first_build
+  copy_project_dir "build_${project_name}" "first-build_${project_name}" quietly
 
   print_bl
   explain_second_build
   print_bl
   execute_second_build
+  rename_project_dir "build_${project_name}" "second-build_${project_name}"
 
   print_bl
   explain_measure_build_results
