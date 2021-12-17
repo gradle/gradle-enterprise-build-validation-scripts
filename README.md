@@ -47,8 +47,8 @@ specific to a given script. The following arguments are present on all scripts:
 - `-v`, `--version`: Shows the version number of the script
 - `-i`, `--interactive`: Runs the script in interactive mode, providing extra context and guidance along the way
 
-It is recommended that you run a given script in _interactive_ mode for the first time. In the example below,
-the script is executed interactively.
+It is recommended that you run a given script in _interactive_ mode for the first time to make yourself familiar
+with the flow of the experiment. In the example below, the script is executed interactively.
 
 ```bash
 ./01-validate-incremental-building.sh -i
@@ -61,7 +61,7 @@ the script is run autonomously with the provided configuration options.
 ./01-validate-incremental-building.sh -r https://github.com/etiennestuder/java-ordered-properties -b master -t build
 ```
 
-You can also combine the _interactive_ mode with some configuration options passed upfront, as shown
+You can also combine the _interactive_ mode with some configuration options already provided upfront, as shown
 in the example below.
 
 ```bash
@@ -83,7 +83,7 @@ to ge.example.io regardless of what server is configured in the build.
 
 The scripts that run one or more builds locally can be configured to connect the builds to a given Gradle Enterprise
 instance in case the builds are not already connected to Gradle Enterprise by passing the `-e` or `--enable-gradle-enterprise`
-command line argument. In the example below, the script will configure the non-instrumented build to connect to the
+command line argument. In the example below, the script will configure the non-instrumented builds to connect to the
 Gradle Enterprise server at ge.example.io.
 
 ```bash
