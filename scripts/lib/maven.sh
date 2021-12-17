@@ -56,7 +56,7 @@ invoke_maven() {
   args+=("$@")
 
   debug "Current directory: $(pwd)"
-  debug ${mvn} "${args[@]}"
+  debug "${mvn}" "${args[@]}"
   if ${mvn} "${args[@]}"; then
     build_outcomes+=("SUCCESSFUL")
   else
