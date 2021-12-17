@@ -1,6 +1,14 @@
-## Gradle Enterprise - Build Validation Scripts
+## Build Validation Scripts
 
-Intro on what this is about.
+### Overview
+
+The purpose of the _Build Validation Scripts_ is to assist you in validating that your build is in an optimal state in terms of maximizing work avoidance. The validation scripts do not actually modify your build, but they surface what can be improved in your build to avoid unnecessary work in several scenarios.
+
+Each script represents a so-called _experiment_. Each experiment has a very specific focus of what it validates in your build. The experiments are organized in a logical sequence that should be followed diligently to achieve incremental build improvements in an efficient manner. The experiments can be run on a fully unoptimized build, and they can also be run on a build that had already been optimized in the past in order to surface potential regressions.
+
+There are currently five experiments for Gradle and four experiments for Maven. You could also perform these experiments fully manually, but relying on the automation of the validation scripts will be less error-prone, reproducible, and faster.
+
+> Gradle Enterprise and its Build Scan:tm: service are instrumental to running these validation scripts. You can learn more about Gradle Enterprise at https://gradle.com.
 
 ### Gradle
 
@@ -16,7 +24,7 @@ curl -s -L -O https://github.com/gradle/gradle-enterprise-build-config-samples/r
 #### Structure
 
 In the top-level folder, there are five different scripts that you can execute, each one representing
-a discrete step in the build validation process:
+a specific experiment of the build validation process:
 
 - 01-validate-incremental-building.sh
 - 02-validate-local-build-caching-same-location.sh
@@ -25,9 +33,9 @@ a discrete step in the build validation process:
 - 05-validate-remote-build-caching-ci-local.sh
 
 <details>
-  <summary>Click to see more details on the purpose of each script in the table below.</summary>
+  <summary>Click to see more details about the experiment that each script represents.</summary>
 
-| Script | Purpose |
+| Script | Experiment |
 | :----- | :------ |
 | 01-validate-incremental-building.sh | Validates that a Gradle build is optimized for incremental building, implicitly invoked from the same location. |
 | 02-validate-local-build-caching-same-location.sh | Validates that a Gradle build is optimized for local build caching when invoked from the same location. |
@@ -48,21 +56,21 @@ specific to a given script. The following arguments are present on all scripts:
 - `-i`, `--interactive`: Runs the script in interactive mode, providing extra context and guidance along the way
 
 It is recommended that you run a given script in _interactive_ mode for the first time to make yourself familiar
-with the flow of the experiment. In the example below, the script is executed interactively.
+with the flow of that experiment. In the example below, the script is executed interactively.
 
 ```bash
 ./01-validate-incremental-building.sh -i
 ```
 
-Once you are familiar with a given script, you can run it in _non-interactive_ mode. In the example below,
+Once you are familiar with a given experiment, you can run the script in _non-interactive_ mode. In the example below,
 the script is run autonomously with the provided configuration options.
 
 ```bash
 ./01-validate-incremental-building.sh -r https://github.com/etiennestuder/java-ordered-properties -b master -t build
 ```
 
-You can also combine the _interactive_ mode with some configuration options already provided upfront, as shown
-in the example below.
+You can also combine the _interactive_ mode with some configuration options already provided at the time the script
+is invoked, as shown in the example below.
 
 ```bash
 ./01-validate-incremental-building.sh -i -r https://github.com/etiennestuder/java-ordered-properties
@@ -89,3 +97,15 @@ Gradle Enterprise server at ge.example.io.
 ```bash
 ./01-validate-incremental-building.sh -i -e -s https://ge.example.io
 ```
+
+#### Analyzing the results
+
+Once a script has finished running its experiment, a summary of what was run and what the outcome was is printed on
+the console. The outcome is primarily a set of links pointing to build scans that were captured as part of running the
+builds of the experiment. Some links also point to build scan comparison. The links have been carefully crafted such that
+they bring you right to where it is revealed how well your build avoids unnecessary work.
+
+The summary looks typically like in the screenshot below.
+
+![image](https://user-images.githubusercontent.com/231070/146584894-cd51becc-7052-4067-aefa-7aff4c61d728.png)
+
