@@ -58,7 +58,7 @@ execute() {
 
   print_bl
   make_experiment_dir
-  git_checkout_project ""
+  git_checkout_project "build_${project_name}"
   print_bl
   execute_build
 
@@ -112,7 +112,7 @@ wizard_execute() {
   explain_clone_project
   print_bl
   make_experiment_dir
-  git_checkout_project ""
+  git_checkout_project "build_${project_name}"
 
   print_bl
   explain_build
