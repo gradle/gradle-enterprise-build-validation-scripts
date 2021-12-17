@@ -29,17 +29,6 @@ git_clone_project() {
    cd "${clone_dir}" || die "Unable to access git repository directory ${clone_dir}." 2
 }
 
-git_copy_project() {
-   local original_repo copy_dest num_files
-   original_repo="$1"
-   copy_dest="$2"
-   info "Copying ${project_name}"
-
-   rm -rf "${EXP_DIR:?}/${copy_dest:?}"
-   num_files=$(cp -R -v "${EXP_DIR:?}/${original_repo:?}" "${EXP_DIR:?}/${copy_dest:?}" | wc -l)
-   printf "Copied %'d files.\n" "${num_files}"
-}
-
 git_get_branch() {
   git symbolic-ref -q --short HEAD || echo "detached HEAD"
 }

@@ -32,3 +32,6 @@ source "${LIB_DIR}/help.sh" || { echo "Couldn't find '${LIB_DIR}/help.sh'"; exit
 
 # shellcheck source=lib/paths.sh
 source "${LIB_DIR}/paths.sh" || { echo "Couldn't find '${LIB_DIR}/paths.sh'"; exit 1; }
+
+# shellcheck source=lib/project.sh
+source "${LIB_DIR}/project.sh" || { echo "Couldn't find '${LIB_DIR}/project.sh'"; exit 1; }
