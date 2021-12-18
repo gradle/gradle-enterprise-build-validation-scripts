@@ -163,7 +163,7 @@ Once you are familiar with a given experiment, you can run the script in _non-in
 the script is run autonomously with the provided configuration options.
 
 ```bash
-./01-validate-local-build-caching-same-location.sh -r https://github.com/gradle/maven-build-scan-quickstart -b master -t build
+./01-validate-local-build-caching-same-location.sh -r https://github.com/gradle/maven-build-scan-quickstart -b master -g install
 ```
 
 You can also combine the _interactive_ mode with some configuration options already provided at the time the script
