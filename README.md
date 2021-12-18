@@ -59,21 +59,21 @@ It is recommended that you run a given script in _interactive_ mode for the firs
 with the flow of that experiment. In the example below, the script is executed interactively.
 
 ```bash
-./01-validate-incremental-building.sh -i
+./02-validate-local-build-caching-same-location.sh -i
 ```
 
 Once you are familiar with a given experiment, you can run the script in _non-interactive_ mode. In the example below,
 the script is run autonomously with the provided configuration options.
 
 ```bash
-./01-validate-incremental-building.sh -r https://github.com/gradle/gradle-build-scan-quickstart -t build
+./02-validate-local-build-caching-same-location.sh -r https://github.com/gradle/gradle-build-scan-quickstart -t build
 ```
 
 You can also combine the _interactive_ mode with some configuration options already provided at the time the script
 is invoked, as shown in the example below.
 
 ```bash
-./01-validate-incremental-building.sh -i -r https://github.com/gradle/gradle-build-scan-quickstart
+./02-validate-local-build-caching-same-location.sh -i -r https://github.com/gradle/gradle-build-scan-quickstart
 ```
 
 #### Redirecting build scan publishing
@@ -84,7 +84,7 @@ command line argument. In the example below, the script will configure the local
 to ge.example.io regardless of what server is configured in the build.
 
 ```bash
-./01-validate-incremental-building.sh -i -s https://ge.example.io
+./02-validate-local-build-caching-same-location.sh -i -s https://ge.example.io
 ```
 
 #### Instrumenting the build with Gradle Enterprise
@@ -95,7 +95,7 @@ command line argument. In the example below, the script will configure the non-i
 Gradle Enterprise server at ge.example.io.
 
 ```bash
-./01-validate-incremental-building.sh -i -e -s https://ge.example.io
+./02-validate-local-build-caching-same-location.sh -i -e -s https://ge.example.io
 ```
 
 #### Analyzing the results
