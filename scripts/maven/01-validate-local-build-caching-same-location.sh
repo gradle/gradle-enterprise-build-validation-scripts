@@ -56,6 +56,7 @@ execute() {
   print_bl
   execute_first_build
   copy_project_dir "build_${project_name}" "first-build_${project_name}" quietly
+
   print_bl
   execute_second_build
   rename_project_dir "build_${project_name}" "second-build_${project_name}"
@@ -84,7 +85,7 @@ wizard_execute() {
   print_bl
   make_experiment_dir
   make_local_cache_dir
-  git_checkout_project ""
+  git_checkout_project "build_${project_name}"
 
   print_bl
   explain_first_build
