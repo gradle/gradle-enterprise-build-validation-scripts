@@ -76,6 +76,14 @@ is invoked, as shown in the example below.
 ./02-validate-local-build-caching-same-location.sh -i -r https://github.com/gradle/gradle-build-scan-quickstart
 ```
 
+#### Authenticating with Gradle Enterprise
+
+Some scripts fetch data from build scans that were published as part of running an experiment. The build scan data is fetched by leveraging the [Gradle Enterprise Export API](https://docs.gradle.com/enterprise/export-api/). It is not strictly necessary that you have permission to call the Export API to execute a script successfully, but the summary provided once the script has finished running its experiment will be more comprehensive if the build scan data is accessible.
+
+You can check your granted permissions by navigating in the browser to the 'My Settings' section from the user menu of your Gradle Enterprise UI. You need the 'Access build data via the Export API' permission. Additionally, the script needs an access key to authenticate with the Gradle Enterprise Export API. See [Authenticating with Gradle Enterprise](https://docs.gradle.com/enterprise/gradle-plugin/#authenticating_with_gradle_enterprise) for details on how to create an access key and storing it locally.
+
+By default, the scripts fetching build scan data try to find the access key in the `enterprise/keys.properties` file within the Gradle user home directory (`~/.gradle` by default). Alternatively, the access key can be specified via the `GRADLE_ENTERPRISE_ACCESS_KEY` environment variable. You can also authenticate with the Export API using username and password instead by setting the `GRADLE_ENTERPRISE_USERNAME` and `GRADLE_ENTERPRISE_PASSWORD` environment variables.
+
 #### Redirecting build scan publishing
 
 The scripts that run one or more builds locally can be configured to publish build scans to a different
