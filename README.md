@@ -107,7 +107,7 @@ they bring you right to where it is revealed how well your build avoids unnecess
 
 The summary looks typically like in the screenshot below.
 
-![image](https://user-images.githubusercontent.com/231070/146644209-9ed86916-d890-4f15-93fd-fb3fee0fdff5.png)
+![image](https://user-images.githubusercontent.com/231070/146644509-7b071436-3d04-46ee-a327-ea16ecfe9c76.png)
 
 ### Maven
 
