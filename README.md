@@ -84,6 +84,10 @@ You can check your granted permissions by navigating in the browser to the 'My S
 
 By default, the scripts fetching build scan data try to find the access key in the `enterprise/keys.properties` file within the Gradle user home directory (`~/.gradle` by default). Alternatively, the access key can be specified via the `GRADLE_ENTERPRISE_ACCESS_KEY` environment variable. You can also authenticate with the Export API using username and password instead by setting the `GRADLE_ENTERPRISE_USERNAME` and `GRADLE_ENTERPRISE_PASSWORD` environment variables.
 
+#### Configuring custom value lookup names
+
+The scripts that fetch build scan data expect some of it to be present as custom values (Git repository, branch name, and commit id). By default, the scripts assume that these custom values have been created by the [Common Custom User Data Gradle plugin](https://plugins.gradle.org/plugin/com.gradle.common-custom-user-data-gradle-plugin). If you are not using that plugin but your build still captures the same data under different custom value names, you can provide a mapping file so that the required data can be extracted from your build scans. An example mapping file named mapping.example can be found at the same location as where the scripts are located.
+
 #### Redirecting build scan publishing
 
 The scripts that run one or more builds locally can be configured to publish build scans to a different
@@ -188,6 +192,10 @@ Some scripts fetch data from build scans that were published as part of running 
 You can check your granted permissions by navigating in the browser to the 'My Settings' section from the user menu of your Gradle Enterprise UI. You need the 'Access build data via the Export API' permission. Additionally, the script needs an access key to authenticate with the Gradle Enterprise Export API. See [Authenticating with Gradle Enterprise](https://docs.gradle.com/enterprise/maven-extension/#authenticating_with_gradle_enterprise) for details on how to create an access key and storing it locally.
 
 By default, the scripts fetching build scan data try to find the access key in the `gradle-enterprise/keys.properties` file within the Maven user home directory (~/.m2 by default). Alternatively, the access key can be specified via the `GRADLE_ENTERPRISE_ACCESS_KEY` environment variable. You can also authenticate with the Export API using username and password instead by setting the `GRADLE_ENTERPRISE_USERNAME` and `GRADLE_ENTERPRISE_PASSWORD` environment variables.
+
+#### Configuring custom value lookup names
+
+The scripts that fetch build scan data expect some of it to be present as custom values (Git repository, branch name, and commit id). By default, the scripts assume that these custom values have been created by the [Common Custom User Data Maven extension](https://search.maven.org/artifact/com.gradle/common-custom-user-data-maven-extension). If you are not using that extension but your build still captures the same data under different custom value names, you can provide a mapping file so that the required data can be extracted from your build scans. An example mapping file named mapping.example can be found at the same location as where the scripts are located.
 
 #### Redirecting build scan publishing
 
