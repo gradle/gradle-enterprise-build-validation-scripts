@@ -71,6 +71,7 @@ tasks.register<Copy>("copyGradleScripts") {
     dependsOn(gradle.includedBuild("fetch-build-validation-data").task(":shadowJar"))
     dependsOn("generateBashCliParsers")
 
+    from(layout.projectDirectory.dir("README.md"))
     from(layout.projectDirectory.dir("../LICENSE"))
     from(layout.projectDirectory.dir("../scripts/gradle")) {
         exclude(".data/")
@@ -98,6 +99,7 @@ tasks.register<Copy>("copyMavenScripts") {
     dependsOn(gradle.includedBuild("fetch-build-validation-data").task(":shadowJar"))
     dependsOn("generateBashCliParsers")
 
+    from(layout.projectDirectory.dir("README.md"))
     from(layout.projectDirectory.dir("../LICENSE"))
     from(layout.projectDirectory.dir("../scripts/maven")) {
         exclude(".data/")
