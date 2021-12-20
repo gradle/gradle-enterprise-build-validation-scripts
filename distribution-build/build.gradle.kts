@@ -71,6 +71,7 @@ tasks.register<Copy>("copyGradleScripts") {
     dependsOn(gradle.includedBuild("fetch-build-validation-data").task(":shadowJar"))
     dependsOn("generateBashCliParsers")
 
+    from(layout.projectDirectory.dir("../LICENSE"))
     from(layout.projectDirectory.dir("../scripts/gradle")) {
         exclude(".data/")
         filter { line: String -> line.replace("/../lib", "/lib").replace("<HEAD>","${project.version}") }
@@ -97,6 +98,7 @@ tasks.register<Copy>("copyMavenScripts") {
     dependsOn(gradle.includedBuild("fetch-build-validation-data").task(":shadowJar"))
     dependsOn("generateBashCliParsers")
 
+    from(layout.projectDirectory.dir("../LICENSE"))
     from(layout.projectDirectory.dir("../scripts/maven")) {
         exclude(".data/")
         filter { line: String -> line.replace("/../lib", "/lib").replace("<HEAD>","${project.version}") }
