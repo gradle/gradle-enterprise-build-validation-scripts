@@ -231,12 +231,12 @@ An extract of a typical build configuration is described below.
     <extension>
         <groupId>com.gradle</groupId>
         <artifactId>gradle-enterprise-maven-extension</artifactId>
-        <version>1.12</version>
+        <version>{latest version}</version>
     </extension>
     <extension>
         <groupId>com.gradle</groupId>
         <artifactId>common-custom-user-data-maven-extension</artifactId>
-        <version>1.9</version>
+        <version>{latest version}</version>
     </extension>
 </extensions>
 
