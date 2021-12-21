@@ -290,7 +290,7 @@ An extract of a typical build configuration is described below.
     <extension>
         <groupId>com.gradle</groupId>
         <artifactId>gradle-enterprise-maven-extension</artifactId>
-        <version>1.11.1</version>
+        <version>1.12</version>
     </extension>
     <extension>
         <groupId>com.gradle</groupId>

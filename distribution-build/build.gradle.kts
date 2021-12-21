@@ -17,7 +17,7 @@ val mavenComponents by configurations.creating
 
 dependencies {
     mavenComponents("com.gradle:capture-published-build-scan-maven-extension:1.0.0-SNAPSHOT")
-    mavenComponents("com.gradle:gradle-enterprise-maven-extension:1.11.1")
+    mavenComponents("com.gradle:gradle-enterprise-maven-extension:1.12")
     mavenComponents("com.gradle:common-custom-user-data-maven-extension:1.9")
 }
 
