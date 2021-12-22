@@ -230,7 +230,7 @@ The summary looks typically like in the screenshot below.
 
 ![image](https://user-images.githubusercontent.com/231070/146644224-698f6dbe-fa1c-4632-8051-0e512226f577.png)
 
-## License
+### License
 
 The Gradle Enterprise build validation scripts are Open-source software released under the [Apache 2.0 License][apache-license].
 
