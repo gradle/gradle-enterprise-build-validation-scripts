@@ -18,7 +18,7 @@ On macOS and Linux, use the following command to download and unpack the build v
 for Gradle to the current directory:
 
 ```bash
-curl -s -L -O https://github.com/gradle/gradle-enterprise-build-config-samples/releases/download/build-validation-development-latest/gradle-enterprise-gradle-build-validation.zip && unzip -q -o gradle-enterprise-gradle-build-validation.zip
+curl -s -L -O https://github.com/gradle/gradle-enterprise-build-validation-scripts/releases/download/development-latest/gradle-enterprise-gradle-build-validation.zip && unzip -q -o gradle-enterprise-gradle-build-validation.zip
 ```
 
 #### Structure
@@ -129,7 +129,7 @@ On macOS and Linux, use the following command to download and unpack the build v
 for Maven to the current directory:
 
 ```bash
-curl -s -L -O https://github.com/gradle/gradle-enterprise-build-config-samples/releases/download/build-validation-development-latest/gradle-enterprise-maven-build-validation.zip && unzip -q -o gradle-enterprise-maven-build-validation.zip
+curl -s -L -O https://github.com/gradle/gradle-enterprise-build-validation-scripts/releases/download/development-latest/gradle-enterprise-maven-build-validation.zip && unzip -q -o gradle-enterprise-maven-build-validation.zip
 ```
 
 #### Structure
