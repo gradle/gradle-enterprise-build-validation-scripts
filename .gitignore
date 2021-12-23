@@ -1,8 +1,7 @@
-.data
-data
-*.config
-# Ignore Gradle project-specific cache directory
-.gradle
-
-# Ignore Gradle build output directory
-build
+.idea/
+.gradle/
+.tmp/
+out/
+build/
+target/
+*.DS_Store
