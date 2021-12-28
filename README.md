@@ -44,7 +44,7 @@ a specific experiment of the build validation process:
 | 05-validate-remote-build-caching-ci-local.sh | Validates that a Gradle build is optimized for remote build caching when invoked on CI agent and local machine. |
 </details>
 
-All intermediate and final output produced while running a given script is stored under ./.data/<script_name>/&lt;timestamp>-<run_id>.
+All intermediate and final output produced while running a given script is stored under .data/<script_name>/&lt;timestamp>-<run_id>.
 
 #### Invocation
 
@@ -123,7 +123,7 @@ The summary looks typically like in the screenshot below.
 
 #### Investigating file resources on the local file system
 
-For the scripts that run one or more builds locally, the file resources that are used and procuded by the builds can be investigated on the local file system. This is helpful when trying to understand cache misses due to changes in file inputs of the executed tasks.
+For the scripts that run one or more builds locally, the file resources that are used and procuded by the builds can be investigated on the local file system. This is helpful when trying to understand cache misses due to changes in file inputs of the executed tasks. All intermediate and final output produced while running a given script is stored under .data/<script_name>/<timestamp>-<run_id>.
 
 Note that even when a script needs to run two builds from the same physical location, the individual builds are always preserved in separate folders, allowing to compare the same files from the two builds with each other.
 
@@ -163,7 +163,7 @@ a specific experiment of the build validation process:
 | 04-validate-remote-build-caching-ci-local.sh           | Validates that a Maven build is optimized for remote build caching when invoked on CI agent and local machine. |
 </details>
 
-All intermediate and final output produced while running a given script is stored under ./.data/<script_name>/&lt;timestamp>-<run_id>.
+All intermediate and final output produced while running a given script is stored under .data/<script_name>/&lt;timestamp>-<run_id>.
 
 #### Invocation
 
@@ -242,7 +242,7 @@ The summary looks typically like in the screenshot below.
 
 #### Investigating file resources on the local file system
 
-For the scripts that run one or more builds locally, the file resources that are used and procuded by the builds can be investigated on the local file system. This is helpful when trying to understand cache misses due to changes in file inputs of the executed goals.
+For the scripts that run one or more builds locally, the file resources that are used and procuded by the builds can be investigated on the local file system. This is helpful when trying to understand cache misses due to changes in file inputs of the executed goals. All intermediate and final output produced while running a given script is stored under .data/<script_name>/<timestamp>-<run_id>.
 
 Note that even when a script needs to run two builds from the same physical location, the individual builds are always preserved in separate folders, allowing to compare the same files from the two builds with each other.
 
