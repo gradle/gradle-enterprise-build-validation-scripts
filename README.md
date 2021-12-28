@@ -248,7 +248,7 @@ Note that even when a script needs to run two builds from the same physical loca
 
 The folder hierarchy produced by the scripts under the .data folder looks typically like in the screenshot below. 
 
-![image](https://user-images.githubusercontent.com/231070/147548879-27a77148-bf24-4f9a-902e-460ce2f0c39d.png)
+![image](https://user-images.githubusercontent.com/231070/147553179-a6def855-8813-41c2-a8d5-071cbd0150bc.png)
 
 ### License
 
