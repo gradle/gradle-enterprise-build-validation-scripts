@@ -121,6 +121,15 @@ The summary looks typically like in the screenshot below.
 
 ![image](https://user-images.githubusercontent.com/231070/146644509-7b071436-3d04-46ee-a327-ea16ecfe9c76.png)
 
+#### Investigating file resources on the local file system
+
+For the scripts that run one or more builds locally, the file resources that are used and procuded by the builds can be investigated on the
+local file system. This is helpful when trying to understand cache misses due to changes in file inputs of the eecuted tasks.
+
+The folder hierarchy produced by the scripts looks typically like in the screenshot below.
+
+![image](https://user-images.githubusercontent.com/231070/147548879-27a77148-bf24-4f9a-902e-460ce2f0c39d.png)
+
 ### Maven
 
 #### Installation
