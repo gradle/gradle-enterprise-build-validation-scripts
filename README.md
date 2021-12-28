@@ -123,10 +123,9 @@ The summary looks typically like in the screenshot below.
 
 #### Investigating file resources on the local file system
 
-For the scripts that run one or more builds locally, the file resources that are used and procuded by the builds can be investigated on the
-local file system. This is helpful when trying to understand cache misses due to changes in file inputs of the executed tasks.
+For the scripts that run one or more builds locally, the file resources that are used and procuded by the builds can be investigated on the local file system. This is helpful when trying to understand cache misses due to changes in file inputs of the executed tasks.
 
-Note that even when a script needs to run two builds from the same physical location, the individual builds are always preserved in separate folders. This makes it easy to compare with each other the same files from the two builds.
+Note that even when a script needs to run two builds from the same physical location, the individual builds are always preserved in separate folders, allowing to compare the same files from the two builds with each other.
 
 The folder hierarchy produced by the scripts under the .data folder looks typically like in the screenshot below. 
 
@@ -240,6 +239,16 @@ they bring you right to where it is revealed how well your build avoids unnecess
 The summary looks typically like in the screenshot below.
 
 ![image](https://user-images.githubusercontent.com/231070/146644224-698f6dbe-fa1c-4632-8051-0e512226f577.png)
+
+#### Investigating file resources on the local file system
+
+For the scripts that run one or more builds locally, the file resources that are used and procuded by the builds can be investigated on the local file system. This is helpful when trying to understand cache misses due to changes in file inputs of the executed goals.
+
+Note that even when a script needs to run two builds from the same physical location, the individual builds are always preserved in separate folders, allowing to compare the same files from the two builds with each other.
+
+The folder hierarchy produced by the scripts under the .data folder looks typically like in the screenshot below. 
+
+![image](https://user-images.githubusercontent.com/231070/147548879-27a77148-bf24-4f9a-902e-460ce2f0c39d.png)
 
 ### License
 
