@@ -133,12 +133,9 @@ The folder hierarchy produced by the scripts under the .data folder looks typica
 
 #### Using a local Git repository to accelerate the validation process
 
-For the scripts that run one or more builds locally, the scripts can be pointed at a local clone of the Git repository that contains the build. Even though the scripts always
-perform a shallow clone of the investigated Git repository to improve performance and to save disk space, it may still be expensive to repeatedly clone the Git repository
-over the network while going through cycles of validating and optimizing the build.
+For the scripts that run one or more builds locally, the scripts can be pointed at a local checkout of the Git repository that contains the build. Even though the scripts always perform a shallow clone of the investigated Git repository to improve performance and to save disk space, it may still be expensive to repeatedly clone the Git repository over the network while going through cycles of validating and optimizing the build.
 
-In the example below, the Git repository is first checked out to a location on the local disc. The script is then invoked and instructed to clone the local copy instead of the
-remote repository, avoiding any network overhead.
+In the example below, the Git repository is first checked out to a location on the local disc. The script is then invoked and instructed to clone the local copy instead of the remote repository, avoiding any network overhead.
 
 ```bash
 git clone https://github.com/gradle/gradle-build-scan-quickstart $HOME/gradle-build-scan-quickstart
@@ -266,12 +263,9 @@ The folder hierarchy produced by the scripts under the .data folder looks typica
 
 #### Using a local Git repository to accelerate the validation process
 
-For the scripts that run one or more builds locally, the scripts can be pointed at a local clone of the Git repository that contains the build. Even though the scripts always
-perform a shallow clone of the investigated Git repository to improve performance and to save disk space, it may still be expensive to repeatedly clone the Git repository over the
-network while going through cycles of validating and optimizing the build.
+For the scripts that run one or more builds locally, the scripts can be pointed at a local checkout of the Git repository that contains the build. Even though the scripts always perform a shallow clone of the investigated Git repository to improve performance and to save disk space, it may still be expensive to repeatedly clone the Git repository over the network while going through cycles of validating and optimizing the build.
 
-In the example below, the Git repository is first checked out to a location on the local disc. The script is then invoked and instructed to clone the local copy instead of the
-remote repository, avoiding any network overhead.
+In the example below, the Git repository is first checked out to a location on the local disc. The script is then invoked and instructed to clone the local copy instead of the remote repository, avoiding any network overhead.
 
 ```bash
 git clone https://github.com/gradle/maven-build-scan-quickstart $HOME/maven-build-scan-quickstart
