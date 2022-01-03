@@ -74,6 +74,9 @@ wizard_execute() {
   explain_prerequisites_empty_remote_build_cache
 
   print_bl
+  explain_prerequisites_api_access
+
+  print_bl
   explain_first_build
   print_bl
   collect_first_build_scan
@@ -322,6 +325,28 @@ EOF
   wait_for_enter
 }
 
+explain_prerequisites_api_access() {
+  local text
+  IFS='' read -r -d '' text <<EOF
+$(print_separator)
+${HEADER_COLOR}Preparation IV. - Ensure Gradle Enterprise API access${RESTORE}
+
+Some build scan data will be fetched from the invoked builds via the Gradle
+Enterprise API. It is not strictly necessary that you have permission to
+call the Gradle Enterprise API while doing this experiment, but the summary
+provided at the end of the experiment will be more comprehensive if the build
+scan data is accessible. Details on how to check your access permissions and
+how to provide the necessary API credentials when running the experiment are
+available from the documentation of the build validation scripts.
+
+https://github.com/gradle/gradle-enterprise-build-validation-scripts/blob/main/README.md#authenticating-with-gradle-enterprise
+
+${USER_ACTION_COLOR}Press <Enter> once you have (optionally) adjusted your access permissions and configured the API credentials on your machine.${RESTORE}
+EOF
+  print_wizard_text "${text}"
+  wait_for_enter
+}
+
 explain_first_build() {
   local text
   IFS='' read -r -d '' text <<EOF
@@ -381,15 +406,8 @@ Now that the second build has finished successfully, some of the build scan
 data will be fetched from the two provided build scans to assist you in your
 investigation.
 
-The build scan data will be fetched via the Gradle Enterprise Export API. It is
-not strictly necessary that you have permission to call the Export API while
-doing this experiment, but the summary provided at the end of the experiment
-will be more comprehensive if the build scan data is accessible. You can check
-your granted permissions by navigating in the browser to the 'My Settings'
-section from the user menu of your Gradle Enterprise UI. Your Gradle Enterprise
-access key must be specified in the ~/.gradle/enterprise/keys.properties file.
-
-https://docs.gradle.com/enterprise/gradle-plugin/#via_file
+The build scan data will be fetched via the Gradle Enterprise API, as explained
+earlier in the preparations section of this experiment.
 
 Some of the fetched build scan data is expected to be present as custom values.
 By default, this experiment assumes that these custom values have been created
