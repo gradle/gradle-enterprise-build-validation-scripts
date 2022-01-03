@@ -131,27 +131,19 @@ The folder hierarchy produced by the scripts under the .data folder looks typica
 
 ![image](https://user-images.githubusercontent.com/231070/147548879-27a77148-bf24-4f9a-902e-460ce2f0c39d.png)
 
-#### Using a local git repository to improve performance
+#### Using a local Git repository to accelerate the validation process
 
-Most of the scripts checkout a copy of the git repository before running one or more builds. 
-Most of the time, the scripts perform a shallow clone of the git repository (to improve performance and to save disk space). However, if your git repository is large, then it may still be expensive to checkout the repository every time you run one of the scripts.
-To improve performance, you can checkout the git repository locally, and then instruct the scripts to clone the local copy instead of the
-remote repository.
+For the scripts that run one or more builds locally, the scripts can be pointed at a local clone of the Git repository that contains the build. Even though the scripts always
+perform a shallow clone of the investigated Git repository to improve performance and to save disk space, it may still be expensive to repeatedly clone the Git repository
+over the network while going through cycles of validating and optimizing the build.
 
-1. Checkout the project to a local directory:
+In the example below, the Git repository is first checked out to a location on the local disc. The script is then invoked and instructed to clone the local copy instead of the
+remote repository, avoiding any network overhead.
 
-   ```bash
-   git clone https://github.com/gradle/gradle-build-scan-quickstart
-   ```
-
-2. When running a build validation script, use the `-r/--git-repository` command line argument to specify the location of the local repository (using a `file://` URL is recommended):
-
-   ```bash
-   ./02-validate-local-build-caching-same-location.sh -i -r file://$HOME/gradle-build-scan-quickstart
-   ```
-
-**NOTE:** When using a local checkout, make sure to use a fresh checkout rather than reusing one that you may already have. 
-Using a fresh checkout will ensure that the scripts use a clean repository that has no local changes (which might skew the results of the experiment).
+```bash
+git clone https://github.com/gradle/gradle-build-scan-quickstart $HOME/gradle-build-scan-quickstart
+./02-validate-local-build-caching-same-location.sh -i -r file://$HOME/gradle-build-scan-quickstart
+```
 
 ### Maven
 
@@ -271,6 +263,20 @@ Note that even when a script needs to run two builds from the same physical loca
 The folder hierarchy produced by the scripts under the .data folder looks typically like in the screenshot below.
 
 ![image](https://user-images.githubusercontent.com/231070/147553179-a6def855-8813-41c2-a8d5-071cbd0150bc.png)
+
+#### Using a local Git repository to accelerate the validation process
+
+For the scripts that run one or more builds locally, the scripts can be pointed at a local clone of the Git repository that contains the build. Even though the scripts always
+perform a shallow clone of the investigated Git repository to improve performance and to save disk space, it may still be expensive to repeatedly clone the Git repository over the
+network while going through cycles of validating and optimizing the build.
+
+In the example below, the Git repository is first checked out to a location on the local disc. The script is then invoked and instructed to clone the local copy instead of the
+remote repository, avoiding any network overhead.
+
+```bash
+git clone https://github.com/gradle/maven-build-scan-quickstart $HOME/maven-build-scan-quickstart
+./01-validate-local-build-caching-same-location.sh -i -r file://$HOME/maven-build-scan-quickstart
+```
 
 ### License
 
