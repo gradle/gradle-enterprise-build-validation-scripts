@@ -51,7 +51,7 @@ main() {
 
 execute() {
   print_bl
-  validate_required_script_arguments
+  validate_required_args
   fetch_build_scan_data
   validate_build_config
 
@@ -132,7 +132,7 @@ process_script_arguments() {
   mapping_file="${_arg_mapping_file}"
 }
 
-validate_required_script_arguments() {
+validate_required_args() {
   if [ -z "${ci_build_scan_url}" ]; then
     _PRINT_HELP=yes die "ERROR: Missing required argument: --first-build-ci" 1
   fi
