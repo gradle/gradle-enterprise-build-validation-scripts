@@ -136,3 +136,9 @@ In the example below, the Git repository is first checked out to a location on t
 git clone https://github.com/gradle/maven-build-scan-quickstart $HOME/maven-build-scan-quickstart
 ./01-validate-local-build-caching-same-location.sh -i -r file://$HOME/maven-build-scan-quickstart
 ```
+
+## License
+
+The Gradle Enterprise build validation scripts for Maven are open-source software released under the [Apache 2.0 License][apache-license].
+
+[apache-license]: https://www.apache.org/licenses/LICENSE-2.0.html
