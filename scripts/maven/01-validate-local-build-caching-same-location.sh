@@ -103,7 +103,6 @@ wizard_execute() {
   explain_measure_build_results
   print_bl
   explain_and_print_summary
-  print_bl
 }
 
 execute_first_build() {
