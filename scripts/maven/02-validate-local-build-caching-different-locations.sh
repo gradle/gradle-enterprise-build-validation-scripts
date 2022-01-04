@@ -223,8 +223,8 @@ ${HEADER_COLOR}Run first build${RESTORE}
 
 Now that the project has been checked out and copied to a different location,
 the first build can be run with the given Maven goals. The build will be
-invoked with the ‘clean’ goal included and local build caching enabled. An empty
-local build cache will be used.
+invoked with the ‘clean’ goal included and local build caching enabled. An
+empty local build cache will be used.
 
 ${USER_ACTION_COLOR}Press <Enter> to run the first build of the experiment.${RESTORE}
 EOF
