@@ -339,7 +339,7 @@ scan data is accessible. Details on how to check your access permissions and
 how to provide the necessary API credentials when running the experiment are
 available from the documentation of the build validation scripts.
 
-https://github.com/gradle/gradle-enterprise-build-validation-scripts/blob/main/README.md#authenticating-with-gradle-enterprise
+https://github.com/gradle/gradle-enterprise-build-validation-scripts/blob/main/Gradle.md#authenticating-with-gradle-enterprise
 
 ${USER_ACTION_COLOR}Press <Enter> once you have (optionally) adjusted your access permissions and configured the API credentials on your machine.${RESTORE}
 EOF
