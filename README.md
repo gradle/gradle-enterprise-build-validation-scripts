@@ -274,7 +274,7 @@ git clone https://github.com/gradle/maven-build-scan-quickstart $HOME/maven-buil
 
 ### License
 
-The Gradle Enterprise build validation scripts are Open-source software released under the [Apache 2.0 License][apache-license].
+The Gradle Enterprise build validation scripts are open-source software released under the [Apache 2.0 License][apache-license].
 
 [apache-license]: https://www.apache.org/licenses/LICENSE-2.0.html
 
