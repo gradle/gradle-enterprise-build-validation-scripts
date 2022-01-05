@@ -16,6 +16,23 @@ You can find detailed instructions on how to use the build validation scripts fo
 
 You can find detailed instructions on how to use the build validation scripts for Maven [here](Maven.md).
 
+## Building from source
+
+To build the scripts from source, run:
+
+```bash
+./gradlew build
+```
+
+The build creates the following zip files, which contain the fully assembled scripts:
+
+```
+build/distributions/gradle-enterprise-gradle-build-validation.zip
+build/distributions/gradle-enterprise-maven-build-validation.zip
+```
+
+> If the build fails with _You need the 'autom4te' utility_, then you will need to install 'autoconf' before you can build the project. On a Mac with Homebrew, you can install autoconf with `brew install autoconf`.
+
 ## License
 
 The Gradle Enterprise build validation scripts are open-source software released under the [Apache 2.0 License][apache-license].
