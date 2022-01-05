@@ -181,24 +181,22 @@ typical build configuration is described below.
 <gradleEnterprise>
   <buildCache>
     <local>
-      <enabled>false</enabled>                         <!-- must be false for this experiment -->
+      <enabled>false</enabled>                                  <!-- must be false for this experiment -->
     </local>
     <remote>
       <server>
-        <url>https://ge.example.com/cache/exp3/</url>  <!-- adjust to your GE hostname, and note the trailing slash -->
-        <allowUntrusted>true</allowUntrusted>          <!-- set to false if a trusted certificate is configured for the GE server -->
+        <url>https://ge.example.com/cache/exp3/</url>           <!-- adjust to your GE hostname, and note the trailing slash -->
+        <allowUntrusted>true</allowUntrusted>                   <!-- set to false if a trusted certificate is configured for the GE server -->
         <credentials>
           <username>\${env.GRADLE_ENTERPRISE_CACHE_USERNAME}</username>
           <password>\${env.GRADLE_ENTERPRISE_CACHE_PASSWORD}</password>
         </credentials>
       </server>
-      <enabled>true</enabled>                          <!-- must be true for this experiment -->
+      <enabled>true</enabled>                                   <!-- must be true for this experiment -->
+      <storeEnabled>#{env['BUILD_URL'] != null}</storeEnabled>  <!-- must be true when the build runs in CI -->
     </remote>
   </buildCache>
 </gradleEnterprise>
-
-On CI, you will also need to pass -Dgradle.cache.remote.storeEnabled=true to the Maven invocation
-so that the CI build populates the remote build cache.
 
 Your updated build configuration needs to be pushed to a separate branch that
 is only used for running the experiments.
@@ -297,11 +295,10 @@ will be used. You need to push the changes to the path of the remote build cache
 URL every time before you run the experiment.
 
 If you choose option b) and do not want to interfere with an already existing
-build caching configuration in your build and you are using the Common Custom
-User Data Maven extension, you can override the local and remote build cache
-configuration via system properties or environment variables right when
-triggering the build on CI. Details on how to provide the overrides are
-available from the documentation of the extension.
+build caching configuration in your build, you can override the local and
+remote build cache configuration via system properties right when triggering
+the build on CI. Details on how to provide the overrides are
+available from the documentation.
 
 https://docs.gradle.com/enterprise/maven-extension/#configuring_the_remote_cache
 
