@@ -270,23 +270,16 @@ Now that the second build has finished successfully, some of the build scan
 data will be fetched from the two provided build scans to assist you in your
 investigation.
 
-The build scan data will be fetched via the Gradle Enterprise Export API. It is
-not strictly necessary that you have permission to call the Export API while
-doing this experiment, but the summary provided at the end of the experiment
-will be more comprehensive if the build scan data is accessible. You can check
-your granted permissions by navigating in the browser to the 'My Settings'
-section from the user menu of your Gradle Enterprise UI. Your Gradle Enterprise
-access key must be specified in the ~/.m2/.gradle-enterprise/keys.properties file.
-
-https://docs.gradle.com/enterprise/gradle-plugin/#via_file
+The build scan data will be fetched via the Gradle Enterprise API, as explained
+earlier in the preparations section of this experiment.
 
 Some of the fetched build scan data is expected to be present as custom values.
 By default, this experiment assumes that these custom values have been created
-by the Common Custom User Data Maven extension. If you are not using that extension
-but your build still captures the same data under different custom value names,
-you can provide a mapping file so that the required data can be extracted from
-your build scans. An example mapping file named 'mapping.example' can be found
-at the same location as the script.
+by the Common Custom User Data Maven extension. If you are not using that
+extension but your build still captures the same data under different custom
+value names, you can provide a mapping file so that the required data can be
+extracted from your build scans. An example mapping file named 'mapping.example'
+can be found at the same location as the script.
 EOF
   print_wizard_text "${text}"
 }

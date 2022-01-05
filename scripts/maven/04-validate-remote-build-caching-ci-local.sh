@@ -220,10 +220,11 @@ print_introduction() {
 $(print_introduction_title)
 
 In this experiment, you will validate how well a given project leverages
-Gradle Enterprise's remote build caching functionality when running the build from
-a CI agent and then on a local machine. A build is considered fully cacheable
-if it can be invoked twice in a row with build caching enabled and, during the
-second invocation, all cacheable goals avoid performing any work because:
+Gradle Enterprise's remote build caching functionality when running the build
+from a CI agent and then on a local machine. A build is considered fully
+cacheable if it can be invoked twice in a row with build caching enabled and,
+during the second invocation, all cacheable goals avoid performing any work
+because:
 
   * The cacheable goals' inputs have not changed since their last invocation and
   * The cacheable goals' outputs are present in the remote build cache and
