@@ -207,8 +207,8 @@ EOF
   wait_for_enter
 }
 
-explain_prerequisites_gradle_empty_remote_build_cache() {
-  local text preparation_step
+explain_prerequisites_empty_remote_build_cache() {
+  local text preparation_step build_tool_instructions
 
   if [ -n "$1" ]; then
     preparation_step="$1 "
@@ -216,33 +216,18 @@ explain_prerequisites_gradle_empty_remote_build_cache() {
     preparation_step=""
   fi
 
-  IFS='' read -r -d '' text <<EOF
-$(print_separator)
-${HEADER_COLOR}Preparation ${preparation_step}- Purge remote build cache${RESTORE}
+  if [[ "${BUILD_TOOL}" == "Maven" ]]; then
+    IFS='' read -r -d '' build_tool_instructions <<EOF
+If you choose option b) and do not want to interfere with an already existing
+build caching configuration in your build, you can override the local and
+remote build cache configuration via system properties right when triggering
+the build on CI. Details on how to provide the overrides are available from
+the documentation of the the Gradle Enterprise Maven extension.
 
-It is important to use an empty remote build cache and to avoid that other
-builds write to the same remote build cache while this experiment is running.
-Ensuring that these preconditions are met will maximize the reproducibility
-and reliability of the experiment. Two different ways to meet these conditions
-are described below.
-
-a) If none of your builds are yet writing to the remote build cache besides
-the builds of this experiment, purge the remote build cache that your build
-is configured to connect to. You can purge the remote build cache by navigating
-in the browser to the 'Build Cache' admin section from the user menu of your
-Gradle Enterprise UI, selecting the build cache node the build is pointing to,
-and then clicking the 'Purge cache' button.
-
-b) If you are not in a position to purge the remote build cache, you can connect
-to a unique shard of the remote build cache each time you run this experiment.
-A shard is accessed via an identifier that is appended to the path of the remote
-build cache URL, for example https://ge.example.com/cache/exp4-2021-Dec31-take1/
-which encodes the experiment type, the current date, and a counter that needs
-to be increased every time the experiment is rerun. Using such an encoding
-schema ensures that for each run of the experiment an empty remote build cache
-will be used. You need to push the changes to the path of the remote build cache
-URL every time before you run the experiment.
-
+https://docs.gradle.com/enterprise/maven-extension/#configuring_the_remote_cache
+EOF
+  else
+    IFS='' read -r -d '' build_tool_instructions <<EOF
 If you choose option b) and do not want to interfere with an already existing
 build caching configuration in your build and you are using the Common Custom
 User Data Gradle plugin, you can override the local and remote build cache
@@ -251,20 +236,7 @@ triggering the build on CI. Details on how to provide the overrides are
 available from the documentation of the plugin.
 
 https://github.com/gradle/gradle-enterprise-build-config-samples/blob/master/common-custom-user-data-gradle-plugin/README.md#configuration-overrides
-
-${USER_ACTION_COLOR}Press <Enter> once you have prepared the experiment to run with an empty remote build cache.${RESTORE}
 EOF
-  print_wizard_text "${text}"
-  wait_for_enter
-}
-
-explain_prerequisites_maven_empty_remote_build_cache() {
-  local text preparation_step
-
-  if [ -n "$1" ]; then
-    preparation_step="$1 "
-  else
-    preparation_step=""
   fi
 
   IFS='' read -r -d '' text <<EOF
@@ -294,27 +266,26 @@ schema ensures that for each run of the experiment an empty remote build cache
 will be used. You need to push the changes to the path of the remote build cache
 URL every time before you run the experiment.
 
-If you choose option b) and do not want to interfere with an already existing
-build caching configuration in your build, you can override the local and
-remote build cache configuration via system properties right when triggering
-the build on CI. Details on how to provide the overrides are available from
-the documentation of the the Gradle Enterprise Maven extension.
-
-https://docs.gradle.com/enterprise/maven-extension/#configuring_the_remote_cache
-
+${build_tool_instructions}
 ${USER_ACTION_COLOR}Press <Enter> once you have prepared the experiment to run with an empty remote build cache.${RESTORE}
 EOF
   print_wizard_text "${text}"
   wait_for_enter
 }
 
-explain_prerequisites_gradle_api_access() {
-  local text preparation_step
+explain_prerequisites_api_access() {
+  local text preparation_step documentation_link
 
   if [ -n "$1" ]; then
     preparation_step="$1 "
   else
     preparation_step=""
+  fi
+
+  if [[ "${BUILD_TOOL}" == "Maven" ]]; then
+    documentation_link="https://github.com/gradle/gradle-enterprise-build-validation-scripts/blob/main/Maven.md#authenticating-with-gradle-enterprise"
+  else
+    documentation_link="https://github.com/gradle/gradle-enterprise-build-validation-scripts/blob/main/Gradle.md#authenticating-with-gradle-enterprise"
   fi
 
   IFS='' read -r -d '' text <<EOF
@@ -329,36 +300,7 @@ scan data is accessible. Details on how to check your access permissions and
 how to provide the necessary API credentials when running the experiment are
 available from the documentation of the build validation scripts.
 
-https://github.com/gradle/gradle-enterprise-build-validation-scripts/blob/main/Gradle.md#authenticating-with-gradle-enterprise
-
-${USER_ACTION_COLOR}Press <Enter> once you have (optionally) adjusted your access permissions and configured the API credentials on your machine.${RESTORE}
-EOF
-  print_wizard_text "${text}"
-  wait_for_enter
-}
-
-explain_prerequisites_maven_api_access() {
-  local text preparation_step
-
-  if [ -n "$1" ]; then
-    preparation_step="$1 "
-  else
-    preparation_step=""
-  fi
-
-  IFS='' read -r -d '' text <<EOF
-$(print_separator)
-${HEADER_COLOR}Preparation ${preparation_step}- Ensure Gradle Enterprise API access${RESTORE}
-
-Some build scan data will be fetched from the invoked builds via the Gradle
-Enterprise API. It is not strictly necessary that you have permission to
-call the Gradle Enterprise API while doing this experiment, but the summary
-provided at the end of the experiment will be more comprehensive if the build
-scan data is accessible. Details on how to check your access permissions and
-how to provide the necessary API credentials when running the experiment are
-available from the documentation of the build validation scripts.
-
-https://github.com/gradle/gradle-enterprise-build-validation-scripts/blob/main/Maven.md#authenticating-with-gradle-enterprise
+${documentation_link}
 
 ${USER_ACTION_COLOR}Press <Enter> once you have (optionally) adjusted your access permissions and configured the API credentials on your machine.${RESTORE}
 EOF
