@@ -110,3 +110,22 @@ EOF
   print_wizard_text "${text}"
   wait_for_enter
 }
+
+explain_command_to_repeat_experiment() {
+  local text
+  IFS='' read -r -d '' text <<EOF
+The 'Command Line Invocation' section below demonstrates how you can rerun the
+experiment with the same configuration and in non-interactive mode.
+EOF
+  echo -n "${text}"
+}
+
+explain_when_to_rerun_experiment() {
+  local text
+  IFS='' read -r -d '' text <<EOF
+Once you have addressed the issues surfaced in build scans and pushed the
+changes to your Git repository, you can rerun the experiment and start over
+the cycle of run → measure → improve → run.
+EOF
+  echo -n "${text}"
+}
