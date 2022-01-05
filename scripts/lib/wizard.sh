@@ -137,7 +137,6 @@ gradle.properties:
 org.gradle.caching=true
 
 settings.gradle:
-def isCi = System.getenv('BUILD_URL') != null   // adjust to an env var that is always present in your CI environment
 buildCache {
   local { enabled = false }                     // must be false for this experiment
   remote(HttpBuildCache) {
@@ -149,7 +148,7 @@ buildCache {
       creds.password = System.getenv('GRADLE_ENTERPRISE_CACHE_PASSWORD')
     }
     enabled = true                              // must be true for this experiment
-    push = isCI                                 // must be true when the build runs in CI
+    push = System.getenv('BUILD_URL') != null   // adjust to an env var that is always present only in your CI environment
 }}
 
 Your updated build configuration needs to be pushed to a separate branch that
@@ -193,7 +192,7 @@ typical build configuration is described below.
         </credentials>
       </server>
       <enabled>true</enabled>                                   <!-- must be true for this experiment -->
-      <storeEnabled>#{env['BUILD_URL'] != null}</storeEnabled>  <!-- must be true when the build runs in CI -->
+      <storeEnabled>#{env['BUILD_URL'] != null}</storeEnabled>  <!-- adjust to an env var that is always present only in your CI environment -->
     </remote>
   </buildCache>
 </gradleEnterprise>
