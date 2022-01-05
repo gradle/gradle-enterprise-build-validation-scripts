@@ -4,7 +4,7 @@ import com.felipefzdz.gradle.shellcheck.Shellcheck
 plugins {
     id("base")
     id("de.undercouch.download") version "4.1.2"
-    id("com.felipefzdz.gradle.shellcheck") version "1.4.4"
+    id("com.felipefzdz.gradle.shellcheck") version "1.4.6"
 }
 
 repositories {
