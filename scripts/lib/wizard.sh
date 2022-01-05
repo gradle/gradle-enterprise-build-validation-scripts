@@ -336,6 +336,7 @@ EOF
   print_wizard_text "${text}"
   wait_for_enter
 }
+
 explain_prerequisites_maven_api_access() {
   local text preparation_step
 
