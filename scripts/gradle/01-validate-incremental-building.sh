@@ -169,8 +169,7 @@ without modifying the project. Build scans support your investigation in step 4
 and step 5.
 
 After improving the build to make it more incremental, you can push your changes
-and run the experiment again. This creates a cycle of run → measure → improve →
-run.
+and run the experiment again. This creates a cycle of run → measure → improve → run.
 
 ${USER_ACTION_COLOR}Press <Enter> to get started with the experiment.${RESTORE}
 EOF

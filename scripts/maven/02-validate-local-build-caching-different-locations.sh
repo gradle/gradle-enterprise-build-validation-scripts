@@ -153,10 +153,10 @@ print_introduction() {
 $(print_introduction_title)
 
 In this experiment, you will validate how well a given project leverages
-Gradle Enterprise's local build caching functionality when running the build from different
-locations. A build is considered fully cacheable if it can be invoked twice in a
-row with build caching enabled and, during the second invocation, all cacheable
-tasks avoid performing any work because:
+Gradle Enterprise's local build caching functionality when running the build
+from different locations. A build is considered fully cacheable if it can be
+invoked twice in a row with build caching enabled and, during the second
+invocation, all cacheable tasks avoid performing any work because:
 
   * The cacheable goals’ inputs have not changed since their last invocation and
   * The cacheable goals’ outputs are present in the local build cache and
@@ -190,9 +190,9 @@ The script you have invoked automates the execution of step 1, step 2, and step 
 without modifying the project. Build scans support your investigation in step 4
 and step 5.
 
-After improving the build to make it better leverage the local build cache, you
-can push your changes and run the experiment again. This creates a cycle of run
-→ measure → improve → run.
+After improving the build to make it better leverage the local build cache,
+you can push your changes and run the experiment again. This creates a cycle
+of run → measure → improve → run.
 
 ${USER_ACTION_COLOR}Press <Enter> to get started with the experiment.${RESTORE}
 EOF

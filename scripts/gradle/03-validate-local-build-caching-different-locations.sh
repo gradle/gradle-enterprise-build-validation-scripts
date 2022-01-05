@@ -197,9 +197,9 @@ The script you have invoked automates the execution of step 1, step 2, and step 
 without modifying the project. Build scans support your investigation in step 4
 and step 5.
 
-After improving the build to make it better leverage the local build cache, you
-can push your changes and run the experiment again. This creates a cycle of run
-→ measure → improve → run.
+After improving the build to make it better leverage the local build cache,
+you can push your changes and run the experiment again. This creates a cycle
+of run → measure → improve → run.
 
 ${USER_ACTION_COLOR}Press <Enter> to get started with the experiment.${RESTORE}
 EOF

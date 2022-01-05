@@ -164,10 +164,10 @@ print_introduction() {
 $(print_introduction_title)
 
 In this experiment, you will validate how well a given project leverages
-Gradle Enterprise's remote build caching functionality when running the build from
-different CI agents. A build is considered fully cacheable if it can be invoked
-twice in a row with build caching enabled and, during the second invocation, all
-cacheable goals avoid performing any work because:
+Gradle Enterprise's remote build caching functionality when running the build
+from two different CI agents. A build is considered fully cacheable if it can
+be invoked twice in a row with build caching enabled and, during the second
+invocation, all cacheable goals avoid performing any work because:
 
   * The goals' inputs have not changed since their last invocation and
   * The goals' outputs are present in the remote build cache and
@@ -200,9 +200,9 @@ The script you have invoked does not automate the execution of step 1, step 2,
 and step 3. You will need to complete these steps manually. Build scans support
 your investigation in step 4 and step 5.
 
-After improving the build to make it better leverage the remote build cache, you
-can push your changes and run the experiment again. This creates a cycle of run
-→ measure → improve → run.
+After improving the build to make it better leverage the remote build cache,
+you can push your changes and run the experiment again. This creates a cycle
+of run → measure → improve → run.
 
 ${USER_ACTION_COLOR}Press <Enter> to get started with the experiment.${RESTORE}
 EOF
