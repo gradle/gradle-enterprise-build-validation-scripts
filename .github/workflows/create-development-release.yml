@@ -21,7 +21,6 @@ jobs:
         uses: gradle/gradle-build-action@v2
         with:
           arguments: build
-          build-root-directory: distribution-build
       - name: Create Development GitHub Release
         uses: "marvinpinto/action-automatic-releases@v1.2.0"
         with:

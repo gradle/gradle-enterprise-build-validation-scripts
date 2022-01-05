@@ -48,13 +48,13 @@ tasks.register<ApplyArgbash>("generateBashCliParsers") {
     group = "argbash"
     description = "Uses Argbash to generate Bash command line argument parsing code."
 
-    scriptTemplates.set(fileTree("../scripts") {
+    scriptTemplates.set(fileTree("components/scripts") {
         include("**/*-cli-parser.m4")
         exclude("gradle/.data/")
         exclude("maven/.data/")
     })
 
-    supportingTemplates.set(fileTree("../scripts") {
+    supportingTemplates.set(fileTree("components/scripts") {
         include("**/*.m4")
         exclude("gradle/.data/")
         exclude("maven/.data/")
@@ -71,13 +71,13 @@ tasks.register<Copy>("copyGradleScripts") {
     dependsOn(gradle.includedBuild("fetch-build-validation-data").task(":shadowJar"))
     dependsOn("generateBashCliParsers")
 
-    from(layout.projectDirectory.dir("README.md"))
-    from(layout.projectDirectory.dir("../LICENSE"))
-    from(layout.projectDirectory.dir("../scripts/gradle")) {
+    from(layout.projectDirectory.dir("LICENSE"))
+    from(layout.projectDirectory.dir("components/scripts/gradle")) {
         exclude(".data/")
         filter { line: String -> line.replace("/../lib", "/lib").replace("<HEAD>","${project.version}") }
     }
-    from(layout.projectDirectory.dir("../scripts")) {
+    from(layout.projectDirectory.dir("components/scripts")) {
+        include("README.md")
         include("lib/**")
         exclude("maven")
         exclude("lib/cli-parsers")
@@ -99,13 +99,13 @@ tasks.register<Copy>("copyMavenScripts") {
     dependsOn(gradle.includedBuild("fetch-build-validation-data").task(":shadowJar"))
     dependsOn("generateBashCliParsers")
 
-    from(layout.projectDirectory.dir("README.md"))
-    from(layout.projectDirectory.dir("../LICENSE"))
-    from(layout.projectDirectory.dir("../scripts/maven")) {
+    from(layout.projectDirectory.dir("LICENSE"))
+    from(layout.projectDirectory.dir("components/scripts/maven")) {
         exclude(".data/")
         filter { line: String -> line.replace("/../lib", "/lib").replace("<HEAD>","${project.version}") }
     }
-    from(layout.projectDirectory.dir("../scripts/")) {
+    from(layout.projectDirectory.dir("components/scripts/")) {
+        include("README.md")
         include("lib/**")
         exclude("gradle")
         exclude("lib/cli-parsers")
