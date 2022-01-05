@@ -62,7 +62,7 @@ wizard_execute() {
   print_introduction
 
   print_bl
-  explain_prerequisites_ccud_maven_plugin "I."
+  explain_prerequisites_ccud_maven_extension "I."
 
   print_bl
   explain_prerequisites_maven_remote_build_cache_config "II."

@@ -72,7 +72,7 @@ EOF
   wait_for_enter
 }
 
-explain_prerequisites_ccud_maven_plugin() {
+explain_prerequisites_ccud_maven_extension() {
   local text preparation_step
 
   if [ -n "$1" ]; then

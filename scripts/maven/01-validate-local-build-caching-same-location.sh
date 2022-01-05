@@ -70,7 +70,7 @@ wizard_execute() {
   print_introduction
 
   print_bl
-  explain_prerequisites_ccud_maven_plugin ""
+  explain_prerequisites_ccud_maven_extension ""
 
   print_bl
   explain_collect_git_details
