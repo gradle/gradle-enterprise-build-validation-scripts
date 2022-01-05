@@ -140,14 +140,20 @@ collect_git_commit_id() {
 }
 
 collect_gradle_details() {
-  collect_gradle_root_project_directory
+  collect_root_project_directory
   collect_gradle_tasks
   collect_gradle_extra_args
 }
 
-collect_gradle_root_project_directory() {
+collect_maven_details() {
+  collect_root_project_directory
+  collect_maven_goals
+  collect_maven_extra_args
+}
+
+collect_root_project_directory() {
   local default_project_dir="<the repository's root directory>"
-  prompt_for_setting "Which directory contains the Gradle root project?" "${project_dir}" "${default_project_dir}" project_dir
+  prompt_for_setting "Which directory contains the ${BUILD_TOOL} root project?" "${project_dir}" "${default_project_dir}" project_dir
   if [[ "${project_dir}" == "${default_project_dir}" ]]; then
     project_dir=''
   fi
@@ -157,21 +163,16 @@ collect_gradle_tasks() {
   prompt_for_setting "What are the Gradle tasks to invoke?" "${tasks}" "assemble" tasks
 }
 
+collect_maven_goals() {
+  prompt_for_setting "What are the Maven goals to invoke?" "${tasks}" "package" tasks
+}
+
 collect_gradle_extra_args() {
   local default_extra_args="<none>"
   prompt_for_setting "What are additional cmd line arguments to pass to the Gradle invocation?" "${extra_args}" "${default_extra_args}" extra_args
   if [[ "${extra_args}" == "${default_extra_args}" ]]; then
     extra_args=''
   fi
-}
-
-collect_maven_details() {
-  collect_maven_goals
-  collect_maven_extra_args
-}
-
-collect_maven_goals() {
-  prompt_for_setting "What are the Maven goals to invoke?" "${tasks}" "package" tasks
 }
 
 collect_maven_extra_args() {

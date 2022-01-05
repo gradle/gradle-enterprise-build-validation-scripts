@@ -73,16 +73,16 @@ wizard_execute() {
   print_introduction
 
   print_bl
-  explain_prerequisites_ccud_gradle_plugin
+  explain_prerequisites_ccud_gradle_plugin "I."
 
   print_bl
-  explain_prerequisites_remote_build_cache_config
+  explain_prerequisites_gradle_remote_build_cache_config "II."
 
   print_bl
-  explain_prerequisites_empty_remote_build_cache
+  explain_prerequisites_gradle_empty_remote_build_cache "III."
 
   print_bl
-  explain_prerequisites_api_access
+  explain_prerequisites_api_access "IV."
 
   print_bl
   explain_ci_build
@@ -127,7 +127,6 @@ wizard_execute() {
   explain_measure_build_results
   print_bl
   explain_and_print_summary
-  print_bl
 }
 
 process_script_arguments() {
@@ -271,138 +270,6 @@ can push your changes and run the experiment again. This creates a cycle of run
 ${USER_ACTION_COLOR}Press <Enter> to get started with the experiment.${RESTORE}
 EOF
 
-  print_wizard_text "${text}"
-  wait_for_enter
-}
-
-explain_prerequisites_ccud_gradle_plugin() {
-  local text
-  IFS='' read -r -d '' text <<EOF
-$(print_separator)
-${HEADER_COLOR}Preparation I. - Configure build with Common Custom User Data Gradle plugin${RESTORE}
-
-To get the most out of this experiment and also when building with Gradle
-Enterprise during daily development, it is advisable that you apply the Common
-Custom User Data Gradle plugin to your build, if not already the case. Gradle
-provides the Common Custom User Data Gradle plugin as a free, open-source add-on.
-
-https://plugins.gradle.org/plugin/com.gradle.common-custom-user-data-gradle-plugin
-
-An extract of a typical build configuration is described below.
-
-settings.gradle:
-plugins {
-    id 'com.gradle.enterprise' version '<latest version>'
-    id 'com.gradle.common-custom-user-data-gradle-plugin' version '<latest version>'
-}
-
-Your updated build configuration should be pushed before proceeding.
-
-${USER_ACTION_COLOR}Press <Enter> once you have (optionally) configured your build with the Common Custom User Data Gradle plugin and pushed the changes.${RESTORE}
-EOF
-  print_wizard_text "${text}"
-  wait_for_enter
-}
-
-explain_prerequisites_remote_build_cache_config() {
-  local text
-  IFS='' read -r -d '' text <<EOF
-$(print_separator)
-${HEADER_COLOR}Preparation II. - Configure build for remote build caching${RESTORE}
-
-You must first configure your build for remote build caching. An extract of a
-typical build configuration is described below.
-
-gradle.properties:
-org.gradle.caching=true
-
-settings.gradle:
-def isCi = System.getenv('BUILD_URL') != null   // adjust to an env var that is always present in your CI environment
-buildCache {
-  local { enabled = false }                     // must be false for this experiment
-  remote(HttpBuildCache) {
-    url = 'https://ge.example.com/cache/exp5/'  // adjust to your GE hostname, and note the trailing slash
-    allowUntrustedServer = true                 // set to false if a trusted certificate is configured for the GE server
-    credentials { creds ->
-      // inject credentials with read-write access to the remote build cache via env vars set in your CI environment
-      creds.username = System.getenv('GRADLE_ENTERPRISE_CACHE_USERNAME')
-      creds.password = System.getenv('GRADLE_ENTERPRISE_CACHE_PASSWORD')
-    }
-    enabled = true                              // must be true for this experiment
-    push = isCI                                 // must be true when the build runs in CI
-}}
-
-Your updated build configuration needs to be pushed to a separate branch that
-is only used for running the experiments.
-
-${USER_ACTION_COLOR}Press <Enter> once you have configured your build for remote build caching and pushed the changes.${RESTORE}
-EOF
-  print_wizard_text "${text}"
-  wait_for_enter
-}
-
-explain_prerequisites_empty_remote_build_cache() {
-  local text
-  IFS='' read -r -d '' text <<EOF
-$(print_separator)
-${HEADER_COLOR}Preparation III. - Purge remote build cache${RESTORE}
-
-It is important to use an empty remote build cache and to avoid that other
-builds write to the same remote build cache while this experiment is running.
-Ensuring that these preconditions are met will maximize the reproducibility
-and reliability of the experiment. Two different ways to meet these conditions
-are described below.
-
-a) If none of your builds are yet writing to the remote build cache besides
-the builds of this experiment, purge the remote build cache that your build
-is configured to connect to. You can purge the remote build cache by navigating
-in the browser to the 'Build Cache' admin section from the user menu of your
-Gradle Enterprise UI, selecting the build cache node the build is pointing to,
-and then clicking the 'Purge cache' button.
-
-b) If you are not in a position to purge the remote build cache, you can connect
-to a unique shard of the remote build cache each time you run this experiment.
-A shard is accessed via an identifier that is appended to the path of the remote
-build cache URL, for example https://ge.example.com/cache/exp5-2021-Dec31-take1/
-which encodes the experiment type, the current date, and a counter that needs
-to be increased every time the experiment is rerun. Using such an encoding
-schema ensures that for each run of the experiment an empty remote build cache
-will be used. You need to push the changes to the path of the remote build cache
-URL every time before you run the experiment.
-
-If you choose option b) and do not want to interfere with an already existing
-build caching configuration in your build and you are using the Common Custom
-User Data Gradle plugin, you can override the local and remote build cache
-configuration via system properties or environment variables right when
-triggering the build on CI. Details on how to provide the overrides are
-available from the documentation of the plugin.
-
-https://github.com/gradle/gradle-enterprise-build-config-samples/blob/master/common-custom-user-data-gradle-plugin/README.md#configuration-overrides
-
-${USER_ACTION_COLOR}Press <Enter> once you have prepared the experiment to run with an empty remote build cache.${RESTORE}
-EOF
-  print_wizard_text "${text}"
-  wait_for_enter
-}
-
-explain_prerequisites_api_access() {
-  local text
-  IFS='' read -r -d '' text <<EOF
-$(print_separator)
-${HEADER_COLOR}Preparation IV. - Ensure Gradle Enterprise API access${RESTORE}
-
-Some build scan data will be fetched from the invoked builds via the Gradle
-Enterprise API. It is not strictly necessary that you have permission to
-call the Gradle Enterprise API while doing this experiment, but the summary
-provided at the end of the experiment will be more comprehensive if the build
-scan data is accessible. Details on how to check your access permissions and
-how to provide the necessary API credentials when running the experiment are
-available from the documentation of the build validation scripts.
-
-https://github.com/gradle/gradle-enterprise-build-validation-scripts/blob/main/Gradle.md#authenticating-with-gradle-enterprise
-
-${USER_ACTION_COLOR}Press <Enter> once you have (optionally) adjusted your access permissions and configured the API credentials on your machine.${RESTORE}
-EOF
   print_wizard_text "${text}"
   wait_for_enter
 }
@@ -626,16 +493,13 @@ from the remote cache and what tasks executed in the second build with cache
 misses, which of those tasks had the biggest impact on build performance, and
 what caused the cache misses.
 
-The ‘Command Line Invocation’ section below demonstrates how you can rerun the
-experiment with the same configuration and in non-interactive mode.
+$(explain_command_to_repeat_experiment)
 
 $(print_summary)
 
 $(print_command_to_repeat_experiment)
 
-Once you have addressed the issues surfaced in build scans and pushed the
-changes to your Git repository, you can rerun the experiment and start over
-the cycle of run → measure → improve → run.
+$(explain_when_to_rerun_experiment)
 EOF
   print_wizard_text "${text}"
 }

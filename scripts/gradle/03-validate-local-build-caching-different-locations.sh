@@ -72,7 +72,7 @@ wizard_execute() {
   print_introduction
 
   print_bl
-  explain_prerequisites_ccud_gradle_plugin
+  explain_prerequisites_ccud_gradle_plugin ""
 
   print_bl
   explain_collect_git_details
@@ -110,7 +110,6 @@ wizard_execute() {
   explain_measure_build_results
   print_bl
   explain_and_print_summary
-  print_bl
 }
 
 execute_first_build() {
@@ -210,35 +209,6 @@ EOF
   wait_for_enter
 }
 
-explain_prerequisites_ccud_gradle_plugin() {
-  local text
-  IFS='' read -r -d '' text <<EOF
-$(print_separator)
-${HEADER_COLOR}Preparation - Configure build with Common Custom User Data Gradle plugin${RESTORE}
-
-To get the most out of this experiment and also when building with Gradle
-Enterprise during daily development, it is advisable that you apply the Common
-Custom User Data Gradle plugin to your build, if not already the case. Gradle
-provides the Common Custom User Data Gradle plugin as a free, open-source add-on.
-
-https://plugins.gradle.org/plugin/com.gradle.common-custom-user-data-gradle-plugin
-
-An extract of a typical build configuration is described below.
-
-settings.gradle:
-plugins {
-    id 'com.gradle.enterprise' version '<latest version>'
-    id 'com.gradle.common-custom-user-data-gradle-plugin' version '<latest version>'
-}
-
-Your updated build configuration should be pushed before proceeding.
-
-${USER_ACTION_COLOR}Press <Enter> once you have (optionally) configured your build with the Common Custom User Data Gradle plugin and pushed the changes.${RESTORE}
-EOF
-  print_wizard_text "${text}"
-  wait_for_enter
-}
-
 explain_first_clone_project(){
   local text
   IFS='' read -r -d '' text <<EOF
@@ -334,16 +304,13 @@ local build caching and what tasks executed in the second build, which of those
 tasks had the biggest impact on build performance, and what caused those tasks
 to not be taken from the local build cache.
 
-The ‘Command Line Invocation’ section below demonstrates how you can rerun the
-experiment with the same configuration and in non-interactive mode.
+$(explain_command_to_repeat_experiment)
 
 $(print_summary)
 
 $(print_command_to_repeat_experiment)
 
-Once you have addressed the issues surfaced in build scans and pushed the
-changes to your Git repository, you can rerun the experiment and start over
-the cycle of run → measure → improve → run.
+$(explain_when_to_rerun_experiment)
 EOF
   print_wizard_text "${text}"
 }

@@ -71,6 +71,9 @@ wizard_execute() {
   print_introduction
 
   print_bl
+  explain_prerequisites_ccud_maven_plugin ""
+
+  print_bl
   explain_collect_git_details
   print_bl
   collect_git_details
@@ -103,7 +106,6 @@ wizard_execute() {
   explain_measure_build_results
   print_bl
   explain_and_print_summary
-  print_bl
 }
 
 execute_first_build() {
@@ -255,16 +257,13 @@ local build caching and what goals executed in the second build, which of those
 goals had the biggest impact on build performance, and what caused those goals
 to not be taken from the local build cache.
 
-The ‘Command Line Invocation’ section below demonstrates how you can rerun the
-experiment with the same configuration and in non-interactive mode.
+$(explain_command_to_repeat_experiment)
 
 $(print_summary)
 
 $(print_command_to_repeat_experiment)
 
-Once you have addressed the issues surfaced in build scans and pushed the
-changes to your Git repository, you can rerun the experiment and start over
-the cycle of run → measure → improve → run.
+$(explain_when_to_rerun_experiment)
 EOF
   print_wizard_text "${text}"
 }

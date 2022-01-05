@@ -72,13 +72,16 @@ wizard_execute() {
   print_introduction
 
   print_bl
-  explain_prerequisites_ccud_maven_plugin
+  explain_prerequisites_ccud_maven_plugin "I."
 
   print_bl
-  explain_prerequisites_remote_build_cache_config
+  explain_prerequisites_maven_remote_build_cache_config "II."
 
   print_bl
-  explain_prerequisites_empty_remote_build_cache
+  explain_prerequisites_maven_empty_remote_build_cache "III."
+
+  print_bl
+  explain_prerequisites_api_access "IV."
 
   print_bl
   explain_ci_build
@@ -123,7 +126,6 @@ wizard_execute() {
   explain_measure_build_results
   print_bl
   explain_and_print_summary
-  print_bl
 }
 
 process_script_arguments() {
@@ -265,129 +267,6 @@ can push your changes and run the experiment again. This creates a cycle of run
 ${USER_ACTION_COLOR}Press <Enter> to get started with the experiment.${RESTORE}
 EOF
 
-  print_wizard_text "${text}"
-  wait_for_enter
-}
-
-explain_prerequisites_ccud_maven_plugin() {
-  local text
-  IFS='' read -r -d '' text <<EOF
-$(print_separator)
-${HEADER_COLOR}Preparation I. - Configure build with Common Custom User Data Maven extension${RESTORE}
-
-To get the most out of this experiment and also when building with Gradle
-Enterprise during daily development, it is advisable that you apply the Common
-Custom User Data Maven extension to your build, if not already the case. Gradle
-provides the Common Custom User Data Maven extension as a free, open-source add-on.
-
-https://github.com/gradle/gradle-enterprise-build-config-samples/tree/master/common-custom-user-data-maven-extension
-
-An extract of a typical build configuration is described below.
-
-.mvn/extensions.xml:
-<?xml version="1.0" encoding="UTF-8"?>
-<extensions>
-    <extension>
-        <groupId>com.gradle</groupId>
-        <artifactId>gradle-enterprise-maven-extension</artifactId>
-        <version>{latest version}</version>
-    </extension>
-    <extension>
-        <groupId>com.gradle</groupId>
-        <artifactId>common-custom-user-data-maven-extension</artifactId>
-        <version>{latest version}</version>
-    </extension>
-</extensions>
-
-Your updated build configuration should be pushed before proceeding.
-
-${USER_ACTION_COLOR}Press <Enter> once you have (optionally) configured your build with the Common Custom User Data Maven extension and pushed the changes.${RESTORE}
-EOF
-  print_wizard_text "${text}"
-  wait_for_enter
-}
-
-explain_prerequisites_remote_build_cache_config() {
-  local text
-  IFS='' read -r -d '' text <<EOF
-$(print_separator)
-${HEADER_COLOR}Preparation II. - Configure build for remote build caching${RESTORE}
-
-You must first configure your build for remote build caching. An extract of a
-typical build configuration is described below.
-
-.mvn/gradle-enterprise.xml:
-<gradleEnterprise>
-  <buildCache>
-    <local>
-      <enabled>false</enabled>                         <!-- must be false for this experiment -->
-    </local>
-    <remote>
-      <server>
-        <url>https://ge.example.com/cache/exp3/</url>  <!-- adjust to your GE hostname, and note the trailing slash -->
-        <allowUntrusted>true</allowUntrusted>          <!-- set to false if a trusted certificate is configured for the GE server -->
-        <credentials>
-          <username>\${env.GRADLE_ENTERPRISE_CACHE_USERNAME}</username>
-          <password>\${env.GRADLE_ENTERPRISE_CACHE_PASSWORD}</password>
-        </credentials>
-      </server>
-      <enabled>true</enabled>                          <!-- must be true for this experiment -->
-    </remote>
-  </buildCache>
-</gradleEnterprise>
-
-On CI, you will also need to pass -Dgradle.cache.remote.storeEnabled=true to the Maven invocation
-so that the CI build populates the remote build cache.
-
-Your updated build configuration needs to be pushed to a separate branch that
-is only used for running the experiments.
-
-${USER_ACTION_COLOR}Press <Enter> once you have configured your build for remote build caching and pushed the changes.${RESTORE}
-EOF
-  print_wizard_text "${text}"
-  wait_for_enter
-}
-
-explain_prerequisites_empty_remote_build_cache() {
-  local text
-  IFS='' read -r -d '' text <<EOF
-$(print_separator)
-${HEADER_COLOR}Preparation III. - Purge remote build cache${RESTORE}
-
-It is important to use an empty remote build cache and to avoid that other
-builds write to the same remote build cache while this experiment is running.
-Ensuring that these preconditions are met will maximize the reproducibility
-and reliability of the experiment. Two different ways to meet these conditions
-are described below.
-
-a) If none of your builds are yet writing to the remote build cache besides
-the builds of this experiment, purge the remote build cache that your build
-is configured to connect to. You can purge the remote build cache by navigating
-in the browser to the 'Build Cache' admin section from the user menu of your
-Gradle Enterprise UI, selecting the build cache node the build is pointing to,
-and then clicking the 'Purge cache' button.
-
-b) If you are not in a position to purge the remote build cache, you can connect
-to a unique shard of the remote build cache each time you run this experiment.
-A shard is accessed via an identifier that is appended to the path of the remote
-build cache URL, for example https://ge.example.com/cache/exp4-2021-Dec31-take1/
-which encodes the experiment type, the current date, and a counter that needs
-to be increased every time the experiment is rerun. Using such an encoding
-schema ensures that for each run of the experiment an empty remote build cache
-will be used. You need to push the changes to the path of the remote build cache
-URL every time before you run the experiment.
-
-If you choose option b) and do not want to interfere with an already existing
-build caching configuration in your build and you are using the Common Custom
-User Data Maven extension, you can override the local and remote build cache
-configuration via system properties or environment variables right when
-triggering the build on CI. Details on how to provide the overrides are
-available from the documentation of the plugin.
-
-https://docs.gradle.com/enterprise/maven-extension/#configuring_the_remote_cache
-
-${USER_ACTION_COLOR}Press <Enter> once you have prepared the experiment to run with an empty remote build cache.${RESTORE}
-EOF
   print_wizard_text "${text}"
   wait_for_enter
 }
@@ -618,16 +497,13 @@ from the remote cache and what goals executed in the second build with cache
 misses, which of those goals had the biggest impact on build performance, and
 what caused the cache misses.
 
-The ‘Command Line Invocation’ section below demonstrates how you can rerun the
-experiment with the same configuration and in non-interactive mode.
+$(explain_command_to_repeat_experiment)
 
 $(print_summary)
 
 $(print_command_to_repeat_experiment)
 
-Once you have addressed the issues surfaced in build scans and pushed the
-changes to your Git repository, you can rerun the experiment and start over
-the cycle of run → measure → improve → run.
+$(explain_when_to_rerun_experiment)
 EOF
   print_wizard_text "${text}"
 }
