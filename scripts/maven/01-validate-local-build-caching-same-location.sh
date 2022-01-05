@@ -71,6 +71,9 @@ wizard_execute() {
   print_introduction
 
   print_bl
+  explain_prerequisites_ccud_maven_plugin ""
+
+  print_bl
   explain_collect_git_details
   print_bl
   collect_git_details

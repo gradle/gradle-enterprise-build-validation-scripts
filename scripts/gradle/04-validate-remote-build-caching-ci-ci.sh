@@ -68,10 +68,10 @@ wizard_execute() {
   explain_prerequisites_ccud_gradle_plugin "I."
 
   print_bl
-  explain_prerequisites_remote_build_cache_config "II."
+  explain_prerequisites_gradle_remote_build_cache_config "II."
 
   print_bl
-  explain_prerequisites_empty_remote_build_cache "III."
+  explain_prerequisites_gradle_empty_remote_build_cache "III."
 
   print_bl
   explain_prerequisites_api_access "IV."
