@@ -142,13 +142,13 @@ collect_git_commit_id() {
 collect_gradle_details() {
   collect_root_project_directory
   collect_gradle_tasks
-  collect_gradle_extra_args
+  collect_extra_args
 }
 
 collect_maven_details() {
   collect_root_project_directory
   collect_maven_goals
-  collect_maven_extra_args
+  collect_extra_args
 }
 
 collect_root_project_directory() {
@@ -167,17 +167,9 @@ collect_maven_goals() {
   prompt_for_setting "What are the Maven goals to invoke?" "${tasks}" "package" tasks
 }
 
-collect_gradle_extra_args() {
+collect_extra_args() {
   local default_extra_args="<none>"
-  prompt_for_setting "What are additional cmd line arguments to pass to the Gradle invocation?" "${extra_args}" "${default_extra_args}" extra_args
-  if [[ "${extra_args}" == "${default_extra_args}" ]]; then
-    extra_args=''
-  fi
-}
-
-collect_maven_extra_args() {
-  local default_extra_args="<none>"
-  prompt_for_setting "What are additional cmd line arguments to pass to the Maven invocation?" "${extra_args}" "${default_extra_args}" extra_args
+  prompt_for_setting "What are additional cmd line arguments to pass to the build invocation?" "${extra_args}" "${default_extra_args}" extra_args
   if [[ "${extra_args}" == "${default_extra_args}" ]]; then
     extra_args=''
   fi
