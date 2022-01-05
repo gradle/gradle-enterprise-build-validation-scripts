@@ -311,7 +311,7 @@ EOF
   wait_for_enter
 }
 
-explain_prerequisites_api_access() {
+explain_prerequisites_gradle_api_access() {
   local text preparation_step
 
   if [ -n "$1" ]; then
@@ -333,6 +333,34 @@ how to provide the necessary API credentials when running the experiment are
 available from the documentation of the build validation scripts.
 
 https://github.com/gradle/gradle-enterprise-build-validation-scripts/blob/main/Gradle.md#authenticating-with-gradle-enterprise
+
+${USER_ACTION_COLOR}Press <Enter> once you have (optionally) adjusted your access permissions and configured the API credentials on your machine.${RESTORE}
+EOF
+  print_wizard_text "${text}"
+  wait_for_enter
+}
+explain_prerequisites_maven_api_access() {
+  local text preparation_step
+
+  if [ -n "$1" ]; then
+    preparation_step="$1 "
+  else
+    preparation_step=""
+  fi
+
+  IFS='' read -r -d '' text <<EOF
+$(print_separator)
+${HEADER_COLOR}Preparation ${preparation_step}- Ensure Gradle Enterprise API access${RESTORE}
+
+Some build scan data will be fetched from the invoked builds via the Gradle
+Enterprise API. It is not strictly necessary that you have permission to
+call the Gradle Enterprise API while doing this experiment, but the summary
+provided at the end of the experiment will be more comprehensive if the build
+scan data is accessible. Details on how to check your access permissions and
+how to provide the necessary API credentials when running the experiment are
+available from the documentation of the build validation scripts.
+
+https://github.com/gradle/gradle-enterprise-build-validation-scripts/blob/main/Maven.md#authenticating-with-gradle-enterprise
 
 ${USER_ACTION_COLOR}Press <Enter> once you have (optionally) adjusted your access permissions and configured the API credentials on your machine.${RESTORE}
 EOF

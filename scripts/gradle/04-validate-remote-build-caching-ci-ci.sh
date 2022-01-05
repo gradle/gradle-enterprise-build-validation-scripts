@@ -73,7 +73,7 @@ wizard_execute() {
   explain_prerequisites_gradle_empty_remote_build_cache "III."
 
   print_bl
-  explain_prerequisites_api_access "IV."
+  explain_prerequisites_gradle_api_access "IV."
 
   print_bl
   explain_first_build

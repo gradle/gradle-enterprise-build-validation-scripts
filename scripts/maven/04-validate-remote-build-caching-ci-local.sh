@@ -80,7 +80,7 @@ wizard_execute() {
   explain_prerequisites_maven_empty_remote_build_cache "III."
 
   print_bl
-  explain_prerequisites_api_access "IV."
+  explain_prerequisites_maven_api_access "IV."
 
   print_bl
   explain_ci_build
