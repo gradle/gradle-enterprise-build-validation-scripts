@@ -16,7 +16,7 @@ import java.util.*;
 import java.util.concurrent.Callable;
 
 @Command(
-    name = "fetch-build-validation-data",
+    name = "fetch-build-scan-data-cmdline-tool",
     mixinStandardHelpOptions = true,
     description = "Fetches data relevant to build validation from the given build scans."
 )

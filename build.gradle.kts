@@ -68,7 +68,7 @@ tasks.register<ApplyArgbash>("generateBashCliParsers") {
 tasks.register<Copy>("copyGradleScripts") {
     group = "build"
     description = "Copies the Gradle source and generated scripts to output directory."
-    dependsOn(gradle.includedBuild("fetch-build-validation-data").task(":shadowJar"))
+    dependsOn(gradle.includedBuild("fetch-build-scan-data-cmdline-tool").task(":shadowJar"))
     dependsOn("generateBashCliParsers")
 
     from(layout.projectDirectory.dir("LICENSE"))
@@ -87,7 +87,7 @@ tasks.register<Copy>("copyGradleScripts") {
     from(layout.buildDirectory.dir("generated/scripts/lib/cli-parsers/gradle")) {
         into("lib/")
     }
-    from(gradle.includedBuild("fetch-build-validation-data").projectDir.resolve("build/libs/fetch-build-validation-data-1.0.0-SNAPSHOT-all.jar")) {
+    from(gradle.includedBuild("fetch-build-scan-data-cmdline-tool").projectDir.resolve("build/libs/fetch-build-scan-data-cmdline-tool-1.0.0-SNAPSHOT-all.jar")) {
         into("lib/export-api-clients/")
     }
     into(layout.buildDirectory.dir("scripts/gradle"))
@@ -96,7 +96,7 @@ tasks.register<Copy>("copyGradleScripts") {
 tasks.register<Copy>("copyMavenScripts") {
     group = "build"
     description = "Copies the Maven source and generated scripts to output directory."
-    dependsOn(gradle.includedBuild("fetch-build-validation-data").task(":shadowJar"))
+    dependsOn(gradle.includedBuild("fetch-build-scan-data-cmdline-tool").task(":shadowJar"))
     dependsOn("generateBashCliParsers")
 
     from(layout.projectDirectory.dir("LICENSE"))
@@ -115,7 +115,7 @@ tasks.register<Copy>("copyMavenScripts") {
     from(layout.buildDirectory.dir("generated/scripts/lib/cli-parsers/maven")) {
         into("lib/")
     }
-    from(gradle.includedBuild("fetch-build-validation-data").projectDir.resolve("build/libs/fetch-build-validation-data-1.0.0-SNAPSHOT-all.jar")) {
+    from(gradle.includedBuild("fetch-build-scan-data-cmdline-tool").projectDir.resolve("build/libs/fetch-build-scan-data-cmdline-tool-1.0.0-SNAPSHOT-all.jar")) {
         into("lib/export-api-clients/")
     }
     from(mavenComponents) {
