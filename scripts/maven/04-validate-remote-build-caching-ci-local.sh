@@ -317,11 +317,11 @@ https://docs.gradle.com/enterprise/gradle-plugin/#via_file
 
 Some of the fetched build scan data is expected to be present as custom values.
 By default, this experiment assumes that these custom values have been created
-by the Common Custom User Data Maven extension. If you are not using that extension
-but your build still captures the same data under different custom value names,
-you can provide a mapping file so that the required data can be extracted from
-your build scans. An example mapping file named 'mapping.example' can be found
-at the same location as the script.
+by the Common Custom User Data Maven extension. If you are not using that
+extension but your build still captures the same data under different custom
+value names, you can provide a mapping file so that the required data can be
+extracted from your build scans. An example mapping file named 'mapping.example'
+can be found at the same location as the script.
 EOF
   print_wizard_text "${text}"
 }
@@ -348,14 +348,14 @@ EOF
   print_wizard_text "${text}"
 }
 
-# This overrides explain_collect_gradle_details found in lib/wizard.sh
-explain_collect_gradle_details() {
+# This overrides explain_collect_maven_details found in lib/wizard.sh
+explain_collect_maven_details() {
   local text
   IFS='' read -r -d '' text <<EOF
 Once the project is checked out from Git, the experiment will invoke the
 project’s contained Maven build with a given set of goals and an optional set
 of arguments. The Maven goals to invoke should be the same, or very similar to
-the goals invoked by the CI build.
+the goals invoked by the previous CI build.
 
 The build will be invoked from the project’s root directory or from a given
 sub-directory.
@@ -419,8 +419,8 @@ $(print_separator)
 ${HEADER_COLOR}Measure build results${RESTORE}
 
 At this point, you are ready to measure in Gradle Enterprise how well your
-build leverages Gradle Enterprise's remote build cache for the set of Gradle goals invoked
-from a CI agent and then on a local machine.
+build leverages Gradle Enterprise's remote build cache for the set of Gradle
+goals invoked from a CI agent and then on a local machine.
 
 ${USER_ACTION_COLOR}Press <Enter> to measure the build results.${RESTORE}
 EOF
