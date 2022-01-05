@@ -153,7 +153,7 @@ collect_maven_details() {
 
 collect_root_project_directory() {
   local default_project_dir="<the repository's root directory>"
-  prompt_for_setting "Which directory contains the ${BUILD_TOOL} root project?" "${project_dir}" "${default_project_dir}" project_dir
+  prompt_for_setting "What is the directory to invoke the build from?" "${project_dir}" "${default_project_dir}" project_dir
   if [[ "${project_dir}" == "${default_project_dir}" ]]; then
     project_dir=''
   fi
