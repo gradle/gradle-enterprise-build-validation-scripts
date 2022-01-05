@@ -298,7 +298,7 @@ $(print_separator)
 ${HEADER_COLOR}Measure build results${RESTORE}
 
 At this point, you are ready to measure in Gradle Enterprise how well your
-build leverages Gradle’s remote build cache for the set of Gradle tasks invoked
+build leverages Gradle’s remote build cache for the set of Gradle goals invoked
 from two different CI agents.
 
 ${USER_ACTION_COLOR}Press <Enter> to measure the build results.${RESTORE}

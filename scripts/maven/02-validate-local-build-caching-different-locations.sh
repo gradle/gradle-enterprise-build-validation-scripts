@@ -156,7 +156,7 @@ In this experiment, you will validate how well a given project leverages
 Gradle Enterprise's local build caching functionality when running the build
 from different locations. A build is considered fully cacheable if it can be
 invoked twice in a row with build caching enabled and, during the second
-invocation, all cacheable tasks avoid performing any work because:
+invocation, all cacheable goals avoid performing any work because:
 
   * The cacheable goals’ inputs have not changed since their last invocation and
   * The cacheable goals’ outputs are present in the local build cache and

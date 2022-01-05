@@ -334,7 +334,7 @@ ${HEADER_COLOR}Configure local build${RESTORE}
 
 Now that the first build has finished successfully on CI and the build scan
 data has been fetched or at least attempted to be fetched, the second build
-can be run locally with the same commit id, the same Gradle tasks, and the
+can be run locally with the same commit id, the same Gradle goals, and the
 same remote build cache as was used by the first build.
 
 The local build will run after a fresh checkout of the given project stored in
@@ -418,7 +418,7 @@ $(print_separator)
 ${HEADER_COLOR}Measure build results${RESTORE}
 
 At this point, you are ready to measure in Gradle Enterprise how well your
-build leverages Gradle Enterprise's remote build cache for the set of Gradle tasks invoked
+build leverages Gradle Enterprise's remote build cache for the set of Gradle goals invoked
 from a CI agent and then on a local machine.
 
 ${USER_ACTION_COLOR}Press <Enter> to measure the build results.${RESTORE}
