@@ -63,7 +63,6 @@ execute() {
 
   print_bl
   print_summary
-  print_bl
 }
 
 wizard_execute() {
@@ -270,4 +269,3 @@ EOF
 
 process_arguments "$@"
 main
-

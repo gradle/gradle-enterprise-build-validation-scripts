@@ -64,7 +64,6 @@ execute() {
 
   print_bl
   print_summary
-  print_bl
 }
 
 wizard_execute() {
