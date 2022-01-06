@@ -38,7 +38,7 @@ tasks.register<Download>("downloadArgbash") {
 
 tasks.register<Copy>("unpackArgbash") {
     group = "argbash"
-    description = "Unpacks the downloaded Argbash archive."
+    description = "Unpacks Argbash."
     from(zipTree(tasks.getByName("downloadArgbash").outputs.files.singleFile))
     into(layout.buildDirectory.dir("argbash"))
     dependsOn("downloadArgbash")
@@ -47,30 +47,23 @@ tasks.register<Copy>("unpackArgbash") {
 tasks.register<ApplyArgbash>("generateBashCliParsers") {
     group = "argbash"
     description = "Uses Argbash to generate Bash command line argument parsing code."
-
+    argbashVersion.set(project.extra["argbashVersion"].toString())
     scriptTemplates.set(fileTree("components/scripts") {
         include("**/*-cli-parser.m4")
         exclude("gradle/.data/")
         exclude("maven/.data/")
     })
-
     supportingTemplates.set(fileTree("components/scripts") {
         include("**/*.m4")
         exclude("gradle/.data/")
         exclude("maven/.data/")
     })
-
-    argbashVersion.set(project.extra["argbashVersion"].toString())
-
     dependsOn("unpackArgbash")
 }
 
 tasks.register<Copy>("copyGradleScripts") {
     group = "build"
     description = "Copies the Gradle source and generated scripts to output directory."
-    dependsOn(gradle.includedBuild("fetch-build-scan-data-cmdline-tool").task(":shadowJar"))
-    dependsOn("generateBashCliParsers")
-
     from(layout.projectDirectory.dir("LICENSE"))
     from(layout.projectDirectory.dir("components/scripts/gradle")) {
         exclude(".data/")
@@ -91,14 +84,13 @@ tasks.register<Copy>("copyGradleScripts") {
         into("lib/export-api-clients/")
     }
     into(layout.buildDirectory.dir("scripts/gradle"))
+    dependsOn(gradle.includedBuild("fetch-build-scan-data-cmdline-tool").task(":shadowJar"))
+    dependsOn("generateBashCliParsers")
 }
 
 tasks.register<Copy>("copyMavenScripts") {
     group = "build"
     description = "Copies the Maven source and generated scripts to output directory."
-    dependsOn(gradle.includedBuild("fetch-build-scan-data-cmdline-tool").task(":shadowJar"))
-    dependsOn("generateBashCliParsers")
-
     from(layout.projectDirectory.dir("LICENSE"))
     from(layout.projectDirectory.dir("components/scripts/maven")) {
         exclude(".data/")
@@ -122,6 +114,8 @@ tasks.register<Copy>("copyMavenScripts") {
         into("lib/maven/")
     }
     into(layout.buildDirectory.dir("scripts/maven"))
+    dependsOn(gradle.includedBuild("fetch-build-scan-data-cmdline-tool").task(":shadowJar"))
+    dependsOn("generateBashCliParsers")
 }
 
 tasks.register<Task>("copyScripts") {
@@ -136,7 +130,6 @@ tasks.register<Zip>("assembleGradleScripts") {
     description = "Packages the Gradle experiment scripts in a zip archive."
     archiveBaseName.set("gradle-enterprise-gradle-build-validation")
     archiveFileName.set("${archiveBaseName.get()}.zip")
-
     from(layout.buildDirectory.dir("scripts/gradle")) {
         exclude("**/.data")
     }
@@ -150,7 +143,6 @@ tasks.register<Zip>("assembleMavenScripts") {
     description = "Packages the Maven experiment scripts in a zip archive."
     archiveBaseName.set("gradle-enterprise-maven-build-validation")
     archiveFileName.set("${archiveBaseName.get()}.zip")
-
     from(layout.buildDirectory.dir("scripts/maven")) {
         exclude("**/.data")
     }
@@ -172,13 +164,11 @@ tasks.register<Shellcheck>("shellcheckGradleScripts") {
         exclude("lib/")
     }
     workingDir = file("${buildDir}/scripts/gradle")
-
     reports {
         html.destination = file("${buildDir}/reports/shellcheck-gradle/shellcheck.html")
         xml.destination = file("${buildDir}/reports/shellcheck-gradle/shellcheck.xml")
         txt.destination = file("${buildDir}/reports/shellcheck-gradle/shellcheck.txt")
     }
-
     dependsOn("generateBashCliParsers")
     dependsOn("copyGradleScripts")
 }
@@ -191,13 +181,11 @@ tasks.register<Shellcheck>("shellcheckMavenScripts") {
         exclude("lib/")
     }
     workingDir = file("${buildDir}/scripts/maven")
-
     reports {
         html.destination = file("${buildDir}/reports/shellcheck-maven/shellcheck.html")
         xml.destination = file("${buildDir}/reports/shellcheck-maven/shellcheck.xml")
         txt.destination = file("${buildDir}/reports/shellcheck-maven/shellcheck.txt")
     }
-
     dependsOn("generateBashCliParsers")
     dependsOn("copyMavenScripts")
 }
