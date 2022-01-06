@@ -161,6 +161,7 @@ read_build_params_from_build_validation_data() {
   fi
   if [ -z "${tasks}" ]; then
     tasks="${requested_tasks[0]}"
+    remove_clean_from_tasks
   fi
 }
 
@@ -193,10 +194,10 @@ execute_build() {
   fi
 
   # shellcheck disable=SC2206  # we want tasks to expand with word splitting in this case
-  args+=(${tasks})
+  args+=(clean ${tasks})
 
   info "Running build:"
-  info "./gradlew --build-cache -Dscan.tag.${EXP_SCAN_TAG} -Dscan.value.runId=${RUN_ID} ${tasks}$(print_extra_args)"
+  info "./gradlew --build-cache -Dscan.tag.${EXP_SCAN_TAG} -Dscan.value.runId=${RUN_ID} clean ${tasks}$(print_extra_args)"
 
   invoke_gradle "${args[@]}"
 }

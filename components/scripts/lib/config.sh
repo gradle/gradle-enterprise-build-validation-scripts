@@ -24,11 +24,13 @@ process_arguments() {
   # shellcheck disable=SC2154
   if [ -n "${_arg_tasks+x}" ]; then
     tasks="${_arg_tasks}"
+    remove_clean_from_tasks
   fi
 
   # shellcheck disable=SC2154
   if [ -n "${_arg_goals+x}" ]; then
     tasks="${_arg_goals}"
+    remove_clean_from_tasks
   fi
 
   if [ -n "${_arg_args+x}" ]; then
@@ -161,10 +163,12 @@ collect_root_project_directory() {
 
 collect_gradle_tasks() {
   prompt_for_setting "What are the Gradle tasks to invoke?" "${tasks}" "assemble" tasks
+  remove_clean_from_tasks
 }
 
 collect_maven_goals() {
   prompt_for_setting "What are the Maven goals to invoke?" "${tasks}" "package" tasks
+  remove_clean_from_tasks
 }
 
 collect_extra_args() {
@@ -181,6 +185,12 @@ collect_mapping_file() {
   if [[ "${mapping_file}" == "${default_mapping_file}" ]]; then
     mapping_file=''
   fi
+}
+
+remove_clean_from_tasks() {
+  tasks=${tasks//clean }
+  tasks=${tasks// clean}
+  tasks=${tasks//clean}
 }
 
 print_extra_args() {
