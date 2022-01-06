@@ -28,5 +28,5 @@ jobs:
           automatic_release_tag: "development-latest"
           prerelease: true
           title: "Build Validation Scripts - Development Build"
-          files: "distribution-build/build/distributions/*.zip"
+          files: "build/distributions/*.zip"
 
