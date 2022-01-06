@@ -160,6 +160,7 @@ read_build_params_from_build_validation_data() {
   fi
   if [ -z "${tasks}" ]; then
     tasks="${requested_tasks[0]}"
+    remove_clean_from_tasks
   fi
 }
 
