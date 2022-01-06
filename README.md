@@ -8,13 +8,9 @@ There are currently [five experiments for Gradle](Gradle.md) and [four experimen
 
 > Gradle Enterprise and its Build Scan:tm: service are instrumental to running these validation scripts. You can learn more about Gradle Enterprise at https://gradle.com.
 
-## Gradle
+## Usage
 
-You can find detailed instructions on how to use the build validation scripts for Gradle [here](Gradle.md).
-
-## Maven
-
-You can find detailed instructions on how to use the build validation scripts for Maven [here](Maven.md).
+There are separate instructions for the [Gradle build validation scripts](#Gradle.md) and the [Maven build validation scripts](#Maven.md).
 
 ## Building from source
 
