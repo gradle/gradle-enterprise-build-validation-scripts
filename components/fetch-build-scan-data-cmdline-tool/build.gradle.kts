@@ -19,7 +19,7 @@ dependencies {
 
     implementation("com.google.guava:guava:30.1.1-jre")
     implementation("info.picocli:picocli:4.6.1")
-    annotationProcessor("info.picocli:picocli-codegen:4.6.1")
+    annotationProcessor("info.picocli:picocli-codegen:4.6.2")
 }
 
 group = "com.gradle"
