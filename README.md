@@ -10,17 +10,14 @@ There are currently five experiments for Gradle and four experiments for Maven. 
 
 ## Usage
 
-The build validation scripts are bundled and documented separately for Gradle and Maven. There are specific instructions on
+The build validation scripts are available as pre-built, executable Bash scripts. The build validation scripts are bundled and documented separately for Gradle and Maven. There are specific instructions on
+
 * how to use the [build validation scripts for Gradle](Gradle.md)
 * how to use the [build validation scripts for Maven](Maven.md)
 
 ## Building from source
 
-The build validation scripts are available as pre-built, executable Bash scripts. You can also assemble the build validation scripts from source via a Gradle build. Run the following command from the root folder of this GitHub repository.
-
-```bash
-./gradlew build
-```
+You can also assemble the build validation scripts from source by running `./gradlew build` from the root folder of this repository.
 
 Once the build has finished successfully, you can find two .zip files in the build/distributions folder: one .zip file containing the build validation scripts for Gradle and one .zip file containing the build validation scripts for Maven.
 
