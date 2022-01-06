@@ -181,6 +181,21 @@ validate_build_config() {
   fi
 }
 
+# Overrides build_scan.sh#read_build_data_from_current_dir
+read_build_data_from_current_dir() {
+  git_repos+=("$(git_get_remote_url)")
+  git_branches+=("${git_branch:-$(git_get_branch)}")
+  git_commit_ids+=("$(git_get_commit_id)")
+
+  # Add clean to the requested tasks if the CI build also invoked clean
+  # We always invoke clean on the local build, but it's not really a "difference" if CI doesn't invoke clean.
+  if [[ "${requested_tasks[0]}" == *clean* ]]; then
+    requested_tasks+=("clean ${tasks}")
+  else
+    requested_tasks+=("${tasks}")
+  fi
+}
+
 execute_build() {
   local args
   args=(-Dgradle.cache.local.enabled=false -Dgradle.cache.remote.enabled=true)
