@@ -10,24 +10,19 @@ There are currently [five experiments for Gradle](Gradle.md) and [four experimen
 
 ## Usage
 
-There are separate instructions for the [Gradle build validation scripts](#Gradle.md) and the [Maven build validation scripts](#Maven.md).
+There are separate, detailed instructions on how to use the [build validation scripts for Gradle](#Gradle.md) and the [build validation scripts for Maven](#Maven.md).
 
 ## Building from source
 
-To build the scripts from source, run:
+The build validation scripts are available as pre-built, executable Bash scripts. You can also assemble the build validation scripts from source via a Gradle build. Run the following command from the root folder of this GitHub repository.
 
 ```bash
 ./gradlew build
 ```
 
-The build creates the following zip files, which contain the fully assembled scripts:
+Once the build has finished successfully, you can find two .zip files in the build/distributions folder: one .zip file containing the build validation scripts for Gradle and one .zip file containing the build validation scripts for Maven.
 
-```
-build/distributions/gradle-enterprise-gradle-build-validation.zip
-build/distributions/gradle-enterprise-maven-build-validation.zip
-```
-
-> If the build fails with _You need the 'autom4te' utility_, then you will need to install 'autoconf' before you can build the project. On a Mac with Homebrew, you can install autoconf with `brew install autoconf`.
+If the build fails with _You need the 'autom4te' utility_, then you will need to install 'autoconf' before you can build the project. For example, on macOS with Homebrew, you can install autoconf with `brew install autoconf`.
 
 ## License
 
