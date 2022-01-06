@@ -10,7 +10,7 @@ repositories {
 }
 
 dependencies {
-    implementation(platform("com.squareup.okhttp3:okhttp-bom:4.9.0"))
+    implementation(platform("com.squareup.okhttp3:okhttp-bom:4.9.3"))
     implementation("com.squareup.okhttp3:okhttp")
     implementation("com.squareup.okhttp3:okhttp-sse")
 
