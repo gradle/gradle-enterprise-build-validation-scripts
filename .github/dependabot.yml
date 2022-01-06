@@ -12,3 +12,15 @@ updates:
       - gradle-plugin-portal
     schedule:
       interval: "daily"
+  - package-ecosystem: "gradle"
+    directory: "components/capture-published-build-scan-maven-extension"
+    registries:
+      - gradle-plugin-portal
+    schedule:
+      interval: "daily"
+  - package-ecosystem: "gradle"
+    directory: "components/fetch-build-scan-data-cmdline-tool"
+    registries:
+      - gradle-plugin-portal
+    schedule:
+      interval: "daily"
