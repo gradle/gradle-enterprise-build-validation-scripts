@@ -7,7 +7,7 @@ repositories {
 }
 
 dependencies {
-    annotationProcessor("org.eclipse.sisu:org.eclipse.sisu.inject:0.3.4")
+    annotationProcessor("org.eclipse.sisu:org.eclipse.sisu.inject:0.3.5")
     compileOnly("org.apache.maven:maven-core:3.8.2")
     compileOnly("org.codehaus.plexus:plexus-component-annotations:2.1.1")
     compileOnly("com.gradle:gradle-enterprise-maven-extension:1.12")
