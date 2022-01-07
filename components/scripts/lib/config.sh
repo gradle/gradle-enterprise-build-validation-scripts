@@ -188,9 +188,18 @@ collect_mapping_file() {
 }
 
 remove_clean_from_tasks() {
-  tasks=${tasks//clean }
-  tasks=${tasks// clean}
-  tasks=${tasks//clean}
+  tasks=$(remove_clean_task "${tasks}")
+}
+
+remove_clean_task() {
+  local t
+  t=$1
+  t=${t//clean }
+  t=${t// clean}
+  t=${t//clean}
+
+  # Use xargs to trim leading and trailing whitespace
+  echo -n "${t}" | xargs
 }
 
 print_extra_args() {

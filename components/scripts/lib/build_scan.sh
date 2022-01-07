@@ -179,7 +179,7 @@ fetch_and_read_build_validation_data() {
      git_repos+=("$field_5")
      git_branches+=("$field_6")
      git_commit_ids+=("$field_7")
-     requested_tasks+=("$field_8")
+     requested_tasks+=("$(remove_clean_task "${field_8}")")
      build_outcomes+=("$field_9")
      # shellcheck disable=SC2034 # not all scripts use this data
      remote_build_cache_urls=("${field_10}")
