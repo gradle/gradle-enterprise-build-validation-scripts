@@ -87,11 +87,11 @@ void addCustomValueAndSearchLink(buildScan, String label, String value) {
 }
 
 String appendIfMissing(String str, String suffix) {
-    return str.endsWith(suffix) ? str : str + suffix;
+    return str.endsWith(suffix) ? str : str + suffix
 }
 
 String urlEncode(String str) {
-    return URLEncoder.encode(str, StandardCharsets.UTF_8.name());
+    return URLEncoder.encode(str, StandardCharsets.UTF_8.name())
 }
 
 void logWarningMissingCommonCustomUserDataGradlePlugin() {
