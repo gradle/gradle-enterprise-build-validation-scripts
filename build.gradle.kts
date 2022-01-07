@@ -1,10 +1,8 @@
 import com.felipefzdz.gradle.shellcheck.Shellcheck
-import com.github.breadmoirai.githubreleaseplugin.GithubReleaseTask
 
 plugins {
     id("base")
     id("com.felipefzdz.gradle.shellcheck") version "1.4.6"
-    id("com.github.breadmoirai.github-release") version "2.2.12"
 }
 
 repositories {
@@ -204,20 +202,4 @@ tasks.register<Shellcheck>("shellcheckMavenScripts") {
 tasks.named("check") {
     dependsOn("shellcheckGradleScripts")
     dependsOn("shellcheckMavenScripts")
-}
-
-githubRelease {
-    token((findProperty("github.access.token") ?: System.getenv("GITHUB_ACCESS_TOKEN") ?: "").toString())
-    owner.set("gradle")
-    repo.set("gradle-enterprise-build-validation-scripts")
-    targetCommitish.set("main")
-    tagName.set("development-latest")
-    releaseName.set("Build Validation Scripts - Development Build")
-    prerelease.set(true)
-    overwrite.set(true)
-    body.set(githubRelease.changelog().call())
-    releaseAssets.from("${buildDir}/distributions/*.zip")
-}
-tasks.named("githubRelease") {
-    dependsOn("build")
 }
