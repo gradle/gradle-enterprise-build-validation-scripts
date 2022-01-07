@@ -205,7 +205,7 @@ execute_build() {
   fi
 
   # shellcheck disable=SC2206  # we want tasks to expand with word splitting in this case
-  args+=(${tasks})
+  args+=(clean ${tasks})
 
   info "Running build:"
   info "./mvnw -Dscan.tag.${EXP_SCAN_TAG} -Dscan.value.runId=${RUN_ID} clean ${tasks}$(print_extra_args)"
