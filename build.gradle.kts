@@ -102,7 +102,7 @@ tasks.register<Copy>("copyMavenScripts") {
     from(layout.projectDirectory.dir("components/scripts/")) {
         include("README.md")
         include("lib/**")
-        exclude("gradle")
+        exclude("lib/gradle-init-scripts")
         exclude("lib/cli-parsers")
         exclude("**/*.m4")
         filter { line: String -> line.replace("/../lib", "/lib").replace("<HEAD>","${project.version}") }
