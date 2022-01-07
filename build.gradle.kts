@@ -114,7 +114,7 @@ tasks.register<Copy>("copyMavenScripts") {
         into("lib/export-api-clients/")
     }
     from(mavenComponents) {
-        into("lib/maven/")
+        into("lib/maven-libs/")
     }
     into(layout.buildDirectory.dir("scripts/maven"))
     dependsOn("generateBashCliParsers")

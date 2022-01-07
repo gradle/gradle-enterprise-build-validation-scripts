@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-readonly CAPTURE_BUILD_SCANS_EXTENSION_JAR="${LIB_DIR}/maven/capture-published-build-scan-maven-extension-${SCRIPT_VERSION}.jar"
+readonly CAPTURE_BUILD_SCANS_EXTENSION_JAR="${LIB_DIR}/maven-libs/capture-published-build-scan-maven-extension-${SCRIPT_VERSION}.jar"
 
 find_maven_executable() {
   if [ -f "./mvnw" ]; then
@@ -31,7 +31,7 @@ invoke_maven() {
     #  - the Common Custom User Data Maven extension
     #  - the capture-publish-build-scan Maven extension
     extension_classpath=""
-    for jar in "${LIB_DIR}"/maven/*; do
+    for jar in "${LIB_DIR}"/maven-libs/*; do
       if [ "${extension_classpath}" == "" ]; then
         extension_classpath="${jar}"
       else
