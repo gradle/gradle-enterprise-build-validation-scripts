@@ -19,14 +19,7 @@ jobs:
           distribution: 'adopt'
       - name: Build with Gradle
         uses: gradle/gradle-build-action@v2
+        env:
+          GITHUB_ACCESS_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
         with:
-          arguments: build
-      - name: Create Development GitHub Release
-        uses: "marvinpinto/action-automatic-releases@v1.2.0"
-        with:
-          repo_token: "${{ secrets.GITHUB_TOKEN }}"
-          automatic_release_tag: "development-latest"
-          prerelease: true
-          title: "Build Validation Scripts - Development Build"
-          files: "build/distributions/*.zip"
-
+          arguments: --stacktrace --info githubRelease
