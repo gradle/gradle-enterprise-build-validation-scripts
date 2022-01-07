@@ -17,7 +17,7 @@ dependencies {
     implementation(platform("com.fasterxml.jackson:jackson-bom:2.13.1"))
     implementation("com.fasterxml.jackson.core:jackson-databind")
 
-    implementation("com.google.guava:guava:30.1.1-jre")
+    implementation("com.google.guava:guava:31.0.1-jre")
     implementation("info.picocli:picocli:4.6.1")
     annotationProcessor("info.picocli:picocli-codegen:4.6.2")
 }
