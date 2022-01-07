@@ -208,13 +208,6 @@ tasks.named("check") {
 
 githubRelease {
     token((findProperty("github.access.token") ?: System.getenv("GITHUB_ACCESS_TOKEN") ?: "").toString())
-}
-
-tasks.register<GithubReleaseTask>("createDevelopmentRelease") {
-    group = "publishing"
-    description = "Creates a development release in GitHub"
-    dependsOn("build")
-
     owner.set("gradle")
     repo.set("gradle-enterprise-build-validation-scripts")
     tagName.set("development-latest")
@@ -223,4 +216,7 @@ tasks.register<GithubReleaseTask>("createDevelopmentRelease") {
     overwrite.set(true)
     body.set(githubRelease.changelog().call())
     releaseAssets.from("${buildDir}/distributions/*.zip")
+}
+tasks.named("githubRelease") {
+    dependsOn("build")
 }
