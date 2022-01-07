@@ -210,6 +210,7 @@ githubRelease {
     token((findProperty("github.access.token") ?: System.getenv("GITHUB_ACCESS_TOKEN") ?: "").toString())
     owner.set("gradle")
     repo.set("gradle-enterprise-build-validation-scripts")
+    targetCommitish.set("main")
     tagName.set("development-latest")
     releaseName.set("Build Validation Scripts - Development Build")
     prerelease.set(true)
