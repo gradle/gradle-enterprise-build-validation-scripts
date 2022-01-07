@@ -1,13 +1,27 @@
-import de.undercouch.gradle.tasks.download.Download
 import com.felipefzdz.gradle.shellcheck.Shellcheck
 
 plugins {
     id("base")
-    id("de.undercouch.download") version "4.1.2"
     id("com.felipefzdz.gradle.shellcheck") version "1.4.6"
 }
 
 repositories {
+    exclusiveContent {
+        forRepository {
+            ivy {
+                url = uri("https://github.com/matejak/")
+                patternLayout {
+                    artifact("[module]/archive/refs/tags/[revision].[ext]")
+                }
+                metadataSources {
+                    artifact()
+                }
+            }
+        }
+        filter {
+            includeModule("argbash", "argbash")
+        }
+    }
     mavenCentral()
 }
 
@@ -15,37 +29,30 @@ allprojects {
     version = "0.0.1-SNAPSHOT"
 }
 
+val argbash by configurations.creating
 val commonComponents by configurations.creating
 val mavenComponents by configurations.creating
 
+val argbashVersion by extra("2.10.0")
+
 dependencies {
+    argbash("argbash:argbash:${argbashVersion}@zip")
     commonComponents(project(path =":fetch-build-scan-data-cmdline-tool", configuration = "shadow"))
     mavenComponents(project(":capture-published-build-scan-maven-extension"))
     mavenComponents("com.gradle:gradle-enterprise-maven-extension:1.12")
     mavenComponents("com.gradle:common-custom-user-data-maven-extension:1.9")
 }
 
-val argbashVersion by extra("2.10.0")
-
 shellcheck {
     additionalArguments = "-a -x"
     shellcheckVersion = "v0.7.2"
 }
 
-tasks.register<Download>("downloadArgbash") {
-    group = "argbash"
-    description = "Downloads Argbash."
-    src("https://github.com/matejak/argbash/archive/refs/tags/${argbashVersion}.zip")
-    dest(file("${buildDir}/argbash/argbash-${argbashVersion}.zip"))
-    overwrite(false)
-}
-
 tasks.register<Copy>("unpackArgbash") {
     group = "argbash"
     description = "Unpacks Argbash."
-    from(zipTree(tasks.getByName("downloadArgbash").outputs.files.singleFile))
+    from(zipTree(argbash.singleFile))
     into(layout.buildDirectory.dir("argbash"))
-    dependsOn("downloadArgbash")
 }
 
 tasks.register<ApplyArgbash>("generateBashCliParsers") {
