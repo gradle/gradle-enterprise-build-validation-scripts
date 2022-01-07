@@ -23,4 +23,3 @@ jobs:
           GITHUB_ACCESS_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
         with:
           arguments: createDevelopmentRelease
-          build-root-directory: distribution-build
