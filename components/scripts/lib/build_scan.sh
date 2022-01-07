@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+readonly FETCH_BUILD_SCAN_DATA_JAR="${LIB_DIR}/export-api-clients/fetch-build-scan-data-cmdline-tool-${SCRIPT_VERSION}-all.jar"
+
 # Arrays used by callers to access the fetched build scan data
 project_names=()
 base_urls=()
@@ -126,7 +128,7 @@ fi
   }
   APP_ARGS=$(save "$@")
 
-  CLASSPATH="${LIB_DIR}/export-api-clients/fetch-build-scan-data-cmdline-tool-1.0.0-SNAPSHOT-all.jar"
+  CLASSPATH="${FETCH_BUILD_SCAN_DATA_JAR}"
   # Collect all arguments for the java command, following the shell quoting and substitution rules
   eval set -- -Dpicocli.ansi=true -jar "\"$CLASSPATH\"" "$APP_ARGS"
 

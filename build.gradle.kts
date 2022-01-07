@@ -11,12 +11,16 @@ repositories {
     mavenCentral()
 }
 
-version = "0.0.1-SNAPSHOT"
+allprojects {
+    version = "0.0.1-SNAPSHOT"
+}
 
+val commonComponents by configurations.creating
 val mavenComponents by configurations.creating
 
 dependencies {
-    mavenComponents("com.gradle:capture-published-build-scan-maven-extension:1.0.0-SNAPSHOT")
+    commonComponents(project(path =":fetch-build-scan-data-cmdline-tool", configuration = "shadow"))
+    mavenComponents(project(":capture-published-build-scan-maven-extension"))
     mavenComponents("com.gradle:gradle-enterprise-maven-extension:1.12")
     mavenComponents("com.gradle:common-custom-user-data-maven-extension:1.9")
 }
@@ -80,11 +84,10 @@ tasks.register<Copy>("copyGradleScripts") {
     from(layout.buildDirectory.dir("generated/scripts/lib/cli-parsers/gradle")) {
         into("lib/")
     }
-    from(gradle.includedBuild("fetch-build-scan-data-cmdline-tool").projectDir.resolve("build/libs/fetch-build-scan-data-cmdline-tool-1.0.0-SNAPSHOT-all.jar")) {
+    from(commonComponents) {
         into("lib/export-api-clients/")
     }
     into(layout.buildDirectory.dir("scripts/gradle"))
-    dependsOn(gradle.includedBuild("fetch-build-scan-data-cmdline-tool").task(":shadowJar"))
     dependsOn("generateBashCliParsers")
 }
 
@@ -107,14 +110,13 @@ tasks.register<Copy>("copyMavenScripts") {
     from(layout.buildDirectory.dir("generated/scripts/lib/cli-parsers/maven")) {
         into("lib/")
     }
-    from(gradle.includedBuild("fetch-build-scan-data-cmdline-tool").projectDir.resolve("build/libs/fetch-build-scan-data-cmdline-tool-1.0.0-SNAPSHOT-all.jar")) {
+    from(commonComponents) {
         into("lib/export-api-clients/")
     }
     from(mavenComponents) {
         into("lib/maven/")
     }
     into(layout.buildDirectory.dir("scripts/maven"))
-    dependsOn(gradle.includedBuild("fetch-build-scan-data-cmdline-tool").task(":shadowJar"))
     dependsOn("generateBashCliParsers")
 }
 
