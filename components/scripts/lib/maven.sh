@@ -43,9 +43,8 @@ invoke_maven() {
   args+=(
     -Dmaven.ext.class.path="${extension_classpath}"
     -Dcom.gradle.enterprise.build_validation.experimentDir="${EXP_DIR}"
-    "-Dscan.tag.${EXP_SCAN_TAG}"
-    "-Dscan.value.Experiment id=${EXP_SCAN_TAG}"
-    "-Dscan.value.Experiment run id=${RUN_ID}"
+    -Dcom.gradle.enterprise.build_validation.expId="${EXP_SCAN_TAG}"
+    -Dcom.gradle.enterprise.build_validation.runId="${RUN_ID}"
     -Dorg.slf4j.simpleLogger.log.gradle.goal.cache=debug
   )
   if [ -n "${ge_server}" ]; then
