@@ -174,9 +174,9 @@ tasks.register<Shellcheck>("shellcheckGradleScripts") {
     }
     workingDir = file("${buildDir}/scripts/gradle")
     reports {
-        html.destination = file("${buildDir}/reports/shellcheck-gradle/shellcheck.html")
-        xml.destination = file("${buildDir}/reports/shellcheck-gradle/shellcheck.xml")
-        txt.destination = file("${buildDir}/reports/shellcheck-gradle/shellcheck.txt")
+        html.outputLocation.set(file("${buildDir}/reports/shellcheck-gradle/shellcheck.html"))
+        xml.outputLocation.set(file("${buildDir}/reports/shellcheck-gradle/shellcheck.xml"))
+        txt.outputLocation.set(file("${buildDir}/reports/shellcheck-gradle/shellcheck.txt"))
     }
     dependsOn("generateBashCliParsers")
     dependsOn("copyGradleScripts")
@@ -191,9 +191,9 @@ tasks.register<Shellcheck>("shellcheckMavenScripts") {
     }
     workingDir = file("${buildDir}/scripts/maven")
     reports {
-        html.destination = file("${buildDir}/reports/shellcheck-maven/shellcheck.html")
-        xml.destination = file("${buildDir}/reports/shellcheck-maven/shellcheck.xml")
-        txt.destination = file("${buildDir}/reports/shellcheck-maven/shellcheck.txt")
+        html.outputLocation.set(file("${buildDir}/reports/shellcheck-maven/shellcheck.html"))
+        xml.outputLocation.set(file("${buildDir}/reports/shellcheck-maven/shellcheck.xml"))
+        txt.outputLocation.set(file("${buildDir}/reports/shellcheck-maven/shellcheck.txt"))
     }
     dependsOn("generateBashCliParsers")
     dependsOn("copyMavenScripts")
