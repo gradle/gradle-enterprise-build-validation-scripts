@@ -193,13 +193,14 @@ remove_clean_from_tasks() {
 
 remove_clean_task() {
   local t
-  t=$1
-  t=${t//clean }
-  t=${t// clean}
-  t=${t//clean}
+  IFS=' ' read -r -a t <<< "$1"
+  for i in "${!t[@]}"; do
+    if [[ "${t[i]}" == "clean" ]]; then
+      unset 't[i]'
+    fi
+  done
 
-  # Use xargs to trim leading and trailing whitespace
-  echo -n "${t}" | xargs
+  echo -n "${t[@]}"
 }
 
 print_extra_args() {
