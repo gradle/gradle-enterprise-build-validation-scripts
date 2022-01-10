@@ -225,7 +225,7 @@ githubRelease {
     prerelease.set(true)
     overwrite.set(true)
     body.set(layout.projectDirectory.file("release/changes.md").asFile.readText().trim())
-    releaseAssets(layout.buildDirectory.files("distributions/*.zip"))
+    releaseAssets(tasks.getByName("assembleGradleScripts").outputs, tasks.getByName("assembleMavenScripts").outputs)
 }
 tasks.named("githubRelease") {
     dependsOn("build")
