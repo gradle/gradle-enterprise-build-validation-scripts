@@ -109,7 +109,7 @@ tasks.register<Copy>("copyMavenScripts") {
     group = "build"
     description = "Copies the Maven source and generated scripts to output directory."
 
-    from(layout.projectDirectory.dir("LICENSE"))
+    from(layout.projectDirectory.file("LICENSE"))
     from(layout.projectDirectory.dir("release").file("version.txt"))
     rename("version.txt", "VERSION")
 
@@ -220,12 +220,12 @@ githubRelease {
     owner.set("gradle")
     repo.set("gradle-enterprise-build-validation-scripts")
     targetCommitish.set("main")
-    tagName.set("development-latest")
+    tagName.set("development-release")
     releaseName.set("Build Validation Scripts - Development Build")
     prerelease.set(true)
     overwrite.set(true)
-    body.set(githubRelease.changelog().call())
-    releaseAssets.from("${buildDir}/distributions/*.zip")
+    body.set(layout.projectDirectory.file("release/changes.md").asFile.readText().trim())
+    releaseAssets(layout.buildDirectory.files("distributions/*.zip"))
 }
 tasks.named("githubRelease") {
     dependsOn("build")
