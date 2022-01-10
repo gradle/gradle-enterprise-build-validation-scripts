@@ -27,8 +27,9 @@ repositories {
     mavenCentral()
 }
 
+val appVersion = layout.projectDirectory.file("release/version.txt").asFile.readText().trim()
 allprojects {
-    version = "0.0.1-SNAPSHOT"
+    version = appVersion
 }
 
 val argbash by configurations.creating
@@ -77,7 +78,11 @@ tasks.register<ApplyArgbash>("generateBashCliParsers") {
 tasks.register<Copy>("copyGradleScripts") {
     group = "build"
     description = "Copies the Gradle source and generated scripts to output directory."
-    from(layout.projectDirectory.dir("LICENSE"))
+
+    from(layout.projectDirectory.file("LICENSE"))
+    from(layout.projectDirectory.dir("release").file("version.txt"))
+    rename("version.txt", "VERSION")
+
     from(layout.projectDirectory.dir("components/scripts/gradle")) {
         exclude(".data/")
         filter { line: String -> line.replace("/../lib", "/lib").replace("<HEAD>","${project.version}") }
@@ -103,7 +108,11 @@ tasks.register<Copy>("copyGradleScripts") {
 tasks.register<Copy>("copyMavenScripts") {
     group = "build"
     description = "Copies the Maven source and generated scripts to output directory."
+
     from(layout.projectDirectory.dir("LICENSE"))
+    from(layout.projectDirectory.dir("release").file("version.txt"))
+    rename("version.txt", "VERSION")
+
     from(layout.projectDirectory.dir("components/scripts/maven")) {
         exclude(".data/")
         filter { line: String -> line.replace("/../lib", "/lib").replace("<HEAD>","${project.version}") }
