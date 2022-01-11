@@ -172,7 +172,7 @@ tasks.named("assemble") {
 tasks.register<Shellcheck>("shellcheckGradleScripts") {
     group = "verification"
     description = "Perform quality checks on Gradle build validation scripts using Shellcheck."
-    sourceFiles = fileTree("${buildDir}/scripts/gradle") {
+    sourceFiles = tasks.getByName("copyGradleScripts").outputs.files.asFileTree.matching {
         include("**/*.sh")
         exclude("lib/")
     }
@@ -182,13 +182,12 @@ tasks.register<Shellcheck>("shellcheckGradleScripts") {
         xml.outputLocation.set(file("${buildDir}/reports/shellcheck-gradle/shellcheck.xml"))
         txt.outputLocation.set(file("${buildDir}/reports/shellcheck-gradle/shellcheck.txt"))
     }
-    dependsOn("copyGradleScripts")
 }
 
 tasks.register<Shellcheck>("shellcheckMavenScripts") {
     group = "verification"
     description = "Perform quality checks on Maven build validation scripts using Shellcheck."
-    sourceFiles = fileTree("${buildDir}/scripts/maven") {
+    sourceFiles = tasks.getByName("copyMavenScripts").outputs.files.asFileTree.matching {
         include("**/*.sh")
         exclude("lib/")
     }
@@ -198,7 +197,6 @@ tasks.register<Shellcheck>("shellcheckMavenScripts") {
         xml.outputLocation.set(file("${buildDir}/reports/shellcheck-maven/shellcheck.xml"))
         txt.outputLocation.set(file("${buildDir}/reports/shellcheck-maven/shellcheck.txt"))
     }
-    dependsOn("copyMavenScripts")
 }
 
 tasks.named("check") {
