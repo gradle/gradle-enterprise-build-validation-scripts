@@ -151,12 +151,8 @@ tasks.register<Zip>("assembleGradleScripts") {
     description = "Packages the Gradle experiment scripts in a zip archive."
     archiveBaseName.set("gradle-enterprise-gradle-build-validation")
     archiveFileName.set("${archiveBaseName.get()}.zip")
-    from(layout.buildDirectory.dir("scripts/gradle")) {
-        exclude("**/.data")
-    }
+    from(tasks.getByName("copyGradleScripts"))
     into(archiveBaseName.get())
-    dependsOn("generateBashCliParsers")
-    dependsOn("copyGradleScripts")
 }
 
 tasks.register<Zip>("assembleMavenScripts") {
@@ -164,12 +160,8 @@ tasks.register<Zip>("assembleMavenScripts") {
     description = "Packages the Maven experiment scripts in a zip archive."
     archiveBaseName.set("gradle-enterprise-maven-build-validation")
     archiveFileName.set("${archiveBaseName.get()}.zip")
-    from(layout.buildDirectory.dir("scripts/maven")) {
-        exclude("**/.data")
-    }
+    from(tasks.getByName("copyMavenScripts"))
     into(archiveBaseName.get())
-    dependsOn("generateBashCliParsers")
-    dependsOn("copyMavenScripts")
 }
 
 tasks.named("assemble") {
