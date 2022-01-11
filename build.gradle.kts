@@ -52,7 +52,7 @@ val unpackArgbash = tasks.register<Copy>("unpackArgbash") {
     group = "argbash"
     description = "Unpacks Argbash."
     from(zipTree(argbash.singleFile)) {
-        // All files in the zip are under an "argbash-VERSION/" directory, but we really just want the files.
+        // All files in the zip are under an "argbash-VERSION/" directory. We only want everything under this directory.
         // We can remove the top-level directory while unpacking the zip by dropping the first directory in each file's relative path.
         eachFile {
             relativePath = RelativePath(true, *relativePath.segments.drop(1).toTypedArray())
