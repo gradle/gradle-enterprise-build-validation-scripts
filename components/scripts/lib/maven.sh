@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-readonly CAPTURE_BUILD_SCAN_URL_JAR="${LIB_DIR}/maven-libs/capture-published-build-scan-maven-extension-${SCRIPT_VERSION}.jar"
+readonly CAPTURE_BUILD_SCAN_URL_JAR="${LIB_DIR}/maven-libs/capture-build-scan-url-maven-extension-${SCRIPT_VERSION}.jar"
 
 find_maven_executable() {
   if [ -f "./mvnw" ]; then
