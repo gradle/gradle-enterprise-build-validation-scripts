@@ -92,7 +92,6 @@ tasks.register<Copy>("copyGradleScripts") {
         include("lib/**")
         exclude("maven")
         exclude("lib/cli-parsers")
-        exclude("**/*.m4")
         filter { line: String -> line.replace("/../lib", "/lib").replace("<HEAD>","${project.version}") }
     }
     from(layout.buildDirectory.dir("generated/scripts/lib/cli-parsers/gradle")) {
@@ -123,7 +122,6 @@ tasks.register<Copy>("copyMavenScripts") {
         exclude("gradle")
         exclude("lib/gradle-init-scripts")
         exclude("lib/cli-parsers")
-        exclude("**/*.m4")
         filter { line: String -> line.replace("/../lib", "/lib").replace("<HEAD>","${project.version}") }
     }
     from(layout.buildDirectory.dir("generated/scripts/lib/cli-parsers/maven")) {
