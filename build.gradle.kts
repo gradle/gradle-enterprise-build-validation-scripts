@@ -212,6 +212,14 @@ tasks.named("check") {
     dependsOn("shellcheckMavenScripts")
 }
 
+tasks.register<CreateGitTag>("createReleaseTag") {
+    tagName.set("development-latest")
+}
+
+tasks.named("githubRelease") {
+    dependsOn("createReleaseTag")
+}
+
 githubRelease {
     token((findProperty("github.access.token") ?: System.getenv("GITHUB_ACCESS_TOKEN") ?: "").toString())
     owner.set("gradle")
