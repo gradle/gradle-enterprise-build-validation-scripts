@@ -88,7 +88,7 @@ val copyGradleScripts = tasks.register<Copy>("copyGradleScripts") {
 
     from(layout.projectDirectory.dir("components/scripts/gradle")) {
         exclude("gradle-init-scripts")
-        filter { line: String -> line.replace("/../lib", "/lib").replace("<HEAD>","${project.version}") }
+        filter { line: String -> line.replace("<HEAD>","${project.version}") }
     }
     from(layout.projectDirectory.dir("components/scripts/gradle")) {
         include("gradle-init-scripts/**")
@@ -99,7 +99,7 @@ val copyGradleScripts = tasks.register<Copy>("copyGradleScripts") {
         include("lib/**")
         exclude("maven")
         exclude("lib/cli-parsers")
-        filter { line: String -> line.replace("/../lib", "/lib").replace("<HEAD>","${project.version}") }
+        filter { line: String -> line.replace("<HEAD>","${project.version}") }
     }
     from(applyArgbash.map { it.outputDir.file("lib/cli-parsers/gradle") }) {
         into("lib/")
@@ -119,14 +119,14 @@ val copyMavenScripts = tasks.register<Copy>("copyMavenScripts") {
     rename("version.txt", "VERSION")
 
     from(layout.projectDirectory.dir("components/scripts/maven")) {
-        filter { line: String -> line.replace("/../lib", "/lib").replace("<HEAD>","${project.version}") }
+        filter { line: String -> line.replace("<HEAD>","${project.version}") }
     }
     from(layout.projectDirectory.dir("components/scripts/")) {
         include("README.md")
         include("lib/**")
         exclude("gradle")
         exclude("lib/cli-parsers")
-        filter { line: String -> line.replace("/../lib", "/lib").replace("<HEAD>","${project.version}") }
+        filter { line: String -> line.replace("<HEAD>","${project.version}") }
     }
     from(applyArgbash.map { it.outputDir.file("lib/cli-parsers/maven") }) {
         into("lib/")
