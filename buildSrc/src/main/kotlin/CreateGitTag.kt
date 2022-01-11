@@ -7,7 +7,6 @@ import org.gradle.api.tasks.TaskAction
 import org.gradle.process.ExecOperations
 import javax.inject.Inject
 
-@CacheableTask
 abstract class CreateGitTag @Inject constructor(
     private val objects: ObjectFactory,
     private val execOperations: ExecOperations
