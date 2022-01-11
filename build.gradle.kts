@@ -182,7 +182,6 @@ tasks.register<Shellcheck>("shellcheckGradleScripts") {
         xml.outputLocation.set(file("${buildDir}/reports/shellcheck-gradle/shellcheck.xml"))
         txt.outputLocation.set(file("${buildDir}/reports/shellcheck-gradle/shellcheck.txt"))
     }
-    dependsOn("generateBashCliParsers")
     dependsOn("copyGradleScripts")
 }
 
@@ -199,7 +198,6 @@ tasks.register<Shellcheck>("shellcheckMavenScripts") {
         xml.outputLocation.set(file("${buildDir}/reports/shellcheck-maven/shellcheck.xml"))
         txt.outputLocation.set(file("${buildDir}/reports/shellcheck-maven/shellcheck.txt"))
     }
-    dependsOn("generateBashCliParsers")
     dependsOn("copyMavenScripts")
 }
 
