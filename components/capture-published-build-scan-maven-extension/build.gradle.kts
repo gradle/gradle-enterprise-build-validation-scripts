@@ -13,7 +13,7 @@ dependencies {
     compileOnly("com.gradle:gradle-enterprise-maven-extension:1.12")
 }
 
-description = "A maven extension to capture the URL of published Gradle Enterprise Build Scans"
+description = "Maven extension to capture the build scan URL"
 
 java {
     toolchain {
