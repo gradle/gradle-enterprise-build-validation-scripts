@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-readonly CAPTURE_BUILD_SCANS_EXTENSION_JAR="${LIB_DIR}/maven-libs/capture-published-build-scan-maven-extension-${SCRIPT_VERSION}.jar"
+readonly CAPTURE_BUILD_SCAN_URL_JAR="${LIB_DIR}/maven-libs/capture-published-build-scan-maven-extension-${SCRIPT_VERSION}.jar"
 
 find_maven_executable() {
   if [ -f "./mvnw" ]; then
@@ -22,7 +22,7 @@ invoke_maven() {
   fi
 
   local extension_classpath
-  extension_classpath="${CAPTURE_BUILD_SCANS_EXTENSION_JAR}"
+  extension_classpath="${CAPTURE_BUILD_SCAN_URL_JAR}"
 
   if [ "$enable_ge" == "on" ]; then
     # Reset the extension classpath and add all of the jars in the lib/maven dir
