@@ -1,6 +1,7 @@
 import org.gradle.api.DefaultTask
 import org.gradle.api.file.ConfigurableFileTree
 import org.gradle.api.file.DirectoryProperty
+import org.gradle.api.file.FileCollection
 import org.gradle.api.file.ProjectLayout
 import org.gradle.api.model.ObjectFactory
 import org.gradle.api.provider.Property
@@ -14,6 +15,7 @@ import org.gradle.api.tasks.PathSensitive
 import org.gradle.api.tasks.PathSensitivity
 import org.gradle.api.tasks.TaskAction
 import org.gradle.process.ExecOperations
+import java.io.File
 import javax.inject.Inject
 
 @CacheableTask
@@ -31,17 +33,9 @@ abstract class ApplyArgbash @Inject constructor(
     @get:PathSensitive(PathSensitivity.RELATIVE)
     abstract val supportingTemplates: Property<ConfigurableFileTree>
 
-    @get:Input
-    @get:Optional
-    val argbashVersion: Property<String> = objects.property<String>(String::class.java).apply {
-        set("2.10.0")
-    }
-
     @get:InputDirectory
     @get:PathSensitive(PathSensitivity.RELATIVE)
-    val argbashHome: DirectoryProperty = objects.directoryProperty().apply {
-        set(layout.buildDirectory.dir("argbash/argbash-${argbashVersion.get()}/"))
-    }
+    val argbashHome: DirectoryProperty = objects.directoryProperty()
 
     @get:OutputDirectory
     val outputDir: DirectoryProperty = objects.directoryProperty().apply {

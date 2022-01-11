@@ -51,17 +51,24 @@ shellcheck {
     shellcheckVersion = "v0.7.2"
 }
 
-tasks.register<Copy>("unpackArgbash") {
+val unpackArgbash = tasks.register<Copy>("unpackArgbash") {
     group = "argbash"
     description = "Unpacks Argbash."
-    from(zipTree(argbash.singleFile))
+    from(zipTree(argbash.singleFile)) {
+        // All files in the zip are under an "argbash-VERSION/" directory, but we really just want the files.
+        // We can remove the top-level directory while unpacking the zip by dropping the first directory in each file's relative path.
+        eachFile {
+            relativePath = RelativePath(true, *relativePath.segments.drop(1).toTypedArray())
+        }
+        includeEmptyDirs = false
+    }
     into(layout.buildDirectory.dir("argbash"))
 }
 
-tasks.register<ApplyArgbash>("generateBashCliParsers") {
+val applyArgbash = tasks.register<ApplyArgbash>("generateBashCliParsers") {
     group = "argbash"
     description = "Uses Argbash to generate Bash command line argument parsing code."
-    argbashVersion.set(project.extra["argbashVersion"].toString())
+    argbashHome.set(layout.dir(unpackArgbash.map { it.outputs.files.singleFile }))
     scriptTemplates.set(fileTree("components/scripts") {
         include("**/*-cli-parser.m4")
         exclude("gradle/.data/")
@@ -72,10 +79,9 @@ tasks.register<ApplyArgbash>("generateBashCliParsers") {
         exclude("gradle/.data/")
         exclude("maven/.data/")
     })
-    dependsOn("unpackArgbash")
 }
 
-tasks.register<Copy>("copyGradleScripts") {
+val copyGradleScripts = tasks.register<Copy>("copyGradleScripts") {
     group = "build"
     description = "Copies the Gradle source and generated scripts to output directory."
 
@@ -98,17 +104,16 @@ tasks.register<Copy>("copyGradleScripts") {
         exclude("lib/cli-parsers")
         filter { line: String -> line.replace("/../lib", "/lib").replace("<HEAD>","${project.version}") }
     }
-    from(layout.buildDirectory.dir("generated/scripts/lib/cli-parsers/gradle")) {
+    from(applyArgbash.map { it.outputDir.file("lib/cli-parsers/gradle") }) {
         into("lib/")
     }
     from(commonComponents) {
         into("lib/export-api-clients/")
     }
     into(layout.buildDirectory.dir("scripts/gradle"))
-    dependsOn("generateBashCliParsers")
 }
 
-tasks.register<Copy>("copyMavenScripts") {
+val copyMavenScripts = tasks.register<Copy>("copyMavenScripts") {
     group = "build"
     description = "Copies the Maven source and generated scripts to output directory."
 
@@ -126,7 +131,7 @@ tasks.register<Copy>("copyMavenScripts") {
         exclude("lib/cli-parsers")
         filter { line: String -> line.replace("/../lib", "/lib").replace("<HEAD>","${project.version}") }
     }
-    from(layout.buildDirectory.dir("generated/scripts/lib/cli-parsers/maven")) {
+    from(applyArgbash.map { it.outputDir.file("lib/cli-parsers/maven") }) {
         into("lib/")
     }
     from(commonComponents) {
@@ -136,7 +141,6 @@ tasks.register<Copy>("copyMavenScripts") {
         into("lib/maven-libs/")
     }
     into(layout.buildDirectory.dir("scripts/maven"))
-    dependsOn("generateBashCliParsers")
 }
 
 tasks.register<Task>("copyScripts") {
@@ -151,7 +155,7 @@ tasks.register<Zip>("assembleGradleScripts") {
     description = "Packages the Gradle experiment scripts in a zip archive."
     archiveBaseName.set("gradle-enterprise-gradle-build-validation")
     archiveFileName.set("${archiveBaseName.get()}.zip")
-    from(tasks.getByName("copyGradleScripts"))
+    from(copyGradleScripts)
     into(archiveBaseName.get())
 }
 
@@ -160,7 +164,7 @@ tasks.register<Zip>("assembleMavenScripts") {
     description = "Packages the Maven experiment scripts in a zip archive."
     archiveBaseName.set("gradle-enterprise-maven-build-validation")
     archiveFileName.set("${archiveBaseName.get()}.zip")
-    from(tasks.getByName("copyMavenScripts"))
+    from(copyMavenScripts)
     into(archiveBaseName.get())
 }
 
@@ -172,7 +176,7 @@ tasks.named("assemble") {
 tasks.register<Shellcheck>("shellcheckGradleScripts") {
     group = "verification"
     description = "Perform quality checks on Gradle build validation scripts using Shellcheck."
-    sourceFiles = tasks.getByName("copyGradleScripts").outputs.files.asFileTree.matching {
+    sourceFiles = copyGradleScripts.get().outputs.files.asFileTree.matching {
         include("**/*.sh")
         exclude("lib/")
     }
@@ -187,7 +191,7 @@ tasks.register<Shellcheck>("shellcheckGradleScripts") {
 tasks.register<Shellcheck>("shellcheckMavenScripts") {
     group = "verification"
     description = "Perform quality checks on Maven build validation scripts using Shellcheck."
-    sourceFiles = tasks.getByName("copyMavenScripts").outputs.files.asFileTree.matching {
+    sourceFiles = copyMavenScripts.get().outputs.files.asFileTree.matching {
         include("**/*.sh")
         exclude("lib/")
     }
