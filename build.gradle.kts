@@ -175,11 +175,11 @@ tasks.register<Shellcheck>("shellcheckGradleScripts") {
         include("**/*.sh")
         exclude("lib/")
     }
-    workingDir = file("${buildDir}/scripts/gradle")
+    workingDir = layout.buildDirectory.file("scripts/gradle").get().asFile
     reports {
-        html.outputLocation.set(file("${buildDir}/reports/shellcheck-gradle/shellcheck.html"))
-        xml.outputLocation.set(file("${buildDir}/reports/shellcheck-gradle/shellcheck.xml"))
-        txt.outputLocation.set(file("${buildDir}/reports/shellcheck-gradle/shellcheck.txt"))
+        html.outputLocation.set(layout.buildDirectory.file("reports/shellcheck-gradle/shellcheck.html"))
+        xml.outputLocation.set(layout.buildDirectory.file("reports/shellcheck-gradle/shellcheck.xml"))
+        txt.outputLocation.set(layout.buildDirectory.file("reports/shellcheck-gradle/shellcheck.txt"))
     }
 }
 
@@ -190,11 +190,11 @@ tasks.register<Shellcheck>("shellcheckMavenScripts") {
         include("**/*.sh")
         exclude("lib/")
     }
-    workingDir = file("${buildDir}/scripts/maven")
+    workingDir = layout.buildDirectory.file("scripts/maven").get().asFile
     reports {
-        html.outputLocation.set(file("${buildDir}/reports/shellcheck-maven/shellcheck.html"))
-        xml.outputLocation.set(file("${buildDir}/reports/shellcheck-maven/shellcheck.xml"))
-        txt.outputLocation.set(file("${buildDir}/reports/shellcheck-maven/shellcheck.txt"))
+        html.outputLocation.set(layout.buildDirectory.file("reports/shellcheck-maven/shellcheck.html"))
+        xml.outputLocation.set(layout.buildDirectory.file("reports/shellcheck-maven/shellcheck.xml"))
+        txt.outputLocation.set(layout.buildDirectory.file("reports/shellcheck-maven/shellcheck.txt"))
     }
 }
 
