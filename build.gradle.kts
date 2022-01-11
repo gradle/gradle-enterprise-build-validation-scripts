@@ -214,6 +214,7 @@ tasks.named("check") {
 
 tasks.register<CreateGitTag>("createReleaseTag") {
     tagName.set("development-latest")
+    overwriteExisting.set(true)
 }
 
 tasks.named("githubRelease") {

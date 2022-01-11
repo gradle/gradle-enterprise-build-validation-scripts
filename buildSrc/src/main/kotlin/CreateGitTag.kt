@@ -25,11 +25,28 @@ abstract class CreateGitTag @Inject constructor(
     @get:Input
     val tagName: Property<String> = objects.property(String::class.java)
 
+    @get:Input
+    @get:Optional
+    val overwriteExisting: Property<Boolean> = objects.property(Boolean::class.java).apply {
+        value(false)
+    }
+
     @TaskAction
     fun applyArgbash() {
         logger.info("Tagging HEAD as ${tagName.get()}")
         execOperations.exec { execSpec ->
-            execSpec.commandLine("git", "tag", "-f", tagName.get())
+            val args = mutableListOf("git", "tag")
+            if (overwriteExisting.get()) {
+                args.add("-f")
+            }
+            args.add(tagName.get())
+            execSpec.commandLine(args)
+        }
+        if (overwriteExisting.get()) {
+            execOperations.exec { execSpec ->
+                execSpec.commandLine("git", "push", ":${tagName.get()}")
+                execSpec.isIgnoreExitValue = true
+            }
         }
         execOperations.exec { execSpec ->
             execSpec.commandLine("git", "push", "--tags")
