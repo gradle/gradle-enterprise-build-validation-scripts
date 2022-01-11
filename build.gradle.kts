@@ -120,6 +120,7 @@ tasks.register<Copy>("copyMavenScripts") {
     from(layout.projectDirectory.dir("components/scripts/")) {
         include("README.md")
         include("lib/**")
+        exclude("gradle")
         exclude("lib/gradle-init-scripts")
         exclude("lib/cli-parsers")
         exclude("**/*.m4")
