@@ -44,7 +44,7 @@ abstract class CreateGitTag @Inject constructor(
         }
         if (overwriteExisting.get()) {
             execOperations.exec { execSpec ->
-                execSpec.commandLine("git", "push", ":${tagName.get()}")
+                execSpec.commandLine("git", "push", "origin", ":${tagName.get()}")
                 execSpec.isIgnoreExitValue = true
             }
         }
