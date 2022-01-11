@@ -68,6 +68,6 @@ public class RootProjectExtractor {
     private List<MavenProject> discoverAllProjects(Collection<MavenProject> sessionProjects) {
         Set<MavenProject> allProjects = new LinkedHashSet<>(sessionProjects);
         sessionProjects.stream().flatMap(p -> Optional.ofNullable(p.getCollectedProjects()).orElse(emptyList()).stream()).forEach(allProjects::add);
-        return new ArrayList(allProjects);
+        return new ArrayList<MavenProject>(allProjects);
     }
 }
