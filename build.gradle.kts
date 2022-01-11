@@ -206,24 +206,33 @@ tasks.named("check") {
     dependsOn("shellcheckMavenScripts")
 }
 
-tasks.register<CreateGitTag>("createReleaseTag") {
-    tagName.set("development-latest")
-    overwriteExisting.set(true)
-}
-
-tasks.named("githubRelease") {
-    dependsOn("createReleaseTag")
-}
+val isDevelopmentRelease = !hasProperty("finalRelease")
 
 githubRelease {
     token((findProperty("github.access.token") ?: System.getenv("GITHUB_ACCESS_TOKEN") ?: "").toString())
     owner.set("gradle")
     repo.set("gradle-enterprise-build-validation-scripts")
     targetCommitish.set("main")
-    tagName.set("development-latest")
+    tagName.set(releaseTag())
     releaseName.set("Build Validation Scripts - Development Build")
-    prerelease.set(true)
-    overwrite.set(true)
+    prerelease.set(isDevelopmentRelease)
+    overwrite.set(isDevelopmentRelease)
     body.set(layout.projectDirectory.file("release/changes.md").asFile.readText().trim())
     releaseAssets(tasks.getByName("assembleGradleScripts"), tasks.getByName("assembleMavenScripts"))
+}
+
+tasks.register<CreateGitTag>("createReleaseTag") {
+    tagName.set(releaseTag())
+    overwriteExisting.set(isDevelopmentRelease)
+}
+
+tasks.named("githubRelease") {
+    dependsOn("createReleaseTag")
+}
+
+fun releaseTag(): String {
+    if (isDevelopmentRelease) {
+        return "development-release"
+    }
+    return "v${version}"
 }
