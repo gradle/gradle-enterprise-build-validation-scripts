@@ -1,5 +1,4 @@
 import com.felipefzdz.gradle.shellcheck.Shellcheck
-import com.github.breadmoirai.githubreleaseplugin.GithubReleaseTask
 
 plugins {
     id("base")
