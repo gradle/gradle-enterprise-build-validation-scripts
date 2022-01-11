@@ -84,7 +84,6 @@ tasks.register<Copy>("copyGradleScripts") {
     rename("version.txt", "VERSION")
 
     from(layout.projectDirectory.dir("components/scripts/gradle")) {
-        exclude(".data/")
         filter { line: String -> line.replace("/../lib", "/lib").replace("<HEAD>","${project.version}") }
     }
     from(layout.projectDirectory.dir("components/scripts")) {
@@ -113,7 +112,6 @@ tasks.register<Copy>("copyMavenScripts") {
     rename("version.txt", "VERSION")
 
     from(layout.projectDirectory.dir("components/scripts/maven")) {
-        exclude(".data/")
         filter { line: String -> line.replace("/../lib", "/lib").replace("<HEAD>","${project.version}") }
     }
     from(layout.projectDirectory.dir("components/scripts/")) {
