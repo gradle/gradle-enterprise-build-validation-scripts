@@ -210,11 +210,11 @@ val isDevelopmentRelease = !hasProperty("finalRelease")
 
 githubRelease {
     token((findProperty("github.access.token") ?: System.getenv("GITHUB_ACCESS_TOKEN") ?: "").toString())
+    releaseName.set(if (isDevelopmentRelease) "Development Build" else version.toString())
     owner.set("gradle")
     repo.set("gradle-enterprise-build-validation-scripts")
     targetCommitish.set("main")
     tagName.set(releaseTag())
-    releaseName.set("Build Validation Scripts - Development Build")
     prerelease.set(isDevelopmentRelease)
     overwrite.set(isDevelopmentRelease)
     body.set(layout.projectDirectory.file("release/changes.md").asFile.readText().trim())
@@ -232,7 +232,7 @@ tasks.named("githubRelease") {
 
 fun releaseTag(): String {
     if (isDevelopmentRelease) {
-        return "development-release"
+        return "development-latest"
     }
     return "v${version}"
 }
