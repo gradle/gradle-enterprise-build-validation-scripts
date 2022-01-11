@@ -97,7 +97,6 @@ val copyGradleScripts = tasks.register<Copy>("copyGradleScripts") {
     from(layout.projectDirectory.dir("components/scripts")) {
         include("README.md")
         include("lib/**")
-        exclude("maven")
         exclude("lib/cli-parsers")
         filter { line: String -> line.replace("<HEAD>","${project.version}") }
     }
@@ -124,7 +123,6 @@ val copyMavenScripts = tasks.register<Copy>("copyMavenScripts") {
     from(layout.projectDirectory.dir("components/scripts/")) {
         include("README.md")
         include("lib/**")
-        exclude("gradle")
         exclude("lib/cli-parsers")
         filter { line: String -> line.replace("<HEAD>","${project.version}") }
     }
