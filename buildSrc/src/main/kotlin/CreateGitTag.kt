@@ -5,8 +5,10 @@ import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.Optional
 import org.gradle.api.tasks.TaskAction
 import org.gradle.process.ExecOperations
+import org.gradle.work.DisableCachingByDefault
 import javax.inject.Inject
 
+@DisableCachingByDefault(because = "Produces no cacheable output")
 abstract class CreateGitTag @Inject constructor(
     private val objects: ObjectFactory,
     private val execOperations: ExecOperations
