@@ -88,7 +88,7 @@ val copyGradleScripts = tasks.register<Copy>("copyGradleScripts") {
 
     from(layout.projectDirectory.dir("components/scripts/gradle")) {
         exclude("gradle-init-scripts")
-        filter { line: String -> line.replace("<HEAD>","${project.version}") }
+        filter { line: String -> line.replace("<HEAD>", "${project.version}") }
     }
     from(layout.projectDirectory.dir("components/scripts/gradle")) {
         include("gradle-init-scripts/**")
@@ -98,7 +98,7 @@ val copyGradleScripts = tasks.register<Copy>("copyGradleScripts") {
         include("README.md")
         include("lib/**")
         exclude("lib/cli-parsers")
-        filter { line: String -> line.replace("<HEAD>","${project.version}") }
+        filter { line: String -> line.replace("<HEAD>", "${project.version}") }
     }
     from(applyArgbash.map { it.outputDir.file("lib/cli-parsers/gradle") }) {
         into("lib/")
@@ -118,13 +118,13 @@ val copyMavenScripts = tasks.register<Copy>("copyMavenScripts") {
     rename("version.txt", "VERSION")
 
     from(layout.projectDirectory.dir("components/scripts/maven")) {
-        filter { line: String -> line.replace("<HEAD>","${project.version}") }
+        filter { line: String -> line.replace("<HEAD>", "${project.version}") }
     }
     from(layout.projectDirectory.dir("components/scripts/")) {
         include("README.md")
         include("lib/**")
         exclude("lib/cli-parsers")
-        filter { line: String -> line.replace("<HEAD>","${project.version}") }
+        filter { line: String -> line.replace("<HEAD>", "${project.version}") }
     }
     from(applyArgbash.map { it.outputDir.file("lib/cli-parsers/maven") }) {
         into("lib/")
@@ -207,7 +207,7 @@ val isDevelopmentRelease = !hasProperty("finalRelease")
 
 githubRelease {
     token((findProperty("github.access.token") ?: System.getenv("GITHUB_ACCESS_TOKEN") ?: "").toString())
-    releaseName.set(if (isDevelopmentRelease) "Development Build" else version.toString())
+    releaseName.set(releaseName())
     owner.set("gradle")
     repo.set("gradle-enterprise-build-validation-scripts")
     targetCommitish.set("main")
@@ -227,9 +227,18 @@ tasks.named("githubRelease") {
     dependsOn("createReleaseTag")
 }
 
+fun releaseName(): String {
+    if (isDevelopmentRelease) {
+        return "Development Build"
+    } else {
+        return version.toString())
+    }
+}
+
 fun releaseTag(): String {
     if (isDevelopmentRelease) {
         return "development-latest"
+    } else {
+        return "v${version}"
     }
-    return "v${version}"
 }
