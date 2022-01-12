@@ -207,10 +207,10 @@ val isDevelopmentRelease = !hasProperty("finalRelease")
 
 githubRelease {
     token((findProperty("github.access.token") ?: System.getenv("GITHUB_ACCESS_TOKEN") ?: "").toString())
-    releaseName.set(releaseName())
     owner.set("gradle")
     repo.set("gradle-enterprise-build-validation-scripts")
     targetCommitish.set("main")
+    releaseName.set(releaseName())
     tagName.set(releaseTag())
     prerelease.set(isDevelopmentRelease)
     overwrite.set(isDevelopmentRelease)
