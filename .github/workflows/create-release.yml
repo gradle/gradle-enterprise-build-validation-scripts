@@ -1,11 +1,17 @@
 name: Create Release
 
+
 on:
   workflow_dispatch:
+    inputs:
+      confirmation:
+        description: Enter the confirmation phrase 'PRODUCTION' (without quotes) if you are sure you want to release
+        required: true
 
 jobs:
-  development_release:
+  release:
     runs-on: ubuntu-latest
+    if: github.event.inputs.confirmation == "PRODUCTION"
     steps:
       - name: Checkout
         uses: actions/checkout@v2
