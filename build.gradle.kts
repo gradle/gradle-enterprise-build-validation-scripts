@@ -231,7 +231,7 @@ fun releaseName(): String {
     if (isDevelopmentRelease) {
         return "Development Build"
     } else {
-        return version.toString())
+        return version.toString()
     }
 }
 
