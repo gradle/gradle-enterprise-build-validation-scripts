@@ -18,11 +18,6 @@ import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 
 @SuppressWarnings("unused")
-@Component(
-    role = GradleEnterpriseListener.class,
-    hint = "capture-build-scans",
-    description = "Captures the build scan URL from Maven builds"
-)
 public class CaptureBuildScansListener implements GradleEnterpriseListener {
     private static final String EXPERIMENT_DIR = System.getProperty("com.gradle.enterprise.build_validation.experimentDir");
 
