@@ -34,14 +34,13 @@ abstract class CreateGitTag @Inject constructor(
             args.add(tagName.get())
             execSpec.commandLine(args)
         }
-        if (overwriteExisting.get()) {
-            execOperations.exec { execSpec ->
-                execSpec.commandLine("git", "push", "origin", ":${tagName.get()}")
-                execSpec.isIgnoreExitValue = true
-            }
-        }
         execOperations.exec { execSpec ->
-            execSpec.commandLine("git", "push", "--tags")
+            val args = mutableListOf("git", "push", "origin")
+            if (overwriteExisting.get()) {
+                args.add("-f")
+            }
+            args.add("--tags")
+            execSpec.commandLine(args)
         }
     }
 }
