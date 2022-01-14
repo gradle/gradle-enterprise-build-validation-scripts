@@ -5,7 +5,7 @@ on:
   workflow_dispatch:
     inputs:
       confirmation:
-        description: Enter the confirmation phrase 'PRODUCTION' (without quotes) if you are sure you want to release
+        description: Enter the confirmation phrase 'PRODUCTION' (without quotes) if you are sure you want to trigger a release.
         required: true
 
 jobs:
