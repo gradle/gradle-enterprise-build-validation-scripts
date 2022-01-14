@@ -1,6 +1,5 @@
 name: Create Release
 
-
 on:
   workflow_dispatch:
     inputs:
@@ -10,8 +9,8 @@ on:
 
 jobs:
   release:
-    runs-on: ubuntu-latest
     if: github.event.inputs.confirmation == 'PRODUCTION'
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v2
