@@ -8,8 +8,9 @@ on:
         required: true
 
 jobs:
-  release:
+  production_release:
     if: github.event.inputs.confirmation == 'PRODUCTION'
+    name: Release
     runs-on: ubuntu-latest
     steps:
       - name: Checkout

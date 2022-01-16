@@ -5,7 +5,8 @@ on:
   workflow_dispatch:
 
 jobs:
-  verify:
+  verification:
+    name: Verification
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
