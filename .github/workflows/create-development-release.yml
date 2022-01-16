@@ -23,4 +23,4 @@ jobs:
         env:
           GITHUB_ACCESS_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
         with:
-          arguments: --stacktrace --info build githubRelease
+          arguments: build githubRelease -i
