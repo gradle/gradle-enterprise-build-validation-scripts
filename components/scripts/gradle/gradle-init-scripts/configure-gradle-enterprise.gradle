@@ -95,7 +95,7 @@ String urlEncode(String str) {
 }
 
 void logWarningMissingCommonCustomUserDataGradlePlugin() {
-    logWarning("The com.gradle.common-custom-user-data-gradle-plugin plugin is missing from the project (see https://github.com/gradle/gradle-enterprise-build-config-samples/tree/master/common-custom-user-data-gradle-plugin).")
+    logWarning("The com.gradle.common-custom-user-data-gradle-plugin plugin is missing from the project (see https://github.com/gradle/common-custom-user-data-gradle-plugin).")
 }
 
 void logWarning(String warning) {
