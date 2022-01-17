@@ -15,7 +15,7 @@ There are currently four experiments for Maven. You could also perform these exp
 On macOS and Linux, use the following command to download and unpack the build validation scripts for Maven to the current directory:
 
 ```bash
-curl -s -L -O https://github.com/gradle/gradle-enterprise-build-validation-scripts/releases/download/development-latest/gradle-enterprise-maven-build-validation.zip && unzip -q -o gradle-enterprise-maven-build-validation.zip
+curl -s -L -O https://github.com/gradle/gradle-enterprise-build-validation-scripts/releases/download/development-latest/gradle-enterprise-maven-build-validation-dev.zip && unzip -q -o gradle-enterprise-maven-build-validation-dev.zip
 ```
 
 ## Structure

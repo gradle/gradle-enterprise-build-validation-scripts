@@ -149,7 +149,7 @@ tasks.register<Zip>("assembleGradleScripts") {
     group = "build"
     description = "Packages the Gradle experiment scripts in a zip archive."
     archiveBaseName.set("gradle-enterprise-gradle-build-validation")
-    archiveFileName.set("${archiveBaseName.get()}.zip")
+    archiveFileName.set("${archiveBaseName.get()}-${distributionVersion()}.zip")
     from(copyGradleScripts)
     into(archiveBaseName.get())
 }
@@ -158,7 +158,7 @@ tasks.register<Zip>("assembleMavenScripts") {
     group = "build"
     description = "Packages the Maven experiment scripts in a zip archive."
     archiveBaseName.set("gradle-enterprise-maven-build-validation")
-    archiveFileName.set("${archiveBaseName.get()}.zip")
+    archiveFileName.set("${archiveBaseName.get()}-${distributionVersion()}.zip")
     from(copyMavenScripts)
     into(archiveBaseName.get())
 }
@@ -240,5 +240,13 @@ fun releaseTag(): String {
         return "development-latest"
     } else {
         return "v${version}"
+    }
+}
+
+fun distributionVersion(): String {
+    if (isDevelopmentRelease) {
+        return "dev"
+    } else {
+        return version.toString()
     }
 }

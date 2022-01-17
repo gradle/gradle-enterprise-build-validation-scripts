@@ -15,7 +15,7 @@ There are currently five experiments for Gradle. You could also perform these ex
 On macOS and Linux, use the following command to download and unpack the build validation scripts for Gradle to the current directory:
 
 ```bash
-curl -s -L -O https://github.com/gradle/gradle-enterprise-build-validation-scripts/releases/download/development-latest/gradle-enterprise-gradle-build-validation.zip && unzip -q -o gradle-enterprise-gradle-build-validation.zip
+curl -s -L -O https://github.com/gradle/gradle-enterprise-build-validation-scripts/releases/download/development-latest/gradle-enterprise-gradle-build-validation-dev.zip && unzip -q -o gradle-enterprise-gradle-build-validation-dev.zip
 ```
 
 ## Structure
