@@ -13,8 +13,6 @@ Each script represents a so-called _experiment_. Each experiment has a very spec
 
 There are currently five experiments for Gradle and four experiments for Maven. You could also perform these experiments fully manually, but relying on the automation of the validation scripts will be faster, less error-prone, and more reproducible.
 
-> Gradle Enterprise and its Build Scan:tm: service are instrumental to running these validation scripts. You can learn more about Gradle Enterprise at https://gradle.com.
-
 ## Usage
 
 The build validation scripts are available as pre-built, executable Bash scripts. The build validation scripts are bundled and documented separately for Gradle and Maven. There are specific instructions on
@@ -22,7 +20,7 @@ The build validation scripts are available as pre-built, executable Bash scripts
 * how to use the [build validation scripts for Gradle](Gradle.md)
 * how to use the [build validation scripts for Maven](Maven.md)
 
-## Building from source
+## Build from source
 
 You can also assemble the build validation scripts from source by running `./gradlew build` from the root folder of this repository.
 
