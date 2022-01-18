@@ -1,4 +1,4 @@
-# Gradle Enterprise build validation scripts for Gradle
+# Gradle Enterprise Build Validation Scripts for Gradle
 
 The purpose of the build validation scripts is to assist you in validating that your Gradle build is in an optimal state in terms of maximizing work avoidance. The validation scripts do not actually modify your build, but they surface what can be improved in your build to avoid unnecessary work in several scenarios.
 
