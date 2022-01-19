@@ -1,10 +1,3 @@
-> _This repository is maintained by the Gradle Enterprise Solutions team, as one of several publicly available repositories:_
-> - _[Gradle Enterprise Build Configuration Samples][ge-build-config-samples] (this repository)_
-> - _[Gradle Enterprise Build Validation Scripts][ge-build-validation-scripts]_
-> - _[Gradle Enterprise Build Optimization Experiments][ge-build-optimization-experiments]_
-> - _[Common Custom User Data Gradle Plugin][ccud-gradle-plugin]_
-> - _[Common Custom User Data Maven Extension][ccud-maven-extension]_
- 
 # Gradle Enterprise Build Validation Scripts for Gradle
 
 The purpose of the build validation scripts is to assist you in validating that your Gradle build is in an optimal state in terms of maximizing work avoidance. The validation scripts do not actually modify your build, but they surface what can be improved in your build to avoid unnecessary work in several scenarios.
@@ -143,19 +136,3 @@ In the example below, the Git repository is first checked out to a location on t
 git clone https://github.com/gradle/gradle-build-scan-quickstart $HOME/gradle-build-scan-quickstart
 ./02-validate-local-build-caching-same-location.sh -i -r file://$HOME/gradle-build-scan-quickstart
 ```
-
-## Learn more
-
-Visit our website to learn more about [Gradle Enterprise][gradle-enterprise].
-
-## License
-
-The Gradle Enterprise build validation scripts for Gradle are open-source software released under the [Apache 2.0 License][apache-license].
-
-[ge-build-config-samples]: https://github.com/gradle/gradle-enterprise-build-config-samples
-[ge-build-validation-scripts]: https://github.com/gradle/gradle-enterprise-build-validation-scripts
-[ge-build-optimization-experiments]: https://github.com/gradle/gradle-enterprise-build-optimization-experiments
-[ccud-gradle-plugin]: https://github.com/gradle/common-custom-user-data-gradle-plugin
-[ccud-maven-extension]: https://github.com/gradle/common-custom-user-data-maven-extension
-[gradle-enterprise]: https://gradle.com/enterprise
-[apache-license]: https://www.apache.org/licenses/LICENSE-2.0.html
