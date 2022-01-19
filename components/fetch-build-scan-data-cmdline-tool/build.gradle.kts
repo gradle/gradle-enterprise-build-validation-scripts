@@ -1,7 +1,6 @@
 plugins {
     java
     application
-    `maven-publish`
     id("com.github.johnrengelman.shadow") version "7.1.2"
 }
 
@@ -37,12 +36,4 @@ tasks.compileJava {
 
 application {
     mainClass.set("com.gradle.enterprise.Main")
-}
-
-publishing {
-    publications {
-        create<MavenPublication>("maven") {
-            project.shadow.component(this)
-        }
-    }
 }
