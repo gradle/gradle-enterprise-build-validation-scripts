@@ -6,8 +6,6 @@ Each script represents a so-called _experiment_. Each experiment has a very spec
 
 There are currently five experiments for Gradle. You could also perform these experiments fully manually, but relying on the automation of the validation scripts will be faster, less error-prone, and more reproducible.
 
-> Gradle Enterprise and its Build Scan:tm: service are instrumental to running these validation scripts. You can learn more about Gradle Enterprise at https://gradle.com.
-
 ## Installation
 
 On macOS and Linux, use the following command to download and unpack the build validation scripts for Gradle to the current directory:
