@@ -146,8 +146,8 @@ print_outcome() {
 print_cacheable_task_outcome() {
   info "Outcome"
   info "-------"
-  summary_row "Cacheable ${BUILD_TOOL_TASK}s executed:" "$(warn_if_nonzero ${num_tasks_executed_cacheable[1]})"
-  summary_row "Cacheable ${BUILD_TOOL_TASK}s up to date:" "$(warn_if_nonzero ${num_tasks_avoided_up_to_date[1]})"
+  summary_row "Cacheable ${BUILD_TOOL_TASK}s executed:" "$(warn_if_nonzero "${num_tasks_executed_cacheable[1]}")"
+  summary_row "Cacheable ${BUILD_TOOL_TASK}s up to date:" "$(warn_if_nonzero "${num_tasks_avoided_up_to_date[1]}")"
   summary_row "Cacheable ${BUILD_TOOL_TASK}s from cache:" "${num_tasks_avoided_from_cache[1]}"
 }
 
@@ -157,7 +157,7 @@ warn_if_nonzero() {
   if (( value > 0 )); then
     echo "${WARN_COLOR}${value}${RESTORE}"
   else
-    echo $value
+    echo "$value"
   fi
 }
 
