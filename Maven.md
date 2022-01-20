@@ -14,6 +14,12 @@ On macOS and Linux, use the following command to download and unpack the build v
 curl -s -L -O https://github.com/gradle/gradle-enterprise-build-validation-scripts/releases/download/development-latest/gradle-enterprise-maven-build-validation-dev.zip && unzip -q -o gradle-enterprise-maven-build-validation-dev.zip
 ```
 
+If you want to try out the latest development build from the `main` branch, use the following command:
+
+```bash
+curl -s -L -O https://github.com/gradle/gradle-enterprise-build-validation-scripts/releases/download/development-latest/gradle-enterprise-maven-build-validation-dev.zip && unzip -q -o gradle-enterprise-maven-build-validation-dev.zip
+```
+
 ## Structure
 
 In the top-level folder, there are four different scripts that you can execute, each one representing
