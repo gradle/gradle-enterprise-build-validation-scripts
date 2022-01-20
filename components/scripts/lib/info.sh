@@ -34,9 +34,9 @@ summary_row() {
 }
 
 comparison_summary_row() {
-    local header value
-    header="$1"
-    shift;
+  local header value
+  header="$1"
+  shift;
 
   if [[ "$1" == "$2" ]]; then
     value="$1"
@@ -146,9 +146,19 @@ print_outcome() {
 print_cacheable_task_outcome() {
   info "Outcome"
   info "-------"
-  summary_row "Cacheable ${BUILD_TOOL_TASK}s executed:" "${num_tasks_executed_cacheable[1]}"
-  summary_row "Cacheable ${BUILD_TOOL_TASK}s up to date:" "${num_tasks_avoided_up_to_date[1]}"
+  summary_row "Cacheable ${BUILD_TOOL_TASK}s executed:" "$(warn_if_nonzero ${num_tasks_executed_cacheable[1]})"
+  summary_row "Cacheable ${BUILD_TOOL_TASK}s up to date:" "$(warn_if_nonzero ${num_tasks_avoided_up_to_date[1]})"
   summary_row "Cacheable ${BUILD_TOOL_TASK}s from cache:" "${num_tasks_avoided_from_cache[1]}"
+}
+
+warn_if_nonzero() {
+  local value
+  value=$1
+  if (( value > 0 )); then
+    echo "${WARN_COLOR}${value}${RESTORE}"
+  else
+    echo $value
+  fi
 }
 
 print_build_scans() {
