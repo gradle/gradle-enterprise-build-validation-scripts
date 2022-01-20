@@ -6,9 +6,12 @@ import com.gradle.enterprise.api.client.ApiClient;
 import com.gradle.enterprise.api.client.ApiException;
 import com.gradle.enterprise.api.model.Base;
 import com.gradle.enterprise.api.model.GradleBuildCachePerformance;
+import com.gradle.enterprise.api.model.GradleBuildCachePerformanceTaskExecutionEntry;
 import com.gradle.enterprise.api.model.MavenBuildCachePerformance;
+import com.gradle.enterprise.api.model.MavenBuildCachePerformanceGoalExecutionEntry;
 
 import java.net.URL;
+import java.util.Arrays;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -32,20 +35,30 @@ public class GeApiTaskMetricsFetcher {
             if (baseData.getBuildToolType().equalsIgnoreCase("gradle")) {
                 GradleBuildCachePerformance buildCachePerformance = apiClient.getGradleBuildCachePerformance(buildScanId, null);
 
-                return buildCachePerformance.getTaskExecution().stream()
+                Map<String, Long> tasksByOutcome = buildCachePerformance.getTaskExecution().stream()
                     .collect(Collectors.groupingBy(
                         t -> t.getAvoidanceOutcome().toString(),
                         Collectors.counting()
                         ));
+
+                Arrays.stream(GradleBuildCachePerformanceTaskExecutionEntry.AvoidanceOutcomeEnum.values())
+                    .forEach(outcome -> tasksByOutcome.putIfAbsent(outcome.toString(), 0L));
+
+                return tasksByOutcome;
             }
             if (baseData.getBuildToolType().equalsIgnoreCase("maven")) {
                 MavenBuildCachePerformance buildCachePerformance = apiClient.getMavenBuildCachePerformance(buildScanId, null);
 
-                return buildCachePerformance.getGoalExecution().stream()
+                Map<String, Long> tasksByOutcome = buildCachePerformance.getGoalExecution().stream()
                     .collect(Collectors.groupingBy(
                         t -> t.getAvoidanceOutcome().toString(),
                         Collectors.counting()
                     ));
+
+                Arrays.stream(MavenBuildCachePerformanceGoalExecutionEntry.AvoidanceOutcomeEnum.values())
+                    .forEach(outcome -> tasksByOutcome.putIfAbsent(outcome.toString(), 0L));
+
+                return tasksByOutcome;
             }
             return ImmutableMap.of();
         } catch (ApiException e) {
