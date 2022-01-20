@@ -153,7 +153,7 @@ fi
   exec "$JAVACMD" "$@"
 }
 
-fetch_and_read_build_validation_data() {
+fetch_and_read_build_scan_data() {
   info "Fetching build scan data"
 
   # This isn't the most robust way to read a CSV,

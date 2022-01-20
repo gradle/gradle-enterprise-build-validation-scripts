@@ -142,11 +142,11 @@ validate_required_args() {
 }
 
 fetch_build_scan_data() {
-  fetch_and_read_build_validation_data "${ci_build_scan_url}"
-  read_build_params_from_build_validation_data
+  fetch_and_read_build_scan_data "${ci_build_scan_url}"
+  read_build_params_from_build_scan_data
 }
 
-read_build_params_from_build_validation_data() {
+read_build_params_from_build_scan_data() {
   if [ -z "${git_repo}" ]; then
     git_repo="${git_repos[0]}"
     project_name="$(basename -s .git "${git_repo}")"
