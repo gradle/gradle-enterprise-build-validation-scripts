@@ -1,0 +1,1255 @@
+openapi: 3.0.3
+info:
+  title: Gradle Enterprise API
+  description: API for managing Gradle Enterprise
+  version: '1.0'
+  termsOfService: https://gradle.com/legal/gradle-enterprise-software-agreement/
+  x-logo:
+    url: https://assets.gradle.com/logo/gradle-enterprise-dark-green-primary.svg
+    altText: 'Gradle Enterprise'
+servers:
+  - url: https://example.com
+    description: The Gradle Enterprise server.
+security:
+- Bearer: [ ]
+paths:
+  /api/builds/{id}:
+    parameters:
+    - in: path
+      name: id
+      schema:
+        type: string
+      required: true
+      description: The Build Scan ID.
+    - in: query
+      name: availabilityWaitTimeoutSecs
+      schema:
+        type: integer
+        minimum: 0
+      description: The time in seconds the server should wait for ingestion before returning a wait timeout response.
+    get:
+      operationId: GetBuildsBase
+      summary: View the common attributes of a Build Scan.
+      description: The contained attributes are build tool agnostic.
+      tags:
+      - GradleEnterprise
+      responses:
+        '200':
+          description: The common attributes of a Build Scan.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Base'
+              example:
+                id: 9r4d13f0r3v3r
+                availableAt: 1635400481000
+                buildToolType: gradle
+                buildToolVersion: '7.2'
+                buildAgentVersion: '3.7.1'
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+        '500':
+          $ref: '#/components/responses/UnexpectedError'
+        '503':
+          $ref: '#/components/responses/NotReadyError'
+  /api/builds/{id}/gradle-attributes:
+    parameters:
+    - in: path
+      name: id
+      schema:
+        type: string
+      required: true
+      description: The Build Scan ID.
+    - in: query
+      name: availabilityWaitTimeoutSecs
+      schema:
+        type: integer
+        minimum: 0
+      description: The time in seconds the server should wait for ingestion before returning a wait timeout response.
+    get:
+      operationId: GetGradleAttributes
+      summary: View the attributes of a Gradle Build Scan.
+      description: This model is Gradle specific and cannot be requested for another build tool.
+      tags:
+      - GradleEnterprise
+      responses:
+        '200':
+          description: The attributes of a Gradle Build Scan.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GradleAttributes'
+              example:
+                id: 9r4d13f0r3v3r
+                buildStartTime: 1637316480
+                description: The time when the build started, as milliseconds since Epoch.
+                buildDuration: 1637336480
+                gradleVersion: '7.3'
+                pluginVersion: '3.7.2'
+                rootProjectName: example-project
+                requestedTasks:
+                - clean
+                - build
+                hasFailed: false
+                tags:
+                - CI
+                - feature-branch
+                values:
+                - name: branch
+                  value: feature/one
+                - name: commitId
+                  value: c874006021712affa4e7bd82d2ec4cd06beaa4f5
+                links:
+                - label: CI job
+                  url: https://ci.com/job1
+                - label: GIT commit
+                  url: https://git.com/c874006021712affa4e7bd82d2ec4cd06beaa4f5
+                gradleEnterpriseSettings:
+                  backgroundPublicationEnabled: true
+                  buildOutputCapturingEnabled: true
+                  taskInputsFileCapturingEnabled: true
+                  testOutputCapturingEnabled: true
+                buildOptions:
+                  buildCacheEnabled: true
+                  configurationCacheEnabled: true
+                  configurationOnDemandEnabled: true
+                  continuousBuildEnabled: true
+                  continueOnFailureEnabled: true
+                  daemonEnabled: true
+                  dryRunEnabled: true
+                  fileSystemWatchingEnabled: true
+                  maxNumberOfGradleWorkers: 4
+                  offlineModeEnabled: true
+                  parallelProjectExecutionEnabled: true
+                  refreshDependenciesEnabled: true
+                  rerunTasksEnabled: true
+                environment:
+                  username: gradle
+                  operatingSystem: OSX
+                  numberOfCpuCores: 16
+                  jreVersion: AdoptOpenJDK OpenJDK Runtime Environment 11.0.11+9
+                  jvmVersion: AdoptOpenJDK OpenJDK 64-Bit Server VM 11.0.11+9 (mixed mode)
+                  jvmMaxMemoryHeapSize: 16777216
+                  jvmCharset: UTF-8
+                  jvmLocale: English (United States)
+                  publicHostname: agent.gradle.com
+                  localHostname: gradle
+                  localIpAddresses:
+                  - 192.168.1.126
+                  - 192.168.1.128
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+        '500':
+          $ref: '#/components/responses/UnexpectedError'
+        '503':
+          $ref: '#/components/responses/NotReadyError'
+  /api/builds/{id}/maven-attributes:
+    parameters:
+    - in: path
+      name: id
+      schema:
+        type: string
+      required: true
+      description: The Build Scan ID.
+    - in: query
+      name: availabilityWaitTimeoutSecs
+      schema:
+        type: integer
+        minimum: 0
+      description: The time in seconds the server should wait for ingestion before returning a wait timeout response.
+    get:
+      operationId: GetMavenAttributes
+      summary: View the attributes of a Maven Build Scan.
+      description: This model is Maven specific and cannot be requested for another build tool.
+      tags:
+      - GradleEnterprise
+      responses:
+        '200':
+          description: The attributes of a Maven Build Scan.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MavenAttributes'
+              example:
+                id: 9r4d13f0r3v3r
+                buildStartTime: 1637316480
+                description: The time when the build started, as milliseconds since Epoch.
+                buildDuration: 1637336480
+                mavenVersion: '3.8.4'
+                extensionVersion: '1.11.1'
+                topLevelProjectName: example-project
+                requestedTasks:
+                - clean
+                - build
+                hasFailed: false
+                tags:
+                - CI
+                - feature-branch
+                values:
+                - name: branch
+                  value: feature/one
+                - name: commitId
+                  value: c874006021712affa4e7bd82d2ec4cd06beaa4f5
+                links:
+                - label: CI job
+                  url: https://ci.com/job1
+                - label: GIT commit
+                  url: https://git.com/c874006021712affa4e7bd82d2ec4cd06beaa4f5
+                gradleEnterpriseSettings:
+                  backgroundPublicationEnabled: true
+                  buildOutputCapturingEnabled: true
+                  goalInputsFileCapturingEnabled: true
+                  testOutputCapturingEnabled: true
+                buildOptions:
+                  batchModeEnabled: true
+                  debugEnabled: true
+                  errorsEnabled: true
+                  failAtEndEnabled: true
+                  failFastEnabled: true
+                  failNeverEnabled: true
+                  laxChecksumsEnabled: true
+                  maxNumberOfThreads: 4
+                  nonRecursiveEnabled: true
+                  noSnapshotsUpdatesEnabled: true
+                  offlineModeEnabled: true
+                  quietEnabled: true
+                  strictChecksumsEnabled: true
+                  updateSnapshotsEnabled: true
+                environment:
+                  username: maven
+                  operatingSystem: OSX
+                  numberOfCpuCores: 16
+                  jreVersion: AdoptOpenJDK OpenJDK Runtime Environment 11.0.11+9
+                  jvmVersion: AdoptOpenJDK OpenJDK 64-Bit Server VM 11.0.11+9 (mixed mode)
+                  jvmMaxMemoryHeapSize: 16777216
+                  jvmCharset: UTF-8
+                  jvmLocale: English (United States)
+                  publicHostname: agent.gradle.com
+                  localHostname: maven
+                  localIpAddresses:
+                  - 192.168.1.126
+                  - 192.168.1.128
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+        '500':
+          $ref: '#/components/responses/UnexpectedError'
+        '503':
+          $ref: '#/components/responses/NotReadyError'
+  /api/builds/{id}/gradle-build-cache-performance:
+    parameters:
+    - in: path
+      name: id
+      schema:
+        type: string
+      required: true
+      description: The Build Scan ID.
+    - in: query
+      name: availabilityWaitTimeoutSecs
+      schema:
+        type: integer
+        minimum: 0
+      description: How long the server should wait for ingestion before returning a wait timeout response.
+    get:
+      operationId: GetGradleBuildCachePerformance
+      summary: View the build cache performance of a Gradle Build Scan.
+      description: The contained attributes are Gradle specific.
+      tags:
+      - GradleEnterprise
+      responses:
+        '200':
+          description: The build cache performance of a Gradle Build Scan.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GradleBuildCachePerformance'
+              example:
+                id: 9r4d13f0r3v3r
+                buildTime: 5000
+                effectiveTaskExecutionTime: 4000
+                serialTaskExecutionTime: 8000
+                serializationFactor: 2.00000
+                taskExecution:
+                - taskPath: ':task'
+                  type: 'avoided_from_local_cache'
+                  duration: 5000
+                  fingerprintingDuration: 5
+                  avoidanceSavings: 6000
+                - taskPath: ':task2'
+                  type: 'avoided_from_remote_cache'
+                  duration: 3000
+                  fingerprintingDuration: 3
+                  avoidanceSavings: 4000
+                taskFingerprintingSummary:
+                  count: 1
+                  serialDuration: 8
+                avoidanceSavingsSummary:
+                  total: 10000
+                  ratio: 0.55556
+                  upToDate: 0
+                  localBuildCache: 6000
+                  remoteBuildCache: 4000
+                buildCaches:
+                  local:
+                    isEnabled: true
+                    isPushEnabled: true
+                  remote:
+                    isEnabled: true
+                    isPushEnabled: true
+                  overhead:
+                    uploading: 100
+                    downloading: 200
+                    packing: 50
+                    unpacking: 25
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+        '500':
+          $ref: '#/components/responses/UnexpectedError'
+        '503':
+          $ref: '#/components/responses/NotReadyError'
+  /api/builds/{id}/maven-build-cache-performance:
+    parameters:
+    - in: path
+      name: id
+      schema:
+        type: string
+      required: true
+      description: The Build Scan ID.
+    - in: query
+      name: availabilityWaitTimeoutSecs
+      schema:
+        type: integer
+        minimum: 0
+      description: How long the server should wait for ingestion before returning a wait timeout response.
+    get:
+      operationId: GetMavenBuildCachePerformance
+      summary: View the build cache performance of a Maven Build Scan.
+      description: The contained attributes are Maven specific.
+      tags:
+      - GradleEnterprise
+      responses:
+        '200':
+          description: The build cache performance of a Maven Build Scan.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MavenBuildCachePerformance'
+              example:
+                id: 9r4d13f0r3v3r
+                buildTime: 5000
+                effectiveProjectExecutionTime: 4000
+                serialProjectExecutionTime: 8000
+                serializationFactor: 2.00000
+                goalExecution:
+                - goalName: 'compiler:compile'
+                  goalExecutionId: 'default-compile'
+                  goalProjectName: 'myproject'
+                  type: 'avoided_from_local_cache'
+                  duration: 5000
+                  fingerprintingDuration: 5
+                  avoidanceSavings: 6000
+                - goalName: 'compiler:compile'
+                  goalExecutionId: 'default-compile'
+                  goalProjectName: 'myproject2'
+                  type: 'avoided_from_remote_cache'
+                  duration: 3000
+                  fingerprintingDuration: 3
+                  avoidanceSavings: 4000
+                goalFingerprintingSummary:
+                  count: 1
+                  serialDuration: 8
+                avoidanceSavingsSummary:
+                  total: 10000
+                  ratio: 0.55556
+                  upToDate: 0
+                  localBuildCache: 6000
+                  remoteBuildCache: 4000
+                buildCaches:
+                  local:
+                    isEnabled: true
+                    isPushEnabled: null
+                  remote:
+                    isEnabled: true
+                    isPushEnabled: true
+                  overhead:
+                    uploading: 100
+                    downloading: 200
+                    packing: 50
+                    unpacking: 25
+        '400':
+          $ref: '#/components/responses/BadRequestError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+        '500':
+          $ref: '#/components/responses/UnexpectedError'
+        '503':
+          $ref: '#/components/responses/NotReadyError'
+components:
+  securitySchemes:
+    Bearer:
+      type: http
+      scheme: bearer
+      bearerFormat: Gradle Enterprise Access Key
+  responses:
+    BadRequestError:
+      description: The request cannot be fulfilled due to a problem.
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/ApiProblem'
+          examples:
+            BuildDeletedProblemResponse:
+              $ref: '#/components/examples/BuildDeletedApiProblemExample'
+            NonApplicableModelProblemResponse:
+              $ref: '#/components/examples/NonApplicableModelApiProblemExample'
+            InvalidQueryParamProblemResponse:
+              $ref: '#/components/examples/InvalidQueryParamApiProblemExample'
+    NotFoundError:
+      description: The referenced resource either does not exist or the permissions to know about it are missing.
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/ApiProblem'
+          examples:
+            NotFoundResponse:
+              $ref: '#/components/examples/NotFoundApiProblemExample'
+    UnexpectedError:
+      description: The server encountered an unexpected error.
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/ApiProblem'
+          examples:
+            UnexpectedErrorResponse:
+              $ref: '#/components/examples/UnexpectedErrorApiProblemExample'
+    NotReadyError:
+      description: The server is not ready to handle the request.
+      content:
+        application/problem+json:
+          schema:
+            $ref: '#/components/schemas/ApiProblem'
+          examples:
+            IngestionNotCompletedResponse:
+              $ref: '#/components/examples/IngestionNotCompletedApiProblemExample'
+  schemas:
+    Base:
+      type: object
+      description: Basel model of a Build Scan.
+      required:
+      - id
+      - availableAt
+      - buildToolType
+      - buildToolVersion
+      - buildAgentVersion
+      properties:
+        id:
+          type: string
+          description: The Build Scan ID.
+        availableAt:
+          type: integer
+          format: int64
+          description: The time in milliseconds from the epoch as of when the Build Scan has been received.
+        buildToolType:
+          type: string
+          description: The build tool type of the Build Scan.
+        buildToolVersion:
+          type: string
+          description: The build tool version used.
+        buildAgentVersion:
+          type: string
+          description: The build agent version used.
+    GradleAttributes:
+      type: object
+      description: The attributes of a Gradle Build Scan.
+      required:
+      - id
+      - buildStartTime
+      - buildDuration
+      - gradleVersion
+      - pluginVersion
+      - requestedTasks
+      - hasFailed
+      - tags
+      - values
+      - links
+      - buildOptions
+      - gradleEnterpriseSettings
+      - environment
+      properties:
+        id:
+          type: string
+          description: The Build Scan ID.
+        buildStartTime:
+          type: integer
+          format: int64
+          description: The time when the build started, as milliseconds since Epoch.
+        buildDuration:
+          type: integer
+          format: int64
+          description: The duration of the build, as milliseconds since Epoch.
+        gradleVersion:
+          type: string
+          description: The Gradle version used.
+        pluginVersion:
+          type: string
+          description: The Gradle Enterprise Gradle plugin version used.
+        rootProjectName:
+          type: string
+          description: The root project name. May be null in case of very early build failure.
+        requestedTasks:
+          type: array
+          items:
+            type: string
+          description: The list of requested tasks.
+        hasFailed:
+          type: boolean
+          description: True when the build failed.
+        tags:
+          type: array
+          items:
+            type: string
+          description: The list of tags.
+        values:
+          type: array
+          items:
+            $ref: '#/components/schemas/BuildAttributesValue'
+          description: The list of values.
+        links:
+          type: array
+          items:
+            $ref: '#/components/schemas/BuildAttributesLink'
+          description: The list of links.
+        gradleEnterpriseSettings:
+          $ref: '#/components/schemas/GradleGradleEnterpriseSettings'
+        buildOptions:
+          $ref: '#/components/schemas/GradleBuildOptions'
+        environment:
+          $ref: '#/components/schemas/BuildAttributesEnvironment'
+    MavenAttributes:
+      type: object
+      description: The attributes of a Maven Build Scan.
+      required:
+      - id
+      - buildStartTime
+      - buildDuration
+      - mavenVersion
+      - extensionVersion
+      - requestedGoals
+      - hasFailed
+      - tags
+      - values
+      - links
+      - buildOptions
+      - gradleEnterpriseSettings
+      - environment
+      properties:
+        id:
+          type: string
+          description: The Build Scan ID.
+        buildStartTime:
+          type: integer
+          format: int64
+          description: The time when the build started, as milliseconds since Epoch.
+        buildDuration:
+          type: integer
+          format: int64
+          description: The duration of the build, as milliseconds since Epoch.
+        mavenVersion:
+          type: string
+          description: The Maven version used.
+        extensionVersion:
+          type: string
+          description: The Gradle Enterprise Maven extension version used.
+        topLevelProjectName:
+          type: string
+          description: The top level project name. May be null in case of very early build failure.
+        requestedGoals:
+          type: array
+          items:
+            type: string
+          description: The list of requested goals.
+        hasFailed:
+          type: boolean
+          description: True when the build failed.
+        tags:
+          type: array
+          items:
+            type: string
+          description: The list of tags.
+        values:
+          type: array
+          items:
+            $ref: '#/components/schemas/BuildAttributesValue'
+          description: The list of values.
+        links:
+          type: array
+          items:
+            $ref: '#/components/schemas/BuildAttributesLink'
+          description: The list of links.
+        gradleEnterpriseSettings:
+          $ref: '#/components/schemas/MavenGradleEnterpriseSettings'
+        buildOptions:
+          $ref: '#/components/schemas/MavenBuildOptions'
+        environment:
+          $ref: '#/components/schemas/BuildAttributesEnvironment'
+    BuildAttributesValue:
+      type: object
+      description: A value.
+      required:
+      - name
+      properties:
+        name:
+          type: string
+          description: The name of the value.
+        value:
+          type: string
+          description: The value.
+    BuildAttributesLink:
+      type: object
+      description: A link
+      required:
+      - label
+      - url
+      properties:
+        label:
+          type: string
+          description: The link label.
+        url:
+          type: string
+          description: The link url.
+    BuildAttributesEnvironment:
+      type: object
+      description: The environment where the build has been executed
+      required:
+      - operatingSystem
+      - numberOfCpuCores
+      - jreVersion
+      - jvmVersion
+      - jvmMaxMemoryHeapSize
+      - jvmLocale
+      properties:
+        username:
+          type: string
+          description: Operating system username of the build user. Null if no username was captured.
+        operatingSystem:
+          type: string
+          description: Operating system of the build machine.
+        numberOfCpuCores:
+          type: integer
+          description: Number of cores available to the build JVM.
+        jreVersion:
+          type: string
+          description: Version of the Java runtime that executed the build.
+        jvmVersion:
+          type: string
+          description: Version of the Java Virtual Machine that executed the build.
+        jvmMaxMemoryHeapSize:
+          type: integer
+          format: int64
+          description: Maximum heap memory available to the build JVM in bytes.
+        jvmCharset:
+          type: string
+          description: The default charset of the JVM that executed the build. Null if capturing was not possible.
+        jvmLocale:
+          type: string
+          description: The locale of the JVM that executed the build.
+        publicHostname:
+          type: string
+          description: The hostname of the build machine, as seen on the network. Null if capturing was not possible.
+        localHostname:
+          type: string
+          description: The hostname of the build machine, as specified by itself. Null if capturing was not possible.
+        localIpAddresses:
+          type: array
+          items:
+            type: string
+          description: The local IP addresses of the build machine. Null if capturing was not possible.
+    GradleGradleEnterpriseSettings:
+      type: object
+      description: Configuration options for Gradle Enterprise
+      properties:
+        backgroundPublicationEnabled:
+          type: boolean
+          description: Whether background build scan publication was enabled for the build. Null if Gradle version is < 5.0 or Gradle Enterprise Gradle plugin version is < 3.4. See https://docs.gradle.com/enterprise/gradle-plugin/#configuring_background_uploading.
+        buildOutputCapturingEnabled:
+          type: boolean
+          description: Whether to capture build logging output for the build. Null if Gradle version is < 5.0 or Gradle Enterprise Gradle plugin version is < 3.7. See https://docs.gradle.com/enterprise/gradle-plugin/#capturing_build_and_test_outputs.
+        taskInputsFileCapturingEnabled:
+          type: boolean
+          description: Whether to capture task input file snapshots for the build. Null if Gradle version is < 5.0 or Gradle Enterprise Gradle plugin version is < 2.1. See https://docs.gradle.com/enterprise/gradle-plugin/#capturing_task_input_files.
+        testOutputCapturingEnabled:
+          type: boolean
+          description: Whether to capture test logging output for the build. Null if Gradle version is < 5.0 or Gradle Enterprise Gradle plugin version is < 3.7. See https://docs.gradle.com/enterprise/gradle-plugin/#capturing_build_and_test_outputs.
+    GradleBuildOptions:
+      type: object
+      description: Configuration of Gradle for this build.
+      properties:
+        buildCacheEnabled:
+          type: boolean
+          description: Whether the build cache was enabled for the build. Null if Gradle version is < 3.1 or Gradle Enterprise Gradle plugin version is < 1.3. See https://docs.gradle.org/current/javadoc/org/gradle/StartParameter.html#isBuildCacheEnabled--.
+        configurationCacheEnabled:
+          type: boolean
+          description: Whether the configuration cache was enabled for the build. Null if Gradle version is < 6.6 or Gradle Enterprise Gradle plugin version is < 3.4. See https://docs.gradle.org/current/userguide/configuration_cache.html.
+        configurationOnDemandEnabled:
+          type: boolean
+          description: Whether configuration on demand mode was enabled for the build. See https://docs.gradle.org/current/userguide/multi_project_configuration_and_execution.html#sec:configuration_on_demand.
+        continuousBuildEnabled:
+          type: boolean
+          description: Whether continuous build mode was running for the build. See https://docs.gradle.org/current/userguide/command_line_interface.html#sec:continuous_build.
+        continueOnFailureEnabled:
+          type: boolean
+          description: Whether continue on failure mode was set for the build. See https://docs.gradle.org/current/userguide/command_line_interface.html#sec:continue_build_on_failure.
+        daemonEnabled:
+          type: boolean
+          description: Whether the build was run with the Gradle Daemon. See https://docs.gradle.org/current/userguide/gradle_daemon.html.
+        dryRunEnabled:
+          type: boolean
+          description: Whether the dry run flag was set for the build. See https://docs.gradle.org/current/userguide/command_line_interface.html#sec:command_line_execution_options.
+        fileSystemWatchingEnabled:
+          type: boolean
+          description: Whether file system watching was enabled for the build. Null if Gradle version is < 6.6 or Gradle Enterprise Gradle plugin version is < 3.4. See https://docs.gradle.org/current/userguide/gradle_daemon.html#sec:daemon_watch_fs.
+        maxNumberOfGradleWorkers:
+          type: integer
+          description: The maximum number of build workers used to run the build. See https://docs.gradle.org/current/userguide/command_line_interface.html#sec:command_line_performance.
+        offlineModeEnabled:
+          type: boolean
+          description: Whether the offline mode was set for the build. See https://docs.gradle.org/current/userguide/dynamic_versions.html#sec:offline-mode.
+        parallelProjectExecutionEnabled:
+          type: boolean
+          description: Whether parallel project execution was enabled for the build. See https://docs.gradle.org/current/userguide/multi_project_configuration_and_execution.html#sec:parallel_execution.
+        refreshDependenciesEnabled:
+          type: boolean
+          description: Whether the build was set to refresh all dependencies in the dependency cache. See https://docs.gradle.org/current/userguide/dynamic_versions.html#sec:refreshing-dependencies.
+        rerunTasksEnabled:
+          type: boolean
+          description: Whether the build was forced to run all the tasks, ignoring any up-to-date checks. https://docs.gradle.org/current/userguide/command_line_interface.html#sec:rerun_tasks.
+    MavenGradleEnterpriseSettings:
+      type: object
+      description: Configuration options for Gradle Enterprise
+      properties:
+        backgroundPublicationEnabled:
+          type: boolean
+          description: Whether background build scan publication was enabled for the build. Null if Gradle Enterprise Maven extension version is < 1.6. See https://docs.gradle.com/enterprise/maven-extension/#configuring_background_uploading.
+        buildOutputCapturingEnabled:
+          type: boolean
+          description: Whether to capture build logging output for the build. Null if Gradle Enterprise Maven extension version is < 1.11. See https://docs.gradle.com/enterprise/maven-extension/#capturing_build_and_test_outputs.
+        goalInputsFileCapturingEnabled:
+          type: boolean
+          description: Whether to capture goal input file snapshots for the build. Null if Gradle Enterprise Maven extension version is < 1.1. See https://docs.gradle.com/enterprise/maven-extension/#capturing_goal_input_files.
+        testOutputCapturingEnabled:
+          type: boolean
+          description: Whether to capture test logging output for the build. Null if Gradle Enterprise Maven extension version is < 1.11. See https://docs.gradle.com/enterprise/maven-extension/#capturing_build_and_test_outputs.
+    MavenBuildOptions:
+      type: object
+      description: Configuration of Gradle for this build.
+      properties:
+        batchModeEnabled:
+          type: boolean
+          description: Whether the build was configured to run in non-interactive (batch) mode. Null if capturing was not possible. See https://maven.apache.org/ref/current/maven-embedder/cli.html#batch-mode.
+        debugEnabled:
+          type: boolean
+          description: Whether the build was configured to produce execution debug output. Null if capturing was not possible. See https://maven.apache.org/ref/current/maven-embedder/cli.html#debug.
+        errorsEnabled:
+          type: boolean
+          description: Whether the build was configured to produce execution error messages. See https://maven.apache.org/ref/current/maven-embedder/cli.html#errors.
+        failAtEndEnabled:
+          type: boolean
+          description: Whether the build was configured to only fail at the end. Null if capturing was not possible. See https://maven.apache.org/ref/current/maven-embedder/cli.html#fail-at-end.
+        failFastEnabled:
+          type: boolean
+          description: Whether the build was configured to fail at the first error. Null if capturing was not possible. See https://maven.apache.org/ref/current/maven-embedder/cli.html#fail-fast.
+        failNeverEnabled:
+          type: boolean
+          description: Whether the build was configured to never fail, regardless of errors produced. Null if capturing was not possible. See https://maven.apache.org/ref/current/maven-embedder/cli.html#fail-never.
+        laxChecksumsEnabled:
+          type: boolean
+          description: Whether the build was configured to only warn if checksums don't match. Null if capturing was not possible. See https://maven.apache.org/ref/current/maven-embedder/cli.html#lax-checksums.
+        maxNumberOfThreads:
+          type: integer
+          description: Maximum number of threads used when executing the build. See https://cwiki.apache.org/confluence/display/MAVEN/Parallel+builds+in+Maven+3.
+        nonRecursiveEnabled:
+          type: boolean
+          description: Whether the build was configured to not recurse into sub-projects. See https://maven.apache.org/ref/current/maven-embedder/cli.html#non-recursive.
+        noSnapshotsUpdatesEnabled:
+          type: boolean
+          description: Whether the build was configured to suppress snapshot updates. See https://maven.apache.org/ref/current/maven-embedder/cli.html#no-snapshot-updates.
+        offlineModeEnabled:
+          type: boolean
+          description: Whether the build was configured to run offline. See https://maven.apache.org/ref/current/maven-embedder/cli.html#offline.
+        quietEnabled:
+          type: boolean
+          description: Whether the build was configured to run in quiet mode. Null if capturing was not possible. See https://maven.apache.org/ref/current/maven-embedder/cli.html#quiet.
+        strictChecksumsEnabled:
+          type: boolean
+          description: Whether the build was configured to fail if checksums don't match. Null if capturing was not possible. See https://maven.apache.org/ref/current/maven-embedder/cli.html#strict-checksums.
+        updateSnapshotsEnabled:
+          type: boolean
+          description: Whether the build was configured to force a check for missing releases and updated snapshots on remote repositories. See https://maven.apache.org/ref/current/maven-embedder/cli.html#update-snapshots.
+    GradleBuildCachePerformance:
+      type: object
+      description: The build cache performance of a Gradle Build Scan.
+      required:
+      - id
+      - buildTime
+      - effectiveTaskExecutionTime
+      - serialTaskExecutionTime
+      - serializationFactor
+      - taskExecution
+      - taskFingerprintingSummary
+      - avoidanceSavingsSummary
+      properties:
+        id:
+          type: string
+          description: The Build Scan ID.
+        buildTime:
+          type: integer
+          format: int64
+          description: Wall clock duration of the build, in ms.
+        effectiveTaskExecutionTime:
+          type: integer
+          format: int64
+          description: Wall clock time spent executing tasks, in ms. It is the time spent between the start of the first task in the execution phase and the end of the last task of the execution phase, removing any interval where no task is being executed.
+        serialTaskExecutionTime:
+          type: integer
+          format: int64
+          description: Wall clock time of all task executions, in ms. It is the sum of all individual task durations.
+        serializationFactor:
+          type: number
+          format: double
+          description: The ratio of 'serialTaskExecutionTime' over the 'effectiveTaskExecutionTime'. Quantifies the effect of task parallelization. A value equal to 1 means that no parallelization occurred. A value greater than one means that tasks were executed faster due to parallelization.
+        taskExecution:
+          $ref: '#/components/schemas/GradleBuildCachePerformanceTaskExecution'
+        taskFingerprintingSummary:
+          $ref: '#/components/schemas/GradleBuildCachePerformanceTaskFingerprintingSummary'
+        avoidanceSavingsSummary:
+          $ref: '#/components/schemas/GradleBuildCachePerformanceAvoidanceSavingsSummary'
+        buildCaches:
+          $ref: '#/components/schemas/GradleBuildCachePerformanceBuildCaches'
+    GradleBuildCachePerformanceTaskExecution:
+      type: array
+      description: A list of executed tasks with performance related information
+      items:
+        $ref: '#/components/schemas/GradleBuildCachePerformanceTaskExecutionEntry'
+    GradleBuildCachePerformanceTaskExecutionEntry:
+      type: object
+      required:
+      - taskPath
+      - duration
+      - type
+      properties:
+        taskPath:
+          type: string
+          description: The full task path.
+        avoidanceOutcome:
+          type: string
+          enum:
+          - avoided_up_to_date
+          - avoided_from_local_cache
+          - avoided_from_remote_cache
+          - executed_cacheable
+          - executed_not_cacheable
+          - executed_unknown_cacheability
+          - lifecycle
+          - no-source
+          - skipped
+          description: >
+            The avoidance outcome of this task with respect to performance:
+              * `avoided_up_to_date` - Task whose execution was avoided due to build incrementalism
+              * `avoided_from_local_cache` - Task whose execution was avoided due to reusing a local build cache entry
+              * `avoided_from_remote_cache` - Task whose execution was avoided due to reusing a remote build cache entry
+              * `executed_cacheable` - Task which was executed but was cacheable
+              * `executed_not_cacheable` - Task which was executed but was not cacheable
+              * `executed_unknown_cacheability` - Task which was executed and whose cacheability could not be determined
+              * `lifecycle` - Lifecycle task
+              * `no-source` - No-source task
+              * `skipped` - Skipped task
+        duration:
+          type: integer
+          format: int64
+          description: The task duration, in ms.
+        fingerprintingDuration:
+          type: integer
+          format: int64
+          description: The task fingerprinting duration, in ms. This duration is part of the complete task execution duration. May be null if the task was not fingerprinted, or the information was not available.
+        avoidanceSavings:
+          type: integer
+          format: int64
+          description: The task avoidance savings, in ms. May be negative. May be null if the information was not available.
+    GradleBuildCachePerformanceTaskFingerprintingSummary:
+      type: object
+      description: A summary of task fingerprinting. Fingerprinted tasks are part of the taskExecution.avoidedTasks or taskExecution.executedTasks, or taskExecution.noSourceTasks buckets.
+      required:
+      - count
+      - serialDuration
+      properties:
+        count:
+          type: integer
+          description: Count of fingerprinted tasks.
+        serialDuration:
+          type: integer
+          format: int64
+          description: Sum of all fingerprinting times of fingerprinted tasks, in ms.
+    GradleBuildCachePerformanceAvoidanceSavingsSummary:
+      type: object
+      description: A breakdown of avoidance savings.
+      required:
+      - total
+      - ratio
+      - upToDate
+      - localBuildCache
+      - remoteBuildCache
+      properties:
+        total:
+          type: integer
+          format: int64
+          description: The estimated reduction in serial execution time of the tasks due to their outputs being reused, in ms.
+        ratio:
+          type: number
+          format: double
+          description: The ratio of the total avoidance savings against the potential serial execution time (which is the actual serial execution time plus the total avoidance savings). Quantifies the effect of avoidance savings in this build. The bigger the ratio is, the more time was saved when running the build.
+        upToDate:
+          type: integer
+          format: int64
+          description: The estimated reduction in serial execution time of the tasks due to build incrementalism, in ms.
+        localBuildCache:
+          type: integer
+          format: int64
+          description: The estimated reduction in serial execution time of the tasks due to their outputs being reused from the local build cache, in ms.
+        remoteBuildCache:
+          type: integer
+          format: int64
+          description: The estimated reduction in serial execution time of the tasks due to their outputs being reused from the remote build cache, in ms.
+    GradleBuildCachePerformanceBuildCaches:
+      type: object
+      description: Information about the local and remote build caches used in the build.
+      required:
+      - local
+      - remote
+      - overhead
+      properties:
+        local:
+          $ref: '#/components/schemas/GradleBuildCachePerformanceBuildCacheLocalInfo'
+        remote:
+          $ref: '#/components/schemas/GradleBuildCachePerformanceBuildCacheRemoteInfo'
+        overhead:
+          $ref: '#/components/schemas/GradleBuildCachePerformanceBuildCacheOverhead'
+    GradleBuildCachePerformanceBuildCacheLocalInfo:
+      type: object
+      description: Information about the local build cache used in the build.
+      required:
+      - isEnabled
+      - isPushEnabled
+      properties:
+        isEnabled:
+          type: boolean
+          description: Whether the local build cache was enabled.
+        isPushEnabled:
+          type: boolean
+          description: Whether pushing to the local build cache was enabled.
+    GradleBuildCachePerformanceBuildCacheRemoteInfo:
+      type: object
+      description: Information about the remote build cache used in the build.
+      required:
+      - isEnabled
+      - isPushEnabled
+      - isDisabledDueToError
+      properties:
+        isEnabled:
+          type: boolean
+          description: Whether the remote build cache was enabled.
+        isPushEnabled:
+          type: boolean
+          description: Whether pushing to the remote build cache was enabled.
+        isDisabledDueToError:
+          type: boolean
+          description: Wether the remote build cache was disabled during the build due to an error occuring in loading or storing remote build cache entries.
+    GradleBuildCachePerformanceBuildCacheOverhead:
+      type: object
+      description: Information about the build cache overhead in this build.
+      required:
+      - uploading
+      - downloading
+      - packing
+      - unpacking
+      properties:
+        uploading:
+          type: integer
+          format: int64
+          description: Overhead of upload operations, in ms.
+        downloading:
+          type: integer
+          format: int64
+          description: Overhead of download operations, in ms.
+        packing:
+          type: integer
+          format: int64
+          description: Overhead of pack operations, in ms.
+        unpacking:
+          type: integer
+          format: int64
+          description: Overhead of unpack operations, in ms.
+    MavenBuildCachePerformance:
+      type: object
+      description: The build cache performance of a Maven Build Scan.
+      required:
+      - id
+      - buildTime
+      - effectiveProjectExecutionTime
+      - serialProjectExecutionTime
+      - serializationFactor
+      - goalExecution
+      - goalFingerprintingSummary
+      - avoidanceSavingsSummary
+      - buildCaches
+      properties:
+        id:
+          type: string
+          description: The Build Scan ID.
+        buildTime:
+          type: integer
+          format: int64
+          description: Wall clock duration of the build, in ms.
+        effectiveProjectExecutionTime:
+          type: integer
+          format: int64
+          description: Wall clock time spent executing projects, in ms. It is the time spent between the start of the first project execution and the end of the last project execution, removing any interval where no project is being executed.
+        serialProjectExecutionTime:
+          type: integer
+          format: int64
+          description: Wall clock time of all project executions, in ms. It is the sum of all individual project durations.
+        serializationFactor:
+          type: number
+          format: double
+          description: The ratio of 'serialProjectExecutionTime' over the 'effectiveProjectExecutionTime'. Quantifies the effect of project parallelization. A value equal to 1 means that no parallelization occurred. A value greater than one means that projects were executed faster due to parallelization.
+        goalExecution:
+          $ref: '#/components/schemas/MavenBuildCachePerformanceGoalExecution'
+        goalFingerprintingSummary:
+          $ref: '#/components/schemas/MavenBuildCachePerformanceGoalFingerprintingSummary'
+        avoidanceSavingsSummary:
+          $ref: '#/components/schemas/MavenBuildCachePerformanceAvoidanceSavingsSummary'
+        buildCaches:
+          $ref: '#/components/schemas/MavenBuildCachePerformanceBuildCaches'
+    MavenBuildCachePerformanceGoalExecution:
+      type: array
+      description: A list of executed goals with performance related information
+      items:
+        $ref: '#/components/schemas/MavenBuildCachePerformanceGoalExecutionEntry'
+    MavenBuildCachePerformanceGoalExecutionEntry:
+      type: object
+      required:
+      - goalName
+      - goalExecutionId
+      - goalProjectName
+      - duration
+      - type
+      properties:
+        goalName:
+          type: string
+          description: The goal name.
+        goalExecutionId:
+          type: string
+          description: The goal execution ID.
+        goalProjectName:
+          type: string
+          description: The goal project name.
+        avoidanceOutcome:
+          type: string
+          enum:
+          - avoided_from_local_cache
+          - avoided_from_remote_cache
+          - executed_cacheable
+          - executed_not_cacheable
+          - executed_unknown_cacheability
+          - skipped
+          description: >
+            The avoidance outcome of this task with respect to performance:
+              * `avoided_from_local_cache` - Goal whose execution was avoided due to reusing a local build cache entry
+              * `avoided_from_remote_cache` - Goal whose execution was avoided due to reusing a remote build cache entry
+              * `executed_cacheable` - Goal which was executed but was cacheable
+              * `executed_not_cacheable` - Goal which was executed but was not cacheable
+              * `executed_unknown_cacheability` - Goal which was executed and whose cacheability could not be determined
+              * `skipped` - Skipped goal
+        duration:
+          type: integer
+          format: int64
+          description: The goal duration, in ms.
+        fingerprintingDuration:
+          type: integer
+          format: int64
+          description: The goal fingerprinting duration, in ms. This duration is part of the complete task execution duration. May be null if the goal was not fingerprinted.
+        avoidanceSavings:
+          type: integer
+          format: int64
+          description: The goal avoidance savings, in ms. May be negative. May be null if the information was not available.
+    MavenBuildCachePerformanceGoalFingerprintingSummary:
+      type: object
+      description: A summary of goal fingerprinting. Fingerprinted goals are part of the goalExecution.avoidedGoals or goalExecution.executedGoals buckets.
+      required:
+      - count
+      - serialDuration
+      properties:
+        count:
+          type: integer
+          description: Count of fingerprinted goals.
+        serialDuration:
+          type: integer
+          format: int64
+          description: Sum of all fingerprinting times of fingerprinted goals, in ms.
+    MavenBuildCachePerformanceAvoidanceSavingsSummary:
+      type: object
+      description: A breakdown of avoidance savings.
+      required:
+      - total
+      - ratio
+      - localBuildCache
+      - remoteBuildCache
+      properties:
+        total:
+          type: integer
+          format: int64
+          description: The estimated reduction in serial execution time of the goals due to their outputs being reused, in ms.
+        ratio:
+          type: number
+          format: double
+          description: The ratio of the total avoidance savings against the potential serial execution time (which is the actual serial execution time plus the total avoidance savings). Quantifies the effect of avoidance savings in this build. The bigger the ratio is, the more time was saved when running the build.
+        localBuildCache:
+          type: integer
+          format: int64
+          description: The estimated reduction in serial execution time of the goals due to their outputs being reused from the local build cache, in ms.
+        remoteBuildCache:
+          type: integer
+          format: int64
+          description: The estimated reduction in serial execution time of the goals due to their outputs being reused from the remote build cache, in ms.
+    MavenBuildCachePerformanceBuildCaches:
+      type: object
+      description: Information about the local and remote build caches used in the build, if it was configured in the build.
+      required:
+      - overhead
+      properties:
+        local:
+          $ref: '#/components/schemas/MavenBuildCachePerformanceBuildCacheLocalInfo'
+        remote:
+          $ref: '#/components/schemas/MavenBuildCachePerformanceBuildCacheRemoteInfo'
+        overhead:
+          $ref: '#/components/schemas/MavenBuildCachePerformanceBuildCacheOverhead'
+    MavenBuildCachePerformanceBuildCacheLocalInfo:
+      type: object
+      description: Information about the local build cache used in the build, if it was configured in the build.
+      required:
+      - isEnabled
+      properties:
+        isEnabled:
+          type: boolean
+          description: Whether the local build cache was enabled.
+    MavenBuildCachePerformanceBuildCacheRemoteInfo:
+      type: object
+      description: Information about the remote build cache used in the build, if it was configured in the build.
+      required:
+      - isEnabled
+      - isPushEnabled
+      - isDisabledDueToError
+      properties:
+        isEnabled:
+          type: boolean
+          description: Whether the remote build cache was enabled.
+        isPushEnabled:
+          type: boolean
+          description: Whether pushing to the remote build cache was enabled.
+        isDisabledDueToError:
+          type: boolean
+          description: Wether the remote build cache was disabled during the build due to an error occuring in loading or storing remote build cache entries.
+    MavenBuildCachePerformanceBuildCacheOverhead:
+      type: object
+      description: Information about the build cache overhead in this build.
+      required:
+      - uploading
+      - downloading
+      - packing
+      - unpacking
+      properties:
+        uploading:
+          type: integer
+          format: int64
+          description: Overhead of upload operations, in ms.
+        downloading:
+          type: integer
+          format: int64
+          description: Overhead of download operations, in ms.
+        packing:
+          type: integer
+          format: int64
+          description: Overhead of pack operations, in ms.
+        unpacking:
+          type: integer
+          format: int64
+          description: Overhead of unpack operations, in ms.
+    ApiProblem:
+      type: object
+      description: |
+        Response detailing why a request was rejected.
+        Adheres to the [RFC-7807](https://datatracker.ietf.org/doc/html/rfc7807) standard (colloquially known as "Problem JSON") for the response format.
+      required:
+      - title
+      - status
+      properties:
+        type:
+          type: string
+          description: A URN (Uniform Resource Name) identifying the type of problem.
+        title:
+          type: string
+          description: The reason underlying the problem.
+        detail:
+          type: string
+          description: A longer and comprehensive description of the problem.
+        status:
+          type: integer
+          description: HTTP status code of the response.
+  examples:
+    BuildDeletedApiProblemExample:
+      value:
+        type: urn:gradle:enterprise:api:problems:build-deleted
+        title: Build deleted.
+        detail: Build 9r4d13f0r3v3r has been deleted and is no longer available.
+        status: 400
+    NonApplicableModelApiProblemExample:
+      value:
+        type: urn:gradle:enterprise:api:problems:build-model-not-applicable
+        title: Build model is not applicable.
+        detail: Build model BuildCachePerformance is not available for build 9r4d13f0r3v3r because the build agent version is not supported.
+        status: 400
+    InvalidQueryParamApiProblemExample:
+      value:
+        type: urn:gradle:enterprise:api:problems:invalid-param
+        title: Invalid query parameter value.
+        detail: >
+          The query parameter 'availabilityWaitTimeoutSecs' has an invalid value: -1
+        status: 400
+    NotFoundApiProblemExample:
+      value:
+        type: urn:gradle:enterprise:api:problems:not-found
+        title: The requested resource is not found or the permissions to know about it are missing.
+        status: 404
+    UnexpectedErrorApiProblemExample:
+      value:
+        type: urn:gradle:enterprise:api:problems:unexpected-error
+        title: Encountered an internal server error.
+        detail: The ingestion of build 9r4d13f0r3v3r failed.
+        status: 500
+    IngestionNotCompletedApiProblemExample:
+      value:
+        type: urn:gradle:enterprise:api:problems:build-processing-incomplete
+        title: Build processing is incomplete.
+        detail: The data of build 9r4d13f0r3v3r is not yet available for viewing. Please try again later.
+        status: 503
+tags:
+- name: GradleEnterprise
+  description: API for managing Gradle Enterprise
+  externalDocs:
+    url: https://docs.gradle.com/enterprise/api
