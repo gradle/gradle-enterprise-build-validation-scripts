@@ -106,7 +106,7 @@ print_summary() {
   info "Summary"
   info "-------"
   print_experiment_info
-  print_experiment_specific_info
+  print_experiment_specific_summary_info
   print_build_scans
   print_warnings
   print_bl
@@ -129,7 +129,7 @@ print_experiment_info() {
   summary_row "Experiment artifact dir:" "$(relative_path "${SCRIPT_DIR}" "${EXP_DIR}")"
 }
 
-print_experiment_specific_info() {
+print_experiment_specific_summary_info() {
   # this function is intended to be overridden by experiments as-needed
   # have one command to satisfy shellcheck
   true

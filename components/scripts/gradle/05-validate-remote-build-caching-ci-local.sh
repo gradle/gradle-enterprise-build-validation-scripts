@@ -204,8 +204,8 @@ execute_build() {
   invoke_gradle "${args[@]}"
 }
 
-# Overrides info.sh#print_experiment_specific_info
-print_experiment_specific_info() {
+# Overrides info.sh#print_experiment_specific_summary_info
+print_experiment_specific_summary_info() {
   summary_row "Custom value mapping file:" "${mapping_file:-<none>}"
 }
 
