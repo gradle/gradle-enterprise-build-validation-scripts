@@ -176,12 +176,12 @@ public class FetchBuildValidationDataCommand implements Callable<Integer> {
     }
 
     public void printHeader() {
-        List<String> labels = Fields.ordered().stream().map(f -> f.label).collect(Collectors.toList());
+        List<String> labels = Fields.ordered().map(f -> f.label).collect(Collectors.toList());
         System.out.println(String.join(",", labels));
     }
 
     private void printRow(BuildValidationData buildValidationData) {
-        List<String> values = Fields.ordered().stream().map(f -> f.value.apply(buildValidationData)).collect(Collectors.toList());
+        List<String> values = Fields.ordered().map(f -> f.value.apply(buildValidationData)).collect(Collectors.toList());
         System.out.println(String.join(",", values));
     }
 
