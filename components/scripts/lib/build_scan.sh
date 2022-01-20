@@ -17,6 +17,18 @@ remote_build_cache_urls=()
 # shellcheck disable=SC2034 # not all scripts use this data
 remote_build_cache_shards=()
 
+# Task statistics
+num_tasks_avoided_up_to_date=()
+num_tasks_avoided_from_cache=()
+num_tasks_avoided_from_local_cache=()
+num_tasks_avoided_from_remote_cache=()
+num_tasks_executed_cacheable=()
+num_tasks_executed_not_cacheable=()
+num_tasks_executed_unknown_cacheability=()
+num_tasks_lifecycle=()
+num_tasks_no_source=()
+num_tasks_skipped=()
+
 read_build_scan_metadata() {
   # This isn't the most robust way to read a CSV,
   # but we control the CSV so we don't have to worry about various CSV edge cases
@@ -167,7 +179,8 @@ fetch_and_read_build_validation_data() {
   debug ""
 
   header_row_read=false
-  while IFS=, read -r field_1 field_2 field_3 field_4 field_5 field_6 field_7 field_8 field_9 field_10 field_11; do
+  # shellcheck disable=SC2034 # not all scripts use all of the fetched data
+  while IFS=, read -r field_1 field_2 field_3 field_4 field_5 field_6 field_7 field_8 field_9 field_10 field_11 field_12 field_13 field_14 field_15 field_16 field_17 field_18 field_19 field_20 field_21; do
      if [[ "$header_row_read" == "false" ]]; then
          header_row_read=true
          continue;
@@ -181,10 +194,19 @@ fetch_and_read_build_validation_data() {
      git_commit_ids+=("$field_7")
      requested_tasks+=("$(remove_clean_task "${field_8}")")
      build_outcomes+=("$field_9")
-     # shellcheck disable=SC2034 # not all scripts use this data
-     remote_build_cache_urls=("${field_10}")
-     # shellcheck disable=SC2034 # not all scripts use this data
-     remote_build_cache_shards=("${field_11}")
+     remote_build_cache_urls+=("${field_10}")
+     remote_build_cache_shards+=("${field_11}")
+
+     num_tasks_avoided_up_to_date+=("${field_12}")
+     num_tasks_avoided_from_cache+=("${field_13}")
+     num_tasks_avoided_from_local_cache+=("${field_14}")
+     num_tasks_avoided_from_remote_cache+=("${field_15}")
+     num_tasks_executed_cacheable+=("${field_16}")
+     num_tasks_executed_not_cacheable+=("${field_17}")
+     num_tasks_executed_unknown_cacheability+=("${field_18}")
+     num_tasks_lifecycle+=("${field_19}")
+     num_tasks_no_source+=("${field_20}")
+     num_tasks_skipped+=("${field_21}")
   done <<< "${fetched_data}"
 }
 

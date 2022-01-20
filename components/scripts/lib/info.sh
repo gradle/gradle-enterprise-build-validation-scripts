@@ -110,6 +110,8 @@ print_summary() {
   print_build_scans
   print_warnings
   print_bl
+  print_outcome
+  print_bl
   print_quick_links
 }
 
@@ -133,6 +135,20 @@ print_experiment_specific_summary_info() {
   # this function is intended to be overridden by experiments as-needed
   # have one command to satisfy shellcheck
   true
+}
+
+print_outcome() {
+  # this function is intended to be overridden by experiments as-needed
+  # have one command to satisfy shellcheck
+  true
+}
+
+print_cacheable_task_outcome() {
+  info "Outcome"
+  info "-------"
+  summary_row "Cacheable ${BUILD_TOOL_TASK}s executed:" "${num_tasks_executed_cacheable[1]}"
+  summary_row "Cacheable ${BUILD_TOOL_TASK}s up to date:" "${num_tasks_avoided_up_to_date[1]}"
+  summary_row "Cacheable ${BUILD_TOOL_TASK}s from cache:" "${num_tasks_avoided_from_cache[1]}"
 }
 
 print_build_scans() {
