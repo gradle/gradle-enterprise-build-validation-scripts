@@ -1,5 +1,6 @@
 package com.gradle.enterprise;
 
+import com.gradle.enterprise.api.client.ApiClient;
 import picocli.CommandLine;
 import picocli.CommandLine.Help.ColorScheme;
 

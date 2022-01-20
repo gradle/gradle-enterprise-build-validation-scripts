@@ -3,6 +3,7 @@ package com.gradle.enterprise;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -18,8 +19,9 @@ public class BuildValidationData {
     private final List<String> requestedTasks;
     private final String buildOutcome;
     private final URL remoteBuildCacheUrl;
+    private final Map<String, Long> tasksByAvoidanceOutcome;
 
-    public BuildValidationData(String rootProjectName, String buildScanId, URL gradleEnterpriseServerUrl, String gitUrl, String gitBranch, String gitCommitId, List<String> requestedTasks, String buildOutcome, URL remoteBuildCacheUrl) {
+    public BuildValidationData(String rootProjectName, String buildScanId, URL gradleEnterpriseServerUrl, String gitUrl, String gitBranch, String gitCommitId, List<String> requestedTasks, String buildOutcome, URL remoteBuildCacheUrl, Map<String, Long> tasksByAvoidanceOutcome) {
         this.rootProjectName = rootProjectName;
         this.buildScanId = buildScanId;
         this.gradleEnterpriseServerUrl = gradleEnterpriseServerUrl;
@@ -29,6 +31,7 @@ public class BuildValidationData {
         this.requestedTasks = requestedTasks;
         this.buildOutcome = buildOutcome;
         this.remoteBuildCacheUrl = remoteBuildCacheUrl;
+        this.tasksByAvoidanceOutcome = tasksByAvoidanceOutcome;
     }
 
     public String getRootProjectName() {
@@ -116,5 +119,9 @@ public class BuildValidationData {
 
     private static boolean isFound(String value) {
         return !value.isEmpty();
+    }
+
+    public Map<String, Long> getTasksByAvoidanceOutcome() {
+        return tasksByAvoidanceOutcome;
     }
 }

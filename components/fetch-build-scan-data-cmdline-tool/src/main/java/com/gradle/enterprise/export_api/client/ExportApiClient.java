@@ -23,6 +23,7 @@ import java.net.URL;
 import java.time.Duration;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 
@@ -51,11 +52,6 @@ public class ExportApiClient {
             "," + MVN_USER_NAMED_VALUE +
             "," + MVN_BUILD_FINISHED +
             "," + MVN_BUILD_CACHE_CONFIGURATION;
-    }
-
-    private static class StatusCodes {
-        private static final int UNAUTHORIZED = 401;
-        private static final int NOT_FOUND = 404;
     }
 
     private static final ObjectMapper MAPPER = new ObjectMapper()
@@ -102,6 +98,7 @@ public class ExportApiClient {
         private final URL gradleEnterpriseServerUrl;
         private final String buildScanId;
         private final CustomValueNames customValueNames;
+        private final GeApiTaskMetricsFetcher taskMetricsFetcher;
 
         private final CompletableFuture<String> rootProjectName = new CompletableFuture<>();
         private final CompletableFuture<String> gitUrl = new CompletableFuture<>();
@@ -118,6 +115,7 @@ public class ExportApiClient {
             this.gradleEnterpriseServerUrl = gradleEnterpriseServerUrl;
             this.buildScanId = buildScanId;
             this.customValueNames = customValueNames;
+            this.taskMetricsFetcher = new GeApiTaskMetricsFetcher(gradleEnterpriseServerUrl);
         }
 
         public BuildValidationData getBuildValidationData() {
@@ -131,7 +129,9 @@ public class ExportApiClient {
                     gitCommitId.get(),
                     requestedTasks.get(),
                     buildOutcome.get(),
-                    remoteBuildCacheUrl.get());
+                    remoteBuildCacheUrl.get(),
+                    taskMetricsFetcher.countTasksByAvoidanceOutcome(buildScanId)
+                    );
             } catch (ExecutionException e) {
                 if (e.getCause() == null) {
                     throw new FetchingBuildScanUnexpectedException(buildScanId, gradleEnterpriseServerUrl, e);

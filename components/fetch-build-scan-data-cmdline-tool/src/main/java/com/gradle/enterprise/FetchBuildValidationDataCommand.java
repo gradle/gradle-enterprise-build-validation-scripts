@@ -14,6 +14,7 @@ import java.net.URL;
 import java.nio.file.Path;
 import java.util.*;
 import java.util.concurrent.Callable;
+import java.util.stream.Collectors;
 
 @Command(
     name = "fetch-build-scan-data-cmdline-tool",
@@ -83,7 +84,8 @@ public class FetchBuildValidationDataCommand implements Callable<Integer> {
                 "",
                 Collections.emptyList(),
                 "",
-                null);
+                null,
+                Collections.emptyMap());
         }
     }
 
@@ -174,30 +176,13 @@ public class FetchBuildValidationDataCommand implements Callable<Integer> {
     }
 
     public void printHeader() {
-        System.out.println("Root Project Name,Gradle Enterprise Server,Build Scan,Build Scan ID,Git URL,Git Branch,Git Commit Id,Requested Tasks,Build Outcome,Remote Build Cache URL,Remote Build Cache Shard");
+        List<String> labels = Fields.ordered().stream().map(f -> f.label).collect(Collectors.toList());
+        System.out.println(String.join(",", labels));
     }
 
     private void printRow(BuildValidationData buildValidationData) {
-        System.out.printf("%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s%n",
-            buildValidationData.getRootProjectName(),
-            toStringSafely(buildValidationData.getGradleEnterpriseServerUrl()),
-            toStringSafely(buildValidationData.getBuildScanUrl()),
-            buildValidationData.getBuildScanId(),
-            buildValidationData.getGitUrl(),
-            buildValidationData.getGitBranch(),
-            buildValidationData.getGitCommitId(),
-            String.join(" ", buildValidationData.getRequestedTasks()),
-            buildValidationData.getBuildOutcome(),
-            buildValidationData.getRemoteBuildCacheUrl() == null ? "" : buildValidationData.getRemoteBuildCacheUrl().toString(),
-            buildValidationData.getRemoteBuildCacheShard()
-        );
-    }
-
-    private String toStringSafely(Object object) {
-        if (object == null) {
-            return "";
-        }
-        return object.toString();
+        List<String> values = Fields.ordered().stream().map(f -> f.value.apply(buildValidationData)).collect(Collectors.toList());
+        System.out.println(String.join(",", values));
     }
 
     private CustomValueNames loadCustomValueKeys(Optional<Path> customValueMappingFile) throws IOException {
