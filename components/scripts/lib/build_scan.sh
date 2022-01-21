@@ -158,7 +158,7 @@ fetch_and_read_build_scan_data() {
 
   # This isn't the most robust way to read a CSV,
   # but we control the CSV so we don't have to worry about various CSV edge cases
-  local args fetched_data header_row_read
+  local args task_metrics_only fetched_data header_row_read
   args=()
 
   if [[ "$_arg_debug" == "on" ]]; then
@@ -170,6 +170,11 @@ fetch_and_read_build_scan_data() {
     args+=(-m "${mapping_file}")
   fi
 
+  if [[ "$1" == "task_metrics_only" ]]; then
+    task_metrics_only="true"
+    debug "Only using the task metrics found in the build scan data"
+  fi
+  shift
   args+=( "$@" )
   fetched_data="$(fetch_build_scan_data "${args[@]}")"
 
@@ -185,17 +190,20 @@ fetch_and_read_build_scan_data() {
          header_row_read=true
          continue;
      fi
-     project_names+=("$field_1")
-     base_urls+=("$field_2")
-     build_scan_urls+=("$field_3")
-     build_scan_ids+=("$field_4")
-     git_repos+=("$field_5")
-     git_branches+=("$field_6")
-     git_commit_ids+=("$field_7")
-     requested_tasks+=("$(remove_clean_task "${field_8}")")
-     build_outcomes+=("$field_9")
-     remote_build_cache_urls+=("${field_10}")
-     remote_build_cache_shards+=("${field_11}")
+
+     if [[ "${task_metrics_only}" != "true" ]]; then
+       project_names+=("$field_1")
+       base_urls+=("$field_2")
+       build_scan_urls+=("$field_3")
+       build_scan_ids+=("$field_4")
+       git_repos+=("$field_5")
+       git_branches+=("$field_6")
+       git_commit_ids+=("$field_7")
+       requested_tasks+=("$(remove_clean_task "${field_8}")")
+       build_outcomes+=("$field_9")
+       remote_build_cache_urls+=("${field_10}")
+       remote_build_cache_shards+=("${field_11}")
+     fi
 
      num_tasks_avoided_up_to_date+=("${field_12}")
      num_tasks_avoided_from_cache+=("${field_13}")

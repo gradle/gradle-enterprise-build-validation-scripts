@@ -64,6 +64,9 @@ execute() {
   rename_project_dir "build_${project_name}" "second-build_${project_name}"
 
   print_bl
+  fetch_task_metrics
+
+  print_bl
   print_summary
 }
 
@@ -106,6 +109,8 @@ wizard_execute() {
   print_bl
   explain_measure_build_results
   print_bl
+  fetch_task_metrics
+  print_bl
   explain_and_print_summary
 }
 
@@ -137,6 +142,15 @@ execute_second_build() {
      --build-cache \
      --init-script "${init_scripts_dir}/configure-local-build-caching.gradle" \
      clean ${tasks}
+}
+
+fetch_task_metrics() {
+  read_build_scan_metadata
+  fetch_and_read_build_scan_data task_metrics_only "${build_scan_urls[@]}"
+}
+
+print_outcome() {
+  print_cacheable_task_outcome
 }
 
 print_quick_links() {
@@ -246,7 +260,10 @@ Now that the second build has finished successfully, you are ready to measure in
 Gradle Enterprise how well your build leverages Gradle’s local build caching
 functionality for the invoked set of Gradle tasks.
 
-${USER_ACTION_COLOR}Press <Enter> to measure the build results.${RESTORE}
+Some of the build scan data will be fetched from the build scans produced by the two builds
+ to assist you in your investigation.
+
+${USER_ACTION_COLOR}Press <Enter> to fetch build scan data and measure the build results.${RESTORE}
 EOF
   print_wizard_text "${text}"
   wait_for_enter
@@ -260,6 +277,18 @@ The ‘Summary’ section below captures the configuration of the experiment and
 two build scans that were published as part of running the experiment. The build
 scan of the second build is particularly interesting since this is where you can
 inspect what tasks were not leveraging the local build cache.
+
+The ‘Outcome’ section below shows some useful information about the cacheable tasks
+that were encountered during the second build:
+
+ * ‘Cacheable tasks executed’ shows how many cacheable tasks were executed (will be
+zero in a fully cacheable build).
+
+ * ‘Cacheable tasks up to date’ shows how many cacheable tasks were not executed by
+also not fetched from the build cache (will be zero in a fully cacheable build).
+
+ * ‘Cacheable tasks from cache’ shows how many cacheable tasks were skipped because
+their output was fetched from the build cache.
 
 The ‘Investigation Quick Links’ section below allows quick navigation to the
 most relevant views in build scans to investigate what tasks were avoided due to
