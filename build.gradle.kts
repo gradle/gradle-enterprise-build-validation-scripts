@@ -171,6 +171,9 @@ tasks.named("assemble") {
 tasks.register<Shellcheck>("shellcheckGradleScripts") {
     group = "verification"
     description = "Perform quality checks on Gradle build validation scripts using Shellcheck."
+    inputs.files(copyGradleScripts.get().outputs.files.asFileTree.matching {
+        include("**/*.sh")
+    })
     sourceFiles = copyGradleScripts.get().outputs.files.asFileTree.matching {
         include("**/*.sh")
         exclude("lib/")
@@ -186,6 +189,9 @@ tasks.register<Shellcheck>("shellcheckGradleScripts") {
 tasks.register<Shellcheck>("shellcheckMavenScripts") {
     group = "verification"
     description = "Perform quality checks on Maven build validation scripts using Shellcheck."
+    inputs.files(copyMavenScripts.get().outputs.files.asFileTree.matching {
+        include("**/*.sh")
+    })
     sourceFiles = copyMavenScripts.get().outputs.files.asFileTree.matching {
         include("**/*.sh")
         exclude("lib/")
