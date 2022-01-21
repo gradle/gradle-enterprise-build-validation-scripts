@@ -231,7 +231,7 @@ githubRelease {
     prerelease.set(isDevelopmentRelease)
     overwrite.set(isDevelopmentRelease)
     body.set(layout.projectDirectory.file("release/changes.md").asFile.readText().trim())
-    releaseAssets(assembleGradleScripts, assembleMavenScripts, generateChecksums)
+    releaseAssets(assembleGradleScripts, assembleMavenScripts, generateChecksums.get().outputs.files)
 }
 
 tasks.register<CreateGitTag>("createReleaseTag") {
