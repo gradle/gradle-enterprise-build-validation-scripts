@@ -1,9 +1,11 @@
 import com.felipefzdz.gradle.shellcheck.Shellcheck
+import org.gradle.crypto.checksum.Checksum
 
 plugins {
     id("base")
     id("com.felipefzdz.gradle.shellcheck") version "1.4.6"
     id("com.github.breadmoirai.github-release") version "2.2.12"
+    id("org.gradle.crypto.checksum") version "1.1.0"
 }
 
 repositories {
@@ -145,7 +147,7 @@ tasks.register<Task>("copyScripts") {
     dependsOn("copyMavenScripts")
 }
 
-tasks.register<Zip>("assembleGradleScripts") {
+val assembleGradleScripts = tasks.register<Zip>("assembleGradleScripts") {
     group = "build"
     description = "Packages the Gradle experiment scripts in a zip archive."
     archiveBaseName.set("gradle-enterprise-gradle-build-validation")
@@ -154,7 +156,7 @@ tasks.register<Zip>("assembleGradleScripts") {
     into(archiveBaseName.get())
 }
 
-tasks.register<Zip>("assembleMavenScripts") {
+val assembleMavenScripts = tasks.register<Zip>("assembleMavenScripts") {
     group = "build"
     description = "Packages the Maven experiment scripts in a zip archive."
     archiveBaseName.set("gradle-enterprise-maven-build-validation")
@@ -209,6 +211,14 @@ tasks.named("check") {
     dependsOn("shellcheckMavenScripts")
 }
 
+val generateChecksums = tasks.register<Checksum>("generateChecksums") {
+    group = "distribution"
+    description = "Generates checksums for the distribution zip files"
+    files = assembleGradleScripts.get().outputs.files.plus(assembleMavenScripts.get().outputs.files)
+    outputDir = layout.buildDirectory.dir("distributions").get().asFile
+    algorithm = Checksum.Algorithm.SHA512
+}
+
 val isDevelopmentRelease = !hasProperty("finalRelease")
 
 githubRelease {
@@ -221,7 +231,7 @@ githubRelease {
     prerelease.set(isDevelopmentRelease)
     overwrite.set(isDevelopmentRelease)
     body.set(layout.projectDirectory.file("release/changes.md").asFile.readText().trim())
-    releaseAssets(tasks.getByName("assembleGradleScripts"), tasks.getByName("assembleMavenScripts"))
+    releaseAssets(assembleGradleScripts, assembleMavenScripts, generateChecksums)
 }
 
 tasks.register<CreateGitTag>("createReleaseTag") {
