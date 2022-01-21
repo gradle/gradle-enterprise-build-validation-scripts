@@ -17,7 +17,7 @@ SCRIPT_NAME=$(basename "$0")
 readonly SCRIPT_NAME
 SCRIPT_DIR="$(cd "$(dirname "$(readlink -e "${BASH_SOURCE[0]}")")" && pwd)"
 readonly SCRIPT_DIR
-readonly LIB_DIR="${SCRIPT_DIR}/../lib"
+readonly LIB_DIR="${SCRIPT_DIR}/lib"
 
 # Include and parse the command line arguments
 # shellcheck source=lib/04-cli-parser.sh
@@ -160,6 +160,7 @@ read_build_params_from_build_validation_data() {
   fi
   if [ -z "${tasks}" ]; then
     tasks="${requested_tasks[0]}"
+    remove_clean_from_tasks
   fi
 }
 
@@ -181,21 +182,6 @@ validate_build_config() {
   fi
 }
 
-# Overrides build_scan.sh#read_build_data_from_current_dir
-read_build_data_from_current_dir() {
-  git_repos+=("$(git_get_remote_url)")
-  git_branches+=("${git_branch:-$(git_get_branch)}")
-  git_commit_ids+=("$(git_get_commit_id)")
-
-  # Add clean to the requested tasks if the CI build also invoked clean
-  # We always invoke clean on the local build, but it's not really a "difference" if CI doesn't invoke clean.
-  if [[ "${requested_tasks[0]}" == *clean* ]]; then
-    requested_tasks+=("clean ${tasks}")
-  else
-    requested_tasks+=("${tasks}")
-  fi
-}
-
 execute_build() {
   local args
   args=(-Dgradle.cache.local.enabled=false -Dgradle.cache.remote.enabled=true)
@@ -204,7 +190,7 @@ execute_build() {
   fi
 
   # shellcheck disable=SC2206  # we want tasks to expand with word splitting in this case
-  args+=(${tasks})
+  args+=(clean ${tasks})
 
   info "Running build:"
   info "./mvnw -Dscan.tag.${EXP_SCAN_TAG} -Dscan.value.runId=${RUN_ID} clean ${tasks}$(print_extra_args)"

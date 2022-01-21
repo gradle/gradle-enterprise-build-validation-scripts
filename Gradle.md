@@ -1,6 +1,4 @@
-# Gradle Enterprise build validation scripts for Gradle
-
-## Overview
+# Gradle Enterprise Build Validation Scripts for Gradle
 
 The purpose of the build validation scripts is to assist you in validating that your Gradle build is in an optimal state in terms of maximizing work avoidance. The validation scripts do not actually modify your build, but they surface what can be improved in your build to avoid unnecessary work in several scenarios.
 
@@ -8,14 +6,12 @@ Each script represents a so-called _experiment_. Each experiment has a very spec
 
 There are currently five experiments for Gradle. You could also perform these experiments fully manually, but relying on the automation of the validation scripts will be faster, less error-prone, and more reproducible.
 
-> Gradle Enterprise and its Build Scan:tm: service are instrumental to running these validation scripts. You can learn more about Gradle Enterprise at https://gradle.com.
-
 ## Installation
 
 On macOS and Linux, use the following command to download and unpack the build validation scripts for Gradle to the current directory:
 
 ```bash
-curl -s -L -O https://github.com/gradle/gradle-enterprise-build-validation-scripts/releases/download/development-latest/gradle-enterprise-gradle-build-validation.zip && unzip -q -o gradle-enterprise-gradle-build-validation.zip
+curl -s -L -O https://github.com/gradle/gradle-enterprise-build-validation-scripts/releases/download/v0.5.2/gradle-enterprise-gradle-build-validation-0.5.2.zip && unzip -q -o gradle-enterprise-gradle-build-validation-0.5.2.zip
 ```
 
 ## Structure
@@ -138,9 +134,3 @@ In the example below, the Git repository is first checked out to a location on t
 git clone https://github.com/gradle/gradle-build-scan-quickstart $HOME/gradle-build-scan-quickstart
 ./02-validate-local-build-caching-same-location.sh -i -r file://$HOME/gradle-build-scan-quickstart
 ```
-
-## License
-
-The Gradle Enterprise build validation scripts for Gradle are open-source software released under the [Apache 2.0 License][apache-license].
-
-[apache-license]: https://www.apache.org/licenses/LICENSE-2.0.html

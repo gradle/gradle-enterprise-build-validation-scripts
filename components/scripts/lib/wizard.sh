@@ -54,7 +54,7 @@ Enterprise during daily development, it is advisable that you apply the Common
 Custom User Data Gradle plugin to your build, if not already the case. Gradle
 provides the Common Custom User Data Gradle plugin as a free, open-source add-on.
 
-https://plugins.gradle.org/plugin/com.gradle.common-custom-user-data-gradle-plugin
+https://github.com/gradle/common-custom-user-data-gradle-plugin
 
 An extract of a typical build configuration is described below.
 
@@ -90,7 +90,7 @@ Enterprise during daily development, it is advisable that you apply the Common
 Custom User Data Maven extension to your build, if not already the case. Gradle
 provides the Common Custom User Data Maven extension as a free, open-source add-on.
 
-https://github.com/gradle/gradle-enterprise-build-config-samples/tree/master/common-custom-user-data-maven-extension
+https://github.com/gradle/common-custom-user-data-maven-extension
 
 An extract of a typical build configuration is described below.
 
@@ -234,7 +234,7 @@ configuration via system properties or environment variables right when
 triggering the build on CI. Details on how to provide the overrides are
 available from the documentation of the plugin.
 
-https://github.com/gradle/gradle-enterprise-build-config-samples/blob/master/common-custom-user-data-gradle-plugin/README.md#configuration-overrides
+https://github.com/gradle/common-custom-user-data-gradle-plugin#configuration-overrides
 EOF
   fi
 

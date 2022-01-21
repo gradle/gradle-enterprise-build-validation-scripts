@@ -17,7 +17,7 @@ SCRIPT_NAME=$(basename "$0")
 readonly SCRIPT_NAME
 SCRIPT_DIR="$(cd "$(dirname "$(readlink -e "${BASH_SOURCE[0]}")")" && pwd)"
 readonly SCRIPT_DIR
-readonly LIB_DIR="${SCRIPT_DIR}/../lib"
+readonly LIB_DIR="${SCRIPT_DIR}/lib"
 
 # Include and parse the command line arguments
 # shellcheck source=lib/05-cli-parser.sh
@@ -180,21 +180,6 @@ validate_build_config() {
     if [ -z "${ge_server}" ]; then
       _PRINT_HELP=yes die "ERROR: --gradle-enterprise-server is required when using --enable-gradle-enterprise."
     fi
-  fi
-}
-
-# Overrides build_scan.sh#read_build_data_from_current_dir
-read_build_data_from_current_dir() {
-  git_repos+=("$(git_get_remote_url)")
-  git_branches+=("${git_branch:-$(git_get_branch)}")
-  git_commit_ids+=("$(git_get_commit_id)")
-
-  # Add clean to the requested tasks if the CI build also invoked clean
-  # We always invoke clean on the local build, but it's not really a "difference" if CI doesn't invoke clean.
-  if [[ "${requested_tasks[0]}" == *clean* ]]; then
-    requested_tasks+=("clean ${tasks}")
-  else
-    requested_tasks+=("${tasks}")
   fi
 }
 

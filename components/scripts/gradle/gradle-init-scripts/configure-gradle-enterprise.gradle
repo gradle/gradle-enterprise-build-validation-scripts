@@ -2,7 +2,7 @@ import org.gradle.util.GradleVersion
 import java.nio.charset.StandardCharsets;
 
 initscript {
-    def gradleEnterprisePluginVersion = "3.8"
+    def gradleEnterprisePluginVersion = "3.8.1"
 
     repositories {
         gradlePluginPortal()
@@ -87,15 +87,15 @@ void addCustomValueAndSearchLink(buildScan, String label, String value) {
 }
 
 String appendIfMissing(String str, String suffix) {
-    return str.endsWith(suffix) ? str : str + suffix;
+    return str.endsWith(suffix) ? str : str + suffix
 }
 
 String urlEncode(String str) {
-    return URLEncoder.encode(str, StandardCharsets.UTF_8.name());
+    return URLEncoder.encode(str, StandardCharsets.UTF_8.name())
 }
 
 void logWarningMissingCommonCustomUserDataGradlePlugin() {
-    logWarning("The com.gradle.common-custom-user-data-gradle-plugin plugin is missing from the project (see https://github.com/gradle/gradle-enterprise-build-config-samples/tree/master/common-custom-user-data-gradle-plugin).")
+    logWarning("The com.gradle.common-custom-user-data-gradle-plugin plugin is missing from the project (see https://github.com/gradle/common-custom-user-data-gradle-plugin).")
 }
 
 void logWarning(String warning) {

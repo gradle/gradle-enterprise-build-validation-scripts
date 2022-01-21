@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+readonly FETCH_BUILD_SCAN_DATA_JAR="${LIB_DIR}/export-api-clients/fetch-build-scan-data-cmdline-tool-${SCRIPT_VERSION}-all.jar"
+
 # Arrays used by callers to access the fetched build scan data
 project_names=()
 base_urls=()
@@ -126,7 +128,7 @@ fi
   }
   APP_ARGS=$(save "$@")
 
-  CLASSPATH="${LIB_DIR}/export-api-clients/fetch-build-scan-data-cmdline-tool-1.0.0-SNAPSHOT-all.jar"
+  CLASSPATH="${FETCH_BUILD_SCAN_DATA_JAR}"
   # Collect all arguments for the java command, following the shell quoting and substitution rules
   eval set -- -Dpicocli.ansi=true -jar "\"$CLASSPATH\"" "$APP_ARGS"
 
@@ -177,7 +179,7 @@ fetch_and_read_build_validation_data() {
      git_repos+=("$field_5")
      git_branches+=("$field_6")
      git_commit_ids+=("$field_7")
-     requested_tasks+=("$field_8")
+     requested_tasks+=("$(remove_clean_task "${field_8}")")
      build_outcomes+=("$field_9")
      # shellcheck disable=SC2034 # not all scripts use this data
      remote_build_cache_urls=("${field_10}")

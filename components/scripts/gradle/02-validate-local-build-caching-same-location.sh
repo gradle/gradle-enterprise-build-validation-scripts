@@ -17,7 +17,7 @@ SCRIPT_NAME=$(basename "$0")
 readonly SCRIPT_NAME
 SCRIPT_DIR="$(cd "$(dirname "$(readlink -e "${BASH_SOURCE[0]}")")" && pwd)"
 readonly SCRIPT_DIR
-readonly LIB_DIR="${SCRIPT_DIR}/../lib"
+readonly LIB_DIR="${SCRIPT_DIR}/lib"
 
 # Include and parse the command line arguments
 # shellcheck source=lib/02-cli-parser.sh

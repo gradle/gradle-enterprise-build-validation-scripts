@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-readonly CAPTURE_SCANS_EXTENSION_JAR="${LIB_DIR}/maven/capture-published-build-scan-maven-extension-1.0.0-SNAPSHOT.jar"
+readonly CAPTURE_BUILD_SCAN_URL_JAR="${LIB_DIR}/maven-libs/capture-build-scan-url-maven-extension-${SCRIPT_VERSION}.jar"
 
 find_maven_executable() {
   if [ -f "./mvnw" ]; then
@@ -22,7 +22,7 @@ invoke_maven() {
   fi
 
   local extension_classpath
-  extension_classpath="${CAPTURE_SCANS_EXTENSION_JAR}"
+  extension_classpath="${CAPTURE_BUILD_SCAN_URL_JAR}"
 
   if [ "$enable_ge" == "on" ]; then
     # Reset the extension classpath and add all of the jars in the lib/maven dir
@@ -31,7 +31,7 @@ invoke_maven() {
     #  - the Common Custom User Data Maven extension
     #  - the capture-publish-build-scan Maven extension
     extension_classpath=""
-    for jar in "${LIB_DIR}"/maven/*; do
+    for jar in "${LIB_DIR}"/maven-libs/*; do
       if [ "${extension_classpath}" == "" ]; then
         extension_classpath="${jar}"
       else
@@ -43,9 +43,8 @@ invoke_maven() {
   args+=(
     -Dmaven.ext.class.path="${extension_classpath}"
     -Dcom.gradle.enterprise.build_validation.experimentDir="${EXP_DIR}"
-    "-Dscan.value.Experiment id=${EXP_SCAN_TAG}"
-    "-Dscan.value.Experiment run id=${RUN_ID}"
-    -Dorg.slf4j.simpleLogger.log.gradle.goal.cache=debug
+    -Dcom.gradle.enterprise.build_validation.expId="${EXP_SCAN_TAG}"
+    -Dcom.gradle.enterprise.build_validation.runId="${RUN_ID}"
   )
   if [ -n "${ge_server}" ]; then
     args+=("-Dgradle.enterprise.url=${ge_server}")

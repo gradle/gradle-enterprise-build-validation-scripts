@@ -1,11 +1,10 @@
-name: Verify Pull Request
+name: Verify Build
 
-on:
-  pull_request:
-  workflow_dispatch:
+on: [ push, pull_request, workflow_dispatch ]
 
 jobs:
-  verify:
+  verification:
+    name: Verification
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -18,4 +17,4 @@ jobs:
       - name: Build with Gradle
         uses: gradle/gradle-build-action@v2
         with:
-          arguments: build
+          arguments: build -i

@@ -188,9 +188,19 @@ collect_mapping_file() {
 }
 
 remove_clean_from_tasks() {
-  tasks=${tasks//clean }
-  tasks=${tasks// clean}
-  tasks=${tasks//clean}
+  tasks=$(remove_clean_task "${tasks}")
+}
+
+remove_clean_task() {
+  local t
+  IFS=' ' read -r -a t <<< "$1"
+  for i in "${!t[@]}"; do
+    if [[ "${t[i]}" == "clean" ]]; then
+      unset 't[i]'
+    fi
+  done
+
+  echo -n "${t[@]}"
 }
 
 print_extra_args() {
