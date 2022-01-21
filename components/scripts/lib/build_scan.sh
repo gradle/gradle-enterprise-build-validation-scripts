@@ -154,8 +154,6 @@ fi
 }
 
 fetch_and_read_build_scan_data() {
-  info "Fetching build scan data"
-
   # This isn't the most robust way to read a CSV,
   # but we control the CSV so we don't have to worry about various CSV edge cases
   local args task_metrics_only fetched_data header_row_read
@@ -172,7 +170,10 @@ fetch_and_read_build_scan_data() {
 
   if [[ "$1" == "task_metrics_only" ]]; then
     task_metrics_only="true"
+    args+=("--brief-logging")
     debug "Only using the task metrics found in the build scan data"
+  else
+      info "Fetching build scan data"
   fi
   shift
   args+=( "$@" )
