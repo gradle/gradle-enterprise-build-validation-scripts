@@ -49,7 +49,7 @@ read_build_data_from_current_dir() {
   requested_tasks+=("${tasks}")
 }
 
-fetch_build_validation_data() {
+fetch_build_scan_data() {
   # OS specific support (must be 'true' or 'false').
   cygwin=false
   msys=false
@@ -171,7 +171,7 @@ fetch_and_read_build_scan_data() {
   fi
 
   args+=( "$@" )
-  fetched_data="$(fetch_build_validation_data "${args[@]}")"
+  fetched_data="$(fetch_build_scan_data "${args[@]}")"
 
   debug "Raw fetched build scan data"
   debug "---------------------------"

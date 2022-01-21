@@ -54,7 +54,7 @@ main() {
 execute() {
   print_bl
   validate_required_args
-  fetch_build_scan_data
+  fetch_build_params_from_build_scan
   validate_build_config
 
   print_bl
@@ -95,7 +95,7 @@ wizard_execute() {
   collect_mapping_file
 
   print_bl
-  fetch_build_scan_data
+  fetch_build_params_from_build_scan
 
   print_bl
   explain_collect_git_details
@@ -141,7 +141,7 @@ validate_required_args() {
   fi
 }
 
-fetch_build_scan_data() {
+fetch_build_params_from_build_scan() {
   fetch_and_read_build_scan_data "${ci_build_scan_url}"
   read_build_params_from_build_scan_data
 }

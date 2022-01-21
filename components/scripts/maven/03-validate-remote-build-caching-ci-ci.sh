@@ -52,7 +52,7 @@ execute() {
   validate_required_args
 
   parse_build_scan_urls
-  fetch_build_scan_data
+  fetch_build_scans
   make_experiment_dir
 
   print_bl
@@ -92,7 +92,7 @@ wizard_execute() {
 
   print_bl
   parse_build_scan_urls
-  fetch_build_scan_data
+  fetch_build_scans
   make_experiment_dir
 
   print_bl
@@ -140,7 +140,7 @@ parse_build_scan_urls() {
   done
 }
 
-fetch_build_scan_data() {
+fetch_build_scans() {
   fetch_and_read_build_scan_data "${build_scan_urls[@]}"
 }
 
