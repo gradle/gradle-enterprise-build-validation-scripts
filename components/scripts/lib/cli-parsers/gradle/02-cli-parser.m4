@@ -3,6 +3,7 @@
 # Created by argbash-init v2.10.0
 # ARG_HELP([This function is overridden later on.])
 # ARG_VERSION([print_version],[v],[version],[])
+# ARG_OPTIONAL_BOOLEAN([fail-if-not-optimized],[x],[])
 # ARGBASH_WRAP([common])
 # ARGBASH_SET_INDENT([  ])
 # ARGBASH_PREPARE()
@@ -25,6 +26,7 @@ function print_help() {
   print_option_usage -a
   print_option_usage -s
   print_option_usage -e
+  print_option_usage -x
   print_option_usage -v
   print_option_usage -h
 }
