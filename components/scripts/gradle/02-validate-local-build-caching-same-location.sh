@@ -75,7 +75,10 @@ wizard_execute() {
   print_introduction
 
   print_bl
-  explain_prerequisites_ccud_gradle_plugin ""
+  explain_prerequisites_ccud_gradle_plugin "I."
+
+  print_bl
+  explain_prerequisites_api_access "II."
 
   print_bl
   explain_collect_git_details
