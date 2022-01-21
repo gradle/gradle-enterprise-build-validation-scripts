@@ -148,7 +148,7 @@ tasks.register<Task>("copyScripts") {
 }
 
 val assembleGradleScripts = tasks.register<Zip>("assembleGradleScripts") {
-    group = "build"
+    group = "distribution"
     description = "Packages the Gradle experiment scripts in a zip archive."
     archiveBaseName.set("gradle-enterprise-gradle-build-validation")
     archiveFileName.set("${archiveBaseName.get()}-${distributionVersion()}.zip")
@@ -157,7 +157,7 @@ val assembleGradleScripts = tasks.register<Zip>("assembleGradleScripts") {
 }
 
 val assembleMavenScripts = tasks.register<Zip>("assembleMavenScripts") {
-    group = "build"
+    group = "distribution"
     description = "Packages the Maven experiment scripts in a zip archive."
     archiveBaseName.set("gradle-enterprise-maven-build-validation")
     archiveFileName.set("${archiveBaseName.get()}-${distributionVersion()}.zip")
