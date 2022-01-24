@@ -114,7 +114,7 @@ The summary looks typically like in the screenshot below.
 
 ## Investigating file resources on the local file system
 
-For the scripts that run one or more builds locally, the file resources that are used and produced by the builds can be investigated on the local file system. This is helpful when trying to understand cache misses due to changes in file inputs of the executed goals. All intermediate and final output produced while running a given script is stored under .data/<script_name>/<timestamp>-<run_id>.
+For the scripts that run one or more builds locally, the file resources that are used and produced by the builds can be investigated on the local file system. This is helpful when trying to understand cache misses due to changes in file inputs of the executed goals. All intermediate and final output produced while running a given script is stored under .data/<script_name>/&lt;timestamp>-<run_id>.
 
 Note that even when a script needs to run two builds from the same physical location, the individual builds are always preserved in separate folders, allowing to compare the same files from the two builds with each other.
 
