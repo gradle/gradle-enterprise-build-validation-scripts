@@ -148,7 +148,7 @@ tasks.register<Task>("copyScripts") {
 }
 
 val assembleGradleScripts = tasks.register<Zip>("assembleGradleScripts") {
-    group = "distribution"
+    group = "build"
     description = "Packages the Gradle experiment scripts in a zip archive."
     archiveBaseName.set("gradle-enterprise-gradle-build-validation")
     archiveFileName.set("${archiveBaseName.get()}-${distributionVersion()}.zip")
@@ -157,7 +157,7 @@ val assembleGradleScripts = tasks.register<Zip>("assembleGradleScripts") {
 }
 
 val assembleMavenScripts = tasks.register<Zip>("assembleMavenScripts") {
-    group = "distribution"
+    group = "build"
     description = "Packages the Maven experiment scripts in a zip archive."
     archiveBaseName.set("gradle-enterprise-maven-build-validation")
     archiveFileName.set("${archiveBaseName.get()}-${distributionVersion()}.zip")
@@ -173,13 +173,15 @@ tasks.named("assemble") {
 tasks.register<Shellcheck>("shellcheckGradleScripts") {
     group = "verification"
     description = "Perform quality checks on Gradle build validation scripts using Shellcheck."
-    inputs.files(copyGradleScripts.get().outputs.files.asFileTree.matching {
-        include("**/*.sh")
-    })
     sourceFiles = copyGradleScripts.get().outputs.files.asFileTree.matching {
         include("**/*.sh")
+        // scripts in lib/ are checked when Shellcheck checks the top-level scripts because the top-level scripts include (source) the scripts in lib/
         exclude("lib/")
     }
+    // scripts in lib/ are still inputs to this task (we want shellcheck to run if they change) even though we don't include them explicitly in sourceFiles
+    inputs.files(copyGradleScripts.get().outputs.files.asFileTree.matching {
+        include("lib/**/*.sh")
+    })
     workingDir = layout.buildDirectory.file("scripts/gradle").get().asFile
     reports {
         html.outputLocation.set(layout.buildDirectory.file("reports/shellcheck-gradle/shellcheck.html"))
@@ -191,13 +193,15 @@ tasks.register<Shellcheck>("shellcheckGradleScripts") {
 tasks.register<Shellcheck>("shellcheckMavenScripts") {
     group = "verification"
     description = "Perform quality checks on Maven build validation scripts using Shellcheck."
-    inputs.files(copyMavenScripts.get().outputs.files.asFileTree.matching {
-        include("**/*.sh")
-    })
     sourceFiles = copyMavenScripts.get().outputs.files.asFileTree.matching {
         include("**/*.sh")
+        // scripts in lib/ are checked when Shellcheck checks the top-level scripts because the top-level scripts include (source) the scripts in lib/
         exclude("lib/")
     }
+    // scripts in lib/ are still inputs to this task (we want shellcheck to run if they change) even though we don't include them explicitly in sourceFiles
+    inputs.files(copyMavenScripts.get().outputs.files.asFileTree.matching {
+        include("lib/**/*.sh")
+    })
     workingDir = layout.buildDirectory.file("scripts/maven").get().asFile
     reports {
         html.outputLocation.set(layout.buildDirectory.file("reports/shellcheck-maven/shellcheck.html"))
