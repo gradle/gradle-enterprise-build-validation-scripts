@@ -213,7 +213,7 @@ tasks.named("check") {
 
 val generateChecksums = tasks.register<Checksum>("generateChecksums") {
     group = "distribution"
-    description = "Generates checksums for the distribution zip files"
+    description = "Generates checksums for the distribution zip files."
     files = assembleGradleScripts.get().outputs.files.plus(assembleMavenScripts.get().outputs.files)
     outputDir = layout.buildDirectory.dir("distributions/checksums").get().asFile
     algorithm = Checksum.Algorithm.SHA512
