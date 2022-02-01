@@ -87,7 +87,7 @@ By default, the scripts fetching build scan data try to find the access key in t
 
 ## Configuring custom value lookup names
 
-The scripts that fetch build scan data expect some of it to be present as custom values (Git repository, branch name, and commit id). By default, the scripts assume that these custom values have been created by the [Common Custom User Data Maven extension](https://search.maven.org/artifact/com.gradle/common-custom-user-data-maven-extension). If you are not using that extension but your build still captures the same data under different custom value names, you can provide a mapping file so that the required data can be extracted from your build scans. An example mapping file named [mapping.example](scripts/maven/mapping.example) can be found at the same location as where the scripts are located.
+The scripts that fetch build scan data expect some of it to be present as custom values (Git repository, branch name, and commit id). By default, the scripts assume that these custom values have been created by the [Common Custom User Data Maven extension](https://search.maven.org/artifact/com.gradle/common-custom-user-data-maven-extension). If you are not using that extension but your build still captures the same data under different custom value names, you can provide a mapping file so that the required data can be extracted from your build scans. An example mapping file named [mapping.example](components/scripts/maven/mapping.example) can be found at the same location as where the scripts are located.
 
 ## Redirecting build scan publishing
 
