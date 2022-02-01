@@ -6,6 +6,10 @@ Each script represents a so-called _experiment_. Each experiment has a very spec
 
 There are currently four experiments for Maven. You could also perform these experiments fully manually, but relying on the automation of the validation scripts will be faster, less error-prone, and more reproducible.
 
+## Requirements
+
+You need to have [Bash](https://www.gnu.org/software/bash/) installed in order to run the build validation scripts.
+
 ## Installation
 
 On macOS and Linux, use the following command to download and unpack the build validation scripts for Maven to the current directory:
