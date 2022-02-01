@@ -79,27 +79,10 @@ ${HEADER_COLOR}Preparation ${preparation_step}- Configure build with Common Cust
 
 To get the most out of this experiment and also when building with Gradle
 Enterprise during daily development, it is advisable that you apply the Common
-Custom User Data Maven extension to your build, if not already the case. Gradle
-provides the Common Custom User Data Maven extension as a free, open-source add-on.
+Custom User Data Maven extension to your build. Details on how to apply the extension
+are available from the documentation of the build validation scripts.
 
-https://github.com/gradle/common-custom-user-data-maven-extension
-
-An extract of a typical build configuration is described below.
-
-.mvn/extensions.xml:
-<?xml version="1.0" encoding="UTF-8"?>
-<extensions>
-    <extension>
-        <groupId>com.gradle</groupId>
-        <artifactId>gradle-enterprise-maven-extension</artifactId>
-        <version>{latest version}</version>
-    </extension>
-    <extension>
-        <groupId>com.gradle</groupId>
-        <artifactId>common-custom-user-data-maven-extension</artifactId>
-        <version>{latest version}</version>
-    </extension>
-</extensions>
+https://github.com/gradle/gradle-enterprise-build-validation-scripts/blob/main/Maven.md#applying-the-common-custom-user-data-maven-extension
 
 Your updated build configuration should be pushed before proceeding.
 
