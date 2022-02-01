@@ -73,6 +73,12 @@ is invoked, as shown in the example below.
 ./02-validate-local-build-caching-same-location.sh -i -r https://github.com/gradle/gradle-build-scan-quickstart
 ```
 
+## Applying the Common Custom User Data Gradle plugin
+
+To get the most out of the experiments, it is highly recommended that you apply the [Common Custom User Data Gradle plugin](https://github.com/gradle/common-custom-user-data-gradle-plugin) to your build. This free, open-source plugin enhances build scans with additional tags, links, and custom values that are considered during the experiments.
+
+You can find a complete example of how to apply the Common Custom User Data Gradle plugin to your build [here](https://github.com/gradle/gradle-enterprise-build-config-samples/blob/main/common-gradle-enterprise-gradle-configuration/settings.gradle).
+
 ## Authenticating with Gradle Enterprise
 
 Some scripts fetch data from build scans that were published as part of running an experiment. The build scan data is fetched by leveraging the [Gradle Enterprise Export API](https://docs.gradle.com/enterprise/export-api/). It is not strictly necessary that you have permission to call the Export API to execute a script successfully, but the summary provided once the script has finished running its experiment will be more comprehensive if the build scan data is accessible.
