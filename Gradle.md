@@ -75,7 +75,7 @@ is invoked, as shown in the example below.
 
 ## Applying the Common Custom User Data Gradle plugin
 
-To get the most out of the experiments, it is highly recommended that you apply the [Common Custom User Data Gradle plugin](https://github.com/gradle/common-custom-user-data-gradle-plugin) to your build. This free, open-source plugin enhances build scans with additional tags, links, and custom values that are considered during the experiments.
+To get the most out of the experiments and also when building with Gradle Enterprise during daily development, it is highly recommended that you apply the [Common Custom User Data Gradle plugin](https://github.com/gradle/common-custom-user-data-gradle-plugin) to your build. This free, open-source plugin enhances build scans with additional tags, links, and custom values that are considered during the experiments.
 
 You can find a complete example of how to apply the Common Custom User Data Gradle plugin to your build [here](https://github.com/gradle/gradle-enterprise-build-config-samples/blob/main/common-gradle-enterprise-gradle-configuration/settings.gradle).
 
