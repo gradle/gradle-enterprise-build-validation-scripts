@@ -12,7 +12,7 @@ You need to have [Bash](https://www.gnu.org/software/bash/) installed in order t
 
 ## Installation
 
-On macOS and Linux, use the following command to download and unpack the build validation scripts for Gradle to the current directory:
+Use the following command to download and unpack the build validation scripts for Gradle to the current directory:
 
 ```bash
 curl -s -L -O https://github.com/gradle/gradle-enterprise-build-validation-scripts/releases/download/v1.0/gradle-enterprise-gradle-build-validation-1.0.zip && unzip -q -o gradle-enterprise-gradle-build-validation-1.0.zip
