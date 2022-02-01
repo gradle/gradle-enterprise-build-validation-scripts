@@ -51,8 +51,8 @@ ${HEADER_COLOR}Preparation ${preparation_step}- Configure build with Common Cust
 
 To get the most out of this experiment and also when building with Gradle
 Enterprise during daily development, it is advisable that you apply the Common
-Custom User Data Gradle plugin to your build. Details on how to apply the plugin
-are available from the documentation of the build validation scripts.
+Custom User Data Gradle plugin to your build. Details on how to apply the
+plugin are available from the documentation of the build validation scripts.
 
 https://github.com/gradle/gradle-enterprise-build-validation-scripts/blob/main/Gradle.md#applying-the-common-custom-user-data-gradle-plugin
 
@@ -79,8 +79,8 @@ ${HEADER_COLOR}Preparation ${preparation_step}- Configure build with Common Cust
 
 To get the most out of this experiment and also when building with Gradle
 Enterprise during daily development, it is advisable that you apply the Common
-Custom User Data Maven extension to your build. Details on how to apply the extension
-are available from the documentation of the build validation scripts.
+Custom User Data Maven extension to your build. Details on how to apply the
+extension are available from the documentation of the build validation scripts.
 
 https://github.com/gradle/gradle-enterprise-build-validation-scripts/blob/main/Maven.md#applying-the-common-custom-user-data-maven-extension
 
