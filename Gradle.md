@@ -91,6 +91,11 @@ By default, the scripts fetching build scan data try to find the access key in t
 
 The scripts that fetch build scan data expect some of it to be present as custom values (Git repository, branch name, and commit id). By default, the scripts assume that these custom values have been created by the [Common Custom User Data Gradle plugin](https://plugins.gradle.org/plugin/com.gradle.common-custom-user-data-gradle-plugin). If you are not using that plugin but your build still captures the same data under different custom value names, you can provide a mapping file so that the required data can be extracted from your build scans. An example mapping file named [mapping.example](components/scripts/gradle/mapping.example) can be found at the same location as where the scripts are located.
 
+```bash
+./04-validate-remote-build-caching-ci-ci.sh -i -m mapping.custom
+```
+
+
 ## Redirecting build scan publishing
 
 The scripts that run one or more builds locally can be configured to publish build scans to a different
