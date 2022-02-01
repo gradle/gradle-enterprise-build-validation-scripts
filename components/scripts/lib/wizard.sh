@@ -51,18 +51,10 @@ ${HEADER_COLOR}Preparation ${preparation_step}- Configure build with Common Cust
 
 To get the most out of this experiment and also when building with Gradle
 Enterprise during daily development, it is advisable that you apply the Common
-Custom User Data Gradle plugin to your build, if not already the case. Gradle
-provides the Common Custom User Data Gradle plugin as a free, open-source add-on.
+Custom User Data Gradle plugin to your build. Details on how to apply the plugin
+are available from the documentation of the build validation scripts.
 
-https://github.com/gradle/common-custom-user-data-gradle-plugin
-
-An extract of a typical build configuration is described below.
-
-settings.gradle:
-plugins {
-    id 'com.gradle.enterprise' version '<latest version>'
-    id 'com.gradle.common-custom-user-data-gradle-plugin' version '<latest version>'
-}
+https://github.com/gradle/gradle-enterprise-build-validation-scripts/blob/main/Gradle.md#applying-the-common-custom-user-data-gradle-plugin
 
 Your updated build configuration should be pushed before proceeding.
 
