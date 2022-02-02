@@ -221,9 +221,6 @@ val generateChecksums = tasks.register<Checksum>("generateChecksums") {
     files = assembleGradleScripts.get().outputs.files.plus(assembleMavenScripts.get().outputs.files)
     outputDir = layout.buildDirectory.dir("distributions/checksums").get().asFile
     algorithm = Checksum.Algorithm.SHA512
-    files.forEach {
-        outputs.file(File(outputDir, "${it.name}.sha512"))
-    }
 }
 
 val isDevelopmentRelease = !hasProperty("finalRelease")
@@ -238,7 +235,7 @@ githubRelease {
     prerelease.set(isDevelopmentRelease)
     overwrite.set(isDevelopmentRelease)
     body.set(layout.projectDirectory.file("release/changes.md").asFile.readText().trim())
-    releaseAssets(assembleGradleScripts, assembleMavenScripts, generateChecksums)
+    releaseAssets(assembleGradleScripts, assembleMavenScripts, generateChecksums.get().outputs.files.asFileTree)
 }
 
 tasks.register<CreateGitTag>("createReleaseTag") {
