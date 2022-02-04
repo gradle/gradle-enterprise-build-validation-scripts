@@ -97,7 +97,6 @@ The scripts that fetch build scan data expect some of it to be present as custom
 ./04-validate-remote-build-caching-ci-ci.sh -i -m mapping.custom
 ```
 
-
 ## Redirecting build scan publishing
 
 The scripts that run one or more builds locally can be configured to publish build scans to a different
