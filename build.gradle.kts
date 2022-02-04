@@ -230,8 +230,8 @@ githubRelease {
     owner.set("gradle")
     repo.set("gradle-enterprise-build-validation-scripts")
     targetCommitish.set("main")
-    releaseName.set(releaseName())
-    tagName.set(releaseTag())
+    releaseName.set(gitHubReleaseName())
+    tagName.set(gitReleaseTag())
     prerelease.set(isDevelopmentRelease)
     overwrite.set(isDevelopmentRelease)
     body.set(layout.projectDirectory.file("release/changes.md").asFile.readText().trim())
@@ -239,7 +239,7 @@ githubRelease {
 }
 
 tasks.register<CreateGitTag>("createReleaseTag") {
-    tagName.set(releaseTag())
+    tagName.set(gitReleaseTag())
     overwriteExisting.set(isDevelopmentRelease)
 }
 
@@ -247,7 +247,7 @@ tasks.named("githubRelease") {
     dependsOn("createReleaseTag")
 }
 
-fun releaseName(): String {
+fun gitHubReleaseName(): String {
     if (isDevelopmentRelease) {
         return "Development Build"
     } else {
@@ -255,7 +255,7 @@ fun releaseName(): String {
     }
 }
 
-fun releaseTag(): String {
+fun gitReleaseTag(): String {
     if (isDevelopmentRelease) {
         return "development-latest"
     } else {
