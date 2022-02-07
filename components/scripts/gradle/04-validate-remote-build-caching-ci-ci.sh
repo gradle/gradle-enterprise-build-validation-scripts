@@ -15,7 +15,8 @@ readonly SHOW_RUN_ID=false
 # Needed to bootstrap the script
 SCRIPT_NAME=$(basename "$0")
 readonly SCRIPT_NAME
-SCRIPT_DIR="$(cd "$(dirname "$(readlink -e "${BASH_SOURCE[0]}")")" && pwd)"
+# shellcheck disable=SC2164  # it is highly unlikely cd will fail here because we're cding to the location of this script
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")"; cd -P "$(dirname "$(readlink "${BASH_SOURCE[0]}" || echo .)")"; pwd)"
 readonly SCRIPT_DIR
 readonly LIB_DIR="${SCRIPT_DIR}/lib"
 
