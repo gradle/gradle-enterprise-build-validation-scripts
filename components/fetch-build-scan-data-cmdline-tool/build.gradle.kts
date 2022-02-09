@@ -18,7 +18,7 @@ dependencies {
 
     implementation("com.google.guava:guava:31.0.1-jre")
     implementation("info.picocli:picocli:4.6.3")
-    annotationProcessor("info.picocli:picocli-codegen:4.6.2")
+    annotationProcessor("info.picocli:picocli-codegen:4.6.3")
 }
 
 description = "Application to fetch build scan data using the Gradle Enterprise Export API"
