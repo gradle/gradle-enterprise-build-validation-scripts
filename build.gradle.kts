@@ -5,7 +5,7 @@ plugins {
     id("base")
     id("com.felipefzdz.gradle.shellcheck") version "1.4.6"
     id("com.github.breadmoirai.github-release") version "2.2.12"
-    id("org.gradle.crypto.checksum") version "1.2.0"
+    id("org.gradle.crypto.checksum") version "1.3.0"
 }
 
 repositories {
