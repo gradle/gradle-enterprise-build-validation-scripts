@@ -10,6 +10,8 @@ There are currently five experiments for Gradle. You could also perform these ex
 
 You need to have [Bash](https://www.gnu.org/software/bash/) installed in order to run the build validation scripts.
 
+If you plan to use the build validation scripts on Windows, then you will need to [install Windows Subsystem for Linux (WSL)](https://docs.microsoft.com/en-us/windows/wsl/install). The build validation scripts work well on the WSL default distribution (Ubuntu).
+
 ## Installation
 
 Use the following command to download and unpack the build validation scripts for Gradle to the current directory:
