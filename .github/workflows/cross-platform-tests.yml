@@ -46,6 +46,7 @@ jobs:
         run: |
           sudo apt-get install -y curl unzip wget apt-transport-https gnupg
       - name: Set up JDK ${{ matrix.java-version }}
+        if: false
         shell: wsl-bash {0}
         run: |
           wget -O - https://packages.adoptium.net/artifactory/api/gpg/key/public | sudo apt-key add -
