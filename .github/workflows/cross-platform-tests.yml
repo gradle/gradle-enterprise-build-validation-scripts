@@ -21,7 +21,7 @@ jobs:
       - name: Download and Extract Build Validation Scripts
         shell: bash
         run: |
-          curl -s "https://api.github.com/repos/gradle/gradle-enterprise-build-validation-scripts/releases/latest" | grep "browser_download_url" | grep "gradle-enterprise-gradle-build-validation" | cut -d '"' -f 4 | xargs -n 1 curl -s -L -O 
+          curl -L -O https://github.com/gradle/gradle-enterprise-build-validation-scripts/releases/download/development-latest/gradle-enterprise-gradle-build-validation-dev.zip
           unzip -o gradle-enterprise-gradle-build-validation-*.zip
       - name: Run Gradle Experiment 01
         shell: bash
@@ -56,7 +56,7 @@ jobs:
       - name: Download and Extract Build Validation Scripts
         shell: wsl-bash {0}
         run: |
-          curl -s "https://api.github.com/repos/gradle/gradle-enterprise-build-validation-scripts/releases/latest" | grep "browser_download_url" | grep "gradle-enterprise-gradle-build-validation" | cut -d '"' -f 4 | xargs -n 1 curl -s -L -O 
+          curl -L -O https://github.com/gradle/gradle-enterprise-build-validation-scripts/releases/download/development-latest/gradle-enterprise-gradle-build-validation-dev.zip
           unzip -o gradle-enterprise-gradle-build-validation-*.zip
       - name: Run Gradle Experiment 01
         shell: wsl-bash {0}
