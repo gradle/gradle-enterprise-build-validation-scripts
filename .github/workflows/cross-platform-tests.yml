@@ -27,3 +27,28 @@ jobs:
         run: |
           cd gradle-enterprise-gradle-build-validation
           ./01-validate-incremental-building.sh -r https://github.com/etiennestuder/java-ordered-properties -t build -s https://ge.solutions-team.gradle.com
+  validate-on-windows-like-systems:
+    name: Validate on Windows systems
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ windows-2019 ]
+        java-version: [ '11' ]
+        shell: [ git-bash.exe ]
+    steps:
+      - name: Set up JDK ${{ matrix.java-version }}
+        uses: actions/setup-java@v2
+        with:
+          java-version: ${{ matrix.java-version }}
+          distribution: 'temurin'
+      - name: Download and Extract Build Validation Scripts
+        shell: bash
+        run: |
+          curl -s "https://api.github.com/repos/gradle/gradle-enterprise-build-validation-scripts/releases/latest" | grep "browser_download_url" | grep "gradle-enterprise-gradle-build-validation" | cut -d '"' -f 4 | xargs -n 1 curl -s -L -O 
+          unzip -o gradle-enterprise-gradle-build-validation-*.zip
+      - name: Run Gradle Experiment 01
+        shell: bash
+        run: |
+          cd gradle-enterprise-gradle-build-validation
+          ./01-validate-incremental-building.sh -r https://github.com/etiennestuder/java-ordered-properties -t build -s https://ge.solutions-team.gradle.com
