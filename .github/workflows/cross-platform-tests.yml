@@ -6,6 +6,7 @@ jobs:
   validate-on-unix-like-systems:
     name: Validate on Unix-like systems
     runs-on: ${{ matrix.os }}
+    if: false
     strategy:
       fail-fast: false
       matrix:
