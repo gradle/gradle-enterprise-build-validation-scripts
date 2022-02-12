@@ -3,9 +3,12 @@ name: Cross Platform Tests
 on: [ workflow_dispatch ]
 
 jobs:
-  gradle-exp-01:
-    name: Gradle Experiment 01
-    runs-on: ubuntu-latest
+  validate-on-unix-like-systems:
+    name: Validate on Unix-like systems
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-18.04, ubuntu-20.04, macos-10.15, macos-11]
     steps:
       - name: Set up JDK 11
         uses: actions/setup-java@v2
@@ -13,6 +16,7 @@ jobs:
           java-version: '11'
           distribution: 'temurin'
       - name: Download and Extract Build Validation Scripts
+        shell: bash
         run: |
           curl -s "https://api.github.com/repos/gradle/gradle-enterprise-build-validation-scripts/releases/latest" | grep "browser_download_url" | grep "gradle-enterprise-gradle-build-validation" | cut -d '"' -f 4 | xargs -n 1 curl -s -L -O 
           unzip -q -o gradle-enterprise-gradle-build-validation-*.zip
