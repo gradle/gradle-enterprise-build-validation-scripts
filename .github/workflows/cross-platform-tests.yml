@@ -28,7 +28,7 @@ jobs:
         run: |
           cd gradle-enterprise-gradle-build-validation
           ./01-validate-incremental-building.sh -r https://github.com/etiennestuder/java-ordered-properties -t build -s https://ge.solutions-team.gradle.com
-  validate-on-windows-like-systems:
+  validate-on-windows-systems:
     name: Validate on Windows systems
     runs-on: ${{ matrix.os }}
     strategy:
@@ -41,11 +41,10 @@ jobs:
         uses: Vampire/setup-wsl@v1
         with:
           distribution: Ubuntu-20.04
-      - name: Install required tools
+      - name: Install dependencies
         shell: wsl-bash {0}
         run: |
-          sudo apt-get install curl
-          sudo apt-get install unzip
+          sudo apt-get install curl unzip
       - name: Set up JDK ${{ matrix.java-version }}
         uses: actions/setup-java@v2
         with:
