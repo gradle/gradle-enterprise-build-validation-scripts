@@ -46,6 +46,7 @@ main() {
     execute
   fi
   create_receipt_file
+  exit_with_return_code
 }
 
 execute() {
