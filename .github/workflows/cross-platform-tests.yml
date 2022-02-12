@@ -19,7 +19,7 @@ jobs:
         shell: bash
         run: |
           curl -s "https://api.github.com/repos/gradle/gradle-enterprise-build-validation-scripts/releases/latest" | grep "browser_download_url" | grep "gradle-enterprise-gradle-build-validation" | cut -d '"' -f 4 | xargs -n 1 curl -s -L -O 
-          unzip -q -o gradle-enterprise-gradle-build-validation-*.zip
+          unzip -o gradle-enterprise-gradle-build-validation-*.zip
       - name: Run Gradle Experiment 01
         shell: bash
         run: |
