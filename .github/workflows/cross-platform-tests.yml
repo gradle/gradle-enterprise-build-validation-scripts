@@ -38,6 +38,13 @@ jobs:
     steps:
       - name: Setup WSL
         uses: Vampire/setup-wsl@v1
+        with:
+          distribution: Ubuntu-20.04
+      - name: Install required tools
+        shell: wsl-bash {0}
+        run: |
+          sudo apt-get install curl
+          sudo apt-get install unzip
       - name: Set up JDK ${{ matrix.java-version }}
         uses: actions/setup-java@v2
         with:
