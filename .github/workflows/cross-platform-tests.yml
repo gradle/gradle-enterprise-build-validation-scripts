@@ -3,62 +3,42 @@ name: Cross Platform Tests
 on: [ workflow_dispatch ]
 
 jobs:
-  validate-on-unix-like-systems:
-    name: Validate on Unix-like systems
+  test-across-platforms:
+    name: Test Across Platforms
     runs-on: ${{ matrix.os }}
-    if: false
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-18.04, ubuntu-20.04, macos-10.15, macos-11]
+        os: [ubuntu-18.04, ubuntu-20.04, macos-10.15, macos-11, windows-2019]
         java-version: [ '8', '11', '17' ]
     steps:
-      - name: Set up JDK ${{ matrix.java-version }}
+      - name: Setup WSL
+        if: ${{ matrix.os.startsWith("windows") }}
+        uses: Vampire/setup-wsl@v1
+        with:
+          distribution: Ubuntu-20.04
+      - name: Update and Install dependencies
+        if: ${{ matrix.os.startsWith("windows") }}
+        run: |
+          sudo apt-get install -y curl unzip wget apt-transport-https gnupg
+      - name: Install JDK ${{ matrix.java-version }} on WSL
+        if: ${{ matrix.os.startsWith("windows") }}
+        run: |
+          wget -O - https://packages.adoptium.net/artifactory/api/gpg/key/public | sudo apt-key add -
+          echo "deb https://packages.adoptium.net/artifactory/deb $(awk -F= '/^VERSION_CODENAME/{print$2}' /etc/os-release) main" | sudo tee /etc/apt/sources.list.d/adoptium.list
+          sudo apt-get update
+          sudo apt-get install -y temurin-${{ matrix.java-version }}-jdk    
+      - name: Install JDK ${{ matrix.java-version }}
+        if: ${{ !matrix.os.startsWith("windows") }}
         uses: actions/setup-java@v2
         with:
           java-version: ${{ matrix.java-version }}
           distribution: 'temurin'
       - name: Download and Extract Build Validation Scripts
-        shell: bash
         run: |
           curl -L -O https://github.com/gradle/gradle-enterprise-build-validation-scripts/releases/download/development-latest/gradle-enterprise-gradle-build-validation-dev.zip
           unzip -o gradle-enterprise-gradle-build-validation-*.zip
       - name: Run Gradle Experiment 01
-        shell: bash
-        run: |
-          cd gradle-enterprise-gradle-build-validation
-          ./01-validate-incremental-building.sh -r https://github.com/etiennestuder/java-ordered-properties -t build -s https://ge.solutions-team.gradle.com
-  validate-on-windows-systems:
-    name: Validate on Windows systems
-    runs-on: ${{ matrix.os }}
-    strategy:
-      fail-fast: false
-      matrix:
-        os: [ windows-2019 ]
-        java-version: [ '8', '11', '17' ]
-    steps:
-      - name: Setup WSL
-        uses: Vampire/setup-wsl@v1
-        with:
-          distribution: Ubuntu-20.04
-      - name: Update and Install dependencies
-        shell: wsl-bash {0}
-        run: |
-          sudo apt-get install -y curl unzip wget apt-transport-https gnupg
-      - name: Set up JDK ${{ matrix.java-version }}
-        shell: wsl-bash {0}
-        run: |
-          wget -O - https://packages.adoptium.net/artifactory/api/gpg/key/public | sudo apt-key add -
-          echo "deb https://packages.adoptium.net/artifactory/deb $(awk -F= '/^VERSION_CODENAME/{print$2}' /etc/os-release) main" | sudo tee /etc/apt/sources.list.d/adoptium.list
-          sudo apt-get update
-          sudo apt-get install -y temurin-${{ matrix.java-version }}-jdk
-      - name: Download and Extract Build Validation Scripts
-        shell: wsl-bash {0}
-        run: |
-          curl -L -O https://github.com/gradle/gradle-enterprise-build-validation-scripts/releases/download/development-latest/gradle-enterprise-gradle-build-validation-dev.zip
-          unzip -o gradle-enterprise-gradle-build-validation-*.zip
-      - name: Run Gradle Experiment 01
-        shell: wsl-bash {0}
         run: |
           cd gradle-enterprise-gradle-build-validation
           ./01-validate-incremental-building.sh -r https://github.com/etiennestuder/java-ordered-properties -t build -s https://ge.solutions-team.gradle.com
