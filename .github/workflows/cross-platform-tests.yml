@@ -54,7 +54,7 @@ jobs:
         run: |
           curl -L -O https://github.com/gradle/gradle-enterprise-build-validation-scripts/releases/download/development-latest/gradle-enterprise-gradle-build-validation-dev.zip
           curl -L -O https://github.com/gradle/gradle-enterprise-build-validation-scripts/releases/download/development-latest/gradle-enterprise-maven-build-validation-dev.zip
-          unzip -o gradle-enterprise-gradle-build-validation-*.zip
+          unzip -o gradle-enterprise-*-build-validation-*.zip
       - name: Run Gradle Experiment 01
         run: |
           cd gradle-enterprise-gradle-build-validation
