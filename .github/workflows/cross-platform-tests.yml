@@ -13,16 +13,16 @@ jobs:
         java-version: [ '8', '11', '17' ]
     steps:
       - name: Setup WSL
-        if: ${{ startsWith(matrix.os, "windows") }}
+        if: ${{ startsWith(matrix.os, 'windows') }}
         uses: Vampire/setup-wsl@v1
         with:
           distribution: Ubuntu-20.04
       - name: Update and Install dependencies
-        if: ${{ startsWith(matrix.os, "windows") }}
+        if: ${{ startsWith(matrix.os, 'windows') }}
         run: |
           sudo apt-get install -y curl unzip wget apt-transport-https gnupg
       - name: Setup JDK ${{ matrix.java-version }} on WSL
-        if: ${{ startsWith(matrix.os, "windows") }}
+        if: ${{ startsWith(matrix.os, 'windows') }}
         run: |
           wget -O - https://packages.adoptium.net/artifactory/api/gpg/key/public | sudo apt-key add -
           echo "deb https://packages.adoptium.net/artifactory/deb $(awk -F= '/^VERSION_CODENAME/{print$2}' /etc/os-release) main" | sudo tee /etc/apt/sources.list.d/adoptium.list
