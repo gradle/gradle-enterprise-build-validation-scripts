@@ -69,8 +69,8 @@ jobs:
       - name: Run Maven Experiment 01
         run: |
           cd gradle-enterprise-maven-build-validation
-          ./01-validate-local-build-caching-same-location.sh -r https://github.com/jitpack/maven-simple.git -g test -e -s https://ge.solutions-team.gradle.com
+          ./01-validate-local-build-caching-same-location.sh -r https://github.com/gradle/maven-build-scan-quickstart.git -g test -s https://ge.solutions-team.gradle.com
       - name: Run Maven Experiment 02
         run: |
           cd gradle-enterprise-maven-build-validation
-          ./02-validate-local-build-caching-different-locations.sh -r https://github.com/jitpack/maven-simple.git -g test -e -s https://ge.solutions-team.gradle.com
+          ./02-validate-local-build-caching-different-locations.sh -r https://github.com/gradle/maven-build-scan-quickstart.git -g test -s https://ge.solutions-team.gradle.com
