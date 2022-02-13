@@ -9,7 +9,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-18.04, ubuntu-20.04, macos-10.15, macos-11, windows-2019]
+        os: [windows-2019]
         java-version: [ '8', '11', '17' ]
     steps:
       - name: Setup WSL
