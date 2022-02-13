@@ -43,8 +43,25 @@ jobs:
       - name: Download and Extract Build Validation Scripts
         run: |
           curl -L -O https://github.com/gradle/gradle-enterprise-build-validation-scripts/releases/download/development-latest/gradle-enterprise-gradle-build-validation-dev.zip
+          curl -L -O https://github.com/gradle/gradle-enterprise-build-validation-scripts/releases/download/development-latest/gradle-enterprise-maven-build-validation-dev.zip
           unzip -o gradle-enterprise-gradle-build-validation-*.zip
       - name: Run Gradle Experiment 01
         run: |
           cd gradle-enterprise-gradle-build-validation
           ./01-validate-incremental-building.sh -r https://github.com/etiennestuder/java-ordered-properties -t build -s https://ge.solutions-team.gradle.com
+      - name: Run Gradle Experiment 02
+        run: |
+          cd gradle-enterprise-gradle-build-validation
+          ./02-validate-local-build-caching-same-location.sh -r https://github.com/etiennestuder/java-ordered-properties -t build -s https://ge.solutions-team.gradle.com
+      - name: Run Gradle Experiment 03
+        run: |
+          cd gradle-enterprise-gradle-build-validation
+          ./03-validate-local-build-caching-different-locations.sh -r https://github.com/etiennestuder/java-ordered-properties -t build -s https://ge.solutions-team.gradle.com
+      - name: Run Maven Experiment 01
+        run: |
+          cd gradle-enterprise-maven-build-validation
+          ./01-validate-local-build-caching-same-location.sh -r https://github.com/jitpack/maven-simple.git -g test -e -s https://ge.solutions-team.gradle.com
+      - name: Run Maven Experiment 02
+        run: |
+          cd gradle-enterprise-maven-build-validation
+          ./02-validate-local-build-caching-different-locations.sh -r https://github.com/jitpack/maven-simple.git -g test -e -s https://ge.solutions-team.gradle.com
