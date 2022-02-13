@@ -10,7 +10,7 @@ jobs:
   test-across-platforms:
     name: Test Across Platforms
     runs-on: ${{ matrix.os }}
-    if: ${{ github.event.workflow_run.conclusion == 'success' || github.event_name == 'workflow_distpatch' }}
+    if: ${{ github.event.workflow_run.conclusion == 'success' || github.event_name == 'workflow_dispatch' }}
     strategy:
       fail-fast: false
       matrix:
