@@ -14,6 +14,9 @@ jobs:
         include:
           - os: windows-2019
             shell: wsl-bash
+    defaults:
+      run:
+        shell: ${{ matrix.shell }} {0}
     steps:
       - name: Setup WSL
         if: ${{ runner.os == 'Windows' }}
@@ -22,12 +25,10 @@ jobs:
           distribution: Ubuntu-20.04
       - name: Update and Install dependencies
         if: ${{ runner.os == 'Windows' }}
-        shell: wsl-bash {0}
         run: |
           sudo apt-get install -y curl unzip wget apt-transport-https gnupg
       - name: Setup JDK ${{ matrix.java-version }} on WSL
         if: ${{ runner.os == 'Windows' }}
-        shell: wsl-bash {0}
         run: |
           wget -O - https://packages.adoptium.net/artifactory/api/gpg/key/public | sudo apt-key add -
           echo "deb https://packages.adoptium.net/artifactory/deb $(awk -F= '/^VERSION_CODENAME/{print$2}' /etc/os-release) main" | sudo tee /etc/apt/sources.list.d/adoptium.list
@@ -40,12 +41,10 @@ jobs:
           java-version: ${{ matrix.java-version }}
           distribution: 'temurin'
       - name: Download and Extract Build Validation Scripts
-        shell: ${{ matrix.shell }} {0}
         run: |
           curl -L -O https://github.com/gradle/gradle-enterprise-build-validation-scripts/releases/download/development-latest/gradle-enterprise-gradle-build-validation-dev.zip
           unzip -o gradle-enterprise-gradle-build-validation-*.zip
       - name: Run Gradle Experiment 01
-        shell: ${{ matrix.shell }} {0}
         run: |
           cd gradle-enterprise-gradle-build-validation
           ./01-validate-incremental-building.sh -r https://github.com/etiennestuder/java-ordered-properties -t build -s https://ge.solutions-team.gradle.com
