@@ -1,4 +1,4 @@
-name: Cross Platform Tests
+name: Run Cross-Platform Tests
 
 on:
   workflow_run:
@@ -7,8 +7,8 @@ on:
   workflow_dispatch:
 
 jobs:
-  test-across-platforms:
-    name: Test Across Platforms
+  cross_platform_tests:
+    name: Test
     runs-on: ${{ matrix.os }}
     if: ${{ github.event.workflow_run.conclusion == 'success' || github.event_name == 'workflow_dispatch' }}
     strategy:
@@ -31,29 +31,29 @@ jobs:
       run:
         shell: ${{ matrix.shell }} {0}
     steps:
-      - name: Setup WSL
+      - name: Set up WSL
         if: ${{ runner.os == 'Windows' }}
         uses: Vampire/setup-wsl@v1
         with:
           distribution: Ubuntu-20.04
-      - name: Update and Install dependencies
+      - name: Update and install dependencies
         if: ${{ runner.os == 'Windows' }}
         run: |
           sudo apt-get install -y curl unzip wget apt-transport-https gnupg
-      - name: Setup JDK ${{ matrix.java-version }} on WSL
+      - name: Set up JDK ${{ matrix.java-version }} on WSL
         if: ${{ runner.os == 'Windows' }}
         run: |
           wget -O - https://packages.adoptium.net/artifactory/api/gpg/key/public | sudo apt-key add -
           echo "deb https://packages.adoptium.net/artifactory/deb $(awk -F= '/^VERSION_CODENAME/{print$2}' /etc/os-release) main" | sudo tee /etc/apt/sources.list.d/adoptium.list
           sudo apt-get update
-          sudo apt-get install -y temurin-${{ matrix.java-version }}-jdk    
-      - name: Setup JDK ${{ matrix.java-version }}
+          sudo apt-get install -y temurin-${{ matrix.java-version }}-jdk
+      - name: Set up JDK ${{ matrix.java-version }}
         if: ${{ runner.os != 'Windows' }}
         uses: actions/setup-java@v2
         with:
           java-version: ${{ matrix.java-version }}
           distribution: 'temurin'
-      - name: Download and Extract Build Validation Scripts
+      - name: Download and extract build validation Scripts
         run: |
           curl -L -O https://github.com/gradle/gradle-enterprise-build-validation-scripts/releases/download/development-latest/gradle-enterprise-gradle-build-validation-dev.zip
           unzip -o gradle-enterprise-gradle-build-validation-*.zip
