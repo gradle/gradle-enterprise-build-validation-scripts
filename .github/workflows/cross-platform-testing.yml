@@ -71,6 +71,10 @@ jobs:
         run: |
           cd gradle-enterprise-gradle-build-validation
           ./03-validate-local-build-caching-different-locations.sh -r https://github.com/etiennestuder/java-ordered-properties -t build -s https://ge.solutions-team.gradle.com
+      - name: Run Gradle Experiment 04
+        run: |
+          cd gradle-enterprise-gradle-build-validation
+          ./04-validate-remote-build-caching-ci-ci.sh -1 https://ge.solutions-team.gradle.com/s/xildcv6frocau -2 https://ge.solutions-team.gradle.com/s/m5e7tyzedn562
       - name: Run Maven Experiment 01
         run: |
           cd gradle-enterprise-maven-build-validation
@@ -79,3 +83,7 @@ jobs:
         run: |
           cd gradle-enterprise-maven-build-validation
           ./02-validate-local-build-caching-different-locations.sh -r https://github.com/gradle/maven-build-scan-quickstart.git -g test -s https://ge.solutions-team.gradle.com
+      - name: Run Maven Experiment 03
+        run: |
+          cd gradle-enterprise-maven-build-validation
+          ./03-validate-remote-build-caching-ci-ci.sh -1 https://ge.solutions-team.gradle.com/s/oll3ve3wdv2t6 -2 https://ge.solutions-team.gradle.com/s/eaue4kvqnvnay
