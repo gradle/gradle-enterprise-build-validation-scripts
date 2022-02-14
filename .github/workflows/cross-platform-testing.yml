@@ -75,10 +75,6 @@ jobs:
         run: |
           cd gradle-enterprise-gradle-build-validation
           ./04-validate-remote-build-caching-ci-ci.sh -1 https://ge.solutions-team.gradle.com/s/xildcv6frocau -2 https://ge.solutions-team.gradle.com/s/m5e7tyzedn562
-      - name: Run Gradle Experiment 05
-        run: |
-          cd gradle-enterprise-gradle-build-validation
-          ./05-validate-remote-build-caching-ci-local.sh -1 https://ge.solutions-team.gradle.com/s/xildcv6frocau -s https://ge.solutions-team.gradle.com
       - name: Run Maven Experiment 01
         run: |
           cd gradle-enterprise-maven-build-validation
@@ -91,8 +87,4 @@ jobs:
         run: |
           cd gradle-enterprise-maven-build-validation
           ./03-validate-remote-build-caching-ci-ci.sh -1 https://ge.solutions-team.gradle.com/s/oll3ve3wdv2t6 -2 https://ge.solutions-team.gradle.com/s/eaue4kvqnvnay
-      - name: Run Maven Experiment 04
-        run: |
-          cd gradle-enterprise-maven-build-validation 
-          ./04-validate-remote-build-caching-ci-local.sh -1 https://ge.solutions-team.gradle.com/s/oll3ve3wdv2t6 -s https://ge.solutions-team.gradle.com
 
