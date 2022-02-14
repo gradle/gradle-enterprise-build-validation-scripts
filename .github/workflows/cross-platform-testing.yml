@@ -39,10 +39,7 @@ jobs:
         uses: Vampire/setup-wsl@v1
         with:
           distribution: Ubuntu-20.04
-      - name: Update and install dependencies
-        if: ${{ runner.os == 'Windows' }}
-        run: |
-          sudo apt-get install -y curl unzip wget apt-transport-https gnupg
+          additional-packages: curl unzip wget apt-transport-https gnupg
       - name: Set up JDK ${{ matrix.java-version }} on WSL
         if: ${{ runner.os == 'Windows' }}
         run: |
