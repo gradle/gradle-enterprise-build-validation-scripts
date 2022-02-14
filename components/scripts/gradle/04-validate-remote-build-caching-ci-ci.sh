@@ -282,8 +282,8 @@ By default, this experiment assumes that these custom values have been created
 by the Common Custom User Data Gradle plugin. If you are not using that plugin
 but your build still captures the same data under different custom value names,
 you can provide a mapping file so that the required data can be extracted from
-your build scans. An example mapping file named 'mapping.example' can be found
-at the same location as the script.
+your build scans. Details on how to provide a mapping file are available from
+the documentation of the build validation scripts.
 EOF
   print_wizard_text "${text}"
 }
