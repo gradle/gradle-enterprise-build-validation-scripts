@@ -4,8 +4,12 @@
 > - _[Gradle Enterprise Build Validation Scripts][ge-build-validation-scripts] (this repository)_
 > - _[Common Custom User Data Gradle Plugin][ccud-gradle-plugin]_
 > - _[Common Custom User Data Maven Extension][ccud-maven-extension]_
+> - _[Android Cache Fix Gradle Plugin][android-cache-fix-plugin]_
 
 # Gradle Enterprise Build Validation Scripts
+
+[![Verify Build](https://github.com/gradle/gradle-enterprise-build-validation-scripts/actions/workflows/build-verification.yml/badge.svg?branch=main)](https://github.com/gradle/gradle-enterprise-build-validation-scripts/actions/workflows/build-verification.yml)
+[![Revved up by Gradle Enterprise](https://img.shields.io/badge/Revved%20up%20by-Gradle%20Enterprise-06A0CE?logo=Gradle&labelColor=02303A)](https://ge.solutions-team.gradle.com/scans)
 
 The purpose of the build validation scripts is to assist you in validating that your Gradle and Maven builds are in an optimal state in terms of maximizing work avoidance. The validation scripts do not actually modify your build, but they surface what can be improved in your build to avoid unnecessary work in several scenarios.
 
@@ -41,5 +45,6 @@ The Gradle Enterprise build validation scripts are open-source software released
 [ge-build-validation-scripts]: https://github.com/gradle/gradle-enterprise-build-validation-scripts
 [ccud-gradle-plugin]: https://github.com/gradle/common-custom-user-data-gradle-plugin
 [ccud-maven-extension]: https://github.com/gradle/common-custom-user-data-maven-extension
+[android-cache-fix-plugin]: https://github.com/gradle/android-cache-fix-gradle-plugin
 [gradle-enterprise]: https://gradle.com/enterprise
 [apache-license]: https://www.apache.org/licenses/LICENSE-2.0.html

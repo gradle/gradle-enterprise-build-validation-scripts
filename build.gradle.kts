@@ -5,7 +5,7 @@ plugins {
     id("base")
     id("com.felipefzdz.gradle.shellcheck") version "1.4.6"
     id("com.github.breadmoirai.github-release") version "2.2.12"
-    id("org.gradle.crypto.checksum") version "1.2.0"
+    id("org.gradle.crypto.checksum") version "1.4.0"
 }
 
 repositories {
@@ -41,8 +41,8 @@ dependencies {
     argbash("argbash:argbash:2.10.0@zip")
     commonComponents(project(path = ":fetch-build-scan-data-cmdline-tool", configuration = "shadow"))
     mavenComponents(project(":capture-build-scan-url-maven-extension"))
-    mavenComponents("com.gradle:gradle-enterprise-maven-extension:1.12.3")
-    mavenComponents("com.gradle:common-custom-user-data-maven-extension:1.10")
+    mavenComponents("com.gradle:gradle-enterprise-maven-extension:1.12.4")
+    mavenComponents("com.gradle:common-custom-user-data-maven-extension:1.10.1")
 }
 
 shellcheck {
