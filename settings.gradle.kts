@@ -12,9 +12,7 @@ val isCI = System.getenv("GITHUB_ACTIONS") != null
 gradleEnterprise {
     server = "https://ge.solutions-team.gradle.com"
     buildScan {
-        capture {
-            isTaskInputFiles = true
-        }
+        capture { isTaskInputFiles = true }
         isUploadInBackground = !isCI
         publishAlways()
         this as BuildScanExtensionWithHiddenFeatures
