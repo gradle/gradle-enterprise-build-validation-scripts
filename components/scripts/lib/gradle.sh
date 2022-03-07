@@ -29,7 +29,7 @@ invoke_gradle() {
   args+=(-Pcom.gradle.enterprise.build_validation.experimentDir="${EXP_DIR}")
   args+=(-Pcom.gradle.enterprise.build_validation.expId="${EXP_SCAN_TAG}")
   args+=(-Pcom.gradle.enterprise.build_validation.runId="${RUN_ID}")
-  args+=(-Dscan.capture-task-input-files)
+  args+=(-Dscan.capture-task-input-files=true)
 
   # shellcheck disable=SC2206
   args+=(${extra_args})
