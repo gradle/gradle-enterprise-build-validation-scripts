@@ -1,0 +1,24 @@
+name: Run experiment 1
+
+inputs:
+  repositoryUrl:
+    required: true
+    type: string
+  branch:
+    required: true
+    type: string
+  task:
+    required: true
+    type: string
+  gradleEnterpriseUrl:
+    required: true
+    type: string
+
+runs:
+  using: "composite"
+  steps:
+    - name: Run Gradle Experiment 1
+      run: |
+        cd gradle-enterprise-gradle-build-validation
+        ./01-validate-incremental-building.sh -r ${{ inputs.repositoryUrl }} -b ${{ inputs.branch }} -t ${{ inputs.task }} -s ${{ inputs.gradleEnterpriseUrl }}
+      shell: bash

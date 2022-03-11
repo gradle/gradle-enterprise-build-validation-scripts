@@ -1,0 +1,11 @@
+name: Get latest release
+
+runs:
+  using: "composite"
+  steps:
+    - name: Get latest release
+      run: |
+        downloadUrl=$(curl -s https://api.github.com/repos/gradle/gradle-enterprise-build-validation-scripts/releases/latest | jq -c '.assets[] | select(.content_type == "application/zip")' | jq -r .browser_download_url | grep -v maven)
+        curl -s -L -o gradle-enterprise-gradle-build-validation.zip $downloadUrl
+        unzip -q -o gradle-enterprise-gradle-build-validation.zip
+      shell: bash
