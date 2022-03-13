@@ -38,7 +38,7 @@ Visit our website to learn more about [Gradle Enterprise][gradle-enterprise].
 
 ## License
 
-The Gradle Enterprise Build Validation scripts are open-source software released under the [Apache 2.0 License][apache-license].
+The Gradle Enterprise build validation scripts are open-source software released under the [Apache 2.0 License][apache-license].
 
 [ge-build-config-samples]: https://github.com/gradle/gradle-enterprise-build-config-samples
 [ge-build-optimization-experiments]: https://github.com/gradle/gradle-enterprise-build-optimization-experiments
