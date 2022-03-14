@@ -1,4 +1,5 @@
 name: Get latest release
+description: 'Install Scripts latest release'
 
 runs:
   using: "composite"

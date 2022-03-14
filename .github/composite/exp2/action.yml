@@ -1,18 +1,19 @@
 name: Run experiment 2
+description: 'Run Gradle Experiment 2'
 
 inputs:
   repositoryUrl:
+    description: Project repository URL
     required: true
-    type: string
   branch:
+    description: Git Branch
     required: true
-    type: string
   task:
+    description: Gradle task
     required: true
-    type: string
   gradleEnterpriseUrl:
+    description: Gradle Enterprise URL
     required: true
-    type: string
 
 runs:
   using: "composite"
