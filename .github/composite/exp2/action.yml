@@ -11,6 +11,10 @@ inputs:
   task:
     description: Gradle task
     required: true
+  projectDir:
+    description: Project directory
+    required: false
+    default: .
   gradleEnterpriseUrl:
     description: Gradle Enterprise URL
     required: true
@@ -21,5 +25,5 @@ runs:
     - name: Run Gradle Experiment 2
       run: |
         cd gradle-enterprise-gradle-build-validation
-        ./02-validate-local-build-caching-same-location.sh -r ${{ inputs.repositoryUrl }} -b ${{ inputs.branch }} -t ${{ inputs.task }} -s ${{ inputs.gradleEnterpriseUrl }}
+        ./02-validate-local-build-caching-same-location.sh -r ${{ inputs.repositoryUrl }} -b ${{ inputs.branch }} -t ${{ inputs.task }} -p ${{ inputs.projectDir }} -s ${{ inputs.gradleEnterpriseUrl }}
       shell: bash
