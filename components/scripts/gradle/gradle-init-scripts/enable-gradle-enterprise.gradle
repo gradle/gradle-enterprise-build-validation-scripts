@@ -4,7 +4,7 @@ import com.gradle.CommonCustomUserDataGradlePlugin
 import org.gradle.util.GradleVersion
 
 initscript {
-    def gradleEnterprisePluginVersion = "3.8.1"
+    def gradleEnterprisePluginVersion = "3.9"
     def commonCustomUserDataPluginVersion = "1.6.4"
 
     repositories {
