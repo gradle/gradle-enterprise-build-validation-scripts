@@ -3,27 +3,41 @@ description: 'Run Gradle Experiment 2'
 
 inputs:
   repositoryUrl:
-    description: Project repository URL
+    description: "Project repository URL"
     required: true
   branch:
-    description: Git Branch
+    description: "Git Branch"
     required: true
   task:
-    description: Gradle task
+    description: "Gradle task"
     required: true
   projectDir:
-    description: Project directory
+    description: "Project directory"
     required: false
     default: .
   gradleEnterpriseUrl:
-    description: Gradle Enterprise URL
+    description: "Gradle Enterprise URL"
     required: true
+outputs:
+  secondBuildScanUrl:
+    description: "Second build scan URL"
+    value: ${{ steps.run.outputs.secondBuildScanUrl }}
 
 runs:
   using: "composite"
   steps:
     - name: Run Gradle Experiment 2
+      id: run
       run: |
         cd gradle-enterprise-gradle-build-validation
+
+        # add instruction to save build scan url
+        BUILD_SCAN_FILE=$(pwd)/build-scan-url.txt
+        echo "echo \$build_scan_urls > ${BUILD_SCAN_FILE}" >> 02-validate-local-build-caching-same-location.sh
+
+        # run experiment
         ./02-validate-local-build-caching-same-location.sh -r ${{ inputs.repositoryUrl }} -b ${{ inputs.branch }} -t ${{ inputs.task }} -p ${{ inputs.projectDir }} -s ${{ inputs.gradleEnterpriseUrl }}
+
+        # set scan url as output
+        echo "::set-output name=secondBuildScanUrl::$(cat ${BUILD_SCAN_FILE})"
       shell: bash

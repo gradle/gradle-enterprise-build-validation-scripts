@@ -9,6 +9,8 @@ Create a Github Action workflow, fulfilling the build requirements (add JDK...) 
 ```yaml
 steps:
   - uses: gradle/gradle-enterprise-build-validation-scripts/.github/composite/getLatest@v1.0.2
+    with:
+      token: ${{ secrets.GITHUB_TOKEN }}
   - uses: gradle/gradle-enterprise-build-validation-scripts/.github/composite/exp1@v1.0.2
     with:
       repositoryUrl: <PROJECT_GIT_URL>
