@@ -31,7 +31,7 @@ jobs:
       run:
         shell: ${{ matrix.shell }} {0}
     env:
-        GRADLE_ENTERPRISE_ACCESS_KEY: ${{ secrets.GE_ACCESS_TOKEN }}
+        GRADLE_ENTERPRISE_ACCESS_KEY: ${{ secrets.GE_SOLUTIONS_ACCESS_TOKEN }}
         WSLENV: GRADLE_ENTERPRISE_ACCESS_KEY
     steps:
       - name: Set up WSL
