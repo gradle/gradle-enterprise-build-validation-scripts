@@ -1,5 +1,5 @@
 name: Run experiment 3
-description: 'Run Gradle Experiment 3'
+description: "Run Gradle Experiment 3"
 
 inputs:
   repositoryUrl:
@@ -19,9 +19,12 @@ inputs:
     description: "Gradle Enterprise URL"
     required: true
 outputs:
-  secondBuildScanUrl:
-    description: "Second build scan URL"
-    value: ${{ steps.run.outputs.secondBuildScanUrl }}
+  buildScanId1:
+    description: "First build scan identifier"
+    value: ${{ steps.run.outputs.buildScanId1 }}
+  buildScanId2:
+    description: "Second build scan identifier"
+    value: ${{ steps.run.outputs.buildScanId2 }}
 
 runs:
   using: "composite"
@@ -31,13 +34,16 @@ runs:
       run: |
         cd gradle-enterprise-gradle-build-validation
 
-        # add instruction to save build scan url
-        BUILD_SCAN_FILE=$(pwd)/build-scan-url.txt
-        echo "echo \$build_scan_urls > ${BUILD_SCAN_FILE}" >> 03-validate-local-build-caching-different-locations.sh
+        # add instructions to save build scan urls
+        BUILD_SCAN_FILE_1=$(pwd)/exp3-build-scan-url-1.txt
+        BUILD_SCAN_FILE_2=$(pwd)/exp3-build-scan-url-2.txt
+        echo "echo \${build_scan_urls[0]} > ${BUILD_SCAN_FILE_1}" >> 03-validate-local-build-caching-different-locations.sh
+        echo "echo \${build_scan_urls[1]} > ${BUILD_SCAN_FILE_2}" >> 03-validate-local-build-caching-different-locations.sh
 
         # run experiment
         ./03-validate-local-build-caching-different-locations.sh -r ${{ inputs.repositoryUrl }} -b ${{ inputs.branch }} -t ${{ inputs.task }} -p ${{ inputs.projectDir }} -s ${{ inputs.gradleEnterpriseUrl }}
 
         # set scan url as output
-        echo "::set-output name=secondBuildScanUrl::$(cat ${BUILD_SCAN_FILE})"
+        echo "::set-output name=buildScanId1::$(cat ${BUILD_SCAN_FILE_1} | sed 's:.*/::')"
+        echo "::set-output name=buildScanId2::$(cat ${BUILD_SCAN_FILE_2} | sed 's:.*/::')"
       shell: bash
