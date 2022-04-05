@@ -7,9 +7,9 @@ repositories {
 }
 
 dependencies {
-    compileOnly("org.apache.maven:maven-core:3.8.4")
+    compileOnly("org.apache.maven:maven-core:3.8.5")
     compileOnly("org.codehaus.plexus:plexus-component-annotations:2.1.1")
-    compileOnly("com.gradle:gradle-enterprise-maven-extension:1.12.4")
+    compileOnly("com.gradle:gradle-enterprise-maven-extension:1.13.1")
 }
 
 description = "Maven extension to capture the build scan URL"
