@@ -1,0 +1,74 @@
+name: Assert caching
+description: "Assert caching"
+
+inputs:
+  gradleEnterpriseUrl:
+    description: "Gradle Enterprise URL"
+    required: true
+  token:
+    description: "API token"
+    required: true
+  buildId1:
+    description: "Build 1 identifier"
+    required: true
+  buildId2:
+    description: "Build 2 identifier"
+    required: true
+  executionStatus:
+    description: "Execution status"
+    required: true
+  expectedTasks:
+    description: "Lexicographically csv ordered list of expected tasks"
+    required: false
+    default : ""
+  # continue-on-error can't be used on a composite step
+  continueOnError:
+    description: "Whether to fail if expectation is not meet"
+    required: true
+    default : "false"
+outputs:
+  failure:
+    description: "Failure flag"
+    value: ${{ steps.run.outputs.failure }}
+
+runs:
+  using: "composite"
+  steps:
+    - name: Check task count which runs
+      id: run
+      run: |
+        isFailure=false
+
+        # check build 1
+        buildHasFailed=$(curl -s -H 'Authorization: Bearer ${{ inputs.token }}' ${{ inputs.gradleEnterpriseUrl }}/api/builds/${{ inputs.buildId1 }}/gradle-attributes | jq .hasFailed)
+        if [ -z "$buildHasFailed" ] || [ "$buildHasFailed" != "false" ]; then
+          echo '::warning:: Build 1 has failed'
+          isFailure=true
+        fi
+
+        # check build 2
+        buildHasFailed=$(curl -s -H 'Authorization: Bearer ${{ inputs.token }}' ${{ inputs.gradleEnterpriseUrl }}/api/builds/${{ inputs.buildId2 }}/gradle-attributes | jq .hasFailed)
+        if [ -z "$buildHasFailed" ] || [ "$buildHasFailed" != "false" ]; then
+          echo '::warning:: Build 2 has failed'
+          isFailure=true
+        fi
+
+        if [ "$isFailure" == "false" ]; then
+          # check expectations
+          tasks=$(curl -s -H 'Authorization: Bearer ${{ inputs.token }}' ${{ inputs.gradleEnterpriseUrl }}/api/builds/${{ inputs.buildId2 }}/gradle-build-cache-performance | jq -r '[.taskExecution[] | select( .avoidanceOutcome | contains ("${{ inputs.executionStatus }}"))] | sort_by(.taskPath) | [.[].taskPath] | @csv' | tr -d \")
+          if [ "${tasks}" != "${{ inputs.expectedTasks }}" ]; then
+            echo '::warning:: Performance regression detected'
+            echo '::warning:: EXPECTED:'
+            echo '::warning:: ${{ inputs.expectedTasks }}'
+            echo '::warning:: ACTUAL:'
+            echo "::warning:: ${tasks}"
+            isFailure=true
+          fi
+        fi
+
+        echo "::set-output name=failure::$isFailure"
+
+        if [ "$isFailure" == "false" ] && [ "${{ inputs.continueOnError }}" == "false" ]; then
+          exit 1
+        fi
+      shell: bash
