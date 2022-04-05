@@ -1,9 +1,9 @@
 name: Get latest release
-description: 'Install Scripts latest release'
+description: "Install Scripts latest release"
 
 inputs:
   token:
-    description: 'Github token'
+    description: "Github token"
     required: true
 
 runs:
