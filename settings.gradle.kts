@@ -20,6 +20,23 @@ gradleEnterprise {
     }
 }
 
+buildCache {
+    local {
+        isEnabled = true
+    }
+
+    remote<HttpBuildCache> {
+        url = uri("https://ge.solutions-team.gradle.com/cache/")
+        isAllowUntrustedServer = false
+        credentials {
+            username = System.getenv("GRADLE_ENTERPRISE_CACHE_USERNAME")
+            password = System.getenv("GRADLE_ENTERPRISE_CACHE_PASSWORD")
+        }
+        isEnabled = true
+        isPush = isCI
+    }
+}
+
 include("components/capture-build-scan-url-maven-extension")
 include("components/fetch-build-scan-data-cmdline-tool")
 
