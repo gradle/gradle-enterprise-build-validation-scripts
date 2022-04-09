@@ -5,8 +5,6 @@ plugins {
     id("com.gradle.common-custom-user-data-gradle-plugin") version "1.6.5"
 }
 
-rootProject.name = "build-validation"
-
 val isCI = System.getenv("GITHUB_ACTIONS") != null
 
 gradleEnterprise {
@@ -36,6 +34,8 @@ buildCache {
         isPush = isCI
     }
 }
+
+rootProject.name = "build-validation-scripts"
 
 include("components/capture-build-scan-url-maven-extension")
 include("components/fetch-build-scan-data-cmdline-tool")
