@@ -5,8 +5,6 @@ plugins {
     id("com.gradle.common-custom-user-data-gradle-plugin") version "1.6.5"
 }
 
-rootProject.name = "build-validation"
-
 val isCI = System.getenv("GITHUB_ACTIONS") != null
 
 gradleEnterprise {
@@ -19,6 +17,25 @@ gradleEnterprise {
         publishIfAuthenticated()
     }
 }
+
+buildCache {
+    local {
+        isEnabled = true
+    }
+
+    remote<HttpBuildCache> {
+        url = uri("https://ge.solutions-team.gradle.com/cache/")
+        isAllowUntrustedServer = false
+        credentials {
+            username = System.getenv("GRADLE_ENTERPRISE_CACHE_USERNAME")
+            password = System.getenv("GRADLE_ENTERPRISE_CACHE_PASSWORD")
+        }
+        isEnabled = true
+        isPush = isCI
+    }
+}
+
+rootProject.name = "build-validation-scripts"
 
 include("components/capture-build-scan-url-maven-extension")
 include("components/fetch-build-scan-data-cmdline-tool")
