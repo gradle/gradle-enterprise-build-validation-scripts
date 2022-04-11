@@ -196,7 +196,8 @@ tasks.register<Shellcheck>("shellcheckGradleScripts") {
     // scripts in lib/ are still inputs to this task (we want shellcheck to run if they change) even though we don't include them explicitly in sourceFiles
     inputs.files(copyGradleScripts.get().outputs.files.asFileTree.matching {
         include("lib/**/*.sh")
-    })
+    }).withPropertyName("libScripts")
+        .withPathSensitivity(PathSensitivity.RELATIVE)
     workingDir = layout.buildDirectory.file("scripts/gradle").get().asFile
     reports {
         html.outputLocation.set(layout.buildDirectory.file("reports/shellcheck-gradle/shellcheck.html"))
@@ -216,7 +217,8 @@ tasks.register<Shellcheck>("shellcheckMavenScripts") {
     // scripts in lib/ are still inputs to this task (we want shellcheck to run if they change) even though we don't include them explicitly in sourceFiles
     inputs.files(copyMavenScripts.get().outputs.files.asFileTree.matching {
         include("lib/**/*.sh")
-    })
+    }).withPropertyName("libScripts")
+        .withPathSensitivity(PathSensitivity.RELATIVE)
     workingDir = layout.buildDirectory.file("scripts/maven").get().asFile
     reports {
         html.outputLocation.set(layout.buildDirectory.file("reports/shellcheck-maven/shellcheck.html"))
