@@ -15,6 +15,9 @@ gradleEnterprise {
         publishAlways()
         this as BuildScanExtensionWithHiddenFeatures
         publishIfAuthenticated()
+        obfuscation {
+            ipAddresses { addresses -> addresses.map { "0.0.0.0" } }
+        }
     }
 }
 
