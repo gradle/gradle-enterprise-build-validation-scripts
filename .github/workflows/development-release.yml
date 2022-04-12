@@ -22,9 +22,9 @@ jobs:
         with:
           java-version: '8'
           distribution: 'adopt'
-      - name: Build with Gradle
+      - name: Set up Gradle
         uses: gradle/gradle-build-action@v2
+      - name: Build with Gradle
         env:
           GITHUB_ACCESS_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
-        with:
-          arguments: build githubRelease -i
+        run: ./gradlew build githubRelease -i
