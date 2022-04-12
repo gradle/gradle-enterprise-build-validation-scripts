@@ -93,8 +93,8 @@ val copyGradleScripts = tasks.register<Copy>("copyGradleScripts") {
     group = "build"
     description = "Copies the Gradle source and generated scripts to output directory."
 
-    inputs.property("project.version", project.version)
     val projectVersion = project.version.toString()
+    inputs.property("project.version", projectVersion)
 
     from(layout.projectDirectory.file("LICENSE"))
     from(layout.projectDirectory.dir("release").file("version.txt"))
@@ -127,8 +127,8 @@ val copyMavenScripts = tasks.register<Copy>("copyMavenScripts") {
     group = "build"
     description = "Copies the Maven source and generated scripts to output directory."
 
-    inputs.property("project.version", project.version)
     val projectVersion = project.version.toString()
+    inputs.property("project.version", projectVersion)
 
     from(layout.projectDirectory.file("LICENSE"))
     from(layout.projectDirectory.dir("release").file("version.txt"))
