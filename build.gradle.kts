@@ -93,8 +93,7 @@ val copyGradleScripts = tasks.register<Copy>("copyGradleScripts") {
     group = "build"
     description = "Copies the Gradle source and generated scripts to output directory."
 
-    val projectVersion = project.version.toString()
-    inputs.property("project.version", projectVersion)
+    inputs.property("project.version", appVersion)
 
     from(layout.projectDirectory.file("LICENSE"))
     from(layout.projectDirectory.dir("release").file("version.txt"))
@@ -102,7 +101,7 @@ val copyGradleScripts = tasks.register<Copy>("copyGradleScripts") {
 
     from(layout.projectDirectory.dir("components/scripts/gradle")) {
         exclude("gradle-init-scripts")
-        filter { line: String -> line.replace("<HEAD>", projectVersion) }
+        filter { line: String -> line.replace("<HEAD>", appVersion) }
     }
     from(layout.projectDirectory.dir("components/scripts/gradle")) {
         include("gradle-init-scripts/**")
@@ -112,7 +111,7 @@ val copyGradleScripts = tasks.register<Copy>("copyGradleScripts") {
         include("README.md")
         include("lib/**")
         exclude("lib/cli-parsers")
-        filter { line: String -> line.replace("<HEAD>", projectVersion) }
+        filter { line: String -> line.replace("<HEAD>", appVersion) }
     }
     from(applyArgbash.map { it.outputDir.file("lib/cli-parsers/gradle") }) {
         into("lib/")
@@ -127,21 +126,20 @@ val copyMavenScripts = tasks.register<Copy>("copyMavenScripts") {
     group = "build"
     description = "Copies the Maven source and generated scripts to output directory."
 
-    val projectVersion = project.version.toString()
-    inputs.property("project.version", projectVersion)
+    inputs.property("project.version", appVersion)
 
     from(layout.projectDirectory.file("LICENSE"))
     from(layout.projectDirectory.dir("release").file("version.txt"))
     rename("version.txt", "VERSION")
 
     from(layout.projectDirectory.dir("components/scripts/maven")) {
-        filter { line: String -> line.replace("<HEAD>", projectVersion) }
+        filter { line: String -> line.replace("<HEAD>", appVersion) }
     }
     from(layout.projectDirectory.dir("components/scripts/")) {
         include("README.md")
         include("lib/**")
         exclude("lib/cli-parsers")
-        filter { line: String -> line.replace("<HEAD>", projectVersion) }
+        filter { line: String -> line.replace("<HEAD>", appVersion) }
     }
     from(applyArgbash.map { it.outputDir.file("lib/cli-parsers/maven") }) {
         into("lib/")
