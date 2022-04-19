@@ -262,7 +262,6 @@ tasks.register<CreateGitTag>("createReleaseTag") {
 
 tasks.named("githubRelease") {
     dependsOn("createReleaseTag")
-    notCompatibleWithConfigurationCache("$name task does not support configuration caching")
 }
 
 tasks.withType(Sign::class).configureEach {
