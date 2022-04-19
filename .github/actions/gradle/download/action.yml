@@ -1,5 +1,5 @@
-name: Get latest release
-description: "Install Scripts latest release"
+name: Download latest release
+description: "Download latest release"
 
 inputs:
   token:
