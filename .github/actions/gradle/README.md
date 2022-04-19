@@ -15,23 +15,23 @@ steps:
   # Run experiment 1
   - uses: gradle/gradle-enterprise-build-validation-scripts/.github/actions/gradle/exp1@v1.0.2
     with:
-      repositoryUrl: <PROJECT_GIT_URL>
-      branch: <PROJECT_BRANCH>
-      task: <PROJECT_BUILD_TASK>
+      gitRepo: <PROJECT_GIT_URL>
+      gitBranch: <PROJECT_BRANCH>
+      tasks: <PROJECT_BUILD_TASK>
       gradleEnterpriseUrl: <GRADLE_ENTERPRISE_URL>
   # Run experiment 2
   - uses: gradle/gradle-enterprise-build-validation-scripts/.github/actions/gradle/exp2@v1.0.2
     with:
-      repositoryUrl: <PROJECT_GIT_URL>
-      branch: <PROJECT_BRANCH>
-      task: <PROJECT_BUILD_TASK>
+      gitRepo: <PROJECT_GIT_URL>
+      gitBranch: <PROJECT_BRANCH>
+      tasks: <PROJECT_BUILD_TASK>
       gradleEnterpriseUrl: <GRADLE_ENTERPRISE_URL>
   # Run experiment 3
   - uses: gradle/gradle-enterprise-build-validation-scripts/.github/actions/gradle/exp3@v1.0.2
     with:
-      repositoryUrl: <PROJECT_GIT_URL>
-      branch: <PROJECT_BRANCH>
-      task: <PROJECT_BUILD_TASK>
+      gitRepo: <PROJECT_GIT_URL>
+      gitBranch: <PROJECT_BRANCH>
+      tasks: <PROJECT_BUILD_TASK>
       gradleEnterpriseUrl: <GRADLE_ENTERPRISE_URL>
 ```
 

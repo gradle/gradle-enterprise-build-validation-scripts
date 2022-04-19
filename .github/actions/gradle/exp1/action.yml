@@ -2,22 +2,31 @@ name: Run experiment 1
 description: "Run Gradle Experiment 1"
 
 inputs:
-  repositoryUrl:
-    description: "Project repository URL"
+  gitRepo:
+    description: "Git repository URL"
     required: true
-  branch:
+  tasks:
+    description: "Gradle tasks"
+    required: true
+  gitBranch:
     description: "Git Branch"
-    required: true
-  task:
-    description: "Gradle task"
-    required: true
+    required: false
+  gitCommitId:
+    description: "Git Commit"
+    required: false
   projectDir:
     description: "Project directory"
     required: false
-    default: .
+  args:
+    description: "Gradle additional arguments"
+    required: false
   gradleEnterpriseUrl:
     description: "Gradle Enterprise URL"
-    required: true
+    required: false
+  enableGradleEnterprise:
+    description: "Enables Gradle Enterprise on a project not already connected"
+    required: false
+
 outputs:
   buildScanId1:
     description: "First build scan identifier"
@@ -40,8 +49,28 @@ runs:
         echo "echo \${build_scan_urls[0]} > ${BUILD_SCAN_FILE_1}" >> 01-validate-incremental-building.sh
         echo "echo \${build_scan_urls[1]} > ${BUILD_SCAN_FILE_2}" >> 01-validate-incremental-building.sh
 
+        EXTRA_ARGS=""
+        if [ ! -z "${{ inputs.gitBranch }}" ]; then
+          EXTRA_ARGS="$EXTRA_ARGS -b ${{ inputs.gitBranch }}"
+        fi
+        if [ ! -z "${{ inputs.gitCommitId }}" ]; then
+          EXTRA_ARGS="$EXTRA_ARGS -c ${{ inputs.gitCommitId }}"
+        fi
+        if [ ! -z "${{ inputs.projectDir }}" ]; then
+          EXTRA_ARGS="$EXTRA_ARGS -p ${{ inputs.projectDir }}"
+        fi
+        if [ ! -z "${{ inputs.args }}" ]; then
+          EXTRA_ARGS="$EXTRA_ARGS -a ${{ inputs.args }}"
+        fi
+        if [ ! -z "${{ inputs.gradleEnterpriseUrl }}" ]; then
+          EXTRA_ARGS="$EXTRA_ARGS -s ${{ inputs.gradleEnterpriseUrl }}"
+        fi
+        if [ ! -z "${{ inputs.enableGradleEnterprise }}" ]; then
+          EXTRA_ARGS="$EXTRA_ARGS -e"
+        fi
+
         # run experiment
-        ./01-validate-incremental-building.sh -r ${{ inputs.repositoryUrl }} -b ${{ inputs.branch }} -t ${{ inputs.task }} -p ${{ inputs.projectDir }} -s ${{ inputs.gradleEnterpriseUrl }}
+        ./01-validate-incremental-building.sh -r ${{ inputs.gitRepo }} -t ${{ inputs.tasks }} $EXTRA_ARGS
 
         # set scan url as output
         echo "::set-output name=buildScanId1::$(cat ${BUILD_SCAN_FILE_1} | sed 's:.*/::')"
