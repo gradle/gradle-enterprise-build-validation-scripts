@@ -1,14 +1,15 @@
 # Composite Github Actions
 
-The composite actions provided here will simplify running the validation scripts in your Github Action workflow.
+The composite actions provided here will simplify running the build validation scripts from your GitHub Actions workflow.
 
 ## Usage
 
-Create a Github Action workflow, fulfilling the build requirements (add JDK...) and then add the following steps (replacing the placeholders):
+Create a GitHub Actions workflow, add the steps to configure the build requirements like JDK, etc., and then add the
+following steps to invoke the actual experiments:
 
 ```yaml
 steps:
-  # Download scripts latest version
+  # Download the latest version of the build validation scripts
   - uses: gradle/gradle-enterprise-build-validation-scripts/.github/actions/gradle/download@v1.0.2
     with:
       token: ${{ secrets.GITHUB_TOKEN }}
@@ -18,21 +19,22 @@ steps:
       gitRepo: <PROJECT_GIT_URL>
       gitBranch: <PROJECT_BRANCH>
       tasks: <PROJECT_BUILD_TASK>
-      gradleEnterpriseUrl: <GRADLE_ENTERPRISE_URL>
+      ...
   # Run experiment 2
   - uses: gradle/gradle-enterprise-build-validation-scripts/.github/actions/gradle/exp2@v1.0.2
     with:
       gitRepo: <PROJECT_GIT_URL>
       gitBranch: <PROJECT_BRANCH>
       tasks: <PROJECT_BUILD_TASK>
-      gradleEnterpriseUrl: <GRADLE_ENTERPRISE_URL>
-  # Run experiment 3
+      ...
+    # Run experiment 3
   - uses: gradle/gradle-enterprise-build-validation-scripts/.github/actions/gradle/exp3@v1.0.2
     with:
       gitRepo: <PROJECT_GIT_URL>
       gitBranch: <PROJECT_BRANCH>
       tasks: <PROJECT_BUILD_TASK>
-      gradleEnterpriseUrl: <GRADLE_ENTERPRISE_URL>
+      ...
 ```
 
-You can then navigate the workflow output and click the investigation links provided by the script.
+Once the workflow has been triggered and finishes executing, you can navigate to the workflow's output and investigate the summary
+produced by the build validation scripts.
