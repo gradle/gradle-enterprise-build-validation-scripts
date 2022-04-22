@@ -1,4 +1,4 @@
-# Composite Github Actions
+# Composite GitHub Actions
 
 The composite actions provided here will simplify running the build validation scripts from your GitHub Actions workflow.
 
@@ -14,21 +14,21 @@ steps:
     with:
       token: ${{ secrets.GITHUB_TOKEN }}
   # Run experiment 1
-  - uses: gradle/gradle-enterprise-build-validation-scripts/.github/actions/gradle/exp1@v1.0.2
+  - uses: gradle/gradle-enterprise-build-validation-scripts/.github/actions/gradle/experiment-1@v1.0.2
     with:
       gitRepo: <PROJECT_GIT_URL>
       gitBranch: <PROJECT_BRANCH>
       tasks: <PROJECT_BUILD_TASK>
       ...
   # Run experiment 2
-  - uses: gradle/gradle-enterprise-build-validation-scripts/.github/actions/gradle/exp2@v1.0.2
+  - uses: gradle/gradle-enterprise-build-validation-scripts/.github/actions/gradle/experiment-2@v1.0.2
     with:
       gitRepo: <PROJECT_GIT_URL>
       gitBranch: <PROJECT_BRANCH>
       tasks: <PROJECT_BUILD_TASK>
       ...
     # Run experiment 3
-  - uses: gradle/gradle-enterprise-build-validation-scripts/.github/actions/gradle/exp3@v1.0.2
+  - uses: gradle/gradle-enterprise-build-validation-scripts/.github/actions/gradle/experiment-3@v1.0.2
     with:
       gitRepo: <PROJECT_GIT_URL>
       gitBranch: <PROJECT_BRANCH>
