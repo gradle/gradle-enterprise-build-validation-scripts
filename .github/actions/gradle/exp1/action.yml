@@ -1,5 +1,5 @@
 name: Run experiment 1
-description: "Run Gradle Experiment 1"
+description: "Runs experiment 1 of the build validation scripts for Gradle"
 
 inputs:
   gitRepo:
