@@ -2,29 +2,30 @@ name: Run experiment 2
 description: "Runs experiment 2 of the build validation scripts for Gradle"
 
 inputs:
-  repositoryUrl:
-    description: "Project repository URL"
+  gitRepo:
+    description: "The URL for the Git repository to validate"
     required: true
-  branch:
-    description: "Git Branch"
-    required: true
-  task:
-    description: "Gradle task"
-    required: true
-  projectDir:
-    description: "Project directory"
+  gitBranch:
+    description: "The branch for the Git repository to validate"
     required: false
-    default: .
+  gitCommitId:
+    description: "The Git commit id for the Git repository to validate"
+    required: false
+  projectDir:
+    description: "The build invocation directory within the Git repository"
+    required: false
+  tasks:
+    description: "The Gradle tasks to invoke"
+    required: false
+  args:
+    description: "Additional arguments to pass to Gradle"
+    required: false
   gradleEnterpriseUrl:
-    description: "Gradle Enterprise URL"
-    required: true
-outputs:
-  buildScanId1:
-    description: "First build scan identifier"
-    value: ${{ steps.run.outputs.buildScanId1 }}
-  buildScanId2:
-    description: "Second build scan identifier"
-    value: ${{ steps.run.outputs.buildScanId2 }}
+    description: "The URL for the Gradle Enterprise server to connect to"
+    required: false
+  enableGradleEnterprise:
+    description: "Enables Gradle Enterprise on a project not already connected"
+    required: false
 
 runs:
   using: "composite"
@@ -34,16 +35,29 @@ runs:
       run: |
         cd gradle-enterprise-gradle-build-validation
 
-        # add instructions to save build scan urls
-        BUILD_SCAN_FILE_1=$(pwd)/exp2-build-scan-url-1.txt
-        BUILD_SCAN_FILE_2=$(pwd)/exp2-build-scan-url-2.txt
-        echo "echo \${build_scan_urls[0]} > ${BUILD_SCAN_FILE_1}" >> 02-validate-local-build-caching-same-location.sh
-        echo "echo \${build_scan_urls[1]} > ${BUILD_SCAN_FILE_2}" >> 02-validate-local-build-caching-same-location.sh
+        EXTRA_ARGS=""
+        if [ ! -z "${{ inputs.gitBranch }}" ]; then
+          EXTRA_ARGS="$EXTRA_ARGS -b ${{ inputs.gitBranch }}"
+        fi
+        if [ ! -z "${{ inputs.gitCommitId }}" ]; then
+          EXTRA_ARGS="$EXTRA_ARGS -c ${{ inputs.gitCommitId }}"
+        fi
+        if [ ! -z "${{ inputs.projectDir }}" ]; then
+          EXTRA_ARGS="$EXTRA_ARGS -p ${{ inputs.projectDir }}"
+        fi
+        if [ ! -z "${{ inputs.tasks }}" ]; then
+          EXTRA_ARGS="$EXTRA_ARGS -t ${{ inputs.tasks }}"
+        fi
+        if [ ! -z "${{ inputs.args }}" ]; then
+          EXTRA_ARGS="$EXTRA_ARGS -a ${{ inputs.args }}"
+        fi
+        if [ ! -z "${{ inputs.gradleEnterpriseUrl }}" ]; then
+          EXTRA_ARGS="$EXTRA_ARGS -s ${{ inputs.gradleEnterpriseUrl }}"
+        fi
+        if [ ! -z "${{ inputs.enableGradleEnterprise }}" ]; then
+          EXTRA_ARGS="$EXTRA_ARGS -e"
+        fi
 
         # run experiment
-        ./02-validate-local-build-caching-same-location.sh -r ${{ inputs.repositoryUrl }} -b ${{ inputs.branch }} -t ${{ inputs.task }} -p ${{ inputs.projectDir }} -s ${{ inputs.gradleEnterpriseUrl }}
-
-        # set scan url as output
-        echo "::set-output name=buildScanId1::$(cat ${BUILD_SCAN_FILE_1} | sed 's:.*/::')"
-        echo "::set-output name=buildScanId2::$(cat ${BUILD_SCAN_FILE_2} | sed 's:.*/::')"
+        ./02-validate-local-build-caching-same-location.sh -r ${{ inputs.gitRepo }} $EXTRA_ARGS
       shell: bash
