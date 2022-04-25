@@ -6,6 +6,13 @@ make_experiment_dir() {
   rm -f "${BUILD_SCAN_FILE}"
 }
 
+create_alias_latest() {
+  LINK_NAME="$(dirname "${EXP_DIR}")/latest"
+  readonly LINK_NAME
+  rm -f "${LINK_NAME}" > /dev/null 2>&1
+  ln -s "${EXP_DIR}" "${LINK_NAME}" > /dev/null 2>&1
+}
+
 generate_run_id() {
   printf '%x' "$(date +%s)"
 }

@@ -64,6 +64,8 @@ execute() {
 
   print_bl
   print_summary
+
+  create_alias_latest
 }
 
 wizard_execute() {
@@ -105,6 +107,8 @@ wizard_execute() {
   explain_measure_build_results
   print_bl
   explain_and_print_summary
+
+  create_alias_latest
 }
 
 execute_first_build() {
