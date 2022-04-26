@@ -4,9 +4,11 @@ make_experiment_dir() {
   mkdir -p "${EXP_DIR}"
   cd "${EXP_DIR}" || die "Unable to access the experiment dir (${EXP_DIR})." 2
   rm -f "${BUILD_SCAN_FILE}"
+
+  make_symlink_to_latest_experiment_dir
 }
 
-create_alias_latest() {
+make_symlink_to_latest_experiment_dir() {
   LINK_NAME="$(dirname "${EXP_DIR}")/latest"
   readonly LINK_NAME
   rm -f "${LINK_NAME}" > /dev/null 2>&1
