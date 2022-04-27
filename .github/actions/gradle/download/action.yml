@@ -1,0 +1,33 @@
+name: Download latest Gradle build validation scripts
+description: "Downloads the latest release of the build validation scripts for Gradle"
+
+inputs:
+  token:
+    description: "GitHub token"
+    required: false
+
+runs:
+  using: "composite"
+  steps:
+    - name: Download latest build Gradle validation scripts
+      run: |
+        authHeader=""
+        if [ ! -z "${{ inputs.token }}" ]; then
+          authHeader="--header 'Authorization: Bearer ${{ inputs.token }}'"
+        fi
+
+        # Build the command to get the details of the latest version of the build validation scripts
+        cmdGetLatestReleaseData="curl -s $authHeader https://api.github.com/repos/gradle/gradle-enterprise-build-validation-scripts/releases/latest"
+
+        # Get the download url of the latest version of the build validation scripts
+        downloadUrl=$($cmdGetLatestReleaseData | jq -c '.assets[] | select(.content_type == "application/zip")' | jq -r .browser_download_url | grep -v maven)
+
+        # Build the command to download the latest version of the build validation scripts
+        cmdGetLatestRelease="curl -s -L $authHeader -o gradle-enterprise-gradle-build-validation.zip $downloadUrl"
+
+        # Download the latest version of the build validation scripts
+        eval "$cmdGetLatestRelease"
+
+        # Unzip the downloaded build validation scripts
+        unzip -q -o gradle-enterprise-gradle-build-validation.zip
+      shell: bash

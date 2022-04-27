@@ -1,0 +1,63 @@
+name: Run experiment 3
+description: "Runs experiment 3 of the build validation scripts for Gradle"
+
+inputs:
+  gitRepo:
+    description: "The URL for the Git repository to validate"
+    required: true
+  gitBranch:
+    description: "The branch for the Git repository to validate"
+    required: false
+  gitCommitId:
+    description: "The Git commit id for the Git repository to validate"
+    required: false
+  projectDir:
+    description: "The build invocation directory within the Git repository"
+    required: false
+  tasks:
+    description: "The Gradle tasks to invoke"
+    required: false
+  args:
+    description: "Additional arguments to pass to Gradle"
+    required: false
+  gradleEnterpriseUrl:
+    description: "The URL for the Gradle Enterprise server to connect to"
+    required: false
+  enableGradleEnterprise:
+    description: "Enables Gradle Enterprise on a project not already connected"
+    required: false
+
+runs:
+  using: "composite"
+  steps:
+    - name: Run Gradle Experiment 3
+      id: run
+      run: |
+        cd gradle-enterprise-gradle-build-validation
+
+        EXTRA_ARGS=""
+        if [ ! -z "${{ inputs.gitBranch }}" ]; then
+          EXTRA_ARGS="$EXTRA_ARGS -b ${{ inputs.gitBranch }}"
+        fi
+        if [ ! -z "${{ inputs.gitCommitId }}" ]; then
+          EXTRA_ARGS="$EXTRA_ARGS -c ${{ inputs.gitCommitId }}"
+        fi
+        if [ ! -z "${{ inputs.projectDir }}" ]; then
+          EXTRA_ARGS="$EXTRA_ARGS -p ${{ inputs.projectDir }}"
+        fi
+        if [ ! -z "${{ inputs.tasks }}" ]; then
+          EXTRA_ARGS="$EXTRA_ARGS -t ${{ inputs.tasks }}"
+        fi
+        if [ ! -z "${{ inputs.args }}" ]; then
+          EXTRA_ARGS="$EXTRA_ARGS -a ${{ inputs.args }}"
+        fi
+        if [ ! -z "${{ inputs.gradleEnterpriseUrl }}" ]; then
+          EXTRA_ARGS="$EXTRA_ARGS -s ${{ inputs.gradleEnterpriseUrl }}"
+        fi
+        if [ ! -z "${{ inputs.enableGradleEnterprise }}" ]; then
+          EXTRA_ARGS="$EXTRA_ARGS -e"
+        fi
+
+        # run experiment
+        ./03-validate-local-build-caching-different-locations.sh -r ${{ inputs.gitRepo }} $EXTRA_ARGS
+      shell: bash
