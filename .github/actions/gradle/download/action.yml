@@ -1,4 +1,4 @@
-name: Download latest release
+name: Download latest Gradle build validation scripts
 description: "Downloads the latest release of the build validation scripts for Gradle"
 
 inputs:
@@ -9,7 +9,7 @@ inputs:
 runs:
   using: "composite"
   steps:
-    - name: Get latest release
+    - name: Download latest build Gradle validation scripts
       run: |
         authHeader=""
         if [ ! -z "${{ inputs.token }}" ]; then
