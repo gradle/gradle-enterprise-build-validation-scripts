@@ -26,6 +26,13 @@ inputs:
   enableGradleEnterprise:
     description: "Enables Gradle Enterprise on a project not already connected"
     required: false
+outputs:
+  buildScanFirstBuild:
+    description: "First build scan url"
+    value: ${{ steps.run.outputs.buildScanFirstBuild }}
+  buildScanSecondBuild:
+    description: "Second build scan url"
+    value: ${{ steps.run.outputs.buildScanSecondBuild }}
 
 runs:
   using: "composite"
@@ -60,4 +67,9 @@ runs:
 
         # run experiment
         ./01-validate-incremental-building.sh -r ${{ inputs.gitRepo }} $EXTRA_ARGS
+
+        # set scans url as output
+        RECEIPT_FILE=".data/01-validate-incremental-building/latest/exp1-*.receipt"
+        echo "::set-output name=buildScanFirstBuild::$(grep "first build" ${RECEIPT_FILE} | sed 's/.* //')"
+        echo "::set-output name=buildScanSecondBuild::$(grep "second build" ${RECEIPT_FILE} | sed 's/.* //')"
       shell: bash
