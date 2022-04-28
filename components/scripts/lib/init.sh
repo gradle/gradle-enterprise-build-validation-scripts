@@ -3,7 +3,6 @@
 make_experiment_dir() {
   mkdir -p "${EXP_DIR}"
   cd "${EXP_DIR}" || die "Unable to access the experiment dir (${EXP_DIR})." 2
-  rm -f "${BUILD_SCAN_FILE}"
 
   make_symlink_to_latest_experiment_dir
 }
