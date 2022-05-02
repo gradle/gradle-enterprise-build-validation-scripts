@@ -70,6 +70,16 @@ runs:
 
         # set scans url as output
         RECEIPT_FILE=".data/01-validate-incremental-building/latest/exp1-*.receipt"
-        echo "::set-output name=buildScanFirstBuild::$(grep "first build" ${RECEIPT_FILE} | sed 's/.* //')"
-        echo "::set-output name=buildScanSecondBuild::$(grep "second build" ${RECEIPT_FILE} | sed 's/.* //')"
+        BUILD_SCAN_1=$(grep "first build" ${RECEIPT_FILE} | sed 's/.* //')
+        BUILD_SCAN_2=$(grep "second build" ${RECEIPT_FILE} | sed 's/.* //')
+        echo "::set-output name=buildScanFirstBuild::$BUILD_SCAN_1"
+        echo "::set-output name=buildScanSecondBuild::$BUILD_SCAN_2"
+
+        echo "::notice title="Experiment 1 - First Build Scan"::$BUILD_SCAN_1"
+        echo "::notice title="Experiment 1 - Second Build Scan"::$BUILD_SCAN_2"
       shell: bash
+    - name: Archive receipt
+      uses: actions/upload-artifact@v3
+      with:
+        name: receipt-experiment-1
+        path: gradle-enterprise-gradle-build-validation/.data/01-validate-incremental-building/latest*/exp1-*.receipt
