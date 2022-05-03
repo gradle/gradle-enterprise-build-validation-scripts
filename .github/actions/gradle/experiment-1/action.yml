@@ -80,6 +80,7 @@ runs:
         fi
 
         # run experiment
+        echo XXXX${ARG_GIT_REPO:+"$ARG_GIT_REPO"}XXXXX
         ./01-validate-incremental-building.sh ${ARG_GIT_REPO:+"$ARG_GIT_REPO"} ${ARG_GIT_BRANCH:+"$ARG_GIT_BRANCH"} ${ARG_GIT_COMMIT_ID:+"$ARG_GIT_COMMIT_ID"} ${ARG_PROJECT_DIR:+"$ARG_PROJECT_DIR"} ${ARG_TASKS:+"$ARG_TASKS"} ${ARG_ARGS:+"$ARG_ARGS"} ${ARG_GE_URL:+"$ARG_GE_URL"} ${ARG_GE_ENABLE:+"$ARG_GE_ENABLE"}
 
         # set scans url as output
