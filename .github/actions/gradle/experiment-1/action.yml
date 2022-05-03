@@ -49,8 +49,38 @@ runs:
           ARG_GIT_BRANCH="-b ${{ inputs.gitBranch }}"
         fi
 
+        ARG_GIT_COMMIT_ID=""
+        if [ ! -z "${{ inputs.gitCommitId }}" ]; then
+          ARG_GIT_COMMIT_ID="-c ${{ inputs.gitCommitId }}"
+        fi
+
+        ARG_PROJECT_DIR=""
+        if [ ! -z "${{ inputs.projectDir }}" ]; then
+          ARG_PROJECT_DIR="-p ${{ inputs.projectDir }}"
+        fi
+
+        ARG_TASKS=""
+        if [ ! -z "${{ inputs.tasks }}" ]; then
+          ARG_TASKS="-t ${{inputs.tasks }}"
+        fi
+
+        ARG_ARGS=""
+        if [ ! -z "${{ inputs.args }}" ]; then
+          ARG_ARGS="-a ${{ inputs.args }}"
+        fi
+
+        ARG_GE_URL=""
+        if [ ! -z "${{ inputs.gradleEnterpriseUrl }}" ]; then
+          ARG_GE_URL="-s ${{ inputs.gradleEnterpriseUrl }}"
+        fi
+
+        ARG_GE_ENABLE=""
+        if [ ! -z "${{ inputs.enableGradleEnterprise }}" ]; then
+          ARG_GE_ENABLE="-e"
+        fi
+
         # run experiment
-        ./01-validate-incremental-building.sh "${ARG_GIT_REPO}" ${ARG_GIT_BRANCH:+"$ARG_GIT_BRANCH"}
+        ./01-validate-incremental-building.sh "${ARG_GIT_REPO}" ${ARG_GIT_BRANCH:+"$ARG_GIT_BRANCH"} ${ARG_GIT_COMMIT_ID:+"$ARG_GIT_COMMIT_ID"} ${ARG_PROJECT_DIR:+"$ARG_PROJECT_DIR"} ${ARG_TASKS:+"$ARG_TASKS"} ${ARG_ARGS:+"$ARG_ARGS"} ${ARG_GE_URL:+"$ARG_GE_URL"} ${ARG_GE_ENABLE:+"$ARG_GE_ENABLE"}
 
         # set scans url as output
         RECEIPT_FILE=".data/01-validate-incremental-building/latest/exp1-*.receipt"
