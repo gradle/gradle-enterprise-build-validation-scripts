@@ -9,7 +9,7 @@ inputs:
 runs:
   using: "composite"
   steps:
-    - name: Download latest build Gradle validation scripts
+    - name: Download latest Gradle build validation scripts
       run: |
         authHeader=""
         if [ ! -z "${{ inputs.token }}" ]; then
