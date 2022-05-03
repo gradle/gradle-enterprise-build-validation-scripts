@@ -81,5 +81,5 @@ runs:
     - name: Archive receipt
       uses: actions/upload-artifact@v3
       with:
-        name: receipt-experiment-2
+        name: experiment-2-receipt
         path: gradle-enterprise-gradle-build-validation/.data/02-validate-local-build-caching-same-location/latest*/exp2-*.receipt
