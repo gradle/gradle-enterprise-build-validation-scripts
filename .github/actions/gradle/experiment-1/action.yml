@@ -42,31 +42,45 @@ runs:
       run: |
         cd gradle-enterprise-gradle-build-validation
 
-        EXTRA_ARGS=""
+        ARG_GIT_REPO="-r ${{ inputs.gitRepo }}"
+
+        ARG_GIT_BRANCH=""
         if [ ! -z "${{ inputs.gitBranch }}" ]; then
-          EXTRA_ARGS="$EXTRA_ARGS -b ${{ inputs.gitBranch }}"
+          ARG_GIT_BRANCH="-b ${{ inputs.gitBranch }}"
         fi
+
+        ARG_GIT_COMMIT_ID=""
         if [ ! -z "${{ inputs.gitCommitId }}" ]; then
-          EXTRA_ARGS="$EXTRA_ARGS -c ${{ inputs.gitCommitId }}"
+          ARG_GIT_COMMIT_ID="-c ${{ inputs.gitCommitId }}"
         fi
+
+        ARG_PROJECT_DIR=""
         if [ ! -z "${{ inputs.projectDir }}" ]; then
-          EXTRA_ARGS="$EXTRA_ARGS -p ${{ inputs.projectDir }}"
+          ARG_PROJECT_DIR="-p ${{ inputs.projectDir }}"
         fi
+
+        ARG_TASKS=""
         if [ ! -z "${{ inputs.tasks }}" ]; then
-          EXTRA_ARGS="$EXTRA_ARGS -t ${{ inputs.tasks }}"
+          ARG_TASKS="-t ${{inputs.tasks }}"
         fi
+
+        ARG_ARGS=""
         if [ ! -z "${{ inputs.args }}" ]; then
-          EXTRA_ARGS="$EXTRA_ARGS -a ${{ inputs.args }}"
+          ARG_ARGS="-a ${{ inputs.args }}"
         fi
+
+        ARG_GE_URL=""
         if [ ! -z "${{ inputs.gradleEnterpriseUrl }}" ]; then
-          EXTRA_ARGS="$EXTRA_ARGS -s ${{ inputs.gradleEnterpriseUrl }}"
+          ARG_GE_URL="-s ${{ inputs.gradleEnterpriseUrl }}"
         fi
+
+        ARG_GE_ENABLE=""
         if [ ! -z "${{ inputs.enableGradleEnterprise }}" ]; then
-          EXTRA_ARGS="$EXTRA_ARGS -e"
+          ARG_GE_ENABLE="-e"
         fi
 
         # run experiment
-        ./01-validate-incremental-building.sh -r ${{ inputs.gitRepo }} $EXTRA_ARGS
+        ./01-validate-incremental-building.sh "${ARG_GIT_REPO}" "${ARG_GIT_BRANCH}" "${ARG_GIT_COMMIT_ID}" "${ARG_PROJECT_DIR}" "${ARG_TASKS}" "${ARG_ARGS}" "${ARG_GE_URL}" "${ARG_GE_ENABLE}"
 
         # set scans url as output
         RECEIPT_FILE=".data/01-validate-incremental-building/latest/exp1-*.receipt"
