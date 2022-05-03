@@ -50,7 +50,7 @@ runs:
         fi
 
         # run experiment
-        ./01-validate-incremental-building.sh "${ARG_GIT_REPO}" "${ARG_GIT_BRANCH}"
+        ./01-validate-incremental-building.sh "${ARG_GIT_REPO}" ${ARG_GIT_BRANCH:+"$ARG_GIT_BRANCH"}
 
         # set scans url as output
         RECEIPT_FILE=".data/01-validate-incremental-building/latest/exp1-*.receipt"
