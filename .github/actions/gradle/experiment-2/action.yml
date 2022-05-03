@@ -90,6 +90,16 @@ runs:
 
         # Set the Build Scan urls as outputs
         RECEIPT_FILE=".data/02-validate-local-build-caching-same-location/latest/exp2-*.receipt"
-        echo "::set-output name=buildScanFirstBuild::$(grep "first build" ${RECEIPT_FILE} | sed 's/.* //')"
-        echo "::set-output name=buildScanSecondBuild::$(grep "second build" ${RECEIPT_FILE} | sed 's/.* //')"
+        BUILD_SCAN_1=$(grep "first build" ${RECEIPT_FILE} | sed 's/.* //')
+        BUILD_SCAN_2=$(grep "second build" ${RECEIPT_FILE} | sed 's/.* //')
+        echo "::set-output name=buildScanFirstBuild::$BUILD_SCAN_1"
+        echo "::set-output name=buildScanSecondBuild::$BUILD_SCAN_2"
+
+        echo "::notice title="Experiment 2 - First Build Scan"::$BUILD_SCAN_1"
+        echo "::notice title="Experiment 2 - Second Build Scan"::$BUILD_SCAN_2"
       shell: bash
+    - name: Archive receipt
+      uses: actions/upload-artifact@v3
+      with:
+        name: experiment-2-receipt
+        path: gradle-enterprise-gradle-build-validation/.data/02-validate-local-build-caching-same-location/latest*/exp2-*.receipt
