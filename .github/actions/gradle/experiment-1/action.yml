@@ -86,7 +86,7 @@ runs:
         ./01-validate-incremental-building.sh \
           ${ARG_GIT_REPO:+"-r" "$ARG_GIT_REPO"} \
           ${ARG_GIT_BRANCH:+"-b" "$ARG_GIT_BRANCH"} \
-          ${ARG_GIT_COMMIT_ID:+"-c" "$ARG_GIT_COMMIT_ID"}
+          ${ARG_GIT_COMMIT_ID:+"-c" "$ARG_GIT_COMMIT_ID"} \
           ${ARG_PROJECT_DIR:+"-p" "$ARG_PROJECT_DIR"} \
           ${ARG_TASKS:+"-t" "$ARG_TASKS"} \
           ${ARG_ARGS:+"-a" "$ARG_ARGS"} \
