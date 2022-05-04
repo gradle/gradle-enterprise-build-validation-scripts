@@ -92,9 +92,9 @@ runs:
         RECEIPT_FILE=".data/01-validate-incremental-building/latest/exp1-*.receipt"
         BUILD_SCAN_1=$(grep "first build" ${RECEIPT_FILE} | sed 's/.* //')
         BUILD_SCAN_2=$(grep "second build" ${RECEIPT_FILE} | sed 's/.* //')
+        
         echo "::set-output name=buildScanFirstBuild::$BUILD_SCAN_1"
         echo "::set-output name=buildScanSecondBuild::$BUILD_SCAN_2"
-
         echo "::notice title="Experiment 1 - First Build Scan"::$BUILD_SCAN_1"
         echo "::notice title="Experiment 1 - Second Build Scan"::$BUILD_SCAN_2"
       shell: bash
