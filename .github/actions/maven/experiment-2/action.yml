@@ -1,0 +1,105 @@
+name: Run experiment 2
+description: "Runs experiment 2 of the build validation scripts for Maven"
+
+inputs:
+  gitRepo:
+    description: "The URL for the Git repository to validate"
+    required: true
+  gitBranch:
+    description: "The branch for the Git repository to validate"
+    required: false
+  gitCommitId:
+    description: "The Git commit id for the Git repository to validate"
+    required: false
+  projectDir:
+    description: "The build invocation directory within the Git repository"
+    required: false
+  goals:
+    description: "The Maven goals to invoke"
+    required: false
+  args:
+    description: "Additional arguments to pass to Maven"
+    required: false
+  gradleEnterpriseUrl:
+    description: "The URL for the Gradle Enterprise server to connect to"
+    required: false
+  enableGradleEnterprise:
+    description: "Enables Gradle Enterprise on a project not already connected"
+    required: false
+outputs:
+  buildScanFirstBuild:
+    description: "First build scan url"
+    value: ${{ steps.run.outputs.buildScanFirstBuild }}
+  buildScanSecondBuild:
+    description: "Second build scan url"
+    value: ${{ steps.run.outputs.buildScanSecondBuild }}
+
+runs:
+  using: "composite"
+  steps:
+    - name: Run Maven Experiment 2
+      id: run
+      run: |
+        # Read the action inputs
+        ARG_GIT_REPO=""
+        if [ ! -z "${{ inputs.gitRepo }}" ]; then
+          ARG_GIT_REPO="${{ inputs.gitRepo }}"
+        fi
+        ARG_GIT_BRANCH=""
+        if [ ! -z "${{ inputs.gitBranch }}" ]; then
+          ARG_GIT_BRANCH="${{ inputs.gitBranch }}"
+        fi
+        ARG_GIT_COMMIT_ID=""
+        if [ ! -z "${{ inputs.gitCommitId }}" ]; then
+          ARG_GIT_COMMIT_ID="${{ inputs.gitCommitId }}"
+        fi
+        ARG_PROJECT_DIR=""
+        if [ ! -z "${{ inputs.projectDir }}" ]; then
+          ARG_PROJECT_DIR="${{ inputs.projectDir }}"
+        fi
+        ARG_GOALS=""
+        if [ ! -z "${{ inputs.goals }}" ]; then
+          ARG_GOALS="${{inputs.goals }}"
+        fi
+        ARG_ARGS=""
+        if [ ! -z "${{ inputs.args }}" ]; then
+          ARG_ARGS="${{ inputs.args }}"
+        fi
+        ARG_GE_URL=""
+        if [ ! -z "${{ inputs.gradleEnterpriseUrl }}" ]; then
+          ARG_GE_URL="${{ inputs.gradleEnterpriseUrl }}"
+        fi
+        ARG_GE_ENABLE=""
+        if [ ! -z "${{ inputs.enableGradleEnterprise }}" ]; then
+          ARG_GE_ENABLE="${{ inputs.enableGradleEnterprise }}"
+        fi
+
+        # Navigate into the folder containing the validation scripts
+        cd gradle-enterprise-maven-build-validation
+
+        # Run the experiment
+        ./02-validate-local-build-caching-different-locations.sh \
+          ${ARG_GIT_REPO:+"-r" "$ARG_GIT_REPO"} \
+          ${ARG_GIT_BRANCH:+"-b" "$ARG_GIT_BRANCH"} \
+          ${ARG_GIT_COMMIT_ID:+"-c" "$ARG_GIT_COMMIT_ID"} \
+          ${ARG_PROJECT_DIR:+"-p" "$ARG_PROJECT_DIR"} \
+          ${ARG_GOALS:+"-g" "$ARG_GOALS"} \
+          ${ARG_ARGS:+"-a" "$ARG_ARGS"} \
+          ${ARG_GE_URL:+"-s" "$ARG_GE_URL"} \
+          ${ARG_GE_ENABLE:+"-e"}
+
+        # Set the Build Scan urls as outputs
+        RECEIPT_FILE=".data/02-validate-local-build-caching-different-locations/latest/exp2-*.receipt"
+        BUILD_SCAN_1=$(grep "first build" ${RECEIPT_FILE} | sed 's/.* //')
+        BUILD_SCAN_2=$(grep "second build" ${RECEIPT_FILE} | sed 's/.* //')
+        
+        echo "::set-output name=buildScanFirstBuild::$BUILD_SCAN_1"
+        echo "::set-output name=buildScanSecondBuild::$BUILD_SCAN_2"
+        echo "::notice title="Experiment 1 - First Build Scan"::$BUILD_SCAN_1"
+        echo "::notice title="Experiment 1 - Second Build Scan"::$BUILD_SCAN_2"
+      shell: bash
+    - name: Archive receipt
+      uses: actions/upload-artifact@v3
+      with:
+        name: experiment-2-receipt
+        path: gradle-enterprise-maven-build-validation/.data/02-validate-local-build-caching-different-locations/latest*/exp2-*.receipt
