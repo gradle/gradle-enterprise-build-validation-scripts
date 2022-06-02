@@ -4,7 +4,7 @@ import com.google.common.collect.ImmutableMap;
 import com.gradle.enterprise.api.GradleEnterpriseApi;
 import com.gradle.enterprise.api.client.ApiClient;
 import com.gradle.enterprise.api.client.ApiException;
-import com.gradle.enterprise.api.model.Base;
+import com.gradle.enterprise.api.model.Build;
 import com.gradle.enterprise.api.model.GradleBuildCachePerformance;
 import com.gradle.enterprise.api.model.GradleBuildCachePerformanceTaskExecutionEntry;
 import com.gradle.enterprise.api.model.MavenBuildCachePerformance;
@@ -31,8 +31,8 @@ public class GeApiTaskMetricsFetcher {
 
     public Map<String, Long> countTasksByAvoidanceOutcome(String buildScanId) {
         try {
-            Base baseData = apiClient.getBuildsBase(buildScanId, null);
-            if (baseData.getBuildToolType().equalsIgnoreCase("gradle")) {
+            Build build = apiClient.getBuild(buildScanId, null);
+            if (build.getBuildToolType().equalsIgnoreCase("gradle")) {
                 GradleBuildCachePerformance buildCachePerformance = apiClient.getGradleBuildCachePerformance(buildScanId, null);
 
                 Map<String, Long> tasksByOutcome = buildCachePerformance.getTaskExecution().stream()
@@ -46,7 +46,7 @@ public class GeApiTaskMetricsFetcher {
 
                 return tasksByOutcome;
             }
-            if (baseData.getBuildToolType().equalsIgnoreCase("maven")) {
+            if (build.getBuildToolType().equalsIgnoreCase("maven")) {
                 MavenBuildCachePerformance buildCachePerformance = apiClient.getMavenBuildCachePerformance(buildScanId, null);
 
                 Map<String, Long> tasksByOutcome = buildCachePerformance.getGoalExecution().stream()
