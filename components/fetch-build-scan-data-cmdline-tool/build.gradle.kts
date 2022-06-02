@@ -10,7 +10,7 @@ repositories {
 }
 
 dependencies {
-    swaggerCodegen("org.openapitools:openapi-generator-cli:5.3.0")
+    swaggerCodegen("org.openapitools:openapi-generator-cli:5.4.0")
 
     implementation(platform("com.squareup.okhttp3:okhttp-bom:4.9.3"))
     implementation("com.squareup.okhttp3:okhttp")
