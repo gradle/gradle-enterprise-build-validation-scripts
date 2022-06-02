@@ -1,3 +1,5 @@
+import org.hidetake.gradle.swagger.generator.GenerateSwaggerCode
+
 plugins {
     java
     application
@@ -63,6 +65,10 @@ tasks.compileJava {
     dependsOn("generateSwaggerCode")  // TODO figure out how to eliminate the explicit dependency
     options.compilerArgs.add("-Aproject=${project.group}/${project.name}")
     options.encoding = "UTF-8"
+}
+
+tasks.withType(GenerateSwaggerCode::class) {
+    notCompatibleWithConfigurationCache("Accesses the project at execution time.")
 }
 
 application {
