@@ -2,7 +2,7 @@ plugins {
     java
     application
     id("com.github.johnrengelman.shadow") version "7.1.2"
-    id("org.hidetake.swagger.generator") version "2.18.2"
+    id("org.hidetake.swagger.generator") version "2.19.2"
 }
 
 repositories {
