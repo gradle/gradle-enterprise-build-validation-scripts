@@ -97,7 +97,7 @@ public class ExportApiClient {
         private final URL gradleEnterpriseServerUrl;
         private final String buildScanId;
         private final CustomValueNames customValueNames;
-        private final GeApiTaskMetricsFetcher taskMetricsFetcher;
+        private final GradleEnterpriseApiClient taskMetricsFetcher;
 
         private final CompletableFuture<String> rootProjectName = new CompletableFuture<>();
         private final CompletableFuture<String> gitUrl = new CompletableFuture<>();
@@ -114,7 +114,7 @@ public class ExportApiClient {
             this.gradleEnterpriseServerUrl = gradleEnterpriseServerUrl;
             this.buildScanId = buildScanId;
             this.customValueNames = customValueNames;
-            this.taskMetricsFetcher = new GeApiTaskMetricsFetcher(gradleEnterpriseServerUrl);
+            this.taskMetricsFetcher = new GradleEnterpriseApiClient(gradleEnterpriseServerUrl, customValueNames);
         }
 
         public BuildValidationData getBuildValidationData() {
@@ -129,7 +129,7 @@ public class ExportApiClient {
                     requestedTasks.get(),
                     buildOutcome.get(),
                     remoteBuildCacheUrl.get(),
-                    taskMetricsFetcher.summarizeTaskExecutionsByAvoidanceOutcome(buildScanId)
+                    taskMetricsFetcher.summarizeTaskExecutions(buildScanId)
                     );
             } catch (ExecutionException e) {
                 if (e.getCause() == null) {

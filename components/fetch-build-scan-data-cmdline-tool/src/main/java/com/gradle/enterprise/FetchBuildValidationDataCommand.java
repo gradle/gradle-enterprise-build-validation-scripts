@@ -3,6 +3,7 @@ package com.gradle.enterprise;
 import com.gradle.enterprise.export_api.client.Authenticators;
 import com.gradle.enterprise.export_api.client.ExportApiClient;
 import com.gradle.enterprise.export_api.client.FailedRequestException;
+import com.gradle.enterprise.export_api.client.GradleEnterpriseApiClient;
 import picocli.CommandLine;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
@@ -72,7 +73,7 @@ public class FetchBuildValidationDataCommand implements Callable<Integer> {
             baseUrl = baseUrlFrom(buildScanUrl);
             buildScanId = buildScanIdFrom(buildScanUrl);
 
-            ExportApiClient apiClient = new ExportApiClient(baseUrl, Authenticators.createForUrl(buildScanUrl), customValueNames);
+            GradleEnterpriseApiClient apiClient = new GradleEnterpriseApiClient(baseUrl, customValueNames);
             BuildValidationData data = apiClient.fetchBuildValidationData(buildScanId);
 
             logFinishedFetchingBuildScan();

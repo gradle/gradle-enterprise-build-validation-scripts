@@ -2,6 +2,7 @@ package com.gradle.enterprise.export_api.client;
 
 import com.google.common.base.Strings;
 import com.google.common.net.HttpHeaders;
+import com.gradle.enterprise.api.client.ApiClient;
 import okhttp3.Authenticator;
 import okhttp3.Credentials;
 
@@ -31,6 +32,18 @@ public class Authenticators {
         }
 
         return accessKey(lookupAccessKey(url));
+    }
+
+    public static void configureAuth(URL url, ApiClient client) {
+        String username = System.getenv(EnvVars.USERNAME);
+        String password = System.getenv(EnvVars.PASSWORD);
+
+        if (!Strings.isNullOrEmpty(username) && !Strings.isNullOrEmpty(password)) {
+            client.setUsername(username);
+            client.setPassword(password);
+        } else {
+            client.setBearerToken(lookupAccessKey(url));
+        }
     }
 
     public static Authenticator basic(String username, String password) {
