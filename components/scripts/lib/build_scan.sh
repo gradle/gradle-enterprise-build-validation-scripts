@@ -154,7 +154,7 @@ fi
 fetch_and_read_build_scan_data() {
   # This isn't the most robust way to read a CSV,
   # but we control the CSV so we don't have to worry about various CSV edge cases
-  local args task_metrics_only fetched_data header_row_read
+  local args build_cache_metrics_only fetched_data header_row_read
   args=()
 
   if [[ "$_arg_debug" == "on" ]]; then
@@ -166,8 +166,8 @@ fetch_and_read_build_scan_data() {
     args+=(-m "${mapping_file}")
   fi
 
-  if [[ "$1" == "task_metrics_only" ]]; then
-    task_metrics_only="true"
+  if [[ "$1" == "build_cache_metrics_only" ]]; then
+    build_cache_metrics_only="true"
     args+=("--brief-logging")
     debug "Only using the task metrics found in the build scan data"
   else
@@ -190,7 +190,7 @@ fetch_and_read_build_scan_data() {
          continue;
      fi
 
-     if [[ "${task_metrics_only}" != "true" ]]; then
+     if [[ "${build_cache_metrics_only}" != "true" ]]; then
        project_names+=("$field_1")
        base_urls+=("$field_2")
        build_scan_urls+=("$field_3")

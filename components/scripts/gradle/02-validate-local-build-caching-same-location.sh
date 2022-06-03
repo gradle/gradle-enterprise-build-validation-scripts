@@ -149,9 +149,10 @@ execute_second_build() {
 
 fetch_task_metrics() {
   read_build_scan_metadata
-  fetch_and_read_build_scan_data task_metrics_only "${build_scan_urls[@]}"
+  fetch_and_read_build_scan_data build_cache_metrics_only "${build_scan_urls[@]}"
 }
 
+# Overrides info.sh#print_performance_metrics
 print_performance_metrics() {
   print_build_caching_performance_metrics
 }
