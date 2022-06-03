@@ -3,6 +3,7 @@
 # Created by argbash-init v2.10.0
 # ARG_HELP([This function is overridden later on.])
 # ARG_VERSION([print_version],[v],[version],[])
+# ARG_OPTIONAL_BOOLEAN([fail-if-not-optimized],[x],[])
 # ARGBASH_WRAP([common])
 # ARGBASH_SET_INDENT([  ])
 # ARGBASH_PREPARE()
