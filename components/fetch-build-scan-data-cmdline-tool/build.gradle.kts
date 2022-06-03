@@ -20,17 +20,7 @@ dependencies {
     implementation("com.squareup.okhttp3:logging-interceptor")
 
     implementation("io.swagger:swagger-annotations:1.5.24")
-    implementation("com.google.code.findbugs:jsr305:3.0.2")
-
-    implementation("com.google.code.gson:gson:2.8.6")
     implementation("io.gsonfire:gson-fire:1.8.4")
-    implementation("org.openapitools:jackson-databind-nullable:0.2.1")
-    implementation("org.apache.commons:commons-lang3:3.10")
-    implementation("org.threeten:threetenbp:1.4.3")
-    implementation("jakarta.annotation:jakarta.annotation-api:1.3.5")
-
-    implementation(platform("com.fasterxml.jackson:jackson-bom:2.13.3"))
-    implementation("com.fasterxml.jackson.core:jackson-databind:2.13.3")
 
     implementation("com.google.guava:guava:31.1-jre")
     implementation("info.picocli:picocli:4.6.3")
