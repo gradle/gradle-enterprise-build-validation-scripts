@@ -1,12 +1,10 @@
-package com.gradle.enterprise.export_api.client;
+package com.gradle.enterprise.api.client;
 
 import com.google.common.collect.ImmutableMap;
-import com.gradle.enterprise.BuildValidationData;
-import com.gradle.enterprise.CustomValueNames;
-import com.gradle.enterprise.TaskExecutionSummary;
+import com.gradle.enterprise.model.BuildValidationData;
+import com.gradle.enterprise.model.CustomValueNames;
+import com.gradle.enterprise.model.TaskExecutionSummary;
 import com.gradle.enterprise.api.GradleEnterpriseApi;
-import com.gradle.enterprise.api.client.ApiClient;
-import com.gradle.enterprise.api.client.ApiException;
 import com.gradle.enterprise.api.model.Build;
 import com.gradle.enterprise.api.model.BuildAttributesValue;
 import com.gradle.enterprise.api.model.GradleAttributes;

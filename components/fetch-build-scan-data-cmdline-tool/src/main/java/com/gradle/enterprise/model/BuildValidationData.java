@@ -1,4 +1,4 @@
-package com.gradle.enterprise;
+package com.gradle.enterprise.model;
 
 import java.net.MalformedURLException;
 import java.net.URL;

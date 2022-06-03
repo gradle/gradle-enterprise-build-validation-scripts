@@ -1,4 +1,4 @@
-package com.gradle.enterprise.export_api.client;
+package com.gradle.enterprise.api.client;
 
 import okhttp3.Request;
 import okhttp3.Response;

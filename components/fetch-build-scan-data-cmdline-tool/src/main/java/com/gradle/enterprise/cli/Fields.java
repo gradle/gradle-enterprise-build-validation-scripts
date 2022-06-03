@@ -1,4 +1,7 @@
-package com.gradle.enterprise;
+package com.gradle.enterprise.cli;
+
+import com.gradle.enterprise.model.BuildValidationData;
+import com.gradle.enterprise.model.TaskExecutionSummary;
 
 import java.time.Duration;
 import java.util.Arrays;

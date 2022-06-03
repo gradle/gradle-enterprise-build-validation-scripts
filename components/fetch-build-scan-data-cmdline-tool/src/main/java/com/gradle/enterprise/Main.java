@@ -1,6 +1,7 @@
 package com.gradle.enterprise;
 
-import com.gradle.enterprise.api.client.ApiClient;
+import com.gradle.enterprise.cli.FetchBuildValidationDataCommand;
+import com.gradle.enterprise.cli.PrintExceptionHandler;
 import picocli.CommandLine;
 import picocli.CommandLine.Help.ColorScheme;
 

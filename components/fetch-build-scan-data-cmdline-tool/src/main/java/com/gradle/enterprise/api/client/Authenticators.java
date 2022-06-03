@@ -1,8 +1,7 @@
-package com.gradle.enterprise.export_api.client;
+package com.gradle.enterprise.api.client;
 
 import com.google.common.base.Strings;
 import com.google.common.net.HttpHeaders;
-import com.gradle.enterprise.api.client.ApiClient;
 import okhttp3.Authenticator;
 import okhttp3.Credentials;
 

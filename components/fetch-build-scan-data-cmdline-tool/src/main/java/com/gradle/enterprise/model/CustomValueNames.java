@@ -1,4 +1,4 @@
-package com.gradle.enterprise;
+package com.gradle.enterprise.model;
 
 import java.io.BufferedReader;
 import java.io.IOException;

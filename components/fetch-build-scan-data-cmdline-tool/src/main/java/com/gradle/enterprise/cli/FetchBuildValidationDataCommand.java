@@ -1,7 +1,9 @@
-package com.gradle.enterprise;
+package com.gradle.enterprise.cli;
 
-import com.gradle.enterprise.export_api.client.FailedRequestException;
-import com.gradle.enterprise.export_api.client.GradleEnterpriseApiClient;
+import com.gradle.enterprise.api.client.FailedRequestException;
+import com.gradle.enterprise.api.client.GradleEnterpriseApiClient;
+import com.gradle.enterprise.model.BuildValidationData;
+import com.gradle.enterprise.model.CustomValueNames;
 import picocli.CommandLine;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;

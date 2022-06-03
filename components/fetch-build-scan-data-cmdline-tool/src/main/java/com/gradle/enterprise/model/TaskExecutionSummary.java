@@ -1,4 +1,4 @@
-package com.gradle.enterprise;
+package com.gradle.enterprise.model;
 
 import java.time.Duration;
 

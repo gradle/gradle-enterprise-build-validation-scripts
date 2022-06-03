@@ -1,4 +1,4 @@
-package com.gradle.enterprise.export_api.client;
+package com.gradle.enterprise.api.client;
 
 class StatusCodes {
     public static final int UNAUTHORIZED = 401;
