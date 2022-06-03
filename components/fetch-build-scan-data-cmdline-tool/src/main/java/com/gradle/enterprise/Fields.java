@@ -19,7 +19,7 @@ public enum Fields {
     REMOTE_BUILD_CACHE_URL("Remote Build Cache URL", d -> toStringSafely(d.getRemoteBuildCacheUrl())),
     REMOTE_BUILD_CACHE_SHARD("Remote Build Cache Shard", BuildValidationData::getRemoteBuildCacheShard),
     AVOIDED_UP_TO_DATE("Avoided Up To Date", d -> taskCount(d, "avoided_up_to_date")),
-    AVOIDED_FROM_CACHE("Avoided from cache", Fields::totalAvoidedFromCache),
+    AVOIDED_FROM_CACHE("Avoided from cache", d -> totalAvoidedFromCache(d).totalTasks().toString()),
     AVOIDED_FROM_LOCAL_CACHE("Avoided from local cache", d -> taskCount(d, "avoided_from_local_cache")),
     AVOIDED_FROM_REMOTE_CACHE("Avoided from remote cache", d -> taskCount(d, "avoided_from_remote_cache")),
     EXECUTED_CACHEABLE("Executed cacheable", d -> taskCount(d, "executed_cacheable")),
@@ -51,18 +51,18 @@ public enum Fields {
 
     private static String taskCount(BuildValidationData data, String avoidanceOutcome) {
         if (data.getTasksByAvoidanceOutcome().containsKey(avoidanceOutcome)) {
-            return data.getTasksByAvoidanceOutcome().get(avoidanceOutcome).toString();
+            return data.getTasksByAvoidanceOutcome().get(avoidanceOutcome).totalTasks().toString();
         }
         return "";
     }
 
-    private static String totalAvoidedFromCache(BuildValidationData data) {
-        Map<String, Long> tasksByOutcome = data.getTasksByAvoidanceOutcome();
+    private static TaskExecutionSummary totalAvoidedFromCache(BuildValidationData data) {
+        Map<String, TaskExecutionSummary> tasksByOutcome = data.getTasksByAvoidanceOutcome();
         if (!(tasksByOutcome.containsKey("avoided_from_local_cache") || tasksByOutcome.containsKey("avoided_from_remote_cache"))) {
-            return "";
+            return TaskExecutionSummary.ZERO;
         }
-        long fromLocalCache = tasksByOutcome.getOrDefault("avoided_from_local_cache", 0L);
-        long fromRemoteCache = tasksByOutcome.getOrDefault("avoided_from_remote_cache", 0L);
-        return Long.toString(fromLocalCache + fromRemoteCache);
+        TaskExecutionSummary fromLocalCache = tasksByOutcome.getOrDefault("avoided_from_local_cache", TaskExecutionSummary.ZERO);
+        TaskExecutionSummary fromRemoteCache = tasksByOutcome.getOrDefault("avoided_from_remote_cache", TaskExecutionSummary.ZERO);
+        return fromLocalCache.plus(fromRemoteCache);
     }
 }

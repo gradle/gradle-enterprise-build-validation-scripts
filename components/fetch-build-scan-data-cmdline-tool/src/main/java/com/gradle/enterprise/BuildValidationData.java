@@ -19,9 +19,9 @@ public class BuildValidationData {
     private final List<String> requestedTasks;
     private final String buildOutcome;
     private final URL remoteBuildCacheUrl;
-    private final Map<String, Long> tasksByAvoidanceOutcome;
+    private final Map<String, TaskExecutionSummary> tasksByAvoidanceOutcome;
 
-    public BuildValidationData(String rootProjectName, String buildScanId, URL gradleEnterpriseServerUrl, String gitUrl, String gitBranch, String gitCommitId, List<String> requestedTasks, String buildOutcome, URL remoteBuildCacheUrl, Map<String, Long> tasksByAvoidanceOutcome) {
+    public BuildValidationData(String rootProjectName, String buildScanId, URL gradleEnterpriseServerUrl, String gitUrl, String gitBranch, String gitCommitId, List<String> requestedTasks, String buildOutcome, URL remoteBuildCacheUrl, Map<String, TaskExecutionSummary> tasksByAvoidanceOutcome) {
         this.rootProjectName = rootProjectName;
         this.buildScanId = buildScanId;
         this.gradleEnterpriseServerUrl = gradleEnterpriseServerUrl;
@@ -121,7 +121,7 @@ public class BuildValidationData {
         return !value.isEmpty();
     }
 
-    public Map<String, Long> getTasksByAvoidanceOutcome() {
+    public Map<String, TaskExecutionSummary> getTasksByAvoidanceOutcome() {
         return tasksByAvoidanceOutcome;
     }
 }
