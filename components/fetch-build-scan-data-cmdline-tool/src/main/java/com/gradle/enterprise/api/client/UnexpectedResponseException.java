@@ -6,9 +6,9 @@ import okhttp3.Response;
 import java.net.URL;
 
 public class UnexpectedResponseException extends FailedRequestException {
-    public UnexpectedResponseException(String buildScanId, URL gradleEnterpriseServer, Request request, Response response) {
+    public UnexpectedResponseException(String buildScanId, URL gradleEnterpriseServer, String responseBody) {
         super(String.format("Encountered an unexpected response while fetching build scan %s.",
             buildScanUrl(gradleEnterpriseServer, buildScanId)),
-            request, response);
+            responseBody);
     }
 }

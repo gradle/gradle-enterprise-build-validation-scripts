@@ -4,35 +4,15 @@ import okhttp3.Request;
 import okhttp3.Response;
 
 public class FailedRequestException extends ApiClientException {
-    private final Request request;
-    private final Response response;
     private final String responseBody;
 
-    public FailedRequestException(String message, Request request, Response response) {
-        this(message, request, response, null);
+    public FailedRequestException(String message, String responseBody) {
+        this(message, responseBody, null);
     }
 
-    public FailedRequestException(String message, Request request, Response response, Throwable cause) {
+    public FailedRequestException(String message, String responseBody, Throwable cause) {
         super(message, cause);
-        this.request = request;
-        this.response = response;
-        this.responseBody = extractResponseBody(response);
-    }
-
-    private static String extractResponseBody(Response response) {
-        try {
-            return response.body().string();
-        } catch (Exception e) {
-            return null;
-        }
-    }
-
-    public Request getRequest() {
-        return request;
-    }
-
-    public Response getResponse() {
-        return response;
+        this.responseBody = responseBody;
     }
 
     public String getResponseBody() {

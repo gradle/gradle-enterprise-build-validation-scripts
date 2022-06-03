@@ -101,22 +101,14 @@ public class FetchBuildValidationDataCommand implements Callable<Integer> {
         if (debug) {
             System.err.println(colorScheme.errorText(" " + colorScheme.stackTraceText(e)));
             if (e instanceof FailedRequestException) {
-                printFailedRequestDetails((FailedRequestException) e);
+                printFailedResponseBody((FailedRequestException) e);
             }
         } else {
             System.err.println(colorScheme.errorText(" ERROR: " + e.getMessage()));
         }
     }
 
-    private void printFailedRequestDetails(FailedRequestException e) {
-        System.err.println(colorScheme.errorText("Request " + e.getRequest()));
-        System.err.println(colorScheme.errorText("--------------------------"));
-        if(e.getRequest().body() != null) {
-            System.err.println(colorScheme.errorText(e.getRequest().body().toString()));
-            System.err.println(colorScheme.errorText("--------------------------"));
-        }
-        System.err.println(colorScheme.errorText("Response " + e.getResponse()));
-        System.err.println(colorScheme.errorText("--------------------------"));
+    private void printFailedResponseBody(FailedRequestException e) {
         if(e.getResponseBody() != null) {
             System.err.println("Response body:");
             System.err.println(colorScheme.errorText(e.getResponseBody()));
