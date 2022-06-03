@@ -1,6 +1,5 @@
 package com.gradle.enterprise.api.client;
 
-import com.google.common.collect.ImmutableMap;
 import com.gradle.enterprise.model.BuildValidationData;
 import com.gradle.enterprise.model.CustomValueNames;
 import com.gradle.enterprise.model.TaskExecutionSummary;
@@ -35,7 +34,7 @@ public class GradleEnterpriseApiClient {
         this.customValueNames = customValueNames;
         ApiClient client = new ApiClient();
         client.setBasePath(baseUrl.toString());
-        Authenticators.configureAuth(baseUrl, client);
+        AuthenticationConfigurator.configureAuth(baseUrl, client);
 
         this.baseUrl = baseUrl;
         this.apiClient = new GradleEnterpriseApi(client);

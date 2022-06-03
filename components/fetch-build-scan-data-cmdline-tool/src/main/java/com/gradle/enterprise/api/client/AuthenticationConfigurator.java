@@ -1,36 +1,21 @@
 package com.gradle.enterprise.api.client;
 
 import com.google.common.base.Strings;
-import com.google.common.net.HttpHeaders;
-import okhttp3.Authenticator;
-import okhttp3.Credentials;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.net.URL;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Base64;
 import java.util.Properties;
 
-public class Authenticators {
+public class AuthenticationConfigurator {
     public static final class EnvVars {
         public static final String ACCESS_KEY = "GRADLE_ENTERPRISE_ACCESS_KEY";
         public static final String USERNAME = "GRADLE_ENTERPRISE_USERNAME";
         public static final String PASSWORD = "GRADLE_ENTERPRISE_PASSWORD";
         public static final String GRADLE_USER_HOME = "GRADLE_USER_HOME";
-    }
-
-    public static Authenticator createForUrl(URL url) {
-        String username = System.getenv(EnvVars.USERNAME);
-        String password = System.getenv(EnvVars.PASSWORD);
-        if(!Strings.isNullOrEmpty(username) && !Strings.isNullOrEmpty(password)) {
-            return basic(username, password);
-        }
-
-        return accessKey(lookupAccessKey(url));
     }
 
     public static void configureAuth(URL url, ApiClient client) {
@@ -43,32 +28,6 @@ public class Authenticators {
         } else {
             client.setBearerToken(lookupAccessKey(url));
         }
-    }
-
-    public static Authenticator basic(String username, String password) {
-        return (route, response) -> {
-            if (response.request().header(HttpHeaders.AUTHORIZATION) != null) {
-                return null; // Give up, we've already attempted to authenticate.
-            }
-
-            return response.request().newBuilder()
-                .header(HttpHeaders.AUTHORIZATION, Credentials.basic(username, password))
-                .build();
-        };
-    }
-
-    public static Authenticator accessKey(String accessKey) {
-        return (route, response) -> {
-            if (response.request().header(HttpHeaders.AUTHORIZATION) != null) {
-                return null; // Give up, we've already attempted to authenticate.
-            }
-
-            String encoded = Base64.getEncoder().encodeToString(accessKey.getBytes(StandardCharsets.UTF_8));
-
-            return response.request().newBuilder()
-                .header(HttpHeaders.AUTHORIZATION, "Bearer " + encoded)
-                .build();
-        };
     }
 
     public static String lookupAccessKey(URL url) {
