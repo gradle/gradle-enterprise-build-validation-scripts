@@ -150,28 +150,6 @@ public class GradleEnterpriseApiClient {
         }
     }
 
-    public Map<String, TaskExecutionSummary> summarizeTaskExecutions(String buildScanId) {
-        try {
-            Build build = apiClient.getBuild(buildScanId, null);
-            if (build.getBuildToolType().equalsIgnoreCase("gradle")) {
-                return summarizeTaskExecutions(apiClient.getGradleBuildCachePerformance(buildScanId, null));
-            }
-            if (build.getBuildToolType().equalsIgnoreCase("maven")) {
-                return summarizeTaskExecutions(apiClient.getMavenBuildCachePerformance(buildScanId, null));
-            }
-            return ImmutableMap.of();
-        } catch (ApiException e) {
-            switch(e.getCode()) {
-                case StatusCodes.NOT_FOUND:
-                    throw new BuildScanNotFoundException(buildScanId, baseUrl, null, null); // TODO figure out how to include request and response
-                case StatusCodes.UNAUTHORIZED:
-                    throw new AuthenticationFailedException(buildScanId, baseUrl, null, null); // TODO figure out how to include request and response
-                default:
-                    throw new UnexpectedResponseException(buildScanId, baseUrl, null, null); // TODO figure out how to include request and response
-            }
-        }
-    }
-
     @NotNull
     private Map<String, TaskExecutionSummary> summarizeTaskExecutions(GradleBuildCachePerformance buildCachePerformance) {
         Map<String, List<GradleBuildCachePerformanceTaskExecutionEntry>> tasksByOutcome = buildCachePerformance.getTaskExecution().stream()
