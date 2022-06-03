@@ -65,6 +65,9 @@ execute() {
   execute_build
 
   print_bl
+  fetch_build_cache_metrics
+
+  print_bl
   print_summary
 }
 
@@ -125,6 +128,8 @@ wizard_execute() {
 
   print_bl
   explain_measure_build_results
+  print_bl
+  fetch_build_cache_metrics
   print_bl
   explain_and_print_summary
 }
@@ -204,6 +209,16 @@ execute_build() {
 # Overrides info.sh#print_experiment_specific_summary_info
 print_experiment_specific_summary_info() {
   summary_row "Custom value mapping file:" "${mapping_file:-<none>}"
+}
+
+fetch_build_cache_metrics() {
+  read_build_scan_metadata
+  fetch_and_read_build_scan_data build_cache_metrics_only "${build_scan_urls[@]}"
+}
+
+# Overrides info.sh#print_performance_metrics
+print_performance_metrics() {
+  print_build_caching_performance_metrics
 }
 
 print_quick_links() {
@@ -424,6 +439,9 @@ ${HEADER_COLOR}Measure build results${RESTORE}
 At this point, you are ready to measure in Gradle Enterprise how well your
 build leverages Gradle Enterprise's remote build cache for the set of Gradle
 goals invoked from a CI agent and then on a local machine.
+
+Some of the build scan data will be fetched from the build scans produced by the two builds
+ to assist you in your investigation.
 
 ${USER_ACTION_COLOR}Press <Enter> to measure the build results.${RESTORE}
 EOF
