@@ -296,7 +296,7 @@ Gradle Enterprise how well your build leverages the local build cache for
 the invoked set of Maven goals.
 
 Some of the build scan data will be fetched from the build scans produced by the two builds
- to assist you in your investigation.
+to assist you in your investigation.
 
 ${USER_ACTION_COLOR}Press <Enter> to measure the build results.${RESTORE}
 EOF
@@ -312,6 +312,18 @@ The ‘Summary’ section below captures the configuration of the experiment and
 two build scans that were published as part of running the experiment. The build
 scan of the second build is particularly interesting since this is where you can
 inspect what goals were not leveraging the local build cache.
+
+The ‘Build caching performance metrics’ section below shows some useful information about the cacheable goals
+that were encountered during the second build:
+
+* ‘Avoided cacheable goals’ shows how many cacheable goals were skipped because
+their output was fetched from the build cache, and how much time was saved as a result.
+
+ * ‘Executed cacheable goals’ shows how many cacheable goals were executed (will be
+zero in a fully cacheable build) and the total time it took to execute the goals.
+
+ * ‘Executed non-cacheable goals’ shows how many non-cacheable goals were executed
+and the total time it took to execute the goals.
 
 The ‘Investigation Quick Links’ section below allows quick navigation to the
 most relevant views in build scans to investigate what goals were avoided due to
