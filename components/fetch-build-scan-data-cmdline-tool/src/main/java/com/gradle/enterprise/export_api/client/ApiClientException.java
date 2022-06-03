@@ -3,23 +3,23 @@ package com.gradle.enterprise.export_api.client;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-public class ExportApiClientException extends RuntimeException {
-    public ExportApiClientException() {
+public class ApiClientException extends RuntimeException {
+    public ApiClientException() {
     }
 
-    public ExportApiClientException(String message) {
+    public ApiClientException(String message) {
         super(message);
     }
 
-    public ExportApiClientException(String message, Throwable cause) {
+    public ApiClientException(String message, Throwable cause) {
         super(message, cause);
     }
 
-    public ExportApiClientException(Throwable cause) {
+    public ApiClientException(Throwable cause) {
         super(cause);
     }
 
-    public ExportApiClientException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace) {
+    public ApiClientException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace) {
         super(message, cause, enableSuppression, writableStackTrace);
     }
 

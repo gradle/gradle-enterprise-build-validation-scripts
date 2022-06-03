@@ -1,7 +1,5 @@
 package com.gradle.enterprise;
 
-import com.gradle.enterprise.export_api.client.Authenticators;
-import com.gradle.enterprise.export_api.client.ExportApiClient;
 import com.gradle.enterprise.export_api.client.FailedRequestException;
 import com.gradle.enterprise.export_api.client.GradleEnterpriseApiClient;
 import picocli.CommandLine;
@@ -13,7 +11,10 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.file.Path;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.Callable;
 import java.util.stream.Collectors;
 

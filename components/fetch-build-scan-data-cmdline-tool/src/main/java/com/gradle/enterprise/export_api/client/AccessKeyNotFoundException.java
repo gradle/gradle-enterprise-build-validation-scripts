@@ -2,7 +2,7 @@ package com.gradle.enterprise.export_api.client;
 
 import java.net.URL;
 
-public class AccessKeyNotFoundException extends ExportApiClientException {
+public class AccessKeyNotFoundException extends ApiClientException {
     public AccessKeyNotFoundException(URL buildScanUrl) {
         super(String.format("Unable to find an access key for %s.",
             buildScanUrl.getHost()));

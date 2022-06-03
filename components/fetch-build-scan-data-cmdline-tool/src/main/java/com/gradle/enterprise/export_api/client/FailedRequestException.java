@@ -3,9 +3,7 @@ package com.gradle.enterprise.export_api.client;
 import okhttp3.Request;
 import okhttp3.Response;
 
-import java.io.IOException;
-
-public class FailedRequestException extends ExportApiClientException {
+public class FailedRequestException extends ApiClientException {
     private final Request request;
     private final Response response;
     private final String responseBody;
