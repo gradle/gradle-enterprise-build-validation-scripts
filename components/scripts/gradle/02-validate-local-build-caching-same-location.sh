@@ -64,7 +64,7 @@ execute() {
   rename_project_dir "build_${project_name}" "second-build_${project_name}"
 
   print_bl
-  fetch_task_metrics
+  fetch_build_cache_metrics
 
   print_bl
   print_summary
@@ -112,7 +112,7 @@ wizard_execute() {
   print_bl
   explain_measure_build_results
   print_bl
-  fetch_task_metrics
+  fetch_build_cache_metrics
   print_bl
   explain_and_print_summary
 }
@@ -147,7 +147,7 @@ execute_second_build() {
      clean ${tasks}
 }
 
-fetch_task_metrics() {
+fetch_build_cache_metrics() {
   read_build_scan_metadata
   fetch_and_read_build_scan_data build_cache_metrics_only "${build_scan_urls[@]}"
 }
