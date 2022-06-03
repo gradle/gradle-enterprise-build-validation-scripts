@@ -127,7 +127,6 @@ public class GradleEnterpriseApiClient {
         try {
             return new URL(buildCachePerformance.getBuildCaches().getRemote().getUrl());
         } catch (MalformedURLException e) {
-            // TODO maybe log out this failure
             // Don't do anything on purpose.
             return null;
         }
@@ -143,7 +142,6 @@ public class GradleEnterpriseApiClient {
         try {
             return new URL(buildCachePerformance.getBuildCaches().getRemote().getUrl());
         } catch (MalformedURLException e) {
-            // TODO maybe log out this failure
             // Don't do anything on purpose.
             return null;
         }
@@ -190,20 +188,14 @@ public class GradleEnterpriseApiClient {
     }
 
     private static TaskExecutionSummary summarizeForGradle(List<GradleBuildCachePerformanceTaskExecutionEntry> tasks) {
-        // TODO Find a better way to do this
-        Integer totalTasks = tasks.size();
-        Duration totalDuration = Duration.ofMillis(
-            tasks.stream()
-                .mapToLong(GradleBuildCachePerformanceTaskExecutionEntry::getDuration)
-                .sum());
-
-        Duration totalAvoidanceSavings = Duration.ofMillis(
-            tasks.stream()
-                .filter(t -> t.getAvoidanceSavings() != null)
-                .mapToLong(GradleBuildCachePerformanceTaskExecutionEntry::getAvoidanceSavings)
-                .sum());
-
-        return new TaskExecutionSummary(totalTasks, totalDuration, totalAvoidanceSavings);
+        return tasks.stream()
+            .reduce(TaskExecutionSummary.ZERO, (summary, task) ->
+               new TaskExecutionSummary(
+                   summary.totalTasks() + 1,
+                   summary.totalDuration().plus(toDuration(task.getDuration())),
+                   summary.totalAvoidanceSavings().plus(toDuration(task.getAvoidanceSavings()))),
+                TaskExecutionSummary::plus
+            );
     }
 
     private static Map.Entry<String, TaskExecutionSummary> summarizeForMaven(Map.Entry<String, List<MavenBuildCachePerformanceGoalExecutionEntry>> entry) {
@@ -211,22 +203,21 @@ public class GradleEnterpriseApiClient {
     }
 
     private static TaskExecutionSummary summarizeForMaven(List<MavenBuildCachePerformanceGoalExecutionEntry> tasks) {
-        // TODO Find a better way to do this
-        Integer totalTasks = tasks.size();
-        Duration totalDuration = Duration.ofMillis(
-            tasks.stream()
-                .mapToLong(MavenBuildCachePerformanceGoalExecutionEntry::getDuration)
-                .sum()
-        );
+        return tasks.stream()
+            .reduce(TaskExecutionSummary.ZERO, (summary, task) ->
+                    new TaskExecutionSummary(
+                        summary.totalTasks() + 1,
+                        summary.totalDuration().plus(toDuration(task.getDuration())),
+                        summary.totalAvoidanceSavings().plus(toDuration(task.getAvoidanceSavings()))),
+                TaskExecutionSummary::plus
+            );
+    }
 
-        Duration totalAvoidanceSavings = Duration.ofMillis(
-            tasks.stream()
-                .filter(t -> t.getAvoidanceSavings() != null)
-                .mapToLong(MavenBuildCachePerformanceGoalExecutionEntry::getAvoidanceSavings)
-                .sum()
-        );
-
-        return new TaskExecutionSummary(totalTasks, totalDuration, totalAvoidanceSavings);
+    private static Duration toDuration(Long millis) {
+        if (millis == null) {
+            return Duration.ZERO;
+        }
+        return Duration.ofMillis(millis);
     }
 
     private static Map<String, TaskExecutionSummary> putTotalAvoidedFromCache(Map<String, TaskExecutionSummary> summariesByOutcome) {
