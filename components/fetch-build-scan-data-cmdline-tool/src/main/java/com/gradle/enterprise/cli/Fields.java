@@ -75,10 +75,19 @@ public enum Fields {
     }
 
     private static String formatDuration(Duration duration) {
-        return duration.toString()
-            .substring(2)
-            .replaceAll("(\\d[HMS])(?!$)", "$1 ") // add spaces
-//            .replaceAll("\\.\\d+", "")  // remove fractional seconds
-            .toLowerCase(Locale.ROOT);
+        long hours = duration.toHours();
+        long minutes = duration.minusHours(hours).toMinutes();
+        double seconds = duration.minusHours(hours).minusMinutes(minutes).toMillis() / 1000d;
+
+        StringBuilder s = new StringBuilder();
+        if (hours != 0) {
+            s.append(hours + "h ");
+        }
+        if (minutes != 0) {
+            s.append(minutes + "m ");
+        }
+        s.append(String.format("%.3fs", seconds));
+
+        return s.toString().trim();
     }
 }
