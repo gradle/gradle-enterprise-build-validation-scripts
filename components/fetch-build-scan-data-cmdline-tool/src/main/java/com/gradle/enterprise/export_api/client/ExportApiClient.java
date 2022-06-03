@@ -23,7 +23,6 @@ import java.net.URL;
 import java.time.Duration;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 
@@ -130,7 +129,7 @@ public class ExportApiClient {
                     requestedTasks.get(),
                     buildOutcome.get(),
                     remoteBuildCacheUrl.get(),
-                    taskMetricsFetcher.countTasksByAvoidanceOutcome(buildScanId)
+                    taskMetricsFetcher.summarizeTaskExecutionsByAvoidanceOutcome(buildScanId)
                     );
             } catch (ExecutionException e) {
                 if (e.getCause() == null) {

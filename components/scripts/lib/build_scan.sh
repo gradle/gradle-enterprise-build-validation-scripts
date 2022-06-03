@@ -17,17 +17,15 @@ remote_build_cache_urls=()
 # shellcheck disable=SC2034 # not all scripts use this data
 remote_build_cache_shards=()
 
-# Task statistics
-num_tasks_avoided_up_to_date=()
-num_tasks_avoided_from_cache=()
-num_tasks_avoided_from_local_cache=()
-num_tasks_avoided_from_remote_cache=()
-num_tasks_executed_cacheable=()
-num_tasks_executed_not_cacheable=()
-num_tasks_executed_unknown_cacheability=()
-num_tasks_lifecycle=()
-num_tasks_no_source=()
-num_tasks_skipped=()
+# Build caching performance metrics
+avoided_up_to_date_num_tasks=()
+avoided_up_to_date_avoidance_savings=()
+avoided_from_cache_num_tasks=()
+avoided_from_cache_avoidance_savings=()
+executed_cacheable_num_tasks=()
+executed_cacheable_duration=()
+executed_not_cacheable_num_tasks=()
+executed_not_cacheable_duration=()
 
 read_build_scan_metadata() {
   # This isn't the most robust way to read a CSV,
@@ -186,7 +184,7 @@ fetch_and_read_build_scan_data() {
 
   header_row_read=false
   # shellcheck disable=SC2034 # not all scripts use all of the fetched data
-  while IFS=, read -r field_1 field_2 field_3 field_4 field_5 field_6 field_7 field_8 field_9 field_10 field_11 field_12 field_13 field_14 field_15 field_16 field_17 field_18 field_19 field_20 field_21; do
+  while IFS=, read -r field_1 field_2 field_3 field_4 field_5 field_6 field_7 field_8 field_9 field_10 field_11 field_12 field_13 field_14 field_15 field_16 field_17 field_18 field_19; do
      if [[ "$header_row_read" == "false" ]]; then
          header_row_read=true
          continue;
@@ -206,16 +204,15 @@ fetch_and_read_build_scan_data() {
        remote_build_cache_shards+=("${field_11}")
      fi
 
-     num_tasks_avoided_up_to_date+=("${field_12}")
-     num_tasks_avoided_from_cache+=("${field_13}")
-     num_tasks_avoided_from_local_cache+=("${field_14}")
-     num_tasks_avoided_from_remote_cache+=("${field_15}")
-     num_tasks_executed_cacheable+=("${field_16}")
-     num_tasks_executed_not_cacheable+=("${field_17}")
-     num_tasks_executed_unknown_cacheability+=("${field_18}")
-     num_tasks_lifecycle+=("${field_19}")
-     num_tasks_no_source+=("${field_20}")
-     num_tasks_skipped+=("${field_21}")
+     # Build caching performance metrics
+     avoided_up_to_date_num_tasks+=("${field_12}")
+     avoided_up_to_date_avoidance_savings+=("${field_13}")
+     avoided_from_cache_num_tasks+=("${field_14}")
+     avoided_from_cache_avoidance_savings+=("${field_15}")
+     executed_cacheable_num_tasks+=("${field_16}")
+     executed_cacheable_duration+=("${field_17}")
+     executed_not_cacheable_num_tasks+=("${field_18}")
+     executed_not_cacheable_duration+=("${field_19}")
   done <<< "${fetched_data}"
 }
 

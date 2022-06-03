@@ -33,7 +33,7 @@ public class GeApiTaskMetricsFetcher {
         this.apiClient = new GradleEnterpriseApi(client);
     }
 
-    public Map<String, TaskExecutionSummary> countTasksByAvoidanceOutcome(String buildScanId) {
+    public Map<String, TaskExecutionSummary> summarizeTaskExecutionsByAvoidanceOutcome(String buildScanId) {
         try {
             Build build = apiClient.getBuild(buildScanId, null);
             if (build.getBuildToolType().equalsIgnoreCase("gradle")) {
@@ -44,15 +44,15 @@ public class GeApiTaskMetricsFetcher {
                         t -> t.getAvoidanceOutcome().toString()
                     ));
 
-                Map<String, TaskExecutionSummary> executionSummariesByOutcome = tasksByOutcome.entrySet()
+                Map<String, TaskExecutionSummary> summariesByOutcome = tasksByOutcome.entrySet()
                     .stream()
                     .map(GeApiTaskMetricsFetcher::summarizeForGradle)
                     .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
 
                 Arrays.stream(GradleBuildCachePerformanceTaskExecutionEntry.AvoidanceOutcomeEnum.values())
-                    .forEach(outcome -> executionSummariesByOutcome.putIfAbsent(outcome.toString(), TaskExecutionSummary.ZERO));
+                    .forEach(outcome -> summariesByOutcome.putIfAbsent(outcome.toString(), TaskExecutionSummary.ZERO));
 
-                return executionSummariesByOutcome;
+                return putTotalAvoidedFromCache(summariesByOutcome);
             }
             if (build.getBuildToolType().equalsIgnoreCase("maven")) {
                 MavenBuildCachePerformance buildCachePerformance = apiClient.getMavenBuildCachePerformance(buildScanId, null);
@@ -62,15 +62,15 @@ public class GeApiTaskMetricsFetcher {
                         t -> t.getAvoidanceOutcome().toString()
                     ));
 
-                Map<String, TaskExecutionSummary> executionSummariesByOutcome = tasksByOutcome.entrySet()
+                Map<String, TaskExecutionSummary> summariesByOutcome = tasksByOutcome.entrySet()
                     .stream()
                     .map(GeApiTaskMetricsFetcher::summarizeForMaven)
                     .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
 
                 Arrays.stream(MavenBuildCachePerformanceGoalExecutionEntry.AvoidanceOutcomeEnum.values())
-                    .forEach(outcome -> executionSummariesByOutcome.putIfAbsent(outcome.toString(), TaskExecutionSummary.ZERO));
+                    .forEach(outcome -> summariesByOutcome.putIfAbsent(outcome.toString(), TaskExecutionSummary.ZERO));
 
-                return executionSummariesByOutcome;
+                return putTotalAvoidedFromCache(summariesByOutcome);
             }
             return ImmutableMap.of();
         } catch (ApiException e) {
@@ -127,5 +127,13 @@ public class GeApiTaskMetricsFetcher {
         );
 
         return new TaskExecutionSummary(totalTasks, totalDuration, totalAvoidanceSavings);
+    }
+
+    private static Map<String, TaskExecutionSummary> putTotalAvoidedFromCache(Map<String, TaskExecutionSummary> summariesByOutcome) {
+        TaskExecutionSummary fromLocalCache = summariesByOutcome.getOrDefault("avoided_from_local_cache", TaskExecutionSummary.ZERO);
+        TaskExecutionSummary fromRemoteCache = summariesByOutcome.getOrDefault("avoided_from_remote_cache", TaskExecutionSummary.ZERO);
+
+        summariesByOutcome.put("avoided_from_cache", fromLocalCache.plus(fromRemoteCache));
+        return summariesByOutcome;
     }
 }

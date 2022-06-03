@@ -110,7 +110,7 @@ print_summary() {
   print_build_scans
   print_warnings
   print_bl
-  print_outcome
+  print_performance_metrics
   print_bl
   print_quick_links
 }
@@ -137,18 +137,29 @@ print_experiment_specific_summary_info() {
   true
 }
 
-print_outcome() {
+print_performance_metrics() {
   # this function is intended to be overridden by experiments as-needed
   # have one command to satisfy shellcheck
   true
 }
 
-print_cacheable_task_outcome() {
-  info "Outcome"
-  info "-------"
-  summary_row "Cacheable ${BUILD_TOOL_TASK}s executed:" "$(warn_if_nonzero "${num_tasks_executed_cacheable[1]}")"
-  summary_row "Cacheable ${BUILD_TOOL_TASK}s up to date:" "$(warn_if_nonzero "${num_tasks_avoided_up_to_date[1]}")"
-  summary_row "Cacheable ${BUILD_TOOL_TASK}s from cache:" "${num_tasks_avoided_from_cache[1]}"
+print_build_caching_performance_metrics() {
+  info "Build caching performance metrics"
+  info "---------------------------------"
+  summary_row "Avoided cacheable ${BUILD_TOOL_TASK}s:" "${avoided_from_cache_num_tasks[1]} tasks, ${avoided_from_cache_avoidance_savings[1]} saved"
+
+  local summary_color
+  summary_color=""
+  if (( executed_cacheable_num_tasks[1] > 0)); then
+    summary_color="${WARN_COLOR}"
+  fi
+  summary_row "Executed cacheable ${BUILD_TOOL_TASK}s:" "${summary_color}${executed_cacheable_num_tasks[1]} tasks, ${executed_cacheable_duration[1]} execution time${RESTORE}"
+
+  summary_color=""
+  if (( executed_not_cacheable_num_tasks[1] > 0)); then
+    summary_color="${WARN_COLOR}"
+  fi
+  summary_row "Executed non-cacheable ${BUILD_TOOL_TASK}s:" "${summary_color}${executed_not_cacheable_num_tasks[1]} tasks, ${executed_not_cacheable_duration[1]} execution time${RESTORE}"
 }
 
 warn_if_nonzero() {

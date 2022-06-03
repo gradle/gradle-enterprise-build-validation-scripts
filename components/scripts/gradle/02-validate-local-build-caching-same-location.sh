@@ -46,8 +46,9 @@ main() {
   create_receipt_file
 
   local executed_avoidable_tasks
-  executed_avoidable_tasks=$(( num_tasks_executed_cacheable[1] + num_tasks_avoided_up_to_date[1] ))
+  executed_avoidable_tasks=$(( executed_cacheable_num_tasks[1] + executed_not_cacheable_num_tasks[1] ))
   if [[ "${_arg_fail_if_not_optimized}" == "on" ]] && (( executed_avoidable_tasks > 0 )); then
+    print_bl
     die "ERROR: Build is not optimized" -2
   fi
   exit_with_return_code
@@ -158,8 +159,8 @@ fetch_task_metrics() {
   fetch_and_read_build_scan_data task_metrics_only "${build_scan_urls[@]}"
 }
 
-print_outcome() {
-  print_cacheable_task_outcome
+print_performance_metrics() {
+  print_build_caching_performance_metrics
 }
 
 print_quick_links() {

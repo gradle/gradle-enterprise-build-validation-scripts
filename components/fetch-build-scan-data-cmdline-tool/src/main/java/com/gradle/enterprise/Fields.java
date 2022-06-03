@@ -1,7 +1,8 @@
 package com.gradle.enterprise;
 
+import java.time.Duration;
 import java.util.Arrays;
-import java.util.Map;
+import java.util.Locale;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
@@ -18,16 +19,14 @@ public enum Fields {
     BUILD_OUTCOME("Build Outcome", BuildValidationData::getBuildOutcome),
     REMOTE_BUILD_CACHE_URL("Remote Build Cache URL", d -> toStringSafely(d.getRemoteBuildCacheUrl())),
     REMOTE_BUILD_CACHE_SHARD("Remote Build Cache Shard", BuildValidationData::getRemoteBuildCacheShard),
-    AVOIDED_UP_TO_DATE("Avoided Up To Date", d -> taskCount(d, "avoided_up_to_date")),
-    AVOIDED_FROM_CACHE("Avoided from cache", d -> totalAvoidedFromCache(d).totalTasks().toString()),
-    AVOIDED_FROM_LOCAL_CACHE("Avoided from local cache", d -> taskCount(d, "avoided_from_local_cache")),
-    AVOIDED_FROM_REMOTE_CACHE("Avoided from remote cache", d -> taskCount(d, "avoided_from_remote_cache")),
-    EXECUTED_CACHEABLE("Executed cacheable", d -> taskCount(d, "executed_cacheable")),
-    EXECUTED_NOT_CACHEABLE("Executed not cacheable", d -> taskCount(d, "executed_not_cacheable")),
-    EXECUTED_UNKNOWN_CACHEABILITY("Executed unknown cacheability", d -> taskCount(d, "executed_unknown_cacheability")),
-    LIFECYCLE("Lifecycle", d -> taskCount(d, "lifecycle")),
-    NO_SOURCE("No Source", d -> taskCount(d, "no-source")),
-    SKIPPED("Skipped", d -> taskCount(d, "skipped"))
+    AVOIDED_UP_TO_DATE("Avoided Up To Date", d -> totalTasks(d, "avoided_up_to_date")),
+    AVOIDED_UP_TO_DATE_AVOIDANCE_SAVINGS("Avoided up-to-date avoidance savings", d -> totalAvoidanceSavings(d, "avoided_up_to_date")),
+    AVOIDED_FROM_CACHE("Avoided from cache", d -> totalTasks(d, "avoided_from_cache")),
+    AVOIDED_FROM_CACHE_AVOIDANCE_SAVINGS("Avoided from cache avoidance savings", d -> totalAvoidanceSavings(d, "avoided_from_cache")),
+    EXECUTED_CACHEABLE("Executed cacheable", d -> totalTasks(d, "executed_cacheable")),
+    EXECUTED_CACHEABLE_DURATION("Executed cacheable duration", d -> totalDuration(d, "executed_cacheable")),
+    EXECUTED_NOT_CACHEABLE("Executed not cacheable", d -> totalTasks(d, "executed_not_cacheable")),
+    EXECUTED_NOT_CACHEABLE_DURATION("Executed not cacheable duration", d -> totalDuration(d, "executed_not_cacheable")),
     ;
 
     public final String label;
@@ -49,20 +48,34 @@ public enum Fields {
         return object.toString();
     }
 
-    private static String taskCount(BuildValidationData data, String avoidanceOutcome) {
+    private static String totalTasks(BuildValidationData data, String avoidanceOutcome) {
         if (data.getTasksByAvoidanceOutcome().containsKey(avoidanceOutcome)) {
             return data.getTasksByAvoidanceOutcome().get(avoidanceOutcome).totalTasks().toString();
         }
         return "";
     }
 
-    private static TaskExecutionSummary totalAvoidedFromCache(BuildValidationData data) {
-        Map<String, TaskExecutionSummary> tasksByOutcome = data.getTasksByAvoidanceOutcome();
-        if (!(tasksByOutcome.containsKey("avoided_from_local_cache") || tasksByOutcome.containsKey("avoided_from_remote_cache"))) {
-            return TaskExecutionSummary.ZERO;
-        }
-        TaskExecutionSummary fromLocalCache = tasksByOutcome.getOrDefault("avoided_from_local_cache", TaskExecutionSummary.ZERO);
-        TaskExecutionSummary fromRemoteCache = tasksByOutcome.getOrDefault("avoided_from_remote_cache", TaskExecutionSummary.ZERO);
-        return fromLocalCache.plus(fromRemoteCache);
+    private static String totalAvoidanceSavings(BuildValidationData data, String avoidanceOutcome) {
+        return formatDuration(
+            data.getTasksByAvoidanceOutcome()
+                .getOrDefault(avoidanceOutcome, TaskExecutionSummary.ZERO)
+                .totalAvoidanceSavings()
+        );
+    }
+
+    private static String totalDuration(BuildValidationData data, String avoidanceOutcome) {
+        return formatDuration(
+            data.getTasksByAvoidanceOutcome()
+                .getOrDefault(avoidanceOutcome, TaskExecutionSummary.ZERO)
+                .totalDuration()
+        );
+    }
+
+    private static String formatDuration(Duration duration) {
+        return duration.toString()
+            .substring(2)
+            .replaceAll("(\\d[HMS])(?!$)", "$1 ") // add spaces
+//            .replaceAll("\\.\\d+", "")  // remove fractional seconds
+            .toLowerCase(Locale.ROOT);
     }
 }

@@ -151,8 +151,8 @@ print_experiment_specific_summary_info() {
   summary_row "Custom value mapping file:" "${mapping_file:-<none>}"
 }
 
-print_outcome() {
-  print_cacheable_task_outcome
+print_performance_metrics() {
+  print_build_caching_performance_metrics
 }
 
 print_quick_links() {
