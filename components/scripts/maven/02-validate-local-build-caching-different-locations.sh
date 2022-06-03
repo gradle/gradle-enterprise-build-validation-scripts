@@ -64,6 +64,9 @@ execute() {
   execute_second_build
 
   print_bl
+  fetch_build_cache_metrics
+
+  print_bl
   print_summary
 }
 
@@ -72,7 +75,10 @@ wizard_execute() {
   print_introduction
 
   print_bl
-  explain_prerequisites_ccud_maven_extension ""
+  explain_prerequisites_ccud_maven_extension "I."
+
+  print_bl
+  explain_prerequisites_api_access "II."
 
   print_bl
   explain_collect_git_details
@@ -109,6 +115,8 @@ wizard_execute() {
   print_bl
   explain_measure_build_results
   print_bl
+  fetch_build_cache_metrics
+  print_bl
   explain_and_print_summary
 }
 
@@ -136,6 +144,16 @@ execute_second_build() {
      -Dgradle.cache.remote.enabled=false \
      -Dgradle.cache.local.directory="${BUILD_CACHE_DIR}" \
      clean ${tasks}
+}
+
+fetch_build_cache_metrics() {
+  read_build_scan_metadata
+  fetch_and_read_build_scan_data build_cache_metrics_only "${build_scan_urls[@]}"
+}
+
+# Overrides info.sh#print_performance_metrics
+print_performance_metrics() {
+  print_build_caching_performance_metrics
 }
 
 print_quick_links() {
@@ -276,6 +294,9 @@ ${HEADER_COLOR}Measure build results${RESTORE}
 Now that the second build has finished successfully, you are ready to measure in
 Gradle Enterprise how well your build leverages the local build cache for
 the invoked set of Maven goals.
+
+Some of the build scan data will be fetched from the build scans produced by the two builds
+ to assist you in your investigation.
 
 ${USER_ACTION_COLOR}Press <Enter> to measure the build results.${RESTORE}
 EOF
