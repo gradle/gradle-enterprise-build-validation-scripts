@@ -150,21 +150,34 @@ print_build_caching_performance_metrics() {
   local task_count_padding
   task_count_padding=$(max_length "${avoided_from_cache_num_tasks[1]}" "${executed_cacheable_num_tasks[1]}" "${executed_not_cacheable_num_tasks[1]}")
 
-  local taskCount
-  taskCount="$(printf "%${task_count_padding}s" "${avoided_from_cache_num_tasks[1]}" )"
-  summary_row "Avoided cacheable ${BUILD_TOOL_TASK}s:" "${taskCount} ${BUILD_TOOL_TASK}s, ${avoided_from_cache_avoidance_savings[1]} saved time"
-
-  local summary_color
-  summary_color=""
-  if (( executed_cacheable_num_tasks[1] > 0)); then
-    summary_color="${WARN_COLOR}"
+  local value
+  value=""
+  if [[ "${avoided_from_cache_num_tasks[1]}" ]]; then
+    local taskCount
+    taskCount="$(printf "%${task_count_padding}s" "${avoided_from_cache_num_tasks[1]}" )"
+    value="${taskCount} ${BUILD_TOOL_TASK}s, ${avoided_from_cache_avoidance_savings[1]} saved time"
   fi
+  summary_row "Avoided cacheable ${BUILD_TOOL_TASK}s:" "${value}"
 
-  taskCount="$(printf "%${task_count_padding}s" "${executed_cacheable_num_tasks[1]}" )"
-  summary_row "Executed cacheable ${BUILD_TOOL_TASK}s:" "${summary_color}${taskCount} ${BUILD_TOOL_TASK}s, ${executed_cacheable_duration[1]} execution time${RESTORE}"
+  value=""
+  if [[ "${executed_cacheable_num_tasks[1]}" ]]; then
+    local summary_color
+    summary_color=""
+    if (( executed_cacheable_num_tasks[1] > 0)); then
+      summary_color="${WARN_COLOR}"
+    fi
 
-  taskCount="$(printf "%${task_count_padding}s" "${executed_not_cacheable_num_tasks[1]}" )"
-  summary_row "Executed non-cacheable ${BUILD_TOOL_TASK}s:" "${taskCount} ${BUILD_TOOL_TASK}s, ${executed_not_cacheable_duration[1]} execution time"
+    taskCount="$(printf "%${task_count_padding}s" "${executed_cacheable_num_tasks[1]}" )"
+    value="${summary_color}${taskCount} ${BUILD_TOOL_TASK}s, ${executed_cacheable_duration[1]} execution time${RESTORE}"
+  fi
+  summary_row "Executed cacheable ${BUILD_TOOL_TASK}s:" "${value}"
+
+  value=""
+  if [[ "${executed_not_cacheable_num_tasks[1]}" ]]; then
+    taskCount="$(printf "%${task_count_padding}s" "${executed_not_cacheable_num_tasks[1]}" )"
+    value="${taskCount} ${BUILD_TOOL_TASK}s, ${executed_not_cacheable_duration[1]} execution time"
+  fi
+  summary_row "Executed non-cacheable ${BUILD_TOOL_TASK}s:" "${value}"
 }
 
 max_length() {
