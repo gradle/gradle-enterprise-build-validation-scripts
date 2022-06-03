@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 readonly SUMMARY_FMT="%-30s%s"
-readonly ORDINALS=( first second third fourth fifth sixth seventh eighth ninth tenth)
+readonly ORDINALS=( first second third fourth fifth sixth seventh eighth ninth tenth )
 
 warnings=()
 
@@ -146,16 +146,40 @@ print_performance_metrics() {
 print_build_caching_performance_metrics() {
   info "Build caching performance metrics"
   info "---------------------------------"
-  summary_row "Avoided cacheable ${BUILD_TOOL_TASK}s:" "${avoided_from_cache_num_tasks[1]} ${BUILD_TOOL_TASK}s, ${avoided_from_cache_avoidance_savings[1]} saved time"
+
+  local task_count_padding
+  task_count_padding=$(max_length "${avoided_from_cache_num_tasks[1]}" "${executed_cacheable_num_tasks[1]}" "${executed_not_cacheable_num_tasks[1]}")
+
+  local taskCount
+  taskCount="$(printf "%${task_count_padding}s" "${avoided_from_cache_num_tasks[1]}" )"
+  summary_row "Avoided cacheable ${BUILD_TOOL_TASK}s:" "${taskCount} ${BUILD_TOOL_TASK}s, ${avoided_from_cache_avoidance_savings[1]} saved time"
 
   local summary_color
   summary_color=""
   if (( executed_cacheable_num_tasks[1] > 0)); then
     summary_color="${WARN_COLOR}"
   fi
-  summary_row "Executed cacheable ${BUILD_TOOL_TASK}s:" "${summary_color}${executed_cacheable_num_tasks[1]} ${BUILD_TOOL_TASK}s, ${executed_cacheable_duration[1]} execution time${RESTORE}"
 
-  summary_row "Executed non-cacheable ${BUILD_TOOL_TASK}s:" "${executed_not_cacheable_num_tasks[1]} ${BUILD_TOOL_TASK}s, ${executed_not_cacheable_duration[1]} execution time"
+  taskCount="$(printf "%${task_count_padding}s" "${executed_cacheable_num_tasks[1]}" )"
+  summary_row "Executed cacheable ${BUILD_TOOL_TASK}s:" "${summary_color}${taskCount} ${BUILD_TOOL_TASK}s, ${executed_cacheable_duration[1]} execution time${RESTORE}"
+
+  taskCount="$(printf "%${task_count_padding}s" "${executed_not_cacheable_num_tasks[1]}" )"
+  summary_row "Executed non-cacheable ${BUILD_TOOL_TASK}s:" "${taskCount} ${BUILD_TOOL_TASK}s, ${executed_not_cacheable_duration[1]} execution time"
+}
+
+max_length() {
+  local max_len
+
+  max_len=${#1}
+  shift
+
+  for x in "${@}"; do
+    if (( ${#x} > max_len )); then
+      max_len=${#x}
+    fi
+  done
+
+  echo "${max_len}"
 }
 
 warn_if_nonzero() {
