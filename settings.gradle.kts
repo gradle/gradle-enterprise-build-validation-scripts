@@ -2,7 +2,7 @@ import com.gradle.enterprise.gradleplugin.internal.extension.BuildScanExtensionW
 
 plugins {
     id("com.gradle.enterprise") version "3.10.1"
-    id("com.gradle.common-custom-user-data-gradle-plugin") version "1.7"
+    id("com.gradle.common-custom-user-data-gradle-plugin") version "1.7.1"
 }
 
 val isCI = System.getenv("GITHUB_ACTIONS") != null
