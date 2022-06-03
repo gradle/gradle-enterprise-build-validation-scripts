@@ -44,13 +44,6 @@ main() {
     execute
   fi
   create_receipt_file
-
-  local executed_avoidable_tasks
-  executed_avoidable_tasks=$(( executed_cacheable_num_tasks[1] + executed_not_cacheable_num_tasks[1] ))
-  if [[ "${_arg_fail_if_not_optimized}" == "on" ]] && (( executed_avoidable_tasks > 0 )); then
-    print_bl
-    die "ERROR: Build is not optimized" -2
-  fi
   exit_with_return_code
 }
 
