@@ -178,6 +178,11 @@ print_build_caching_leverage_metrics() {
     value="${taskCount} ${BUILD_TOOL_TASK}s, ${executed_not_cacheable_duration[1]} total execution time"
   fi
   summary_row "Executed non-cacheable ${BUILD_TOOL_TASK}s:" "${value}"
+
+  if (( executed_cacheable_num_tasks[1] > 0)); then
+    print_bl
+    warn "Not all cacheable ${BUILD_TOOL_TASK}s' outputs were taken from the build cache in the second build. This reduces the savings in task execution time."
+  fi
 }
 
 max_length() {
