@@ -321,17 +321,9 @@ two build scans that were published as part of running the experiment. The build
 scan of the second build is particularly interesting since this is where you can
 inspect what tasks were not leveraging the local build cache.
 
-The ‘Build caching performance metrics’ section below shows some useful information about the cacheable tasks
-that were encountered during the second build:
-
-* ‘Avoided cacheable tasks’ shows how many cacheable tasks were skipped because
-their output was fetched from the build cache, and how much time was saved as a result.
-
- * ‘Executed cacheable tasks’ shows how many cacheable tasks were executed (will be
-zero in a fully cacheable build) and the total time it took to execute the tasks.
-
- * ‘Executed non-cacheable tasks’ shows how many non-cacheable tasks were executed
-and the total time it took to execute the tasks.
+The ‘Build Caching Leverage’ section below reveals the realized and potential
+savings from build caching. All cacheable tasks' outputs need to be taken from
+the build cache in the second build for the build to be fully cacheable.
 
 The ‘Investigation Quick Links’ section below allows quick navigation to the
 most relevant views in build scans to investigate what tasks were avoided due to
