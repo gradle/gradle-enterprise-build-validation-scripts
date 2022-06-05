@@ -143,9 +143,9 @@ print_performance_metrics() {
   true
 }
 
-print_build_caching_performance_metrics() {
-  info "Build caching performance metrics"
-  info "---------------------------------"
+print_build_caching_leverage_metrics() {
+  info "Build Caching Leverage"
+  info "----------------------"
 
   local task_count_padding
   task_count_padding=$(max_length "${avoided_from_cache_num_tasks[1]}" "${executed_cacheable_num_tasks[1]}" "${executed_not_cacheable_num_tasks[1]}")
