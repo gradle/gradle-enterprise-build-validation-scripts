@@ -7,7 +7,6 @@
 # ARG_OPTIONAL_SINGLE([first-build-ci],[1],[])
 # ARG_OPTIONAL_SINGLE([mapping-file],[m],[])
 # ARG_OPTIONAL_SINGLE([remote-build-cache-url],[u],[])
-# ARG_OPTIONAL_BOOLEAN([fail-if-not-optimized],[x],[])
 # ARGBASH_SET_INDENT([  ])
 # ARGBASH_PREPARE()
 # needed because of Argbash --> m4_ignore([

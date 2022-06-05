@@ -8,7 +8,6 @@
 # ARG_OPTIONAL_SINGLE([second-build-ci],[2],[])
 # ARG_OPTIONAL_BOOLEAN([debug],[],[],[off])
 # ARG_OPTIONAL_SINGLE([mapping-file],[m],[])
-# ARG_OPTIONAL_BOOLEAN([fail-if-not-optimized],[x],[])
 # ARGBASH_SET_INDENT([  ])
 # ARGBASH_PREPARE()
 # needed because of Argbash --> m4_ignore([
