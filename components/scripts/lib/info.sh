@@ -109,7 +109,6 @@ print_summary() {
   print_experiment_specific_summary_info
   print_build_scans
   print_warnings
-  print_bl
   print_performance_metrics
   print_bl
   print_quick_links
@@ -144,6 +143,7 @@ print_performance_metrics() {
 }
 
 print_build_caching_leverage_metrics() {
+  print_bl
   info "Build Caching Leverage"
   info "----------------------"
 
