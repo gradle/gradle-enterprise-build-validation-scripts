@@ -19,8 +19,8 @@ dependencies {
     implementation("com.squareup.okhttp3:okhttp-sse")
     implementation("com.squareup.okhttp3:logging-interceptor")
 
-    implementation("io.swagger:swagger-annotations:1.5.24")
-    implementation("io.gsonfire:gson-fire:1.8.4")
+    implementation("io.swagger:swagger-annotations:1.6.6")
+    implementation("io.gsonfire:gson-fire:1.8.5")
 
     implementation("com.google.guava:guava:31.1-jre")
     implementation("info.picocli:picocli:4.6.3")
