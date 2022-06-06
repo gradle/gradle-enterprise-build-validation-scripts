@@ -51,18 +51,17 @@ swaggerSources.register("gradleEnterprise") {
         )
         configFile = layout.projectDirectory.file("src/main/openapi/openapi-generator-config.json").asFile
     }
-}
 
-sourceSets {
-    main {
-        java {
-            srcDir(layout.buildDirectory.dir("swagger-code-gradleEnterprise/src/main/java"))
+    sourceSets {
+        main {
+            java {
+                srcDir(code)
+            }
         }
     }
 }
 
 tasks.compileJava {
-    dependsOn("generateSwaggerCode")  // TODO figure out how to eliminate the explicit dependency
     options.compilerArgs.add("-Aproject=${project.group}/${project.name}")
     options.encoding = "UTF-8"
 }
