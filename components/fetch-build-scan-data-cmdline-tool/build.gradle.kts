@@ -39,6 +39,16 @@ swaggerSources.register("gradleEnterprise") {
     setInputFile(layout.projectDirectory.file("src/main/openapi/openapi.yaml").asFile)
     code.apply {
         language = "java"
+        components = listOf(
+            "models",
+            "modelTests=false",
+            "modelDocs=false",
+            "apis",
+            "apiTests=false",
+            "apiDocs=false",
+            "supportingFiles",
+            "log.level=error"
+        )
         configFile = layout.projectDirectory.file("src/main/openapi/openapi-generator-config.json").asFile
     }
 }
