@@ -279,7 +279,7 @@ savings from build caching. All cacheable goals' outputs need to be taken from
 the build cache in the second build for the build to be fully cacheable.
 
 The ‘Investigation Quick Links’ section below allows quick navigation to the
-most relevant views in build scans to investigate what goal were avoided due to
+most relevant views in build scans to investigate what goals were avoided due to
 local build caching and what goals executed in the second build, which of those
 goals had the biggest impact on build performance, and what caused those goals
 to not be taken from the local build cache.
