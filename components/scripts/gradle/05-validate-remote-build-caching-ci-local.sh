@@ -503,10 +503,10 @@ explain_and_print_summary() {
   read_build_scan_metadata
   local text
   IFS='' read -r -d '' text <<EOF
-The ‘Summary’ section below captures the configuration of the experiment and the
-two build scans that were published as part of running the experiment.  The
-build scan of the second build is particularly interesting since this is where
-you can inspect what tasks were not leveraging Gradle’s remote build cache.
+The ‘Summary‘ section below captures the configuration of the experiment and the
+two build scans that were published as part of running the experiment. The build
+scan of the second build is particularly interesting since this is where you can
+inspect what tasks were not leveraging Gradle’s remote build cache.
 
 The ‘Build Caching Leverage’ section below reveals the realized and potential
 savings from build caching. All cacheable tasks' outputs need to be taken from
