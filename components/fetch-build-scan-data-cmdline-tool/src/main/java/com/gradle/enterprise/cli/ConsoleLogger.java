@@ -41,7 +41,7 @@ public class ConsoleLogger {
     }
 
     public void error(Throwable t) {
-        out.println(colorScheme.stackTraceText(t));
+        error(colorScheme.stackTraceText(t).plainString());
     }
 
     public boolean isDebugEnabled() {

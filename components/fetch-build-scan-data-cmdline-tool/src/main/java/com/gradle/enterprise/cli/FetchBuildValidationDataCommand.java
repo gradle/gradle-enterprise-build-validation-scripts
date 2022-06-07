@@ -187,7 +187,10 @@ public class FetchBuildValidationDataCommand implements Callable<Integer> {
 
     private void logStartFetchingBuildScan(int index) {
         if (!briefLogging) {
-            logger.info(fetchingMessageFor(index));
+            logger.infoNoNewline(fetchingMessageFor(index));
+            if (logger.isDebugEnabled()) {
+                logger.info("");
+            }
         }
     }
 
