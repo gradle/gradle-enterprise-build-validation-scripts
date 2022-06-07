@@ -109,7 +109,7 @@ wizard_execute() {
 
 execute_first_build() {
   info "Running first build:"
-  info "./gradlew --no-build-cache -Dscan.tag.${EXP_SCAN_TAG} -Dscan.value.runId=${RUN_ID} clean ${tasks}$(print_extra_args)"
+  info "./gradlew --no-build-cache --scan -Dscan.tag.${EXP_SCAN_TAG} -Dscan.value.runId=${RUN_ID} clean ${tasks}$(print_extra_args)"
 
   # shellcheck disable=SC2086  # we want tasks to expand with word splitting in this case
   invoke_gradle --no-build-cache clean ${tasks}
@@ -117,7 +117,7 @@ execute_first_build() {
 
 execute_second_build() {
   info "Running second build:"
-  info "./gradlew --no-build-cache -Dscan.tag.${EXP_SCAN_TAG} -Dscan.value.runId=${RUN_ID} ${tasks}$(print_extra_args)"
+  info "./gradlew --no-build-cache --scan -Dscan.tag.${EXP_SCAN_TAG} -Dscan.value.runId=${RUN_ID} ${tasks}$(print_extra_args)"
 
   # shellcheck disable=SC2086  # we want tasks to expand with word splitting in this case
   invoke_gradle --no-build-cache ${tasks}
