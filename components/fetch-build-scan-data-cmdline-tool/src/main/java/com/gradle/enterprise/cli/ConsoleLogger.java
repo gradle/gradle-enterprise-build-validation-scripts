@@ -3,7 +3,6 @@ package com.gradle.enterprise.cli;
 import picocli.CommandLine;
 
 import java.io.PrintStream;
-import java.io.PrintWriter;
 
 public class ConsoleLogger {
     private final PrintStream out;
