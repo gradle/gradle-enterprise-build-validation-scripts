@@ -1,6 +1,7 @@
 package com.gradle.enterprise.api.client;
 
 import com.google.common.base.Strings;
+import com.gradle.enterprise.cli.ConsoleLogger;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -19,32 +20,28 @@ public class AuthenticationConfigurator {
         public static final String GRADLE_USER_HOME = "GRADLE_USER_HOME";
     }
 
-    public static void configureAuth(URL url, ApiClient client, boolean debug) {
+    public static void configureAuth(URL url, ApiClient client, ConsoleLogger logger) {
         String username = System.getenv(EnvVars.USERNAME);
         String password = System.getenv(EnvVars.PASSWORD);
 
         if (!Strings.isNullOrEmpty(username) && !Strings.isNullOrEmpty(password)) {
             client.setUsername(username);
             client.setPassword(password);
-            if (debug) {
-                System.err.println("Using basic authentication.");
-            }
+            logger.debug("Using basic authentication.");
         } else {
-            Optional<String> accessKey = lookupAccessKey(url, debug);
+            Optional<String> accessKey = lookupAccessKey(url, logger);
             accessKey.ifPresent(key -> {
               client.setBearerToken(key);
-              if (debug) {
-                  System.err.println("Using access key authentication.");
-              }
+              logger.debug("Using access key authentication.");
             });
 
-            if (!accessKey.isPresent() && debug) {
-                System.err.println("Using anonymous authentication.");
+            if (!accessKey.isPresent()) {
+                logger.debug("Using anonymous authentication.");
             }
         }
     }
 
-    private static Optional<String> lookupAccessKey(URL url, boolean debug) {
+    private static Optional<String> lookupAccessKey(URL url, ConsoleLogger logger) {
         try {
             Properties accessKeysByHost = new Properties();
             accessKeysByHost.putAll(loadMavenHomeAccessKeys());
@@ -53,10 +50,8 @@ public class AuthenticationConfigurator {
 
             return Optional.ofNullable(accessKeysByHost.getProperty(url.getHost()));
         } catch (IOException e) {
-            if (debug) {
-                System.err.println("Error whole trying to read access keys: " + e.getMessage() + ". Will try fetching build scan data without authentication.");
-                e.printStackTrace(System.err);
-            }
+            logger.debug("Error whole trying to read access keys: " + e.getMessage() + ". Will try fetching build scan data without authentication.");
+            logger.debug(e);
             return Optional.empty();
         }
     }

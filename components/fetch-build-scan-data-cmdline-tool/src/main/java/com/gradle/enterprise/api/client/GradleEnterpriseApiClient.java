@@ -1,5 +1,6 @@
 package com.gradle.enterprise.api.client;
 
+import com.gradle.enterprise.cli.ConsoleLogger;
 import com.gradle.enterprise.model.BuildValidationData;
 import com.gradle.enterprise.model.CustomValueNames;
 import com.gradle.enterprise.model.TaskExecutionSummary;
@@ -30,17 +31,17 @@ public class GradleEnterpriseApiClient {
 
     private final CustomValueNames customValueNames;
 
-    private final boolean debug;
+    private final ConsoleLogger logger;
 
-    public GradleEnterpriseApiClient(URL baseUrl, CustomValueNames customValueNames, boolean debug) {
+    public GradleEnterpriseApiClient(URL baseUrl, CustomValueNames customValueNames, ConsoleLogger logger) {
         this.customValueNames = customValueNames;
         ApiClient client = new ApiClient();
         client.setBasePath(baseUrl.toString());
-        AuthenticationConfigurator.configureAuth(baseUrl, client, debug);
+        AuthenticationConfigurator.configureAuth(baseUrl, client, logger);
 
         this.baseUrl = baseUrl;
         this.apiClient = new GradleEnterpriseApi(client);
-        this.debug = debug;
+        this.logger = logger;
     }
 
     public BuildValidationData fetchBuildValidationData(String buildScanId) {

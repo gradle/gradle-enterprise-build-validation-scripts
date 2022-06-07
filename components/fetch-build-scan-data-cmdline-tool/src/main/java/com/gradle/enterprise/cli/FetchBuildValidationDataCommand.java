@@ -28,6 +28,7 @@ import java.util.stream.Collectors;
 public class FetchBuildValidationDataCommand implements Callable<Integer> {
 
     private final CommandLine.Help.ColorScheme colorScheme;
+    private ConsoleLogger logger;
 
     public FetchBuildValidationDataCommand(CommandLine.Help.ColorScheme colorScheme) {
         this.colorScheme = colorScheme;
@@ -51,6 +52,9 @@ public class FetchBuildValidationDataCommand implements Callable<Integer> {
 
     @Override
     public Integer call() throws Exception {
+        // Use System.err for logging since we're going to write out the CSV to System.out
+        logger = new ConsoleLogger(System.err, colorScheme, debug);
+
         CustomValueNames customValueKeys = loadCustomValueKeys(customValueMappingFile);
 
         logStartFetchingBuildScans();
@@ -76,7 +80,7 @@ public class FetchBuildValidationDataCommand implements Callable<Integer> {
             baseUrl = baseUrlFrom(buildScanUrl);
             buildScanId = buildScanIdFrom(buildScanUrl);
 
-            GradleEnterpriseApiClient apiClient = new GradleEnterpriseApiClient(baseUrl, customValueNames, debug);
+            GradleEnterpriseApiClient apiClient = new GradleEnterpriseApiClient(baseUrl, customValueNames, logger);
             BuildValidationData data = apiClient.fetchBuildValidationData(buildScanId);
 
             logFinishedFetchingBuildScan();
@@ -98,21 +102,21 @@ public class FetchBuildValidationDataCommand implements Callable<Integer> {
     }
 
     private void printException(RuntimeException e) {
-        if (debug) {
-            System.err.println(colorScheme.errorText(" " + colorScheme.stackTraceText(e)));
+        if (logger.isDebugEnabled()) {
+            logger.error(e);
             if (e instanceof FailedRequestException) {
                 printFailedResponseBody((FailedRequestException) e);
             }
         } else {
-            System.err.println(colorScheme.errorText(" ERROR: " + e.getMessage()));
+            logger.error("ERROR: " + e.getMessage());
         }
     }
 
     private void printFailedResponseBody(FailedRequestException e) {
         if(e.getResponseBody() != null) {
-            System.err.println("Response body:");
-            System.err.println(colorScheme.errorText(e.getResponseBody()));
-            System.err.println(colorScheme.errorText("--------------------------"));
+            logger.error("Response body:");
+            logger.error(e.getResponseBody());
+            logger.error("--------------------------");
         }
     }
 
@@ -154,36 +158,36 @@ public class FetchBuildValidationDataCommand implements Callable<Integer> {
 
     private void logStartFetchingBuildScans() {
         if (briefLogging) {
-            System.err.print("Fetching build scan data");
-            if (debug) {
-                System.err.println("");
+            logger.infoNoNewline("Fetching build scan data");
+            if (logger.isDebugEnabled()) {
+                logger.info("");
             }
         }
     }
 
     private void logFinishedFetchingBuildScans() {
         if (briefLogging) {
-            if (debug) {
-                System.err.println("done.");
+            if (logger.isDebugEnabled()) {
+                logger.info("done.");
             } else {
-                System.err.println(", done.");
+                logger.info(", done.");
             }
         }
     }
 
     private void logFinishedFetchingBuildScan() {
         if (!briefLogging) {
-            if (debug) {
-                System.err.println("done.");
+            if (logger.isDebugEnabled()) {
+                logger.info("done.");
             } else {
-                System.err.println(", done.");
+                logger.info(", done.");
             }
         }
     }
 
     private void logStartFetchingBuildScan(int index) {
         if (!briefLogging) {
-            System.err.print(fetchingMessageFor(index));
+            logger.info(fetchingMessageFor(index));
         }
     }
 
@@ -197,7 +201,7 @@ public class FetchBuildValidationDataCommand implements Callable<Integer> {
     private void logFetchResults(List<BuildValidationData> buildValidationData, CustomValueNames customValueKeys) {
         if (!briefLogging) {
             for (int i = 0; i < buildScanUrls.size(); i++) {
-                System.err.println();
+                logger.info("");
                 BuildValidationData validationData = buildValidationData.get(i);
 
                 logFetchResultFor(i, "Git repository", customValueKeys.getGitRepositoryKey(), validationData.isGitUrlFound());
@@ -209,7 +213,7 @@ public class FetchBuildValidationDataCommand implements Callable<Integer> {
 
     private void logFetchResultFor(int index, String property, String customValueKey, boolean found) {
         String ordinal = buildScanIndexToOrdinal(index);
-        System.err.printf("Looking up %s from custom value with name '%s' from the %s build scan, %s.%n", property, customValueKey, ordinal, found ? "found": "not found");
+        logger.info("Looking up %s from custom value with name '%s' from the %s build scan, %s.%n", property, customValueKey, ordinal, found ? "found": "not found");
     }
 
     public void printHeader() {
