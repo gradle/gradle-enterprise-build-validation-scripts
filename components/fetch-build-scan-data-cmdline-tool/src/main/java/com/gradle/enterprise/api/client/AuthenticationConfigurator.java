@@ -8,6 +8,7 @@ import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Optional;
 import java.util.Properties;
 
 public class AuthenticationConfigurator {
@@ -18,31 +19,45 @@ public class AuthenticationConfigurator {
         public static final String GRADLE_USER_HOME = "GRADLE_USER_HOME";
     }
 
-    public static void configureAuth(URL url, ApiClient client) {
+    public static void configureAuth(URL url, ApiClient client, boolean debug) {
         String username = System.getenv(EnvVars.USERNAME);
         String password = System.getenv(EnvVars.PASSWORD);
 
         if (!Strings.isNullOrEmpty(username) && !Strings.isNullOrEmpty(password)) {
             client.setUsername(username);
             client.setPassword(password);
+            if (debug) {
+                System.err.println("Using basic authentication.");
+            }
         } else {
-            client.setBearerToken(lookupAccessKey(url));
+            Optional<String> accessKey = lookupAccessKey(url, debug);
+            accessKey.ifPresent(key -> {
+              client.setBearerToken(key);
+              if (debug) {
+                  System.err.println("Using access key authentication.");
+              }
+            });
+
+            if (!accessKey.isPresent() && debug) {
+                System.err.println("Using anonymous authentication.");
+            }
         }
     }
 
-    public static String lookupAccessKey(URL url) {
+    private static Optional<String> lookupAccessKey(URL url, boolean debug) {
         try {
             Properties accessKeysByHost = new Properties();
             accessKeysByHost.putAll(loadMavenHomeAccessKeys());
             accessKeysByHost.putAll(loadGradleHomeAccessKeys());
             accessKeysByHost.putAll(loadFromEnvVar());
 
-            if (!accessKeysByHost.containsKey(url.getHost())) {
-                throw new AccessKeyNotFoundException(url);
-            }
-            return accessKeysByHost.getProperty(url.getHost());
+            return Optional.ofNullable(accessKeysByHost.getProperty(url.getHost()));
         } catch (IOException e) {
-            throw new AccessKeyNotFoundException(url, e);
+            if (debug) {
+                System.err.println("Error whole trying to read access keys: " + e.getMessage() + ". Will try fetching build scan data without authentication.");
+                e.printStackTrace(System.err);
+            }
+            return Optional.empty();
         }
     }
 

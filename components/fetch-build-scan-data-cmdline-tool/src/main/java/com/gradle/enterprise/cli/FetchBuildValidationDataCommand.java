@@ -76,7 +76,7 @@ public class FetchBuildValidationDataCommand implements Callable<Integer> {
             baseUrl = baseUrlFrom(buildScanUrl);
             buildScanId = buildScanIdFrom(buildScanUrl);
 
-            GradleEnterpriseApiClient apiClient = new GradleEnterpriseApiClient(baseUrl, customValueNames);
+            GradleEnterpriseApiClient apiClient = new GradleEnterpriseApiClient(baseUrl, customValueNames, debug);
             BuildValidationData data = apiClient.fetchBuildValidationData(buildScanId);
 
             logFinishedFetchingBuildScan();
@@ -155,18 +155,29 @@ public class FetchBuildValidationDataCommand implements Callable<Integer> {
     private void logStartFetchingBuildScans() {
         if (briefLogging) {
             System.err.print("Fetching build scan data");
+            if (debug) {
+                System.err.println("");
+            }
         }
     }
 
     private void logFinishedFetchingBuildScans() {
         if (briefLogging) {
-            System.err.println(", done.");
+            if (debug) {
+                System.err.println("done.");
+            } else {
+                System.err.println(", done.");
+            }
         }
     }
 
     private void logFinishedFetchingBuildScan() {
         if (!briefLogging) {
-            System.err.println(", done.");
+            if (debug) {
+                System.err.println("done.");
+            } else {
+                System.err.println(", done.");
+            }
         }
     }
 

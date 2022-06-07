@@ -30,14 +30,17 @@ public class GradleEnterpriseApiClient {
 
     private final CustomValueNames customValueNames;
 
-    public GradleEnterpriseApiClient(URL baseUrl, CustomValueNames customValueNames) {
+    private final boolean debug;
+
+    public GradleEnterpriseApiClient(URL baseUrl, CustomValueNames customValueNames, boolean debug) {
         this.customValueNames = customValueNames;
         ApiClient client = new ApiClient();
         client.setBasePath(baseUrl.toString());
-        AuthenticationConfigurator.configureAuth(baseUrl, client);
+        AuthenticationConfigurator.configureAuth(baseUrl, client, debug);
 
         this.baseUrl = baseUrl;
         this.apiClient = new GradleEnterpriseApi(client);
+        this.debug = debug;
     }
 
     public BuildValidationData fetchBuildValidationData(String buildScanId) {
