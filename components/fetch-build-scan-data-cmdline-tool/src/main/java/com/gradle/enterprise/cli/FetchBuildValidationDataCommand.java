@@ -105,19 +105,18 @@ public class FetchBuildValidationDataCommand implements Callable<Integer> {
         if (logger.isDebugEnabled()) {
             logger.error(e);
             if (e instanceof FailedRequestException) {
-                printFailedResponseBody((FailedRequestException) e);
+                printFailedRequest((FailedRequestException) e);
             }
         } else {
             logger.error("ERROR: " + e.getMessage());
         }
     }
 
-    private void printFailedResponseBody(FailedRequestException e) {
-        if(e.getResponseBody() != null) {
-            logger.error("Response body:");
-            logger.error(e.getResponseBody());
-            logger.error("--------------------------");
-        }
+    private void printFailedRequest(FailedRequestException e) {
+        logger.error("Response status code: " + e.httpStatusCode());
+        logger.error("Response body:");
+        logger.error(e.getResponseBody());
+        logger.error("--------------------------");
     }
 
     private String buildScanIndexToOrdinal(int i) {

@@ -85,11 +85,11 @@ public class GradleEnterpriseApiClient {
         } catch (ApiException e) {
             switch(e.getCode()) {
                 case StatusCodes.NOT_FOUND:
-                    throw new BuildScanNotFoundException(buildScanId, baseUrl, e.getResponseBody());
+                    throw new BuildScanNotFoundException(buildScanId, baseUrl, e.getCode(), e.getResponseBody());
                 case StatusCodes.UNAUTHORIZED:
-                    throw new AuthenticationFailedException(buildScanId, baseUrl, e.getResponseBody());
+                    throw new AuthenticationFailedException(buildScanId, baseUrl, e.getCode(), e.getResponseBody());
                 default:
-                    throw new UnexpectedResponseException(buildScanId, baseUrl, e.getResponseBody());
+                    throw new UnexpectedResponseException(buildScanId, baseUrl, e.getCode(), e.getResponseBody());
             }
         }
     }

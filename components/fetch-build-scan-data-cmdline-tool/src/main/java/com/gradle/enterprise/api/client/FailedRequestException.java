@@ -1,18 +1,23 @@
 package com.gradle.enterprise.api.client;
 
-import okhttp3.Request;
-import okhttp3.Response;
-
 public class FailedRequestException extends ApiClientException {
+
+    private final int httpStatusCode;
+
     private final String responseBody;
 
-    public FailedRequestException(String message, String responseBody) {
-        this(message, responseBody, null);
+    public FailedRequestException(String message, int httpStatusCode, String responseBody) {
+        this(message, httpStatusCode, responseBody, null);
     }
 
-    public FailedRequestException(String message, String responseBody, Throwable cause) {
+    public FailedRequestException(String message, int httpStatusCode, String responseBody, Throwable cause) {
         super(message, cause);
+        this.httpStatusCode = httpStatusCode;
         this.responseBody = responseBody;
+    }
+
+    public int httpStatusCode() {
+        return httpStatusCode;
     }
 
     public String getResponseBody() {
