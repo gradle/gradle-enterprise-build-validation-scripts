@@ -513,10 +513,10 @@ savings from build caching. All cacheable tasks' outputs need to be taken from
 the build cache in the second build for the build to be fully cacheable.
 
 The ‘Investigation Quick Links’ section below allows quick navigation to the
-most relevant views in build scans to investigate what task outputs were fetched
-from the remote cache and what tasks executed in the second build with cache
-misses, which of those tasks had the biggest impact on build performance, and
-what caused the cache misses.
+most relevant views in build scans to investigate what tasks were avoided due to
+remote build caching and what tasks executed in the second build, which of those
+tasks had the biggest impact on build performance, and what caused those tasks
+to not be taken from the remote build cache.
 
 $(explain_command_to_repeat_experiment)
 
