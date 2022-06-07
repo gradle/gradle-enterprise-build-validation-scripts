@@ -181,7 +181,7 @@ print_build_caching_leverage_metrics() {
 
   if (( executed_cacheable_num_tasks[1] > 0)); then
     print_bl
-    warn "Not all cacheable ${BUILD_TOOL_TASK}s' outputs were taken from the build cache in the second build. This reduces the savings in task execution time."
+    warn "Not all cacheable ${BUILD_TOOL_TASK}s' outputs were taken from the build cache in the second build. This reduces the savings in ${BUILD_TOOL_TASK} execution time."
   fi
 }
 
