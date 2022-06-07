@@ -86,7 +86,7 @@ public enum Fields {
         if (minutes != 0) {
             s.append(minutes + "m ");
         }
-        s.append(String.format("%.3fs", seconds));
+        s.append(String.format(Locale.ROOT, "%.3fs", seconds));
 
         return s.toString().trim();
     }
