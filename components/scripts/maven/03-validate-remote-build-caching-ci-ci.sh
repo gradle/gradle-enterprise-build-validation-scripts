@@ -327,7 +327,7 @@ print_command_to_repeat_experiment() {
 explain_and_print_summary() {
   local text
   IFS='' read -r -d '' text <<EOF
-The 'Summary' section below captures the configuration of the experiment and the
+The ‘Summary‘ section below captures the configuration of the experiment and the
 two build scans that were published as part of running the experiment. The build
 scan of the second build is particularly interesting since this is where you can
 inspect what goals were not leveraging the remote build cache.
