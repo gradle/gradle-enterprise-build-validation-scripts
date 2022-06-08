@@ -54,7 +54,7 @@ main() {
 execute() {
   print_bl
   validate_required_args
-  fetch_build_scan_data
+  fetch_build_params_from_build_scan
   validate_build_config
 
   print_bl
@@ -63,6 +63,9 @@ execute() {
 
   print_bl
   execute_build
+
+  print_bl
+  fetch_build_cache_metrics
 
   print_bl
   print_summary
@@ -95,7 +98,7 @@ wizard_execute() {
   collect_mapping_file
 
   print_bl
-  fetch_build_scan_data
+  fetch_build_params_from_build_scan
 
   print_bl
   explain_collect_git_details
@@ -126,6 +129,8 @@ wizard_execute() {
   print_bl
   explain_measure_build_results
   print_bl
+  fetch_build_cache_metrics
+  print_bl
   explain_and_print_summary
 }
 
@@ -141,12 +146,12 @@ validate_required_args() {
   fi
 }
 
-fetch_build_scan_data() {
-  fetch_and_read_build_validation_data "${ci_build_scan_url}"
-  read_build_params_from_build_validation_data
+fetch_build_params_from_build_scan() {
+  fetch_and_read_build_scan_data all_data "${ci_build_scan_url}"
+  read_build_params_from_build_scan_data
 }
 
-read_build_params_from_build_validation_data() {
+read_build_params_from_build_scan_data() {
   if [ -z "${git_repo}" ]; then
     git_repo="${git_repos[0]}"
     project_name="$(basename -s .git "${git_repo}")"
@@ -201,9 +206,19 @@ execute_build() {
   invoke_maven "${args[@]}"
 }
 
-# Overrides info.sh#print_experiment_specific_info
-print_experiment_specific_info() {
+# Overrides info.sh#print_experiment_specific_summary_info
+print_experiment_specific_summary_info() {
   summary_row "Custom value mapping file:" "${mapping_file:-<none>}"
+}
+
+fetch_build_cache_metrics() {
+  read_build_scan_metadata
+  fetch_and_read_build_scan_data build_cache_metrics_only "${build_scan_urls[@]}"
+}
+
+# Overrides info.sh#print_performance_metrics
+print_performance_metrics() {
+  print_build_caching_leverage_metrics
 }
 
 print_quick_links() {
@@ -211,6 +226,7 @@ print_quick_links() {
   info "-------------------------"
   summary_row "Goal execution overview:" "${base_urls[0]}/s/${build_scan_ids[1]}/performance/execution"
   summary_row "Executed goals timeline:" "${base_urls[0]}/s/${build_scan_ids[1]}/timeline?outcome=successful,failed&sort=longest"
+  summary_row "Avoided cacheable goals:" "${base_urls[0]}/s/${build_scan_ids[1]}/timeline?outcome=from_cache&sort=longest"
   summary_row "Executed cacheable goals:" "${base_urls[0]}/s/${build_scan_ids[1]}/timeline?cacheability=cacheable&outcome=successful,failed&sort=longest"
   summary_row "Executed non-cacheable goals:" "${base_urls[0]}/s/${build_scan_ids[1]}/timeline?cacheability=any_non-cacheable&outcome=successful,failed&sort=longest"
   summary_row "Build caching statistics:" "${base_urls[0]}/s/${build_scan_ids[1]}/performance/build-cache"
@@ -425,6 +441,9 @@ At this point, you are ready to measure in Gradle Enterprise how well your
 build leverages Gradle Enterprise's remote build cache for the set of Gradle
 goals invoked from a CI agent and then on a local machine.
 
+Some of the build scan data will be fetched from the build scans produced by the two builds
+to assist you in your investigation.
+
 ${USER_ACTION_COLOR}Press <Enter> to measure the build results.${RESTORE}
 EOF
   print_wizard_text "${text}"
@@ -489,16 +508,20 @@ explain_and_print_summary() {
   read_build_scan_metadata
   local text
   IFS='' read -r -d '' text <<EOF
-The ‘Summary’ section below captures the configuration of the experiment and the
-two build scans that were published as part of running the experiment.  The
-build scan of the second build is particularly interesting since this is where
-you can inspect what goals were not leveraging Gradle Enterprise's remote build cache.
+The ‘Summary‘ section below captures the configuration of the experiment and the
+two build scans that were published as part of running the experiment. The build
+scan of the second build is particularly interesting since this is where you can
+inspect what goals were not leveraging the remote build cache.
+
+The ‘Build Caching Leverage’ section below reveals the realized and potential
+savings from build caching. All cacheable goals' outputs need to be taken from
+the build cache in the second build for the build to be fully cacheable.
 
 The ‘Investigation Quick Links’ section below allows quick navigation to the
-most relevant views in build scans to investigate what goal outputs were fetched
-from the remote cache and what goals executed in the second build with cache
-misses, which of those goals had the biggest impact on build performance, and
-what caused the cache misses.
+most relevant views in build scans to investigate what goals were avoided due to
+remote build caching and what goals executed in the second build, which of those
+goals had the biggest impact on build performance, and what caused those goals
+to not be taken from the remote build cache.
 
 $(explain_command_to_repeat_experiment)
 

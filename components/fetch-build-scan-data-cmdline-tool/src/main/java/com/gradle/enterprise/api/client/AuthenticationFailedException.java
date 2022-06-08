@@ -1,14 +1,11 @@
-package com.gradle.enterprise.export_api.client;
-
-import okhttp3.Request;
-import okhttp3.Response;
+package com.gradle.enterprise.api.client;
 
 import java.net.URL;
 
 public class AuthenticationFailedException extends FailedRequestException {
-    public AuthenticationFailedException(String buildScanId, URL gradleEnterpriseServer, Request request, Response response) {
+    public AuthenticationFailedException(String buildScanId, URL gradleEnterpriseServer, int httpStatusCode, String responseBody, Throwable cause) {
         super(String.format("Failed to authenticate while attempting to fetch build scan %s.",
             buildScanUrl(gradleEnterpriseServer, buildScanId)),
-            request, response);
+            httpStatusCode, responseBody, cause);
     }
 }

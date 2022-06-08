@@ -17,6 +17,16 @@ remote_build_cache_urls=()
 # shellcheck disable=SC2034 # not all scripts use this data
 remote_build_cache_shards=()
 
+# Build caching performance metrics
+avoided_up_to_date_num_tasks=()
+avoided_up_to_date_avoidance_savings=()
+avoided_from_cache_num_tasks=()
+avoided_from_cache_avoidance_savings=()
+executed_cacheable_num_tasks=()
+executed_cacheable_duration=()
+executed_not_cacheable_num_tasks=()
+executed_not_cacheable_duration=()
+
 read_build_scan_metadata() {
   # This isn't the most robust way to read a CSV,
   # but we control the CSV so we don't have to worry about various CSV edge cases
@@ -37,7 +47,7 @@ read_build_data_from_current_dir() {
   requested_tasks+=("${tasks}")
 }
 
-fetch_build_validation_data() {
+fetch_build_scan_data() {
   # OS specific support (must be 'true' or 'false').
   cygwin=false
   msys=false
@@ -141,12 +151,10 @@ fi
   exec "$JAVACMD" "$@"
 }
 
-fetch_and_read_build_validation_data() {
-  info "Fetching build scan data"
-
+fetch_and_read_build_scan_data() {
   # This isn't the most robust way to read a CSV,
   # but we control the CSV so we don't have to worry about various CSV edge cases
-  local args fetched_data header_row_read
+  local args build_cache_metrics_only fetched_data header_row_read
   args=()
 
   if [[ "$_arg_debug" == "on" ]]; then
@@ -158,8 +166,18 @@ fetch_and_read_build_validation_data() {
     args+=(-m "${mapping_file}")
   fi
 
+  args+=("--proxy-settings-file" "${SCRIPT_DIR}/proxy.settings")
+
+  if [[ "$1" == "build_cache_metrics_only" ]]; then
+    build_cache_metrics_only="true"
+    args+=("--brief-logging")
+    debug "Only using the task metrics found in the build scan data"
+  else
+      info "Fetching build scan data"
+  fi
+  shift
   args+=( "$@" )
-  fetched_data="$(fetch_build_validation_data "${args[@]}")"
+  fetched_data="$(fetch_build_scan_data "${args[@]}")"
 
   debug "Raw fetched build scan data"
   debug "---------------------------"
@@ -167,24 +185,36 @@ fetch_and_read_build_validation_data() {
   debug ""
 
   header_row_read=false
-  while IFS=, read -r field_1 field_2 field_3 field_4 field_5 field_6 field_7 field_8 field_9 field_10 field_11; do
+  # shellcheck disable=SC2034 # not all scripts use all of the fetched data
+  while IFS=, read -r field_1 field_2 field_3 field_4 field_5 field_6 field_7 field_8 field_9 field_10 field_11 field_12 field_13 field_14 field_15 field_16 field_17 field_18 field_19; do
      if [[ "$header_row_read" == "false" ]]; then
          header_row_read=true
          continue;
      fi
-     project_names+=("$field_1")
-     base_urls+=("$field_2")
-     build_scan_urls+=("$field_3")
-     build_scan_ids+=("$field_4")
-     git_repos+=("$field_5")
-     git_branches+=("$field_6")
-     git_commit_ids+=("$field_7")
-     requested_tasks+=("$(remove_clean_task "${field_8}")")
-     build_outcomes+=("$field_9")
-     # shellcheck disable=SC2034 # not all scripts use this data
-     remote_build_cache_urls=("${field_10}")
-     # shellcheck disable=SC2034 # not all scripts use this data
-     remote_build_cache_shards=("${field_11}")
+
+     if [[ "${build_cache_metrics_only}" != "true" ]]; then
+       project_names+=("$field_1")
+       base_urls+=("$field_2")
+       build_scan_urls+=("$field_3")
+       build_scan_ids+=("$field_4")
+       git_repos+=("$field_5")
+       git_branches+=("$field_6")
+       git_commit_ids+=("$field_7")
+       requested_tasks+=("$(remove_clean_task "${field_8}")")
+       build_outcomes+=("$field_9")
+       remote_build_cache_urls+=("${field_10}")
+       remote_build_cache_shards+=("${field_11}")
+     fi
+
+     # Build caching performance metrics
+     avoided_up_to_date_num_tasks+=("${field_12}")
+     avoided_up_to_date_avoidance_savings+=("${field_13}")
+     avoided_from_cache_num_tasks+=("${field_14}")
+     avoided_from_cache_avoidance_savings+=("${field_15}")
+     executed_cacheable_num_tasks+=("${field_16}")
+     executed_cacheable_duration+=("${field_17}")
+     executed_not_cacheable_num_tasks+=("${field_18}")
+     executed_not_cacheable_duration+=("${field_19}")
   done <<< "${fetched_data}"
 }
 

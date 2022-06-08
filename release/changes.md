@@ -1,0 +1,2 @@
+- [NEW] - Display build cache performance metrics at the end of build caching experiments.
+- [NEW] - Drop support for fetching build scan data from Gradle Enterprise versions older than 2022.1. 

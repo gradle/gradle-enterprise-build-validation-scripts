@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 readonly SUMMARY_FMT="%-30s%s"
-readonly ORDINALS=( first second third fourth fifth sixth seventh eighth ninth tenth)
+readonly ORDINALS=( first second third fourth fifth sixth seventh eighth ninth tenth )
 
 warnings=()
 
@@ -34,9 +34,9 @@ summary_row() {
 }
 
 comparison_summary_row() {
-    local header value
-    header="$1"
-    shift;
+  local header value
+  header="$1"
+  shift;
 
   if [[ "$1" == "$2" ]]; then
     value="$1"
@@ -106,9 +106,10 @@ print_summary() {
   info "Summary"
   info "-------"
   print_experiment_info
-  print_experiment_specific_info
+  print_experiment_specific_summary_info
   print_build_scans
   print_warnings
+  print_performance_metrics
   print_bl
   print_quick_links
 }
@@ -129,10 +130,84 @@ print_experiment_info() {
   summary_row "Experiment artifact dir:" "$(relative_path "${SCRIPT_DIR}" "${EXP_DIR}")"
 }
 
-print_experiment_specific_info() {
+print_experiment_specific_summary_info() {
   # this function is intended to be overridden by experiments as-needed
   # have one command to satisfy shellcheck
   true
+}
+
+print_performance_metrics() {
+  # this function is intended to be overridden by experiments as-needed
+  # have one command to satisfy shellcheck
+  true
+}
+
+print_build_caching_leverage_metrics() {
+  print_bl
+  info "Build Caching Leverage"
+  info "----------------------"
+
+  local task_count_padding
+  task_count_padding=$(max_length "${avoided_from_cache_num_tasks[1]}" "${executed_cacheable_num_tasks[1]}" "${executed_not_cacheable_num_tasks[1]}")
+
+  local value
+  value=""
+  if [[ "${avoided_from_cache_num_tasks[1]}" ]]; then
+    local taskCount
+    taskCount="$(printf "%${task_count_padding}s" "${avoided_from_cache_num_tasks[1]}" )"
+    value="${taskCount} ${BUILD_TOOL_TASK}s, ${avoided_from_cache_avoidance_savings[1]} total saved execution time"
+  fi
+  summary_row "Avoided cacheable ${BUILD_TOOL_TASK}s:" "${value}"
+
+  value=""
+  if [[ "${executed_cacheable_num_tasks[1]}" ]]; then
+    local summary_color
+    summary_color=""
+    if (( executed_cacheable_num_tasks[1] > 0)); then
+      summary_color="${WARN_COLOR}"
+    fi
+
+    taskCount="$(printf "%${task_count_padding}s" "${executed_cacheable_num_tasks[1]}" )"
+    value="${summary_color}${taskCount} ${BUILD_TOOL_TASK}s, ${executed_cacheable_duration[1]} total execution time${RESTORE}"
+  fi
+  summary_row "Executed cacheable ${BUILD_TOOL_TASK}s:" "${value}"
+
+  value=""
+  if [[ "${executed_not_cacheable_num_tasks[1]}" ]]; then
+    taskCount="$(printf "%${task_count_padding}s" "${executed_not_cacheable_num_tasks[1]}" )"
+    value="${taskCount} ${BUILD_TOOL_TASK}s, ${executed_not_cacheable_duration[1]} total execution time"
+  fi
+  summary_row "Executed non-cacheable ${BUILD_TOOL_TASK}s:" "${value}"
+
+  if (( executed_cacheable_num_tasks[1] > 0)); then
+    print_bl
+    warn "Not all cacheable ${BUILD_TOOL_TASK}s' outputs were taken from the build cache in the second build. This reduces the savings in ${BUILD_TOOL_TASK} execution time."
+  fi
+}
+
+max_length() {
+  local max_len
+
+  max_len=${#1}
+  shift
+
+  for x in "${@}"; do
+    if (( ${#x} > max_len )); then
+      max_len=${#x}
+    fi
+  done
+
+  echo "${max_len}"
+}
+
+warn_if_nonzero() {
+  local value
+  value=$1
+  if (( value > 0 )); then
+    echo "${WARN_COLOR}${value}${RESTORE}"
+  else
+    echo "$value"
+  fi
 }
 
 print_build_scans() {
@@ -161,5 +236,6 @@ exit_with_return_code() {
   if [[ " ${build_outcomes[*]} " =~ " FAILED " ]]; then
     exit 3
   fi
+
   exit 0
 }

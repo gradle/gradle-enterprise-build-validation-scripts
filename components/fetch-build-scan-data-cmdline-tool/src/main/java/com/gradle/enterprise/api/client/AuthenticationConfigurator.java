@@ -1,21 +1,18 @@
-package com.gradle.enterprise.export_api.client;
+package com.gradle.enterprise.api.client;
 
 import com.google.common.base.Strings;
-import com.google.common.net.HttpHeaders;
-import okhttp3.Authenticator;
-import okhttp3.Credentials;
+import com.gradle.enterprise.cli.ConsoleLogger;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.net.URL;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Base64;
+import java.util.Optional;
 import java.util.Properties;
 
-public class Authenticators {
+public class AuthenticationConfigurator {
     public static final class EnvVars {
         public static final String ACCESS_KEY = "GRADLE_ENTERPRISE_ACCESS_KEY";
         public static final String USERNAME = "GRADLE_ENTERPRISE_USERNAME";
@@ -23,55 +20,39 @@ public class Authenticators {
         public static final String GRADLE_USER_HOME = "GRADLE_USER_HOME";
     }
 
-    public static Authenticator createForUrl(URL url) {
+    public static void configureAuth(URL url, ApiClient client, ConsoleLogger logger) {
         String username = System.getenv(EnvVars.USERNAME);
         String password = System.getenv(EnvVars.PASSWORD);
-        if(!Strings.isNullOrEmpty(username) && !Strings.isNullOrEmpty(password)) {
-            return basic(username, password);
+
+        if (!Strings.isNullOrEmpty(username) && !Strings.isNullOrEmpty(password)) {
+            client.setUsername(username);
+            client.setPassword(password);
+            logger.debug("Using basic authentication.");
+        } else {
+            Optional<String> accessKey = lookupAccessKey(url, logger);
+            accessKey.ifPresent(key -> {
+              client.setBearerToken(key);
+              logger.debug("Using access key authentication.");
+            });
+
+            if (!accessKey.isPresent()) {
+                logger.debug("Using anonymous authentication.");
+            }
         }
-
-        return accessKey(lookupAccessKey(url));
     }
 
-    public static Authenticator basic(String username, String password) {
-        return (route, response) -> {
-            if (response.request().header(HttpHeaders.AUTHORIZATION) != null) {
-                return null; // Give up, we've already attempted to authenticate.
-            }
-
-            return response.request().newBuilder()
-                .header(HttpHeaders.AUTHORIZATION, Credentials.basic(username, password))
-                .build();
-        };
-    }
-
-    public static Authenticator accessKey(String accessKey) {
-        return (route, response) -> {
-            if (response.request().header(HttpHeaders.AUTHORIZATION) != null) {
-                return null; // Give up, we've already attempted to authenticate.
-            }
-
-            String encoded = Base64.getEncoder().encodeToString(accessKey.getBytes(StandardCharsets.UTF_8));
-
-            return response.request().newBuilder()
-                .header(HttpHeaders.AUTHORIZATION, "Bearer " + encoded)
-                .build();
-        };
-    }
-
-    public static String lookupAccessKey(URL url) {
+    private static Optional<String> lookupAccessKey(URL url, ConsoleLogger logger) {
         try {
             Properties accessKeysByHost = new Properties();
             accessKeysByHost.putAll(loadMavenHomeAccessKeys());
             accessKeysByHost.putAll(loadGradleHomeAccessKeys());
             accessKeysByHost.putAll(loadFromEnvVar());
 
-            if (!accessKeysByHost.containsKey(url.getHost())) {
-                throw new AccessKeyNotFoundException(url);
-            }
-            return accessKeysByHost.getProperty(url.getHost());
+            return Optional.ofNullable(accessKeysByHost.getProperty(url.getHost()));
         } catch (IOException e) {
-            throw new AccessKeyNotFoundException(url, e);
+            logger.debug("Error whole trying to read access keys: " + e.getMessage() + ". Will try fetching build scan data without authentication.");
+            logger.debug(e);
+            return Optional.empty();
         }
     }
 
@@ -136,7 +117,7 @@ public class Authenticators {
         return accessKeys;
     }
 
-    public static class MalformedEnvironmentVariableException extends ExportApiClientException {
+    public static class MalformedEnvironmentVariableException extends ApiClientException {
         public MalformedEnvironmentVariableException() {
             super("Environment variable " + EnvVars.ACCESS_KEY + " is malformed (expected format: 'server-host=access-key' or 'server-host1=access-key1;server-host2=access-key2')");
         }

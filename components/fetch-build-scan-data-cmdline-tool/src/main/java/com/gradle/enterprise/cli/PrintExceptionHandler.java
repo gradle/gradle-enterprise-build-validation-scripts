@@ -1,4 +1,4 @@
-package com.gradle.enterprise;
+package com.gradle.enterprise.cli;
 
 import picocli.CommandLine;
 

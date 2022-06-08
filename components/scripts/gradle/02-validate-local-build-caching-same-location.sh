@@ -64,6 +64,9 @@ execute() {
   rename_project_dir "build_${project_name}" "second-build_${project_name}"
 
   print_bl
+  fetch_build_cache_metrics
+
+  print_bl
   print_summary
 }
 
@@ -72,7 +75,10 @@ wizard_execute() {
   print_introduction
 
   print_bl
-  explain_prerequisites_ccud_gradle_plugin ""
+  explain_prerequisites_ccud_gradle_plugin "I."
+
+  print_bl
+  explain_prerequisites_api_access "II."
 
   print_bl
   explain_collect_git_details
@@ -105,6 +111,8 @@ wizard_execute() {
 
   print_bl
   explain_measure_build_results
+  print_bl
+  fetch_build_cache_metrics
   print_bl
   explain_and_print_summary
 }
@@ -139,11 +147,22 @@ execute_second_build() {
      clean ${tasks}
 }
 
+fetch_build_cache_metrics() {
+  read_build_scan_metadata
+  fetch_and_read_build_scan_data build_cache_metrics_only "${build_scan_urls[@]}"
+}
+
+# Overrides info.sh#print_performance_metrics
+print_performance_metrics() {
+  print_build_caching_leverage_metrics
+}
+
 print_quick_links() {
   info "Investigation Quick Links"
   info "-------------------------"
   summary_row "Task execution overview:" "${base_urls[0]}/s/${build_scan_ids[1]}/performance/execution"
   summary_row "Executed tasks timeline:" "${base_urls[0]}/s/${build_scan_ids[1]}/timeline?outcome=SUCCESS,FAILED&sort=longest"
+  summary_row "Avoided cacheable tasks:" "${base_urls[0]}/s/${build_scan_ids[1]}/timeline?outcome=FROM-CACHE&sort=longest"
   summary_row "Executed cacheable tasks:" "${base_urls[0]}/s/${build_scan_ids[1]}/timeline?cacheability=cacheable,overlapping_outputs,validation_failure&outcome=SUCCESS,FAILED&sort=longest"
   summary_row "Executed non-cacheable tasks:" "${base_urls[0]}/s/${build_scan_ids[1]}/timeline?cacheability=any_non-cacheable&outcome=SUCCESS,FAILED&sort=longest"
   summary_row "Build caching statistics:" "${base_urls[0]}/s/${build_scan_ids[1]}/performance/build-cache"
@@ -246,7 +265,10 @@ Now that the second build has finished successfully, you are ready to measure in
 Gradle Enterprise how well your build leverages Gradle’s local build caching
 functionality for the invoked set of Gradle tasks.
 
-${USER_ACTION_COLOR}Press <Enter> to measure the build results.${RESTORE}
+Some of the build scan data will be fetched from the build scans produced by the two builds
+to assist you in your investigation.
+
+${USER_ACTION_COLOR}Press <Enter> to fetch build scan data and measure the build results.${RESTORE}
 EOF
   print_wizard_text "${text}"
   wait_for_enter
@@ -260,6 +282,10 @@ The ‘Summary’ section below captures the configuration of the experiment and
 two build scans that were published as part of running the experiment. The build
 scan of the second build is particularly interesting since this is where you can
 inspect what tasks were not leveraging the local build cache.
+
+The ‘Build Caching Leverage’ section below reveals the realized and potential
+savings from build caching. All cacheable tasks' outputs need to be taken from
+the build cache in the second build for the build to be fully cacheable.
 
 The ‘Investigation Quick Links’ section below allows quick navigation to the
 most relevant views in build scans to investigate what tasks were avoided due to
