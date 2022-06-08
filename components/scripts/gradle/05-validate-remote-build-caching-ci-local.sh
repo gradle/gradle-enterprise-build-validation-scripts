@@ -199,7 +199,7 @@ execute_build() {
   args+=(clean ${tasks})
 
   info "Running build:"
-  info "./gradlew --build-cache -Dscan.tag.${EXP_SCAN_TAG} -Dscan.value.runId=${RUN_ID} clean ${tasks}$(print_extra_args)"
+  info "./gradlew --build-cache --scan -Dscan.tag.${EXP_SCAN_TAG} -Dscan.value.runId=${RUN_ID} clean ${tasks}$(print_extra_args)"
 
   invoke_gradle "${args[@]}"
 }
