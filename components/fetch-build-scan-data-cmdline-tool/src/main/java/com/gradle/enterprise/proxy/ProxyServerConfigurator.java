@@ -27,11 +27,16 @@ public class ProxyServerConfigurator {
             logger.debug("Loading proxy settings from " + proxySettingsFile.toAbsolutePath());
             Properties proxyProps = loadProperties(proxySettingsFile);
             proxyProps.stringPropertyNames().stream()
-                .filter(k -> k.startsWith("http.proxy") || k.startsWith("https.proxy") || k.startsWith("socksProxy"))
-                .forEach(key -> {
-                    System.setProperty(key, proxyProps.getProperty(key));
-                });
+                .filter(ProxyServerConfigurator::isProxyProperty)
+                .forEach(key -> System.setProperty(key, proxyProps.getProperty(key)));
         }
+    }
+
+    private static boolean isProxyProperty(String key) {
+        return key.startsWith("http.proxy")
+            || key.startsWith("https.proxy")
+            || key.startsWith("socksProxy")
+            || key.endsWith(".nonProxyHosts");
     }
 
     private static Properties loadProperties(Path propertiesFIle) throws IOException {
