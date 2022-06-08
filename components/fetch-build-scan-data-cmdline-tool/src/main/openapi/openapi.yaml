@@ -4,7 +4,7 @@ info:
   description: >
     The Gradle Enterprise API allows programmatic interaction with various
     aspects of Gradle Enterprise, from configuration to inspecting build data.
-  version: "2022.2"
+  version: "2022.2.4"
   license:
     name: Gradle Enterprise License
     url: https://gradle.com/legal/gradle-enterprise-software-agreement
@@ -37,6 +37,7 @@ paths:
         name: BuildsQuery
         explode: true
         schema:
+          title: BuildsQuery
           type: object
           properties:
             since:
@@ -394,20 +395,28 @@ paths:
               example:
                 id: 9r4d13f0r3v3r
                 buildTime: 5000
-                effectiveTaskExecutionTime: 4000
-                serialTaskExecutionTime: 8000
+                effectiveTaskExecutionTime: 5000
+                serialTaskExecutionTime: 10000
                 serializationFactor: 2
                 taskExecution:
                   - taskPath: ':task'
+                    taskType: org.gradle.api.tasks.Task
                     avoidanceOutcome: avoided_from_local_cache
                     duration: 5000
                     fingerprintingDuration: 5
                     avoidanceSavings: 6000
                   - taskPath: ':task2'
+                    taskType: org.gradle.api.tasks.Task
                     avoidanceOutcome: avoided_from_remote_cache
                     duration: 3000
                     fingerprintingDuration: 3
                     avoidanceSavings: 4000
+                  - taskPath: ':task3'
+                    avoidanceOutcome: executed_not_cacheable
+                    duration: 2000
+                    fingerprintingDuration: 6
+                    nonCacheabilityCategory: cache-if_condition_not_matched
+                    nonCacheabilityReason: '''Task outputs cacheable'' not satisfied'
                 taskFingerprintingSummary:
                   count: 1
                   serialDuration: 8
@@ -471,11 +480,21 @@ paths:
               example:
                 id: 9r4d13f0r3v3r
                 buildTime: 5000
-                effectiveProjectExecutionTime: 4000
-                serialProjectExecutionTime: 8000
+                effectiveProjectExecutionTime: 5000
+                serialProjectExecutionTime: 10000
                 serializationFactor: 2
                 goalExecution:
+                  - goalName: clean:clean
+                    goalExecutionId: default-clean
+                    goalProjectName: myproject
+                    avoidanceOutcome: executed_not_cacheable
+                    duration: 2000
+                    nonCacheabilityCategory: build_cache_disabled_by_user
+                    nonCacheabilityReason: >-
+                      Neither the local or remote build cache were enabled in
+                      the configuration of the build.
                   - goalName: compiler:compile
+                    mojoType: org.apache.maven.plugin.jar.JarMojo
                     goalExecutionId: default-compile
                     goalProjectName: myproject
                     avoidanceOutcome: avoided_from_local_cache
@@ -483,6 +502,7 @@ paths:
                     fingerprintingDuration: 5
                     avoidanceSavings: 6000
                   - goalName: compiler:compile
+                    mojoType: org.apache.maven.plugin.jar.JarMojo
                     goalExecutionId: default-compile
                     goalProjectName: myproject2
                     avoidanceOutcome: avoided_from_remote_cache
@@ -1295,12 +1315,16 @@ components:
       type: object
       required:
         - taskPath
+        - taskType
         - avoidanceOutcome
         - duration
       properties:
         taskPath:
           type: string
           description: The full task path.
+        taskType:
+          type: string
+          description: The fully qualified class name of the task.
         avoidanceOutcome:
           type: string
           enum:
@@ -1344,6 +1368,49 @@ components:
             Negative values indicate that it took more time to reuse outputs
             than it did to create them originally. May be `null` if the
             information was not available.
+          x-nullable: true
+        nonCacheabilityCategory:
+          type: string
+          enum:
+            - build_cache_not_enabled
+            - cache-if_condition_not_matched
+            - disabled_to_ensure_correctness
+            - do-not-cache-if_condition_matched
+            - multiple_outputs_declared
+            - no_outputs_declared
+            - non_cacheable_inputs
+            - non_cacheable_task_action
+            - non_cacheable_task_implementation
+            - non_cacheable_tree_output
+            - overlapping_outputs
+            - task_has_no_actions
+            - task_output_caching_not_enabled
+            - unknown
+          description: >
+            The category of the non-cacheability reason:
+              * `build_cache_not_enabled` - Caching has not been enabled for the build
+              * `cache-if_condition_not_matched` - Caching was disabled for the task via `org.gradle.api.tasks.TaskOutputs#cacheIf`
+              * `disabled_to_ensure_correctness` - The task failed validation. Available since Gradle 7.0
+              * `do-not-cache-if_condition_matched` - Caching was disabled for the task via `org.gradle.api.tasks.TaskOutputs#doNotCacheIf`
+              * `multiple_outputs_declared` - The task declared multiple outputs
+              * `no_outputs_declared` - The task had no outputs declared
+              * `non_cacheable_inputs` - One of the task inputs was not cacheable, either because some type used as an input to the task was loaded via a custom classloader, or a Java lambda was used as an input. Available since Gradle 5.0 and before Gradle 7.5
+              * `non_cacheable_task_action` - One of the task actions was not cacheable, either because it was loaded via a custom classloader, or a Java lambda was used to implement it. Available since Gradle 5.0 and before Gradle 7.5
+              * `non_cacheable_task_implementation` - The task implementation was not cacheable, either because it was loaded via a custom classloader, or a Java lambda was used to implement it. Available since Gradle 5.0 and before Gradle 7.5
+              * `non_cacheable_tree_output` - The task had a `org.gradle.api.file.FileTree` or a `org.gradle.api.internal.file.collections.DirectoryFileTree` as an output. Available since Gradle 5.0
+              * `overlapping_outputs` - The tasks outputs overlapped with another task. As Gradle cannot safely determine which task each output file belongs to, it disabled caching            
+              * `task_has_no_actions` - The task did not declare any actions
+              * `task_output_caching_not_enabled` - Caching has not been enabled for the task
+              * `unknown` - Reason for disabled caching was not known
+
+            May be `null` when the task was cacheable or if the information was
+            not available.
+          x-nullable: true
+        nonCacheabilityReason:
+          type: string
+          description: >-
+            The human-readable reason for a non-cacheable task. May be `null`
+            when the task was cacheable or if the information was not available.
           x-nullable: true
     GradleBuildCachePerformanceTaskExecution:
       type: array
@@ -1569,6 +1636,7 @@ components:
       type: object
       required:
         - goalName
+        - mojoType
         - goalExecutionId
         - goalProjectName
         - avoidanceOutcome
@@ -1577,6 +1645,11 @@ components:
         goalName:
           type: string
           description: The goal name.
+        mojoType:
+          type: string
+          description: >-
+            The fully qualified class name of the Mojo that provides the
+            implementation of this goal.
         goalExecutionId:
           type: string
           description: The goal execution ID.
@@ -1620,6 +1693,40 @@ components:
             Negative values indicate that it took more time to reuse outputs
             than it did to create them originally. May be `null` if the
             information was not available.
+          x-nullable: true
+        nonCacheabilityCategory:
+          type: string
+          enum:
+            - build_cache_disabled_by_user
+            - goal_execution_marked_non_cacheable
+            - goal_not_supported
+            - no_gradle_enterprise_server_configured
+            - non_clean_build
+            - not_entitled
+            - offline_build
+            - unknown
+            - unknown_entitlements
+          description: >
+            The category of the non-cacheability reason:
+              * `build_cache_disabled_by_user` - The build cache was disabled by the user
+              * `goal_execution_marked_non_cacheable` - The goal execution was marked as non-cacheable
+              * `goal_not_supported` - The goal did not support build caching
+              * `no_gradle_enterprise_server_configured` - No Gradle Enterprise server was configured
+              * `non_clean_build` - The `clean` lifecycle was not executed 
+              * `not_entitled` - The Gradle Enterprise license entitlements did not allow Maven build caching
+              * `offline_build` - The build was run in offline mode
+              * `unknown` - Reason for disabled caching was not known
+              * `unknown_entitlements` - The Gradle Enterprise license entitlements could not be checked
+
+            May be `null` when the goal execution was cacheable or if the
+            information was not available.
+          x-nullable: true
+        nonCacheabilityReason:
+          type: string
+          description: >-
+            The human-readable reason for a non-cacheable goal execution. May be
+            `null` when the goal execution was cacheable or if the information
+            was not available.
           x-nullable: true
     MavenBuildCachePerformanceGoalExecution:
       type: array
