@@ -233,7 +233,7 @@ and then clicking the 'Purge cache' button.
 b) If you are not in a position to purge the remote build cache, you can connect
 to a unique shard of the remote build cache each time you run this experiment.
 A shard is accessed via an identifier that is appended to the path of the remote
-build cache URL, for example https://ge.example.com/cache/exp4-2021-Dec31-take1/
+build cache URL, for example https://ge.example.com/cache/exp4-2021-dec31-take1/
 which encodes the experiment type, the current date, and a counter that needs
 to be increased every time the experiment is rerun. Using such an encoding
 schema ensures that for each run of the experiment an empty remote build cache
