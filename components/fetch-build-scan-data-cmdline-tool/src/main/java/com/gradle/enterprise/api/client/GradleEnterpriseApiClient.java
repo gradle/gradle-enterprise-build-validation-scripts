@@ -1,9 +1,5 @@
 package com.gradle.enterprise.api.client;
 
-import com.gradle.enterprise.cli.ConsoleLogger;
-import com.gradle.enterprise.model.BuildValidationData;
-import com.gradle.enterprise.model.CustomValueNames;
-import com.gradle.enterprise.model.TaskExecutionSummary;
 import com.gradle.enterprise.api.GradleEnterpriseApi;
 import com.gradle.enterprise.api.model.Build;
 import com.gradle.enterprise.api.model.BuildAttributesValue;
@@ -13,6 +9,12 @@ import com.gradle.enterprise.api.model.GradleBuildCachePerformanceTaskExecutionE
 import com.gradle.enterprise.api.model.MavenAttributes;
 import com.gradle.enterprise.api.model.MavenBuildCachePerformance;
 import com.gradle.enterprise.api.model.MavenBuildCachePerformanceGoalExecutionEntry;
+import com.gradle.enterprise.cli.ConsoleLogger;
+import com.gradle.enterprise.model.BuildValidationData;
+import com.gradle.enterprise.model.CustomValueNames;
+import com.gradle.enterprise.model.TaskExecutionSummary;
+import okhttp3.Credentials;
+import okhttp3.OkHttpClient;
 import org.jetbrains.annotations.NotNull;
 
 import java.net.MalformedURLException;
@@ -21,6 +23,7 @@ import java.time.Duration;
 import java.util.AbstractMap;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -36,12 +39,31 @@ public class GradleEnterpriseApiClient {
     public GradleEnterpriseApiClient(URL baseUrl, CustomValueNames customValueNames, ConsoleLogger logger) {
         this.customValueNames = customValueNames;
         ApiClient client = new ApiClient();
+        client.setHttpClient(configureProxyAuthentication(client.getHttpClient()));
         client.setBasePath(baseUrl.toString());
         AuthenticationConfigurator.configureAuth(baseUrl, client, logger);
 
         this.baseUrl = baseUrl;
         this.apiClient = new GradleEnterpriseApi(client);
         this.logger = logger;
+    }
+
+    private OkHttpClient configureProxyAuthentication(OkHttpClient httpClient) {
+        return httpClient.newBuilder()
+                .proxyAuthenticator((route, response) -> {
+                    if (response.code() == 407) {
+                        String scheme = response.request().url().scheme().toLowerCase(Locale.ROOT);
+                        String proxyUser = System.getProperty(scheme + ".proxyUser");
+                        String proxyPassword = System.getProperty(scheme + ".proxyPassword");
+                        if (proxyUser != null && proxyPassword != null) {
+                            return response.request().newBuilder()
+                                    .header("Proxy-Authorization", Credentials.basic(proxyUser, proxyPassword))
+                                    .build();
+                        }
+                    }
+                    return null;
+                })
+                .build();
     }
 
     public BuildValidationData fetchBuildValidationData(String buildScanId) {
