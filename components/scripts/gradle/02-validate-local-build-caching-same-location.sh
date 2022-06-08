@@ -123,7 +123,7 @@ execute_first_build() {
   local init_scripts_dir
   init_scripts_dir="$(init_scripts_path)"
 
-  info "./gradlew --build-cache -Dscan.tag.${EXP_SCAN_TAG} -Dscan.value.runId=${RUN_ID} clean ${tasks}$(print_extra_args)"
+  info "./gradlew --build-cache --scan -Dscan.tag.${EXP_SCAN_TAG} -Dscan.value.runId=${RUN_ID} clean ${tasks}$(print_extra_args)"
 
   # shellcheck disable=SC2086  # we want tasks to expand with word splitting in this case
   invoke_gradle \
@@ -138,7 +138,7 @@ execute_second_build() {
   local init_scripts_dir
   init_scripts_dir="$(init_scripts_path)"
 
-  info "./gradlew --build-cache -Dscan.tag.${EXP_SCAN_TAG} -Dscan.value.runId=${RUN_ID} clean ${tasks}$(print_extra_args)"
+  info "./gradlew --build-cache --scan -Dscan.tag.${EXP_SCAN_TAG} -Dscan.value.runId=${RUN_ID} clean ${tasks}$(print_extra_args)"
 
   # shellcheck disable=SC2086  # we want tasks to expand with word splitting in this case
   invoke_gradle \

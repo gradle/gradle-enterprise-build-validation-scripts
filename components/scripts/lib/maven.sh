@@ -41,6 +41,7 @@ invoke_maven() {
   fi
 
   args+=(
+    -Dscan
     -Dmaven.ext.class.path="${extension_classpath}"
     -Dcom.gradle.enterprise.build_validation.experimentDir="${EXP_DIR}"
     -Dcom.gradle.enterprise.build_validation.expId="${EXP_SCAN_TAG}"

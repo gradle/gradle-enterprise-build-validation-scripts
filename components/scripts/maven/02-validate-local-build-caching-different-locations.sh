@@ -122,7 +122,7 @@ wizard_execute() {
 
 execute_first_build() {
   info "Running first build:"
-  info "./mvnw -Dscan.tag.${EXP_SCAN_TAG} -Dscan.value.runId=${RUN_ID} clean ${tasks}$(print_extra_args)"
+  info "./mvnw -Dscan -Dscan.tag.${EXP_SCAN_TAG} -Dscan.value.runId=${RUN_ID} clean ${tasks}$(print_extra_args)"
 
   # shellcheck disable=SC2086  # we want tasks to expand with word splitting in this case
   invoke_maven \
@@ -134,7 +134,7 @@ execute_first_build() {
 
 execute_second_build() {
   info "Running second build:"
-  info "./mvnw -Dscan.tag.${EXP_SCAN_TAG} -Dscan.value.runId=${RUN_ID} clean ${tasks}$(print_extra_args)"
+  info "./mvnw -Dscan -Dscan.tag.${EXP_SCAN_TAG} -Dscan.value.runId=${RUN_ID} clean ${tasks}$(print_extra_args)"
 
   cd "${EXP_DIR}/second-build_${project_name}" || die "Unable to cd to ${EXP_DIR}/second-build_${project_name}" 2
 
