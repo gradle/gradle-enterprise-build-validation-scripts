@@ -18,6 +18,7 @@ public class AuthenticationConfigurator {
         public static final String USERNAME = "GRADLE_ENTERPRISE_USERNAME";
         public static final String PASSWORD = "GRADLE_ENTERPRISE_PASSWORD";
         public static final String GRADLE_USER_HOME = "GRADLE_USER_HOME";
+        public static final String ALLOW_UNTRUSTED = "ALLOW_UNTRUSTED";
     }
 
     public static void configureAuth(URL url, ApiClient client, ConsoleLogger logger) {
