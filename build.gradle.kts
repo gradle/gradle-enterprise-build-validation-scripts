@@ -180,12 +180,12 @@ val assembleMavenScripts = tasks.register<Zip>("assembleMavenScripts") {
     into(archiveBaseName.get())
 }
 
-tasks.named("assemble") {
-    dependsOn("assembleGradleScripts")
-    dependsOn("assembleMavenScripts")
+tasks.assemble {
+    dependsOn(assembleGradleScripts)
+    dependsOn(assembleMavenScripts)
 }
 
-tasks.register<Shellcheck>("shellcheckGradleScripts") {
+val shellcheckGradleScripts = tasks.register<Shellcheck>("shellcheckGradleScripts") {
     group = "verification"
     description = "Perform quality checks on Gradle build validation scripts using Shellcheck."
     sourceFiles = copyGradleScripts.get().outputs.files.asFileTree.matching {
@@ -206,7 +206,7 @@ tasks.register<Shellcheck>("shellcheckGradleScripts") {
     }
 }
 
-tasks.register<Shellcheck>("shellcheckMavenScripts") {
+val shellcheckMavenScripts = tasks.register<Shellcheck>("shellcheckMavenScripts") {
     group = "verification"
     description = "Perform quality checks on Maven build validation scripts using Shellcheck."
     sourceFiles = copyMavenScripts.get().outputs.files.asFileTree.matching {
@@ -227,9 +227,9 @@ tasks.register<Shellcheck>("shellcheckMavenScripts") {
     }
 }
 
-tasks.named("check") {
-    dependsOn("shellcheckGradleScripts")
-    dependsOn("shellcheckMavenScripts")
+tasks.check {
+    dependsOn(shellcheckGradleScripts)
+    dependsOn(shellcheckMavenScripts)
 }
 
 val generateChecksums = tasks.register<Checksum>("generateChecksums") {
@@ -255,13 +255,13 @@ githubRelease {
     releaseAssets(assembleGradleScripts, assembleMavenScripts, generateChecksums.get().outputs.files.asFileTree)
 }
 
-tasks.register<CreateGitTag>("createReleaseTag") {
+val createReleaseTag = tasks.register<CreateGitTag>("createReleaseTag") {
     tagName.set(gitReleaseTag())
     overwriteExisting.set(isDevelopmentRelease)
 }
 
-tasks.named("githubRelease") {
-    dependsOn("createReleaseTag")
+tasks.githubRelease {
+    dependsOn(createReleaseTag)
 }
 
 tasks.withType(Sign::class).configureEach {
