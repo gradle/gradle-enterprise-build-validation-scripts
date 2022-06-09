@@ -6,6 +6,7 @@ import com.gradle.enterprise.api.model.BuildAttributesValue;
 import com.gradle.enterprise.api.model.GradleAttributes;
 import com.gradle.enterprise.api.model.GradleBuildCachePerformance;
 import com.gradle.enterprise.api.model.GradleBuildCachePerformanceTaskExecutionEntry;
+import com.gradle.enterprise.api.model.GradleBuildCachePerformanceTaskExecutionEntry.NonCacheabilityCategoryEnum;
 import com.gradle.enterprise.api.model.MavenAttributes;
 import com.gradle.enterprise.api.model.MavenBuildCachePerformance;
 import com.gradle.enterprise.api.model.MavenBuildCachePerformanceGoalExecutionEntry;
@@ -27,6 +28,11 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.stream.Collectors;
+
+import static com.gradle.enterprise.api.model.GradleBuildCachePerformanceTaskExecutionEntry.AvoidanceOutcomeEnum.EXECUTED_CACHEABLE;
+import static com.gradle.enterprise.api.model.GradleBuildCachePerformanceTaskExecutionEntry.AvoidanceOutcomeEnum.EXECUTED_NOT_CACHEABLE;
+import static com.gradle.enterprise.api.model.GradleBuildCachePerformanceTaskExecutionEntry.NonCacheabilityCategoryEnum.DISABLED_TO_ENSURE_CORRECTNESS;
+import static com.gradle.enterprise.api.model.GradleBuildCachePerformanceTaskExecutionEntry.NonCacheabilityCategoryEnum.OVERLAPPING_OUTPUTS;
 
 public class GradleEnterpriseApiClient {
 
@@ -205,9 +211,7 @@ public class GradleEnterpriseApiClient {
     @NotNull
     private Map<String, TaskExecutionSummary> summarizeTaskExecutions(GradleBuildCachePerformance buildCachePerformance) {
         Map<String, List<GradleBuildCachePerformanceTaskExecutionEntry>> tasksByOutcome = buildCachePerformance.getTaskExecution().stream()
-            .collect(Collectors.groupingBy(
-                t -> t.getAvoidanceOutcome().toString()
-            ));
+            .collect(Collectors.groupingBy(this::avoidanceOutcome));
 
         Map<String, TaskExecutionSummary> summariesByOutcome = tasksByOutcome.entrySet()
             .stream()
@@ -218,6 +222,13 @@ public class GradleEnterpriseApiClient {
             .forEach(outcome -> summariesByOutcome.putIfAbsent(outcome.toString(), TaskExecutionSummary.ZERO));
 
         return putTotalAvoidedFromCache(summariesByOutcome);
+    }
+
+    private String avoidanceOutcome(GradleBuildCachePerformanceTaskExecutionEntry task) {
+        if (task.getAvoidanceOutcome() == EXECUTED_NOT_CACHEABLE && (task.getNonCacheabilityCategory() == OVERLAPPING_OUTPUTS || task.getNonCacheabilityCategory() == DISABLED_TO_ENSURE_CORRECTNESS)) {
+            return EXECUTED_CACHEABLE.toString();
+        }
+        return task.getAvoidanceOutcome().toString();
     }
 
     @NotNull
