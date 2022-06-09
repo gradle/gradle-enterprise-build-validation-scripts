@@ -20,6 +20,6 @@ java {
     }
 }
 
-tasks.withType<JavaCompile>() {
+tasks.compileJava {
     options.encoding = "UTF-8"
 }
