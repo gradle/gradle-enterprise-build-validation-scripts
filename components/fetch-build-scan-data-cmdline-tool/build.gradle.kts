@@ -57,7 +57,7 @@ openApiGenerate {
 sourceSets {
     main {
         java {
-            srcDir(tasks.findByName("openApiGenerate")!!)
+            srcDir(tasks.named("openApiGenerate"))
         }
     }
 }
