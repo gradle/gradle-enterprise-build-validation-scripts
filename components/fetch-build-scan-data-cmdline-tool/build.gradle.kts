@@ -62,7 +62,7 @@ sourceSets {
     }
 }
 
-tasks.compileJava {
+tasks.withType(JavaCompile::class).configureEach {
     options.compilerArgs.add("-Aproject=${project.group}/${project.name}")
     options.encoding = "UTF-8"
 }

@@ -59,7 +59,7 @@ wrapperUpgrade {
     }
 }
 
-val unpackArgbash = tasks.register<Copy>("unpackArgbash") {
+val unpackArgbash by tasks.registering(Copy::class) {
     group = "argbash"
     description = "Unpacks Argbash."
     from(zipTree(argbash.singleFile)) {
@@ -73,7 +73,7 @@ val unpackArgbash = tasks.register<Copy>("unpackArgbash") {
     into(layout.buildDirectory.dir("argbash"))
 }
 
-val applyArgbash = tasks.register<ApplyArgbash>("generateBashCliParsers") {
+val generateBashCliParsers by tasks.registering(ApplyArgbash::class) {
     group = "argbash"
     description = "Uses Argbash to generate Bash command line argument parsing code."
     argbashHome.set(layout.dir(unpackArgbash.map { it.outputs.files.singleFile }))
@@ -89,7 +89,7 @@ val applyArgbash = tasks.register<ApplyArgbash>("generateBashCliParsers") {
     })
 }
 
-val copyGradleScripts = tasks.register<Copy>("copyGradleScripts") {
+val copyGradleScripts by tasks.registering(Copy::class) {
     group = "build"
     description = "Copies the Gradle source and generated scripts to output directory."
 
@@ -114,7 +114,7 @@ val copyGradleScripts = tasks.register<Copy>("copyGradleScripts") {
         exclude("lib/cli-parsers")
         filter { line: String -> line.replace("<HEAD>", projectVersion) }
     }
-    from(applyArgbash.map { it.outputDir.file("lib/cli-parsers/gradle") }) {
+    from(generateBashCliParsers.map { it.outputDir.file("lib/cli-parsers/gradle") }) {
         into("lib/")
     }
     from(commonComponents) {
@@ -123,7 +123,7 @@ val copyGradleScripts = tasks.register<Copy>("copyGradleScripts") {
     into(layout.buildDirectory.dir("scripts/gradle"))
 }
 
-val copyMavenScripts = tasks.register<Copy>("copyMavenScripts") {
+val copyMavenScripts by tasks.registering(Copy::class) {
     group = "build"
     description = "Copies the Maven source and generated scripts to output directory."
 
@@ -143,7 +143,7 @@ val copyMavenScripts = tasks.register<Copy>("copyMavenScripts") {
         exclude("lib/cli-parsers")
         filter { line: String -> line.replace("<HEAD>", projectVersion) }
     }
-    from(applyArgbash.map { it.outputDir.file("lib/cli-parsers/maven") }) {
+    from(generateBashCliParsers.map { it.outputDir.file("lib/cli-parsers/maven") }) {
         into("lib/")
     }
     from(commonComponents) {
@@ -162,7 +162,7 @@ tasks.register<Task>("copyScripts") {
     dependsOn("copyMavenScripts")
 }
 
-val assembleGradleScripts = tasks.register<Zip>("assembleGradleScripts") {
+val assembleGradleScripts by tasks.registering(Zip::class) {
     group = "build"
     description = "Packages the Gradle experiment scripts in a zip archive."
     archiveBaseName.set("gradle-enterprise-gradle-build-validation")
@@ -171,7 +171,7 @@ val assembleGradleScripts = tasks.register<Zip>("assembleGradleScripts") {
     into(archiveBaseName.get())
 }
 
-val assembleMavenScripts = tasks.register<Zip>("assembleMavenScripts") {
+val assembleMavenScripts by tasks.registering(Zip::class) {
     group = "build"
     description = "Packages the Maven experiment scripts in a zip archive."
     archiveBaseName.set("gradle-enterprise-maven-build-validation")
@@ -185,7 +185,7 @@ tasks.assemble {
     dependsOn(assembleMavenScripts)
 }
 
-val shellcheckGradleScripts = tasks.register<Shellcheck>("shellcheckGradleScripts") {
+val shellcheckGradleScripts by tasks.registering(Shellcheck::class) {
     group = "verification"
     description = "Perform quality checks on Gradle build validation scripts using Shellcheck."
     sourceFiles = copyGradleScripts.get().outputs.files.asFileTree.matching {
@@ -206,7 +206,7 @@ val shellcheckGradleScripts = tasks.register<Shellcheck>("shellcheckGradleScript
     }
 }
 
-val shellcheckMavenScripts = tasks.register<Shellcheck>("shellcheckMavenScripts") {
+val shellcheckMavenScripts by tasks.registering(Shellcheck::class) {
     group = "verification"
     description = "Perform quality checks on Maven build validation scripts using Shellcheck."
     sourceFiles = copyMavenScripts.get().outputs.files.asFileTree.matching {
@@ -232,7 +232,7 @@ tasks.check {
     dependsOn(shellcheckMavenScripts)
 }
 
-val generateChecksums = tasks.register<Checksum>("generateChecksums") {
+val generateChecksums by tasks.registering(Checksum::class) {
     group = "distribution"
     description = "Generates checksums for the distribution zip files."
     files = assembleGradleScripts.get().outputs.files.plus(assembleMavenScripts.get().outputs.files)
@@ -256,7 +256,7 @@ githubRelease {
     releaseAssets(assembleGradleScripts, assembleMavenScripts, generateChecksums.get().outputs.files.asFileTree)
 }
 
-val createReleaseTag = tasks.register<CreateGitTag>("createReleaseTag") {
+val createReleaseTag by tasks.registering(CreateGitTag::class) {
     tagName.set(gitReleaseTag())
     overwriteExisting.set(isDevelopmentRelease)
 }
