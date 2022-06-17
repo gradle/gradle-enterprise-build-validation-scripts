@@ -14,7 +14,7 @@ public class NetworkingConfigurator {
     public static void configureNetworking(Optional<Path> networkSettingsFile, ConsoleLogger logger) {
         networkSettingsFile.ifPresent(path -> {
             try {
-                configureBasedOnProxyProperties(path, logger);
+                configureBasedOnProperties(path, logger);
             } catch (IOException e) {
                 logger.debug("Unable to load settings from %s: %s", path, e.getMessage());
                 logger.debug(e);
@@ -22,14 +22,21 @@ public class NetworkingConfigurator {
         });
     }
 
-    private static void configureBasedOnProxyProperties(Path networkSettingsFile, ConsoleLogger logger) throws IOException {
+    private static void configureBasedOnProperties(Path networkSettingsFile, ConsoleLogger logger) throws IOException {
         if (Files.isRegularFile(networkSettingsFile)) {
-            logger.debug("Loading proxy settings from " + networkSettingsFile.toAbsolutePath());
+            logger.debug("Loading network settings from " + networkSettingsFile.toAbsolutePath());
             Properties proxyProps = loadProperties(networkSettingsFile);
             proxyProps.stringPropertyNames().stream()
-                .filter(NetworkingConfigurator::isProxyProperty)
+                .filter(NetworkingConfigurator::isNetworkingProperty)
                 .forEach(key -> System.setProperty(key, proxyProps.getProperty(key)));
         }
+    }
+
+    private static boolean isNetworkingProperty(String key) {
+        return isSslProperty(key) || isProxyProperty(key);
+    }
+    private static boolean isSslProperty(String key) {
+        return key.startsWith("javax.net.ssl");
     }
 
     private static boolean isProxyProperty(String key) {

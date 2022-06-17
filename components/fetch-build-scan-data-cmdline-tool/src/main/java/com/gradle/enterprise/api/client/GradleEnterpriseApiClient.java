@@ -17,8 +17,13 @@ import okhttp3.Credentials;
 import okhttp3.OkHttpClient;
 import org.jetbrains.annotations.NotNull;
 
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.X509TrustManager;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.security.GeneralSecurityException;
+import java.security.SecureRandom;
 import java.time.Duration;
 import java.util.AbstractMap;
 import java.util.Arrays;
@@ -36,34 +41,76 @@ public class GradleEnterpriseApiClient {
 
     private final ConsoleLogger logger;
 
+    private static final TrustManager TRUST_ALL_CERTS = new X509TrustManager() {
+        @Override
+        public void checkClientTrusted(java.security.cert.X509Certificate[] chain, String authType) {
+        }
+
+        @Override
+        public void checkServerTrusted(java.security.cert.X509Certificate[] chain, String authType) {
+        }
+
+        @Override
+        public java.security.cert.X509Certificate[] getAcceptedIssuers() {
+            return new java.security.cert.X509Certificate[]{};
+        }
+    };
+
     public GradleEnterpriseApiClient(URL baseUrl, CustomValueNames customValueNames, ConsoleLogger logger) {
+        this.logger = logger;
+        this.baseUrl = baseUrl;
         this.customValueNames = customValueNames;
+
         ApiClient client = new ApiClient();
-        client.setHttpClient(configureProxyAuthentication(client.getHttpClient()));
+        client.setHttpClient(configureHttpClient(client.getHttpClient()));
         client.setBasePath(baseUrl.toString());
         AuthenticationConfigurator.configureAuth(baseUrl, client, logger);
 
-        this.baseUrl = baseUrl;
         this.apiClient = new GradleEnterpriseApi(client);
-        this.logger = logger;
     }
 
-    private OkHttpClient configureProxyAuthentication(OkHttpClient httpClient) {
-        return httpClient.newBuilder()
-                .proxyAuthenticator((route, response) -> {
-                    if (response.code() == 407) {
-                        String scheme = response.request().url().scheme().toLowerCase(Locale.ROOT);
-                        String proxyUser = System.getProperty(scheme + ".proxyUser");
-                        String proxyPassword = System.getProperty(scheme + ".proxyPassword");
-                        if (proxyUser != null && proxyPassword != null) {
-                            return response.request().newBuilder()
-                                    .header("Proxy-Authorization", Credentials.basic(proxyUser, proxyPassword))
-                                    .build();
-                        }
+    private OkHttpClient configureHttpClient(OkHttpClient httpClient) {
+        OkHttpClient.Builder httpClientBuilder = httpClient.newBuilder();
+
+
+        configureSsl(httpClientBuilder);
+        configureProxyAuthentication(httpClientBuilder);
+
+        return httpClientBuilder.build();
+    }
+
+    private void configureSsl(OkHttpClient.Builder builder) {
+        if (allowUntrusted()) {
+            try {
+                SSLContext sslContext = SSLContext.getInstance("SSL");
+                sslContext.init(null, new TrustManager[]{TRUST_ALL_CERTS}, new SecureRandom());
+                builder.sslSocketFactory(sslContext.getSocketFactory(), (X509TrustManager) TRUST_ALL_CERTS);
+            } catch (GeneralSecurityException e) {
+                logger.error("Failed to configure the HTTP client to allow untrusted SSL certificates: %s", e.getMessage());
+                logger.error(e);
+            }
+        }
+    }
+
+    private boolean allowUntrusted() {
+        return Boolean.parseBoolean(System.getProperty("javax.net.ssl.allowUntrusted"));
+    }
+
+    private void configureProxyAuthentication(OkHttpClient.Builder httpClientBuilder) {
+        httpClientBuilder
+            .proxyAuthenticator((route, response) -> {
+                if (response.code() == 407) {
+                    String scheme = response.request().url().scheme().toLowerCase(Locale.ROOT);
+                    String proxyUser = System.getProperty(scheme + ".proxyUser");
+                    String proxyPassword = System.getProperty(scheme + ".proxyPassword");
+                    if (proxyUser != null && proxyPassword != null) {
+                        return response.request().newBuilder()
+                            .header("Proxy-Authorization", Credentials.basic(proxyUser, proxyPassword))
+                            .build();
                     }
-                    return null;
-                })
-                .build();
+                }
+                return null;
+            });
     }
 
     public BuildValidationData fetchBuildValidationData(String buildScanId) {

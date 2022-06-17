@@ -40,6 +40,10 @@ public class ConsoleLogger {
         debug(colorScheme.stackTraceText(t).plainString());
     }
 
+    public void error(String message, Object... args) {
+        error(String.format(message, args));
+    }
+
     public void error(String message) {
         out.println(colorScheme.errorText(message));
     }
