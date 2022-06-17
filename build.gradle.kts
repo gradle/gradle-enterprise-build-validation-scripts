@@ -251,6 +251,7 @@ githubRelease {
     tagName.set(gitReleaseTag())
     prerelease.set(isDevelopmentRelease)
     overwrite.set(isDevelopmentRelease)
+    generateReleaseNotes.set(false)
     body.set(layout.projectDirectory.file("release/changes.md").asFile.readText().trim())
     releaseAssets(assembleGradleScripts, assembleMavenScripts, generateChecksums.get().outputs.files.asFileTree)
 }
