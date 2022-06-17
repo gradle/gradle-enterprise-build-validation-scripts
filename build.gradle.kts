@@ -4,7 +4,7 @@ import org.gradle.crypto.checksum.Checksum
 plugins {
     id("base")
     id("com.felipefzdz.gradle.shellcheck") version "1.4.6"
-    id("com.github.breadmoirai.github-release") version "2.3.7"
+    id("com.github.breadmoirai.github-release") version "2.4.1"
     id("org.gradle.crypto.checksum") version "1.4.0"
     id("org.gradle.wrapper-upgrade") version "0.10.2"
 }
@@ -251,6 +251,7 @@ githubRelease {
     tagName.set(gitReleaseTag())
     prerelease.set(isDevelopmentRelease)
     overwrite.set(isDevelopmentRelease)
+    generateReleaseNotes.set(false)
     body.set(layout.projectDirectory.file("release/changes.md").asFile.readText().trim())
     releaseAssets(assembleGradleScripts, assembleMavenScripts, generateChecksums.get().outputs.files.asFileTree)
 }
