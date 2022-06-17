@@ -26,6 +26,10 @@ public class ConsoleLogger {
         out.printf(message, args);
     }
 
+    public void debug(String message, Object... args) {
+        debug(String.format(message, args));
+    }
+
     public void debug(String message) {
         if (debugEnabled) {
             out.println(colorScheme.text("@|faint " + message + "|@"));

@@ -4,7 +4,7 @@ import com.gradle.enterprise.api.client.FailedRequestException;
 import com.gradle.enterprise.api.client.GradleEnterpriseApiClient;
 import com.gradle.enterprise.model.BuildValidationData;
 import com.gradle.enterprise.model.CustomValueNames;
-import com.gradle.enterprise.proxy.ProxyServerConfigurator;
+import com.gradle.enterprise.proxy.NetworkingConfigurator;
 import picocli.CommandLine;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
@@ -45,8 +45,8 @@ public class FetchBuildValidationDataCommand implements Callable<Integer> {
     @Option(names = {"-m", "--mapping-file"}, description = "Specifies a mapping file that configures the keys used to fetch important custom values.")
     private Optional<Path> customValueMappingFile;
 
-    @Option(names = {"-p", "--proxy-settings-file"}, description = "Specifies a file that configures HTTP Proxy settings.")
-    private Optional<Path> proxySettingsFile;
+    @Option(names = {"--network-settings-file"}, description = "Specifies a file that configures HTTP Proxy and SSL settings.")
+    private Optional<Path> networkSettingsFile;
 
     @Option(names = {"--debug"}, description = "Prints additional debugging information while running.")
     private boolean debug;
@@ -59,7 +59,7 @@ public class FetchBuildValidationDataCommand implements Callable<Integer> {
         // Use System.err for logging since we're going to write out the CSV to System.out
         logger = new ConsoleLogger(System.err, colorScheme, debug);
 
-        ProxyServerConfigurator.configureProxyServers(proxySettingsFile, logger);
+        NetworkingConfigurator.configureNetworking(networkSettingsFile, logger);
 
         CustomValueNames customValueKeys = loadCustomValueKeys(customValueMappingFile);
 
