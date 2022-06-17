@@ -157,6 +157,17 @@ public class GradleEnterpriseApiClient {
                     throw new BuildScanNotFoundException(buildScanId, baseUrl, e.getCode(), e.getResponseBody(), e);
                 case StatusCodes.UNAUTHORIZED:
                     throw new AuthenticationFailedException(buildScanId, baseUrl, e.getCode(), e.getResponseBody(), e);
+                case 0:
+                    // This wasn't a bad HTTP response, instead it was a failure to connect.
+                    //
+                    // WORKAROUND: There is a bug in the OpenAPI generator that generates a broken ApiException.getMessage(),
+                    // which when called on a non-HTTP response error will generate a NullPointerException. To work around this
+                    // we use the underlying cause (if there is one). If there isn't a cause exception, then use
+                    // the ApiException but avoid calling its getMessage method.
+                    if (e.getCause() != null) {
+                        throw new ConnectionFailedException(buildScanId, baseUrl, e.getCause());
+                    }
+                    throw new ConnectionFailedException(buildScanId, baseUrl, e);
                 default:
                     throw new UnexpectedResponseException(buildScanId, baseUrl, e.getCode(), e.getResponseBody(), e);
             }
