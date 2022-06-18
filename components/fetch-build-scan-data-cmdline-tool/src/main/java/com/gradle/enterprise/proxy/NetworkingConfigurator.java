@@ -36,7 +36,8 @@ public class NetworkingConfigurator {
         return isSslProperty(key) || isProxyProperty(key);
     }
     private static boolean isSslProperty(String key) {
-        return key.startsWith("javax.net.ssl");
+        return key.startsWith("javax.net.ssl")
+            || key.equals("allowUntrustedServer");
     }
 
     private static boolean isProxyProperty(String key) {

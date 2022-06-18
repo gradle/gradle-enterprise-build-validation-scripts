@@ -13,4 +13,4 @@
 #https.proxyPassword=password
 
 # Uncomment to disable SSL certificate validation
-#javax.net.ssl.allowUntrusted=true
+#allowUntrustedServer=true

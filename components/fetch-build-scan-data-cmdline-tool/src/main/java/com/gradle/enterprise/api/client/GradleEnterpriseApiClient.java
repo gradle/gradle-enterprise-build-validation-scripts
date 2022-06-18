@@ -15,9 +15,12 @@ import com.gradle.enterprise.model.CustomValueNames;
 import com.gradle.enterprise.model.TaskExecutionSummary;
 import okhttp3.Credentials;
 import okhttp3.OkHttpClient;
+import okhttp3.tls.HandshakeCertificates;
 import org.jetbrains.annotations.NotNull;
 
+import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLSession;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
 import java.net.MalformedURLException;
@@ -41,21 +44,6 @@ public class GradleEnterpriseApiClient {
 
     private final ConsoleLogger logger;
 
-    private static final TrustManager TRUST_ALL_CERTS = new X509TrustManager() {
-        @Override
-        public void checkClientTrusted(java.security.cert.X509Certificate[] chain, String authType) {
-        }
-
-        @Override
-        public void checkServerTrusted(java.security.cert.X509Certificate[] chain, String authType) {
-        }
-
-        @Override
-        public java.security.cert.X509Certificate[] getAcceptedIssuers() {
-            return new java.security.cert.X509Certificate[]{};
-        }
-    };
-
     public GradleEnterpriseApiClient(URL baseUrl, CustomValueNames customValueNames, ConsoleLogger logger) {
         this.logger = logger;
         this.baseUrl = baseUrl;
@@ -72,28 +60,27 @@ public class GradleEnterpriseApiClient {
     private OkHttpClient configureHttpClient(OkHttpClient httpClient) {
         OkHttpClient.Builder httpClientBuilder = httpClient.newBuilder();
 
-
         configureSsl(httpClientBuilder);
         configureProxyAuthentication(httpClientBuilder);
 
         return httpClientBuilder.build();
     }
 
-    private void configureSsl(OkHttpClient.Builder builder) {
+    private void configureSsl(OkHttpClient.Builder httpClientBuilder) {
+        HandshakeCertificates.Builder clientCertsBuilder = new HandshakeCertificates.Builder()
+            .addPlatformTrustedCertificates();
+
         if (allowUntrusted()) {
-            try {
-                SSLContext sslContext = SSLContext.getInstance("SSL");
-                sslContext.init(null, new TrustManager[]{TRUST_ALL_CERTS}, new SecureRandom());
-                builder.sslSocketFactory(sslContext.getSocketFactory(), (X509TrustManager) TRUST_ALL_CERTS);
-            } catch (GeneralSecurityException e) {
-                logger.error("Failed to configure the HTTP client to allow untrusted SSL certificates: %s", e.getMessage());
-                logger.error(e);
-            }
+            clientCertsBuilder.addInsecureHost(baseUrl.getHost());
+            httpClientBuilder.hostnameVerifier((hostname, session) -> baseUrl.getHost().equals(hostname));
         }
+
+        HandshakeCertificates clientCerts = clientCertsBuilder.build();
+        httpClientBuilder.sslSocketFactory(clientCerts.sslSocketFactory(), clientCerts.trustManager());
     }
 
     private boolean allowUntrusted() {
-        return Boolean.parseBoolean(System.getProperty("javax.net.ssl.allowUntrusted"));
+        return Boolean.parseBoolean(System.getProperty("allowUntrustedServer"));
     }
 
     private void configureProxyAuthentication(OkHttpClient.Builder httpClientBuilder) {
