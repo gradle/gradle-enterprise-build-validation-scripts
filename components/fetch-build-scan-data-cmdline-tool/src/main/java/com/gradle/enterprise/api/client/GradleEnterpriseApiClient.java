@@ -18,15 +18,8 @@ import okhttp3.OkHttpClient;
 import okhttp3.tls.HandshakeCertificates;
 import org.jetbrains.annotations.NotNull;
 
-import javax.net.ssl.HostnameVerifier;
-import javax.net.ssl.SSLContext;
-import javax.net.ssl.SSLSession;
-import javax.net.ssl.TrustManager;
-import javax.net.ssl.X509TrustManager;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.security.GeneralSecurityException;
-import java.security.SecureRandom;
 import java.time.Duration;
 import java.util.AbstractMap;
 import java.util.Arrays;
@@ -67,19 +60,19 @@ public class GradleEnterpriseApiClient {
     }
 
     private void configureSsl(OkHttpClient.Builder httpClientBuilder) {
-        HandshakeCertificates.Builder clientCertsBuilder = new HandshakeCertificates.Builder()
+        HandshakeCertificates.Builder trustedCertsBuilder = new HandshakeCertificates.Builder()
             .addPlatformTrustedCertificates();
 
-        if (allowUntrusted()) {
-            clientCertsBuilder.addInsecureHost(baseUrl.getHost());
+        if (allowUntrustedServer()) {
+            trustedCertsBuilder.addInsecureHost(baseUrl.getHost());
             httpClientBuilder.hostnameVerifier((hostname, session) -> baseUrl.getHost().equals(hostname));
         }
 
-        HandshakeCertificates clientCerts = clientCertsBuilder.build();
-        httpClientBuilder.sslSocketFactory(clientCerts.sslSocketFactory(), clientCerts.trustManager());
+        HandshakeCertificates trustedCerts = trustedCertsBuilder.build();
+        httpClientBuilder.sslSocketFactory(trustedCerts.sslSocketFactory(), trustedCerts.trustManager());
     }
 
-    private boolean allowUntrusted() {
+    private boolean allowUntrustedServer() {
         return Boolean.parseBoolean(System.getProperty("allowUntrustedServer"));
     }
 
