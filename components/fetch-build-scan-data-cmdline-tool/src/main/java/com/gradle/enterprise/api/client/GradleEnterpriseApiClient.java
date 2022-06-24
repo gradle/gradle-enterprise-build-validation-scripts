@@ -140,9 +140,10 @@ public class GradleEnterpriseApiClient {
                 case 0:
                     // This wasn't a bad HTTP response, instead it was a failure to connect.
                     //
-                    // WORKAROUND: There is a bug in the OpenAPI generator that generates a broken ApiException.getMessage(),
-                    // which when called on a non-HTTP response error will generate a NullPointerException. To work around this
-                    // we use the underlying cause (if there is one). If there isn't a cause exception, then use
+                    // WORKAROUND: There is a bug in the OpenAPI generator that generates an ApiException.getMessage() method
+                    // that throws a NullPointerException  when called on a non-HTTP error. See https://github.com/OpenAPITools/openapi-generator/issues/12631
+                    //
+                    // To work around the bug we use the underlying cause (if there is one). If there isn't a cause exception, then use
                     // the ApiException but avoid calling its getMessage method.
                     if (e.getCause() != null) {
                         throw new ConnectionFailedException(buildScanId, baseUrl, e.getCause());
