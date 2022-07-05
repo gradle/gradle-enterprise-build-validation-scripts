@@ -146,9 +146,9 @@ public class GradleEnterpriseApiClient {
                     // To work around the bug we use the underlying cause (if there is one). If there isn't a cause exception, then use
                     // the ApiException but avoid calling its getMessage method.
                     if (e.getCause() != null) {
-                        throw new ConnectionFailedException(buildScanId, baseUrl, e.getCause());
+                        throw new ConnectionFailedException(baseUrl, buildScanId, e.getCause());
                     }
-                    throw new ConnectionFailedException(buildScanId, baseUrl, e);
+                    throw new ConnectionFailedException(baseUrl, buildScanId, e);
                 default:
                     throw new UnexpectedResponseException(buildScanId, baseUrl, e.getCode(), e.getResponseBody(), e);
             }
