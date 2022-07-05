@@ -5,6 +5,8 @@ plugins {
     id("org.openapi.generator") version "6.0.0"
 }
 
+description = "Application to fetch build scan data using the Gradle Enterprise Export API"
+
 repositories {
     mavenCentral()
 }
@@ -25,14 +27,11 @@ dependencies {
     annotationProcessor("info.picocli:picocli-codegen:4.6.3")
 }
 
-description = "Application to fetch build scan data using the Gradle Enterprise Export API"
-
 java {
     toolchain {
         languageVersion.set(JavaLanguageVersion.of(8))
     }
 }
-
 
 openApiGenerate {
     generatorName.set("java")
