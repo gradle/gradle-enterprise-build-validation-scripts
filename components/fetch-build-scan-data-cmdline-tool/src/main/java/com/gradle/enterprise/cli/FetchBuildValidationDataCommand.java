@@ -42,7 +42,7 @@ public class FetchBuildValidationDataCommand implements Callable<Integer> {
     @Parameters(paramLabel = "BUILD_SCAN", description = "The build scans to fetch.", arity = "1..*")
     private List<URL> buildScanUrls;
 
-    @Option(names = {"-m", "--mapping-file"}, description = "Specifies a mapping file that configures the keys used to fetch important custom values.")
+    @Option(names = {"--mapping-file"}, description = "Specifies a mapping file that configures the keys used to fetch important custom values.")
     private Optional<Path> customValueMappingFile;
 
     @Option(names = {"--network-settings-file"}, description = "Specifies a file that configures HTTP Proxy and SSL settings.")
