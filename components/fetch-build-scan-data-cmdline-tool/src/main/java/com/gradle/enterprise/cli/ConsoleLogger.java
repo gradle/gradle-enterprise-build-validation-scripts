@@ -22,6 +22,7 @@ public class ConsoleLogger {
     public void infoNoNewline(String message) {
         out.print(message);
     }
+
     public void info(String message, Object... args) {
         out.printf(message, args);
     }
