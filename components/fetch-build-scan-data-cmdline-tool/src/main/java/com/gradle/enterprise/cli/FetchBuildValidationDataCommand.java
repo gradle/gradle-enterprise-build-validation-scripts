@@ -45,7 +45,7 @@ public class FetchBuildValidationDataCommand implements Callable<Integer> {
     @Option(names = {"--mapping-file"}, description = "Specifies a mapping file that configures the keys used to fetch important custom values.")
     private Optional<Path> customValueMappingFile;
 
-    @Option(names = {"--network-settings-file"}, description = "Specifies a file that configures HTTP Proxy and SSL settings.")
+    @Option(names = {"--network-settings-file"}, description = "Specifies a file that configures HTTP(S) Proxy and SSL settings.")
     private Optional<Path> networkSettingsFile;
 
     @Option(names = {"--debug"}, description = "Prints additional debugging information while running.")
