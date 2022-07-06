@@ -12,10 +12,6 @@ public class Main {
             .setExecutionExceptionHandler(new PrintExceptionHandler())
             .setColorScheme(colorScheme);
 
-        boolean debugEnabled = cmdLine.parseArgs(args).hasMatchedOption("debug");
-
-        int exitCode = cmdLine.execute(args);
-
-        System.exit(exitCode);
+        System.exit(cmdLine.execute(args));
     }
 }

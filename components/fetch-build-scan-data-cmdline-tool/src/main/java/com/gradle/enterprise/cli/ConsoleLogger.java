@@ -22,8 +22,13 @@ public class ConsoleLogger {
     public void infoNoNewline(String message) {
         out.print(message);
     }
+
     public void info(String message, Object... args) {
         out.printf(message, args);
+    }
+
+    public void debug(String message, Object... args) {
+        debug(String.format(message, args));
     }
 
     public void debug(String message) {
@@ -34,6 +39,10 @@ public class ConsoleLogger {
 
     public void debug(Throwable t) {
         debug(colorScheme.stackTraceText(t).plainString());
+    }
+
+    public void error(String message, Object... args) {
+        error(String.format(message, args));
     }
 
     public void error(String message) {

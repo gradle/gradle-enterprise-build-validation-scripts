@@ -110,6 +110,8 @@ val copyGradleScripts by tasks.registering(Copy::class) {
     }
     from(layout.projectDirectory.dir("components/scripts")) {
         include("README.md")
+        include("mapping.example")
+        include("network.settings")
         include("lib/**")
         exclude("lib/cli-parsers")
         filter { line: String -> line.replace("<HEAD>", projectVersion) }
@@ -139,6 +141,8 @@ val copyMavenScripts by tasks.registering(Copy::class) {
     }
     from(layout.projectDirectory.dir("components/scripts/")) {
         include("README.md")
+        include("mapping.example")
+        include("network.settings")
         include("lib/**")
         exclude("lib/cli-parsers")
         filter { line: String -> line.replace("<HEAD>", projectVersion) }

@@ -15,6 +15,7 @@ import com.gradle.enterprise.model.CustomValueNames;
 import com.gradle.enterprise.model.TaskExecutionSummary;
 import okhttp3.Credentials;
 import okhttp3.OkHttpClient;
+import okhttp3.tls.HandshakeCertificates;
 import org.jetbrains.annotations.NotNull;
 
 import java.net.MalformedURLException;
@@ -37,33 +38,59 @@ public class GradleEnterpriseApiClient {
     private final ConsoleLogger logger;
 
     public GradleEnterpriseApiClient(URL baseUrl, CustomValueNames customValueNames, ConsoleLogger logger) {
+        this.baseUrl = baseUrl;
         this.customValueNames = customValueNames;
+        this.logger = logger;
+
         ApiClient client = new ApiClient();
-        client.setHttpClient(configureProxyAuthentication(client.getHttpClient()));
+        client.setHttpClient(configureHttpClient(client.getHttpClient()));
         client.setBasePath(baseUrl.toString());
         AuthenticationConfigurator.configureAuth(baseUrl, client, logger);
 
-        this.baseUrl = baseUrl;
         this.apiClient = new GradleEnterpriseApi(client);
-        this.logger = logger;
     }
 
-    private OkHttpClient configureProxyAuthentication(OkHttpClient httpClient) {
-        return httpClient.newBuilder()
-                .proxyAuthenticator((route, response) -> {
-                    if (response.code() == 407) {
-                        String scheme = response.request().url().scheme().toLowerCase(Locale.ROOT);
-                        String proxyUser = System.getProperty(scheme + ".proxyUser");
-                        String proxyPassword = System.getProperty(scheme + ".proxyPassword");
-                        if (proxyUser != null && proxyPassword != null) {
-                            return response.request().newBuilder()
-                                    .header("Proxy-Authorization", Credentials.basic(proxyUser, proxyPassword))
-                                    .build();
-                        }
+    private OkHttpClient configureHttpClient(OkHttpClient httpClient) {
+        OkHttpClient.Builder httpClientBuilder = httpClient.newBuilder();
+
+        configureSsl(httpClientBuilder);
+        configureProxyAuthentication(httpClientBuilder);
+
+        return httpClientBuilder.build();
+    }
+
+    private void configureSsl(OkHttpClient.Builder httpClientBuilder) {
+        HandshakeCertificates.Builder trustedCertsBuilder = new HandshakeCertificates.Builder()
+            .addPlatformTrustedCertificates();
+
+        if (allowUntrustedServer()) {
+            trustedCertsBuilder.addInsecureHost(baseUrl.getHost());
+            httpClientBuilder.hostnameVerifier((hostname, session) -> baseUrl.getHost().equals(hostname));
+        }
+
+        HandshakeCertificates trustedCerts = trustedCertsBuilder.build();
+        httpClientBuilder.sslSocketFactory(trustedCerts.sslSocketFactory(), trustedCerts.trustManager());
+    }
+
+    private void configureProxyAuthentication(OkHttpClient.Builder httpClientBuilder) {
+        httpClientBuilder
+            .proxyAuthenticator((route, response) -> {
+                if (response.code() == 407) {
+                    String scheme = response.request().url().scheme().toLowerCase(Locale.ROOT);
+                    String proxyUser = System.getProperty(scheme + ".proxyUser");
+                    String proxyPassword = System.getProperty(scheme + ".proxyPassword");
+                    if (proxyUser != null && proxyPassword != null) {
+                        return response.request().newBuilder()
+                            .header("Proxy-Authorization", Credentials.basic(proxyUser, proxyPassword))
+                            .build();
                     }
-                    return null;
-                })
-                .build();
+                }
+                return null;
+            });
+    }
+
+    private boolean allowUntrustedServer() {
+        return Boolean.parseBoolean(System.getProperty("ssl.allowUntrustedServer"));
     }
 
     public BuildValidationData fetchBuildValidationData(String buildScanId) {
@@ -103,15 +130,17 @@ public class GradleEnterpriseApiClient {
                     summarizeTaskExecutions(buildCachePerformance)
                 );
             }
-            throw new UnknownBuildAgentException(build.getBuildToolType(), buildScanId, baseUrl);
+            throw new UnknownBuildAgentException(baseUrl, buildScanId, build.getBuildToolType());
         } catch (ApiException e) {
             switch(e.getCode()) {
                 case StatusCodes.NOT_FOUND:
-                    throw new BuildScanNotFoundException(buildScanId, baseUrl, e.getCode(), e.getResponseBody(), e);
+                    throw new BuildScanNotFoundException(baseUrl, buildScanId, e.getCode(), e.getResponseBody(), e);
                 case StatusCodes.UNAUTHORIZED:
-                    throw new AuthenticationFailedException(buildScanId, baseUrl, e.getCode(), e.getResponseBody(), e);
+                    throw new AuthenticationFailedException(baseUrl, buildScanId, e.getCode(), e.getResponseBody(), e);
+                case 0:
+                    throw new ConnectionFailedException(baseUrl, buildScanId, e);
                 default:
-                    throw new UnexpectedResponseException(buildScanId, baseUrl, e.getCode(), e.getResponseBody(), e);
+                    throw new UnexpectedResponseException(baseUrl, buildScanId, e.getCode(), e.getResponseBody(), e);
             }
         }
     }

@@ -1,6 +1,0 @@
-# Uncomment and update the lines below to configure the build validation scripts to use a HTTP proxy when fetching build scan data.
-
-#http.proxyHost=proxy.host.com
-#http.proxyPort=8888
-#https.proxyHost=proxy.host.com
-#https.proxyPort=8443

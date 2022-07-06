@@ -163,10 +163,10 @@ fetch_and_read_build_scan_data() {
 
   #shellcheck disable=SC2154 #not all scripts set this value...which is fine, we're checking for it before using it
   if [ -n "${mapping_file}" ]; then
-    args+=(-m "${mapping_file}")
+    args+=("--mapping-file" "${mapping_file}")
   fi
 
-  args+=("--proxy-settings-file" "${SCRIPT_DIR}/proxy.settings")
+  args+=("--network-settings-file" "${SCRIPT_DIR}/network.settings")
 
   if [[ "$1" == "build_cache_metrics_only" ]]; then
     build_cache_metrics_only="true"
