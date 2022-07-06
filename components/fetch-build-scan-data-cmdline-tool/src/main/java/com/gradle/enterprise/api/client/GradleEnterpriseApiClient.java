@@ -130,13 +130,13 @@ public class GradleEnterpriseApiClient {
                     summarizeTaskExecutions(buildCachePerformance)
                 );
             }
-            throw new UnknownBuildAgentException(build.getBuildToolType(), buildScanId, baseUrl);
+            throw new UnknownBuildAgentException(baseUrl, buildScanId, build.getBuildToolType());
         } catch (ApiException e) {
             switch(e.getCode()) {
                 case StatusCodes.NOT_FOUND:
-                    throw new BuildScanNotFoundException(buildScanId, baseUrl, e.getCode(), e.getResponseBody(), e);
+                    throw new BuildScanNotFoundException(baseUrl, buildScanId, e.getCode(), e.getResponseBody(), e);
                 case StatusCodes.UNAUTHORIZED:
-                    throw new AuthenticationFailedException(buildScanId, baseUrl, e.getCode(), e.getResponseBody(), e);
+                    throw new AuthenticationFailedException(baseUrl, buildScanId, e.getCode(), e.getResponseBody(), e);
                 case 0:
                     // This wasn't a bad HTTP response, instead it was a failure to connect.
                     //
@@ -150,7 +150,7 @@ public class GradleEnterpriseApiClient {
                     }
                     throw new ConnectionFailedException(baseUrl, buildScanId, e);
                 default:
-                    throw new UnexpectedResponseException(buildScanId, baseUrl, e.getCode(), e.getResponseBody(), e);
+                    throw new UnexpectedResponseException(baseUrl, buildScanId, e.getCode(), e.getResponseBody(), e);
             }
         }
     }
