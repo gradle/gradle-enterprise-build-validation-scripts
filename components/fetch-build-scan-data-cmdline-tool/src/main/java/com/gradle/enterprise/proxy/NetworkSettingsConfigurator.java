@@ -15,8 +15,7 @@ public class NetworkSettingsConfigurator {
         try {
             configureBasedOnProperties(networkSettingsFile, logger);
         } catch (IOException e) {
-            logger.debug("Unable to load settings from %s: %s", networkSettingsFile, e.getMessage());
-            logger.debug(e);
+            throw new FailedToLoadNetworkSettingsException(networkSettingsFile, e);
         }
     }
 
