@@ -48,7 +48,7 @@ dependencies {
 
 shellcheck {
     additionalArguments = "-a -x"
-    shellcheckVersion = "v0.7.2"
+    shellcheckVersion = "v0.8.0"
 }
 
 wrapperUpgrade {
