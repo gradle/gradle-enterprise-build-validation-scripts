@@ -232,9 +232,13 @@ tasks.check {
 val generateChecksums by tasks.registering(Checksum::class) {
     group = "distribution"
     description = "Generates checksums for the distribution zip files."
-    files = assembleGradleScripts.get().outputs.files.plus(assembleMavenScripts.get().outputs.files)
-    outputDir = layout.buildDirectory.dir("distributions/checksums").get().asFile
-    algorithm = Checksum.Algorithm.SHA512
+    inputFiles.setFrom(assembleGradleScripts.flatMap { gradleScripts: Zip ->
+        assembleMavenScripts.map { mavenScripts: Zip ->
+            gradleScripts.outputs.files.plus(mavenScripts.outputs.files)
+        }
+    })
+    outputDirectory.set(layout.buildDirectory.dir("distributions/checksums").get().asFile)
+    checksumAlgorithm.set(Checksum.Algorithm.SHA512)
 }
 
 val isDevelopmentRelease = !hasProperty("finalRelease")
@@ -250,7 +254,7 @@ githubRelease {
     overwrite.set(isDevelopmentRelease)
     generateReleaseNotes.set(false)
     body.set(layout.projectDirectory.file("release/changes.md").asFile.readText().trim())
-    releaseAssets(assembleGradleScripts, assembleMavenScripts, generateChecksums.get().outputs.files.asFileTree)
+    releaseAssets(assembleGradleScripts, assembleMavenScripts, generateChecksums.map { it.outputs.files.asFileTree })
 }
 
 val createReleaseTag by tasks.registering(CreateGitTag::class) {
