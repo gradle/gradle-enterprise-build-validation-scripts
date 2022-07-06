@@ -9,9 +9,9 @@ import java.nio.file.Path;
 import java.util.Optional;
 import java.util.Properties;
 
-public class NetworkingConfigurator {
+public class NetworkSettingsConfigurator {
 
-    public static void configureNetworking(Optional<Path> networkSettingsFile, ConsoleLogger logger) {
+    public static void configureNetworkSettings(Optional<Path> networkSettingsFile, ConsoleLogger logger) {
         networkSettingsFile.ifPresent(path -> {
             try {
                 configureBasedOnProperties(path, logger);
@@ -27,12 +27,12 @@ public class NetworkingConfigurator {
             logger.debug("Loading network settings from " + networkSettingsFile.toAbsolutePath());
             Properties proxyProps = loadProperties(networkSettingsFile);
             proxyProps.stringPropertyNames().stream()
-                .filter(NetworkingConfigurator::isNetworkingProperty)
+                .filter(NetworkSettingsConfigurator::isNetworkProperty)
                 .forEach(key -> System.setProperty(key, proxyProps.getProperty(key)));
         }
     }
 
-    private static boolean isNetworkingProperty(String key) {
+    private static boolean isNetworkProperty(String key) {
         return isSslProperty(key) || isProxyProperty(key);
     }
     private static boolean isSslProperty(String key) {

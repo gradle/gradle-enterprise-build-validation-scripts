@@ -4,7 +4,7 @@ import com.gradle.enterprise.api.client.FailedRequestException;
 import com.gradle.enterprise.api.client.GradleEnterpriseApiClient;
 import com.gradle.enterprise.model.BuildValidationData;
 import com.gradle.enterprise.model.CustomValueNames;
-import com.gradle.enterprise.proxy.NetworkingConfigurator;
+import com.gradle.enterprise.proxy.NetworkSettingsConfigurator;
 import picocli.CommandLine;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
@@ -59,7 +59,7 @@ public class FetchBuildValidationDataCommand implements Callable<Integer> {
         // Use System.err for logging since we're going to write out the CSV to System.out
         logger = new ConsoleLogger(System.err, colorScheme, debug);
 
-        NetworkingConfigurator.configureNetworking(networkSettingsFile, logger);
+        NetworkSettingsConfigurator.configureNetworkSettings(networkSettingsFile, logger);
 
         CustomValueNames customValueKeys = loadCustomValueKeys(customValueMappingFile);
 
