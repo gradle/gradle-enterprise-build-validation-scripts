@@ -1,5 +1,5 @@
 # Uncomment to disable SSL certificate validation when connecting to the Gradle Enterprise server
-#allowUntrustedServer=true
+#ssl.allowUntrustedServer=true
 
 # Uncomment and update to use a custom trust store when connecting to the Gradle Enterprise server
 #javax.net.ssl.trustStore=myTrustStore.jks

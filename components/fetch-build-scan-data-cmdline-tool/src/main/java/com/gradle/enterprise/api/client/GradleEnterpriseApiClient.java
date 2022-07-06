@@ -90,7 +90,7 @@ public class GradleEnterpriseApiClient {
     }
 
     private boolean allowUntrustedServer() {
-        return Boolean.parseBoolean(System.getProperty("allowUntrustedServer"));
+        return Boolean.parseBoolean(System.getProperty("ssl.allowUntrustedServer"));
     }
 
     public BuildValidationData fetchBuildValidationData(String buildScanId) {

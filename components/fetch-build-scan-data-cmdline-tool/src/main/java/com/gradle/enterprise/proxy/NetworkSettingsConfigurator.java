@@ -35,7 +35,7 @@ public class NetworkSettingsConfigurator {
     }
     private static boolean isSslProperty(String key) {
         return key.startsWith("javax.net.ssl")
-            || key.equals("allowUntrustedServer");
+            || key.equals("ssl.allowUntrustedServer");
     }
 
     private static boolean isProxyProperty(String key) {
