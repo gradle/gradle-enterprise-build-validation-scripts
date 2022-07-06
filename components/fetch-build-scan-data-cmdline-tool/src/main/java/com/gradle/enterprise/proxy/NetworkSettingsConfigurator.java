@@ -11,15 +11,13 @@ import java.util.Properties;
 
 public class NetworkSettingsConfigurator {
 
-    public static void configureNetworkSettings(Optional<Path> networkSettingsFile, ConsoleLogger logger) {
-        networkSettingsFile.ifPresent(path -> {
-            try {
-                configureBasedOnProperties(path, logger);
-            } catch (IOException e) {
-                logger.debug("Unable to load settings from %s: %s", path, e.getMessage());
-                logger.debug(e);
-            }
-        });
+    public static void configureNetworkSettings(Path networkSettingsFile, ConsoleLogger logger) {
+        try {
+            configureBasedOnProperties(networkSettingsFile, logger);
+        } catch (IOException e) {
+            logger.debug("Unable to load settings from %s: %s", networkSettingsFile, e.getMessage());
+            logger.debug(e);
+        }
     }
 
     private static void configureBasedOnProperties(Path networkSettingsFile, ConsoleLogger logger) throws IOException {

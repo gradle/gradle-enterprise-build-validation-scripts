@@ -59,7 +59,7 @@ public class FetchBuildValidationDataCommand implements Callable<Integer> {
         // Use System.err for logging since we're going to write out the CSV to System.out
         logger = new ConsoleLogger(System.err, colorScheme, debug);
 
-        NetworkSettingsConfigurator.configureNetworkSettings(networkSettingsFile, logger);
+        networkSettingsFile.ifPresent(settingsFile -> NetworkSettingsConfigurator.configureNetworkSettings(settingsFile, logger));
 
         CustomValueNames customValueKeys = loadCustomValueKeys(customValueMappingFile);
 
