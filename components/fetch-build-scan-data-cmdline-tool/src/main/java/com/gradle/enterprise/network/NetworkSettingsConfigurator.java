@@ -1,4 +1,4 @@
-package com.gradle.enterprise.proxy;
+package com.gradle.enterprise.network;
 
 import com.gradle.enterprise.cli.ConsoleLogger;
 
@@ -6,7 +6,6 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.Optional;
 import java.util.Properties;
 
 public class NetworkSettingsConfigurator {
