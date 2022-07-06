@@ -38,9 +38,9 @@ public class GradleEnterpriseApiClient {
     private final ConsoleLogger logger;
 
     public GradleEnterpriseApiClient(URL baseUrl, CustomValueNames customValueNames, ConsoleLogger logger) {
-        this.logger = logger;
         this.baseUrl = baseUrl;
         this.customValueNames = customValueNames;
+        this.logger = logger;
 
         ApiClient client = new ApiClient();
         client.setHttpClient(configureHttpClient(client.getHttpClient()));
@@ -72,10 +72,6 @@ public class GradleEnterpriseApiClient {
         httpClientBuilder.sslSocketFactory(trustedCerts.sslSocketFactory(), trustedCerts.trustManager());
     }
 
-    private boolean allowUntrustedServer() {
-        return Boolean.parseBoolean(System.getProperty("allowUntrustedServer"));
-    }
-
     private void configureProxyAuthentication(OkHttpClient.Builder httpClientBuilder) {
         httpClientBuilder
             .proxyAuthenticator((route, response) -> {
@@ -91,6 +87,10 @@ public class GradleEnterpriseApiClient {
                 }
                 return null;
             });
+    }
+
+    private boolean allowUntrustedServer() {
+        return Boolean.parseBoolean(System.getProperty("allowUntrustedServer"));
     }
 
     public BuildValidationData fetchBuildValidationData(String buildScanId) {
@@ -147,8 +147,9 @@ public class GradleEnterpriseApiClient {
                     // the ApiException but avoid calling its getMessage method.
                     if (e.getCause() != null) {
                         throw new ConnectionFailedException(baseUrl, buildScanId, e.getCause());
+                    } else {
+                        throw new ConnectionFailedException(baseUrl, buildScanId, e);
                     }
-                    throw new ConnectionFailedException(baseUrl, buildScanId, e);
                 default:
                     throw new UnexpectedResponseException(baseUrl, buildScanId, e.getCode(), e.getResponseBody(), e);
             }
