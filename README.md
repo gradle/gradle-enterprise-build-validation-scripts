@@ -25,6 +25,14 @@ The build validation scripts are available as pre-built, executable Bash scripts
 * how to use the [build validation scripts for Gradle](Gradle.md)
 * how to use the [build validation scripts for Maven](Maven.md)
 
+## Gradle Enterprise version compatibility
+This table details the version compatibility of the Build Validation Scripts with the Gradle Enterprise. Some scripts fetch data from build scans that were published as part of running an experiment. Fetching build scan data only works for compatible versions of Gradle Enterprise.
+
+| Build Validation Scripts versions | Gradle Enterprise versions |
+|-----------------------------------|----------------------------|
+| `1.0 - 1.0.2`                     | `2021.2+`                  |
+| `2.0`                             | `2022.2.4+`                |
+
 ## Build from source
 
 You can also assemble the build validation scripts from source by running `./gradlew build` from the root folder of this repository.
