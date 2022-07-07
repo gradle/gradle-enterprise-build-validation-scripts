@@ -31,7 +31,7 @@ This table details the version compatibility of the Build Validation Scripts wit
 | Build Validation Scripts versions | Gradle Enterprise versions |
 |-----------------------------------|----------------------------|
 | `1.0 - 1.0.2`                     | `2021.2+`                  |
-| `2.0`                             | `2022.2.4+`                |
+| `2.0`                             | `2022.1+`                  |
 
 ## Build from source
 
