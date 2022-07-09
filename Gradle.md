@@ -12,6 +12,15 @@ You need to have [Bash](https://www.gnu.org/software/bash/) installed in order t
 
 If you plan to use the build validation scripts on Windows, then you will need to [install Windows Subsystem for Linux (WSL)](https://docs.microsoft.com/en-us/windows/wsl/install). The build validation scripts work well on the WSL default distribution (Ubuntu).
 
+## Compatibility
+
+The build validation scripts are compatible with a large range of Gradle versions, as laid out in the table below. Getting the best user experience when running an experiment and when being presented with the results of an experiment requires access to the Gradle Enterprise server that holds the captured build data. Fetching that build data requires a compatible version of Gradle Enterprise, as laid out in the table below.
+
+| Build Validation Scripts version  | Compatible Gradle versions | Compatible Gradle Enterprise versions |
+|-----------------------------------|----------------------------| ------------------------------------- |
+| 1.0 - 1.0.2                       | 5.0+                       | 2021.2+                               |
+| 2.0                               | 5.0+                       | 2022.1+                               |  
+
 ## Installation
 
 Use the following command to download and unpack the build validation scripts for Gradle to the current directory:
