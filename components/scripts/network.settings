@@ -6,7 +6,7 @@
 #javax.net.ssl.trustStorePassword=changeit
 #javax.net.ssl.trustStoreType=jks
 
-# Uncomment and update to use a HTTP(S) proxy when fetching Build Scan data from the Gradle Enterprise server
+# Uncomment and update to use a HTTP(S) proxy when connecting to the Gradle Enterprise server
 #http.proxyHost=proxy.host.com
 #http.proxyPort=8888
 #http.nonProxyHosts=localhost|127.*|[::1]
