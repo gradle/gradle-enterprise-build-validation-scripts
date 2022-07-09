@@ -12,11 +12,11 @@
 [![Verify Build](https://github.com/gradle/gradle-enterprise-build-validation-scripts/actions/workflows/build-verification.yml/badge.svg?branch=main)](https://github.com/gradle/gradle-enterprise-build-validation-scripts/actions/workflows/build-verification.yml)
 [![Revved up by Gradle Enterprise](https://img.shields.io/badge/Revved%20up%20by-Gradle%20Enterprise-06A0CE?logo=Gradle&labelColor=02303A)](https://ge.solutions-team.gradle.com/scans)
 
-The purpose of the build validation scripts is to assist you in validating that your Gradle and Maven builds are in an optimal state in terms of maximizing work avoidance. The validation scripts do not actually modify your build, but they surface what can be improved in your build to avoid unnecessary work in several scenarios.
+The purpose of the build validation scripts is to assist you in validating that your Gradle and Maven builds are in an optimal state in terms of maximizing work avoidance. The build validation scripts do not actually modify your build, but they surface what can be improved in your build to avoid unnecessary work in several scenarios.
 
 Each script represents a so-called _experiment_. Each experiment has a very specific focus of what it validates in your build. The experiments are organized in a logical sequence that should be followed diligently to achieve incremental build improvements in an efficient manner. The experiments can be run on a fully unoptimized build, and they can also be run on a build that had already been optimized in the past in order to surface potential regressions.
 
-There are currently five experiments for Gradle and four experiments for Maven. You could also perform these experiments fully manually, but relying on the automation of the validation scripts will be faster, less error-prone, and more reproducible.
+There are currently five experiments for Gradle and four experiments for Maven. You could also perform these experiments fully manually, but relying on the automation of the build validation scripts will be faster, less error-prone, and more reproducible.
 
 ## Usage
 
@@ -25,13 +25,14 @@ The build validation scripts are available as pre-built, executable Bash scripts
 * how to use the [build validation scripts for Gradle](Gradle.md)
 * how to use the [build validation scripts for Maven](Maven.md)
 
-## Gradle Enterprise version compatibility
-This table details the version compatibility of the Build Validation Scripts with the Gradle Enterprise. Some scripts fetch data from build scans that were published as part of running an experiment. Fetching build scan data only works for compatible versions of Gradle Enterprise.
+## Compatibility
 
-| Build Validation Scripts versions | Gradle Enterprise versions |
-|-----------------------------------|----------------------------|
-| `1.0 - 1.0.2`                     | `2021.2+`                  |
-| `2.0`                             | `2022.1+`                  |
+The build validation scripts are compatible with a large range of Gradle and Maven versions, as laid out in the table below. Getting the best user experience when running an experiment and when being presented with the results of an experiment requires access to the Gradle Enterprise server that holds the captured build data. Fetching that build data requires a compatible version of Gradle Enterprise, as laid out in the table below.
+
+| Build Validation Scripts version  | Compatible Gradle versions | Compatible Maven versions | Compatible Gradle Enterprise versions |
+|-----------------------------------|----------------------------| ------------------------- | ------------------------------------- |
+| 1.0 - 1.0.2                       | 5.0+                       |  3.3.1+                   | 2021.2+                               |
+| 2.0                               | 5.0+                       |  3.3.1+                   | 2022.1+                               |  
 
 ## Build from source
 
