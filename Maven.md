@@ -96,33 +96,19 @@ You can check your granted permissions by navigating in the browser to the 'My S
 
 By default, the scripts fetching build scan data try to find the access key in the `enterprise/keys.properties` file within the Gradle user home directory (`~/.gradle` by default). Alternatively, the access key can be specified via the `GRADLE_ENTERPRISE_ACCESS_KEY` environment variable. You can also authenticate with the APIs using username and password instead by setting the `GRADLE_ENTERPRISE_USERNAME` and `GRADLE_ENTERPRISE_PASSWORD` environment variables.
 
-## Using a HTTP(S) proxy
+## Configuring the network settings when connecting to Gradle Enterprise
 
-The scripts that fetch build scan data can be configured to use a HTTP(S) proxy when making requests to the Gradle Enterprise server. To configure the scripts to use an HTTP(S) proxy server when fetching build scan data:
+The scripts that fetch build scan data can be configured to use a HTTP(S) proxy, to use a custom Java trust store, and to disable SSL certificate validation when connecting to Gradle Enterprise. The network settings configuration is automatically picked up by the build validation scripts from a `network.settings` file put in the same location as where the scripts are run. A [configuration file template](components/scripts/network.settings) can be found at the same location as where the scripts are located.
 
-1. Edit the network.settings file found at the same location as where the scripts are located.
-2. Uncomment and update the lines that start with `http.` and `https.`, using the values required by your HTTP(S) proxy server.
+If your Gradle Enteprise can only be reached via a HTTP(S) proxy, edit the `network.settings` file and uncomment and update the lines that start with `http.` and `https.`, using the values required by your HTTP(S) proxy server.
 
-## Untrusted SSL certificates
-By default, the build validation scripts use the default trust settings of the local Java runtime when connecting to Gradle Enterprise to fetch build scan data. If your Gradle Enterprise server is using a self-signed certificate, or a certificate signed by an internal Certificate Authority (CA), then the build validation scripts may need some additional configuration before they will be able to fetch build scan data.
+If your Gradle Enterprise server is using a certificate signed by an internal Certificate Authority (CA), edit the `network.settings` file and uncomment and update the lines that start with `javax.net.ssl.trustStore`, specifying where your custom trust store is, what type of trust store it is, and the password required to access the trust store.
 
-### Use a custom Java trust store when fetching build scan data
-To use a custom Java trust store (with the SSL certificates needed to validate the Gradle Enterprise server's certificate):
-
-1. Edit the network.settings file found at the same location as where the scripts are located.
-2. Uncomment and update the lines that start with `javax.net.ssl.trustStore` to specify where your custom trust store is, what type of trust store it is, and the password required to access the trust store.
-
-### Disable SSL certificate validation
-In some cases, it may be easier to disable SSL certificate validation entirely. This is generally not recommended because it makes the build validation process vulnerable to man-in-the-middle attacks. However, it can be useful when troubleshooting issues with fetching build scan data.
-
-To disable SSL certificate validation:
-
-1. Edit the network.settings file found at the same location as where the scripts are located.
-2. Uncomment ssl.allowUntrustedServer=true
+In the unlikely and insecure case that your Gradle Enterprise server is using a self-signed certificate, edit the `network.settings` file and uncomment and update the lines that start with ` ssl`.
 
 ## Configuring custom value lookup names
 
-The scripts that fetch build scan data expect some of it to be present as custom values (Git repository, branch name, and commit id). By default, the scripts assume that these custom values have been created by the [Common Custom User Data Maven extension](https://search.maven.org/artifact/com.gradle/common-custom-user-data-maven-extension). If you are not using that extension but your build still captures the same data under different custom value names, you can provide a mapping file so that the required data can be extracted from your build scans. An example mapping file named [mapping.example](components/scripts/maven/mapping.example) can be found at the same location as where the scripts are located.
+The scripts that fetch build scan data expect some of it to be present as custom values (Git repository, branch name, and commit id). By default, the scripts assume that these custom values have been created by the [Common Custom User Data Maven extension](https://search.maven.org/artifact/com.gradle/common-custom-user-data-maven-extension). If you are not using that extension but your build still captures the same data under different custom value names, you can provide a mapping file so that the required data can be extracted from your build scans. An example mapping file named [mapping.example](components/scripts/mapping.example) can be found at the same location as where the scripts are located.
 
 ```bash
 ./03-validate-remote-build-caching-ci-ci.sh -i -m mapping.custom
