@@ -1,11 +1,3 @@
-# Uncomment to disable SSL certificate validation when connecting to the Gradle Enterprise server
-#ssl.allowUntrustedServer=true
-
-# Uncomment and update to use a custom trust store when connecting to the Gradle Enterprise server
-#javax.net.ssl.trustStore=myTrustStore.jks
-#javax.net.ssl.trustStorePassword=changeit
-#javax.net.ssl.trustStoreType=jks
-
 # Uncomment and update to use a HTTP(S) proxy when connecting to the Gradle Enterprise server
 #http.proxyHost=proxy.host.com
 #http.proxyPort=8888
@@ -17,3 +9,11 @@
 #https.nonProxyHosts=localhost|127.*|[::1]
 #https.proxyUser=user
 #https.proxyPassword=password
+
+# Uncomment and update to use a custom trust store when connecting to the Gradle Enterprise server
+#javax.net.ssl.trustStore=myTrustStore.jks
+#javax.net.ssl.trustStorePassword=changeit
+#javax.net.ssl.trustStoreType=jks
+
+# Uncomment to disable SSL certificate validation when connecting to the Gradle Enterprise server
+#ssl.allowUntrustedServer=true
