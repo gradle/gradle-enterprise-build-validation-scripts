@@ -1,5 +1,5 @@
-- [NEW] - Display build cache performance metrics at the end of build caching experiments.
-- [NEW] - Drop support for fetching build scan data from Gradle Enterprise versions older than 2022.1. 
-- [NEW] - Add support for using a HTTP(S) proxy when fetching build scan data.
-- [NEW] - Add support for using a custom SSL certificate trust store when fetching build scan data.
-- [NEW] - Add support for disabling SSL certificate validation when fetching build scan data.
+- [NEW] - Display build cache performance metrics at the end of the build caching experiments
+- [NEW] - Add support for using a HTTP(S) proxy when fetching build scan data
+- [NEW] - Add support for using a custom SSL certificate trust store when fetching build scan data
+- [NEW] - Add support for disabling SSL certificate validation when fetching build scan data
+- [NEW] - Drop support for fetching build scan data from Gradle Enterprise versions older than 2022.1 
