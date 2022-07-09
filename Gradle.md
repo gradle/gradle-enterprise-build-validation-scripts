@@ -12,6 +12,15 @@ You need to have [Bash](https://www.gnu.org/software/bash/) installed in order t
 
 If you plan to use the build validation scripts on Windows, then you will need to [install Windows Subsystem for Linux (WSL)](https://docs.microsoft.com/en-us/windows/wsl/install). The build validation scripts work well on the WSL default distribution (Ubuntu).
 
+## Compatibility
+
+The build validation scripts are compatible with a large range of Gradle versions, as laid out in the table below. Getting the best user experience when running an experiment and when being presented with the results of an experiment requires access to the Gradle Enterprise server that holds the captured build data. Fetching that build data requires a compatible version of Gradle Enterprise, as laid out in the table below.
+
+| Build Validation Scripts version  | Compatible Gradle versions | Compatible Gradle Enterprise versions |
+|-----------------------------------|----------------------------| ------------------------------------- |
+| 1.0 - 1.0.2                       | 5.0+                       | 2021.2+                               |
+| 2.0                               | 5.0+                       | 2022.1+                               |  
+
 ## Installation
 
 Use the following command to download and unpack the build validation scripts for Gradle to the current directory:
@@ -83,15 +92,25 @@ You can find a complete example of how to apply the Common Custom User Data Grad
 
 ## Authenticating with Gradle Enterprise
 
-Some scripts fetch data from build scans that were published as part of running an experiment. The build scan data is fetched by leveraging the [Gradle Enterprise Export API](https://docs.gradle.com/enterprise/export-api/). It is not strictly necessary that you have permission to call the Export API to execute a script successfully, but the summary provided once the script has finished running its experiment will be more comprehensive if the build scan data is accessible.
+Some scripts fetch data from build scans that were published as part of running an experiment. The build scan data is fetched by leveraging the [Gradle Enterprise API](https://docs.gradle.com/enterprise/api-manual/) and the [Gradle Enterprise Export API](https://docs.gradle.com/enterprise/export-api/). It is not strictly necessary that you have permission to call these APIs to execute a script successfully, but the summary provided once the script has finished running its experiment will be more comprehensive if the build scan data is accessible.
 
-You can check your granted permissions by navigating in the browser to the 'My Settings' section from the user menu of your Gradle Enterprise UI. You need the 'Access build data via the Export API' permission. Additionally, the script needs an access key to authenticate with the Gradle Enterprise Export API. See [Authenticating with Gradle Enterprise](https://docs.gradle.com/enterprise/gradle-plugin/#authenticating_with_gradle_enterprise) for details on how to create an access key and storing it locally.
+You can check your granted permissions by navigating in the browser to the 'My Settings' section from the user menu of your Gradle Enterprise UI. You need the 'Access build data via the API' permission. Additionally, the script needs an access key to authenticate with the APIs. See [Authenticating with Gradle Enterprise](https://docs.gradle.com/enterprise/gradle-plugin/#authenticating_with_gradle_enterprise) for details on how to create an access key and storing it locally.
 
-By default, the scripts fetching build scan data try to find the access key in the `enterprise/keys.properties` file within the Gradle user home directory (`~/.gradle` by default). Alternatively, the access key can be specified via the `GRADLE_ENTERPRISE_ACCESS_KEY` environment variable. You can also authenticate with the Export API using username and password instead by setting the `GRADLE_ENTERPRISE_USERNAME` and `GRADLE_ENTERPRISE_PASSWORD` environment variables.
+By default, the scripts fetching build scan data try to find the access key in the `enterprise/keys.properties` file within the Gradle user home directory (`~/.gradle` by default). Alternatively, the access key can be specified via the `GRADLE_ENTERPRISE_ACCESS_KEY` environment variable. You can also authenticate with the APIs using username and password instead by setting the `GRADLE_ENTERPRISE_USERNAME` and `GRADLE_ENTERPRISE_PASSWORD` environment variables.
+
+## Configuring the network settings to connect to Gradle Enterprise
+
+The scripts that fetch build scan data can be configured to use a HTTP(S) proxy, to use a custom Java trust store, and to disable SSL certificate validation when connecting to Gradle Enterprise. The network settings configuration is automatically picked up by the build validation scripts from a `network.settings` file put in the same location as where the scripts are run. A [configuration file template](components/scripts/network.settings) can be found at the same location as where the scripts are located.
+
+If your Gradle Enteprise can only be reached via a HTTP(S) proxy, edit the `network.settings` file and uncomment and update the lines that start with `http.` and `https.`, using the values required by your HTTP(S) proxy server.
+
+If your Gradle Enterprise server is using a certificate signed by an internal Certificate Authority (CA), edit the `network.settings` file and uncomment and update the lines that start with `javax.net.ssl.trustStore`, specifying where your custom trust store is, what type of trust store it is, and the password required to access the trust store.
+
+In the unlikely and insecure case that your Gradle Enterprise server is using a self-signed certificate, edit the `network.settings` file and uncomment and update the lines that start with ` ssl`.
 
 ## Configuring custom value lookup names
 
-The scripts that fetch build scan data expect some of it to be present as custom values (Git repository, branch name, and commit id). By default, the scripts assume that these custom values have been created by the [Common Custom User Data Gradle plugin](https://plugins.gradle.org/plugin/com.gradle.common-custom-user-data-gradle-plugin). If you are not using that plugin but your build still captures the same data under different custom value names, you can provide a mapping file so that the required data can be extracted from your build scans. An example mapping file named [mapping.example](components/scripts/gradle/mapping.example) can be found at the same location as where the scripts are located.
+The scripts that fetch build scan data expect some of it to be present as custom values (Git repository, branch name, and commit id). By default, the scripts assume that these custom values have been created by the [Common Custom User Data Gradle plugin](https://plugins.gradle.org/plugin/com.gradle.common-custom-user-data-gradle-plugin). If you are not using that plugin but your build still captures the same data under different custom value names, you can provide a mapping file so that the required data can be extracted from your build scans. An example mapping file named [mapping.example](components/scripts/mapping.example) can be found at the same location as where the scripts are located.
 
 ```bash
 ./04-validate-remote-build-caching-ci-ci.sh -i -m mapping.custom
