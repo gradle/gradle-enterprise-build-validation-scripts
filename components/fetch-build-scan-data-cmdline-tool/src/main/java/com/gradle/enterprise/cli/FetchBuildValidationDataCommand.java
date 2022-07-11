@@ -54,6 +54,8 @@ public class FetchBuildValidationDataCommand implements Callable<Integer> {
     @Option(names = {"--brief-logging"}, description = "Only log a short message about fetching build scan data and when it completes.")
     private boolean briefLogging;
 
+    private boolean someScansFailedToFetch = false;
+
     @Override
     public Integer call() throws Exception {
         // Use System.err for logging since we're going to write out the CSV to System.out
@@ -108,6 +110,7 @@ public class FetchBuildValidationDataCommand implements Callable<Integer> {
     }
 
     private void printException(RuntimeException e) {
+        someScansFailedToFetch = true;
         if (logger.isDebugEnabled()) {
             logger.error(e);
             if (e instanceof FailedRequestException) {
@@ -174,7 +177,7 @@ public class FetchBuildValidationDataCommand implements Callable<Integer> {
 
     private void logFinishedFetchingBuildScans() {
         if (briefLogging) {
-            if (logger.isDebugEnabled()) {
+            if (logger.isDebugEnabled() || someScansFailedToFetch) {
                 logger.info("done.");
             } else {
                 logger.info(", done.");
@@ -184,7 +187,7 @@ public class FetchBuildValidationDataCommand implements Callable<Integer> {
 
     private void logFinishedFetchingBuildScan() {
         if (!briefLogging) {
-            if (logger.isDebugEnabled()) {
+            if (logger.isDebugEnabled() || someScansFailedToFetch) {
                 logger.info("done.");
             } else {
                 logger.info(", done.");
@@ -223,7 +226,7 @@ public class FetchBuildValidationDataCommand implements Callable<Integer> {
 
     private void logFetchResultFor(int index, String property, String customValueKey, boolean found) {
         String ordinal = buildScanIndexToOrdinal(index);
-        logger.info("Looking up %s from custom value with name '%s' from the %s build scan, %s.%n", property, customValueKey, ordinal, found ? "found": "not found");
+        logger.info("Looking up %s from custom value with name '%s' from the %s build scan, %s.", property, customValueKey, ordinal, found ? "found": "not found");
     }
 
     public void printHeader() {

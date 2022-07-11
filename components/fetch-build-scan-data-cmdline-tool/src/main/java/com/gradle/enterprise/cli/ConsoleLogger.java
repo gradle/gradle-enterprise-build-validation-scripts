@@ -9,6 +9,8 @@ public class ConsoleLogger {
     private final CommandLine.Help.ColorScheme colorScheme;
     private final boolean debugEnabled;
 
+    private boolean lastStatementIncludedNewline = true;
+
     public ConsoleLogger(PrintStream out, CommandLine.Help.ColorScheme colorScheme, boolean debugEnabled) {
         this.out = out;
         this.colorScheme = colorScheme;
@@ -17,14 +19,16 @@ public class ConsoleLogger {
 
     public void info(String message) {
         out.println(message);
+        lastStatementIncludedNewline = true;
     }
 
     public void infoNoNewline(String message) {
         out.print(message);
+        lastStatementIncludedNewline = false;
     }
 
     public void info(String message, Object... args) {
-        out.printf(message, args);
+        info(String.format(message + "%n", args));
     }
 
     public void debug(String message, Object... args) {
@@ -34,6 +38,7 @@ public class ConsoleLogger {
     public void debug(String message) {
         if (debugEnabled) {
             out.println(colorScheme.text("@|faint " + message + "|@"));
+            lastStatementIncludedNewline = true;
         }
     }
 
@@ -46,7 +51,11 @@ public class ConsoleLogger {
     }
 
     public void error(String message) {
+        if (!lastStatementIncludedNewline) {
+            out.println();
+        }
         out.println(colorScheme.errorText(message));
+        lastStatementIncludedNewline = true;
     }
 
     public void error(Throwable t) {
