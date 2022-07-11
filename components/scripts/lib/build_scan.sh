@@ -166,7 +166,9 @@ fetch_and_read_build_scan_data() {
     args+=("--mapping-file" "${mapping_file}")
   fi
 
-  args+=("--network-settings-file" "${SCRIPT_DIR}/network.settings")
+  if [ -f "${SCRIPT_DIR}/network.settings" ]; then
+    args+=("--network-settings-file" "${SCRIPT_DIR}/network.settings")
+  fi
 
   if [[ "$1" == "build_cache_metrics_only" ]]; then
     build_cache_metrics_only="true"

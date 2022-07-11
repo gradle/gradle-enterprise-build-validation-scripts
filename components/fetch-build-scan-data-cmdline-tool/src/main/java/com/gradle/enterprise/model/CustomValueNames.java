@@ -12,15 +12,18 @@ public class CustomValueNames {
     );
 
     public static CustomValueNames loadFromFile(Path customValueMappingFile) throws IOException {
-        try (BufferedReader in = Files.newBufferedReader(customValueMappingFile)) {
-            Properties mappingProps = new Properties();
-            mappingProps.load(in);
-            return new CustomValueNames(
-                mappingProps.getProperty("git.repository", DEFAULT.getGitRepositoryKey()),
-                mappingProps.getProperty("git.branch", DEFAULT.getGitBranchKey()),
-                mappingProps.getProperty("git.commitId", DEFAULT.getGitCommitIdKey())
-            );
+        if (Files.isRegularFile(customValueMappingFile)) {
+            try (BufferedReader in = Files.newBufferedReader(customValueMappingFile)) {
+                Properties mappingProps = new Properties();
+                mappingProps.load(in);
+                return new CustomValueNames(
+                    mappingProps.getProperty("git.repository", DEFAULT.getGitRepositoryKey()),
+                    mappingProps.getProperty("git.branch", DEFAULT.getGitBranchKey()),
+                    mappingProps.getProperty("git.commitId", DEFAULT.getGitCommitIdKey())
+                );
+            }
         }
+        return CustomValueNames.DEFAULT;
     }
 
     private final String gitRepositoryKey;
