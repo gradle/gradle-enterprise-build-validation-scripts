@@ -54,7 +54,7 @@ public class FetchBuildValidationDataCommand implements Callable<Integer> {
     @Option(names = {"--brief-logging"}, description = "Only log a short message about fetching build scan data and when it completes.")
     private boolean briefLogging;
 
-    private boolean someScansFailedToFetch = false;
+    private boolean someScansFailedToFetch;
 
     @Override
     public Integer call() throws Exception {

@@ -7,8 +7,9 @@ import java.nio.file.Path;
 import java.util.Properties;
 
 public class CustomValueNames {
+
     public static final CustomValueNames DEFAULT = new CustomValueNames(
-        "Git repository", "Git branch", "Git commit id"
+            "Git repository", "Git branch", "Git commit id"
     );
 
     public static CustomValueNames loadFromFile(Path customValueMappingFile) throws IOException {
@@ -17,13 +18,14 @@ public class CustomValueNames {
                 Properties mappingProps = new Properties();
                 mappingProps.load(in);
                 return new CustomValueNames(
-                    mappingProps.getProperty("git.repository", DEFAULT.getGitRepositoryKey()),
-                    mappingProps.getProperty("git.branch", DEFAULT.getGitBranchKey()),
-                    mappingProps.getProperty("git.commitId", DEFAULT.getGitCommitIdKey())
+                        mappingProps.getProperty("git.repository", DEFAULT.getGitRepositoryKey()),
+                        mappingProps.getProperty("git.branch", DEFAULT.getGitBranchKey()),
+                        mappingProps.getProperty("git.commitId", DEFAULT.getGitCommitIdKey())
                 );
             }
+        } else {
+            return CustomValueNames.DEFAULT;
         }
-        return CustomValueNames.DEFAULT;
     }
 
     private final String gitRepositoryKey;
@@ -47,4 +49,5 @@ public class CustomValueNames {
     public String getGitCommitIdKey() {
         return gitCommitIdKey;
     }
+
 }
