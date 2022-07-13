@@ -17,9 +17,10 @@ If you plan to use the build validation scripts on Windows, then you will need t
 The build validation scripts are compatible with a large range of Maven versions, as laid out in the table below. Getting the best user experience when running an experiment and when being presented with the results of an experiment requires access to the Gradle Enterprise server that holds the captured build data. Fetching that build data requires a compatible version of Gradle Enterprise, as laid out in the table below.
 
 | Build Validation Scripts version  | Compatible Maven versions | Compatible Gradle Enterprise versions |
-|---------------------------------- | ------------------------- | ------------------------------------- |
+|-----------------------------------|---------------------------| ------------------------------------- |
 | 1.0 - 1.0.2                       | 3.3.1+                    | 2021.2+                               |
 | 2.0                               | 3.3.1+                    | 2022.1+                               |  
+| 2.0.1                             | 3.3.1+                    | 2022.2.4+                             |  
 
 ## Installation
 
