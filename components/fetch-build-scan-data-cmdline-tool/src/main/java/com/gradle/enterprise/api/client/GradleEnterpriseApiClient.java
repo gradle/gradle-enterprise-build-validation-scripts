@@ -225,7 +225,7 @@ public class GradleEnterpriseApiClient {
     }
 
     private String avoidanceOutcome(GradleBuildCachePerformanceTaskExecutionEntry task) {
-        if (task.getAvoidanceOutcome() == EXECUTED_NOT_CACHEABLE && (task.getNonCacheabilityCategory() == OVERLAPPING_OUTPUTS || task.getNonCacheabilityCategory() == DISABLED_TO_ENSURE_CORRECTNESS)) {
+        if (task.getAvoidanceOutcome() == EXECUTED_NOT_CACHEABLE && task.getNonCacheabilityCategory() != null && (task.getNonCacheabilityCategory() == OVERLAPPING_OUTPUTS || task.getNonCacheabilityCategory() == DISABLED_TO_ENSURE_CORRECTNESS)) {
             return EXECUTED_CACHEABLE.toString();
         }
         return task.getAvoidanceOutcome().toString();

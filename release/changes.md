@@ -1,3 +1,2 @@
 - [FIX] Count executed tasks marked as non-cacheable tasks because they have overlapping outputs as cacheable tasks that were executed
 - [FIX] Count executed tasks marked as non-cacheable to ensure correctness as cacheable tasks that were executed
-- [NEW] Drop support for fetching build scan data from Gradle Enterprise versions older than 2022.2.4
