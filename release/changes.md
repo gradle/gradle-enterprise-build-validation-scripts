@@ -1,2 +1,2 @@
-- [FIX] Count executed tasks marked as non-cacheable tasks because they have overlapping outputs as cacheable tasks that were executed
-- [FIX] Count executed tasks marked as non-cacheable to ensure correctness as cacheable tasks that were executed
+- [FIX] Count non-cacheable tasks with overlapping outputs as cacheable tasks in summary section
+- [FIX] Count non-cacheable tasks to ensure correctness as cacheable tasks in summary section
