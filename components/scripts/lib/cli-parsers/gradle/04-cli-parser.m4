@@ -8,6 +8,7 @@
 # ARG_OPTIONAL_SINGLE([second-build-ci],[2],[])
 # ARG_OPTIONAL_BOOLEAN([debug],[],[],[off])
 # ARG_OPTIONAL_SINGLE([mapping-file],[m],[])
+# ARG_OPTIONAL_BOOLEAN([fail-if-not-optimized],[x],[])
 # ARGBASH_SET_INDENT([  ])
 # ARGBASH_PREPARE()
 # needed because of Argbash --> m4_ignore([
@@ -24,6 +25,7 @@ function print_help() {
   print_option_usage "-1, --first-build-ci" "Specifies the URL for the build scan of the first build run by a CI agent."
   print_option_usage "-2, --second-build-ci" "Specifies the URL for the build scan of the second build run by a CI agent."
   print_option_usage -m
+  print_option_usage -x
   print_option_usage -v
   print_option_usage -h
 }

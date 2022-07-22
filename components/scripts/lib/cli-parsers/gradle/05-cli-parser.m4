@@ -7,6 +7,7 @@
 # ARG_OPTIONAL_SINGLE([first-build-ci],[1],[])
 # ARG_OPTIONAL_SINGLE([mapping-file],[m],[])
 # ARG_OPTIONAL_SINGLE([remote-build-cache-url],[u],[])
+# ARG_OPTIONAL_BOOLEAN([fail-if-not-optimized],[x],[])
 # ARGBASH_SET_INDENT([  ])
 # ARGBASH_PREPARE()
 # needed because of Argbash --> m4_ignore([
@@ -32,6 +33,7 @@ function print_help() {
   print_option_usage "-u, --remote-build-cache-url" "Specifies the URL for the remote build cache to access in the second build run locally."
   print_option_usage -s
   print_option_usage -e
+  print_option_usage -x
   print_option_usage -v
   print_option_usage -h
 }

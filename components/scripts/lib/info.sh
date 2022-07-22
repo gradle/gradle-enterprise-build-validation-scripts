@@ -237,5 +237,16 @@ exit_with_return_code() {
     exit 3
   fi
 
+  # shellcheck disable=SC2034 # not all of the scripts have the fail if not optimized CLI argument
+  if [ -n "${_arg_fail_if_not_optimized+x}" ]; then
+    # If the script has the "fail if not optimized CLI argument", then see if the build is optimized
+    local executed_avoidable_tasks
+    executed_avoidable_tasks=$(( executed_cacheable_num_tasks[1] ))
+    if [[ "${_arg_fail_if_not_optimized}" == "on" ]] && (( executed_avoidable_tasks > 0 )); then
+      print_bl
+      die "ERROR: Build is not optimized" -2
+    fi
+  fi
+
   exit 0
 }
