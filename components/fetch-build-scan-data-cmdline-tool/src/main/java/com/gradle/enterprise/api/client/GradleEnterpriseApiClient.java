@@ -6,7 +6,6 @@ import com.gradle.enterprise.api.model.BuildAttributesValue;
 import com.gradle.enterprise.api.model.GradleAttributes;
 import com.gradle.enterprise.api.model.GradleBuildCachePerformance;
 import com.gradle.enterprise.api.model.GradleBuildCachePerformanceTaskExecutionEntry;
-import com.gradle.enterprise.api.model.GradleBuildCachePerformanceTaskExecutionEntry.NonCacheabilityCategoryEnum;
 import com.gradle.enterprise.api.model.MavenAttributes;
 import com.gradle.enterprise.api.model.MavenBuildCachePerformance;
 import com.gradle.enterprise.api.model.MavenBuildCachePerformanceGoalExecutionEntry;
