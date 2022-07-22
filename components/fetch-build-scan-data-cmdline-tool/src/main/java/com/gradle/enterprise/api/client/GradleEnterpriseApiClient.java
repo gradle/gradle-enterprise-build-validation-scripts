@@ -179,7 +179,6 @@ public class GradleEnterpriseApiClient {
 
     private URL remoteBuildCacheUrlFrom(GradleBuildCachePerformance buildCachePerformance) {
         if (buildCachePerformance.getBuildCaches() == null ||
-            buildCachePerformance.getBuildCaches().getRemote() == null ||
             buildCachePerformance.getBuildCaches().getRemote().getUrl() == null) {
             return null;
         }
