@@ -56,7 +56,25 @@ void configureGradleEnterprise(gradleEnterprise) {
             uploadInBackground = false
             publishAlways()
         }
+        captureBuildScanLinks(buildScan)
         addCustomData(buildScan)
+    }
+}
+
+void captureBuildScanLinks(buildScan) {
+    buildScan.with {
+        def scanFile = new File(experimentDir, "build-scans.csv")
+        buildScanPublished { publishedBuildScan ->
+            def buildScanUri = publishedBuildScan.buildScanUri
+            def buildScanId = publishedBuildScan.buildScanId
+            def port = (buildScanUri.port != -1) ? ":" + buildScanUri.port : ""
+            def baseUrl = "${buildScanUri.scheme}://${buildScanUri.host}${port}"
+            scanFile.append("${baseUrl},${buildScanUri},${buildScanId}\n")
+        }
+        def errorFile = new File(experimentDir, "build-scan-publish-error.txt")
+        onError { error ->
+            errorFile.text = error
+        }
     }
 }
 
