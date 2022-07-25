@@ -20,7 +20,6 @@ invoke_gradle() {
   fi
 
   args+=(--init-script "${init_scripts_dir}/configure-gradle-enterprise.gradle")
-  args+=(--init-script "${init_scripts_dir}/capture-published-build-scan.gradle")
 
   if [ -n "${ge_server}" ]; then
     args+=("-Pcom.gradle.enterprise.build_validation.server=${ge_server}")
