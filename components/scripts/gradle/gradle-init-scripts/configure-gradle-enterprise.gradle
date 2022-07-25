@@ -1,18 +1,6 @@
 import org.gradle.util.GradleVersion
 import java.nio.charset.StandardCharsets;
 
-initscript {
-    def gradleEnterprisePluginVersion = "3.11.1"
-
-    repositories {
-        gradlePluginPortal()
-    }
-
-    dependencies {
-        classpath("com.gradle:gradle-enterprise-gradle-plugin:${gradleEnterprisePluginVersion}")
-    }
-}
-
 // Don't run against the included builds (if the main build has any).
 def isTopLevelBuild = gradle.getParent() == null
 if (isTopLevelBuild) {
