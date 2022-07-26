@@ -42,12 +42,10 @@ if (isTopLevelBuild) {
 void configureGradleEnterprise(gradleEnterprise, rootProjectName) {
     gradleEnterprise.with {
         buildScan {
-            def projectProperties = gradle.startParameter.projectProperties
-            if (projectProperties.containsKey("com.gradle.enterprise.build_validation.server")) {
-                server = projectProperties.get("com.gradle.enterprise.build_validation.server")
-            }
-
-            if (!server) {
+            def serverOverride = System.getProperty("com.gradle.enterprise.build_validation.server")
+            if (serverOverride) {
+                server = serverOverride
+            } else if (!server) {
                 throw new IllegalStateException("A Gradle Enterprise server URL has not been configured.", null)
             }
 
