@@ -2,41 +2,113 @@ import org.gradle.util.GradleVersion
 import java.nio.charset.StandardCharsets;
 
 // Don't run against the included builds (if the main build has any).
+initscript {
+    def isTopLevelBuild = !gradle.parent
+    if (!isTopLevelBuild) {
+        return
+    }
+
+    def enableGradleEnterprise = System.getProperty("com.gradle.enterprise.build_validation.enableGradleEnterprise")
+    if (!enableGradleEnterprise) {
+        return
+    }
+
+    def gradleEnterprisePluginVersion = "3.10.3"
+    def commonCustomUserDataPluginVersion = "1.7.2"
+
+    repositories {
+        gradlePluginPortal()
+    }
+
+    dependencies {
+        classpath("com.gradle:gradle-enterprise-gradle-plugin:${gradleEnterprisePluginVersion}")
+        classpath("com.gradle:common-custom-user-data-gradle-plugin:${commonCustomUserDataPluginVersion}")
+    }
+}
+
+// Don't run against the included builds (if the main build has any).
 def isTopLevelBuild = !gradle.parent
-if (isTopLevelBuild) {
-    def version = GradleVersion.current().baseVersion
-    def atLeastGradle5 = version >= GradleVersion.version("5.0")
-    def atLeastGradle6 = version >= GradleVersion.version("6.0")
+if (!isTopLevelBuild) {
+    return
+}
 
-    clearWarnings()
+def BUILD_SCAN_PLUGIN_CLASS = 'com.gradle.scan.plugin.BuildScanPlugin'
 
-    if (atLeastGradle6) {
-        settingsEvaluated { settings ->
-            if (!settings.pluginManager.hasPlugin("com.gradle.enterprise")) {
+def GRADLE_ENTERPRISE_PLUGIN_ID = 'com.gradle.enterprise'
+def GRADLE_ENTERPRISE_PLUGIN_CLASS = 'com.gradle.enterprise.gradleplugin.GradleEnterprisePlugin'
+
+def CCUD_PLUGIN_ID = 'com.gradle.common-custom-user-data-gradle-plugin'
+def CCUD_PLUGIN_CLASS = 'com.gradle.CommonCustomUserDataGradlePlugin'
+
+def enableGradleEnterprise = System.getProperty("com.gradle.enterprise.build_validation.enableGradleEnterprise")
+
+def version = GradleVersion.current().baseVersion
+def atLeastGradle5 = version >= GradleVersion.version("5.0")
+def atLeastGradle6 = version >= GradleVersion.version("6.0")
+
+clearWarnings()
+
+if (atLeastGradle6) {
+    settingsEvaluated { settings ->
+        if (!settings.pluginManager.hasPlugin(GRADLE_ENTERPRISE_PLUGIN_ID)) {
+            if (enableGradleEnterprise) {
+                logger.quiet("Applying $GRADLE_ENTERPRISE_PLUGIN_CLASS via init script")
+                settings.pluginManager.apply(initscript.classLoader.loadClass(GRADLE_ENTERPRISE_PLUGIN_CLASS))
+            } else {
                 throw new IllegalStateException("The com.gradle.enterprise plugin is missing from the project.\n" +
                     "Either apply it directly (see https://docs.gradle.com/enterprise/gradle-plugin/#gradle_6_x_and_later),\n" +
                     "or use `--enable-gradle-enterprise` when running the build validation script.")
             }
-            if (!settings.pluginManager.hasPlugin("com.gradle.common-custom-user-data-gradle-plugin")) {
+        }
+        if (!settings.pluginManager.hasPlugin(CCUD_PLUGIN_ID)) {
+            if (enableGradleEnterprise) {
+                logger.quiet("Applying $CCUD_PLUGIN_CLASS via init script")
+                settings.pluginManager.apply(initscript.classLoader.loadClass(CCUD_PLUGIN_CLASS))
+            } else {
                 logWarningMissingCommonCustomUserDataGradlePlugin()
             }
-            configureGradleEnterprise(settings.extensions["gradleEnterprise"], settings.rootProject.name)
         }
-    } else if (atLeastGradle5) {
-        projectsEvaluated { gradle ->
-            if (!gradle.rootProject.pluginManager.hasPlugin("com.gradle.build-scan")) {
-                throw new IllegalStateException("The com.gradle.build-scan plugin is missing from the project.\n" +
-                    "Either apply it directly (see https://docs.gradle.com/enterprise/gradle-plugin/#gradle_5_x),\n" +
-                    "or use `--enable-gradle-enterprise` when running the build validation script.")
-            }
-            if (!gradle.rootProject.pluginManager.hasPlugin("com.gradle.common-custom-user-data-gradle-plugin")) {
-                logWarningMissingCommonCustomUserDataGradlePlugin()
-            }
-            configureGradleEnterprise(gradle.rootProject.extensions["gradleEnterprise"], gradle.rootProject.name)
-        }
-    } else {
-        throw new IllegalStateException("Build validation not supported for Gradle ${GradleVersion.current()}. Upgrade your project's build to Gradle 5 or newer.")
+
+        configureGradleEnterprise(settings.extensions["gradleEnterprise"], settings.rootProject.name)
     }
+} else if (atLeastGradle5) {
+    rootProject {
+        buildscript.configurations.getByName("classpath").incoming.afterResolve { ResolvableDependencies incoming ->
+            def resolutionResult = incoming.resolutionResult
+
+            def scanPluginComponent = resolutionResult.allComponents.find {
+                it.moduleVersion.with { group == "com.gradle" && (name == "build-scan-plugin" || name == "gradle-enterprise-gradle-plugin") }
+            }
+            if (!scanPluginComponent) {
+                if (enableGradleEnterprise) {
+                    logger.quiet("Applying $BUILD_SCAN_PLUGIN_CLASS via init script")
+                    pluginManager.apply(initscript.classLoader.loadClass(BUILD_SCAN_PLUGIN_CLASS))
+                } else {
+                    throw new IllegalStateException("The com.gradle.build-scan plugin is missing from the project.\n" +
+                        "Either apply it directly (see https://docs.gradle.com/enterprise/gradle-plugin/#gradle_5_x),\n" +
+                        "or use `--enable-gradle-enterprise` when running the build validation script.")
+                }
+            }
+
+            def ccudPluginComponent = resolutionResult.allComponents.find {
+                it.moduleVersion.with { group == "com.gradle" && name == "common-custom-user-data-gradle-plugin" }
+            }
+            if (!ccudPluginComponent) {
+                if (enableGradleEnterprise) {
+                    logger.quiet("Applying $CCUD_PLUGIN_CLASS via init script")
+                    pluginManager.apply(initscript.classLoader.loadClass(CCUD_PLUGIN_CLASS))
+                } else {
+                    logWarningMissingCommonCustomUserDataGradlePlugin()
+                }
+            }
+        }
+    }
+
+    projectsEvaluated { gradle ->
+        configureGradleEnterprise(gradle.rootProject.extensions["gradleEnterprise"], gradle.rootProject.name)
+    }
+} else {
+    throw new IllegalStateException("Build validation not supported for Gradle ${GradleVersion.current()}. Upgrade your project's build to Gradle 5 or newer.")
 }
 
 void configureGradleEnterprise(gradleEnterprise, rootProjectName) {

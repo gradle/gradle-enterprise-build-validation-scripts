@@ -15,11 +15,11 @@ invoke_gradle() {
 
   pushd "${project_dir}" > /dev/null 2>&1 || die "ERROR: The subdirectory ${project_dir} (set with --project-dir) does not exist in ${project_name}." 3
 
-  if [ "$enable_ge" == "on" ]; then
-    args+=(--init-script "${init_scripts_dir}/enable-gradle-enterprise.gradle")
-  fi
-
   args+=(--init-script "${init_scripts_dir}/configure-gradle-enterprise.gradle")
+
+  if [ "$enable_ge" == "on" ]; then
+    args+=("-Dcom.gradle.enterprise.build_validation.enableGradleEnterprise=true")
+  fi
 
   if [ -n "${ge_server}" ]; then
     args+=("-Dcom.gradle.enterprise.build_validation.server=${ge_server}")
