@@ -2,7 +2,7 @@ import org.gradle.util.GradleVersion
 import java.nio.charset.StandardCharsets;
 
 // Don't run against the included builds (if the main build has any).
-def isTopLevelBuild = gradle.getParent() == null
+def isTopLevelBuild = !gradle.parent
 if (isTopLevelBuild) {
     def version = GradleVersion.current().baseVersion
     def atLeastGradle5 = version >= GradleVersion.version("5.0")
