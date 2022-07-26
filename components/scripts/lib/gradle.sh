@@ -17,7 +17,7 @@ invoke_gradle() {
   args+=(--init-script "${INIT_SCRIPTS_DIR}/configure-gradle-enterprise.gradle")
 
   if [ -n "${ge_server}" ]; then
-    args+=("-Pcom.gradle.enterprise.build_validation.server=${ge_server}")
+    args+=("-Dcom.gradle.enterprise.build_validation.server=${ge_server}")
   fi
 
   if [[ "${build_scan_publishing_mode}" == "on" ]]; then
