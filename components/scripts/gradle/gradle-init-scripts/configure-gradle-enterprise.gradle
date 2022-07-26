@@ -13,7 +13,9 @@ if (isTopLevelBuild) {
     if (atLeastGradle6) {
         settingsEvaluated { settings ->
             if (!settings.pluginManager.hasPlugin("com.gradle.enterprise")) {
-                throw new IllegalStateException("The com.gradle.enterprise plugin is missing from the project (see https://docs.gradle.com/enterprise/gradle-plugin/#gradle_6_x_and_later).")
+                throw new IllegalStateException("The com.gradle.enterprise plugin is missing from the project.\n" +
+                    "Either apply it directly (see https://docs.gradle.com/enterprise/gradle-plugin/#gradle_6_x_and_later),\n" +
+                    "or use `--enable-gradle-enterprise` when running the build validation script.")
             }
             if (!settings.pluginManager.hasPlugin("com.gradle.common-custom-user-data-gradle-plugin")) {
                 logWarningMissingCommonCustomUserDataGradlePlugin()
@@ -23,7 +25,9 @@ if (isTopLevelBuild) {
     } else if (atLeastGradle5) {
         projectsEvaluated { gradle ->
             if (!gradle.rootProject.pluginManager.hasPlugin("com.gradle.build-scan")) {
-                throw new IllegalStateException("The com.gradle.build-scan plugin is missing from the project (see https://docs.gradle.com/enterprise/gradle-plugin/#gradle_5_x).")
+                throw new IllegalStateException("The com.gradle.build-scan plugin is missing from the project.\n" +
+                    "Either apply it directly (see https://docs.gradle.com/enterprise/gradle-plugin/#gradle_5_x),\n" +
+                    "or use `--enable-gradle-enterprise` when running the build validation script.")
             }
             if (!gradle.rootProject.pluginManager.hasPlugin("com.gradle.common-custom-user-data-gradle-plugin")) {
                 logWarningMissingCommonCustomUserDataGradlePlugin()
