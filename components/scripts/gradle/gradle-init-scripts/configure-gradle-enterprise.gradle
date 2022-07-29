@@ -53,7 +53,7 @@ def enableGradleEnterprise = Boolean.getBoolean("com.gradle.enterprise.build_val
 
 clearWarnings()
 
-// define a buildScanPublished listener that captures the build scan URL and sends it in a message to the server
+// define a buildScanPublished listener that captures the build scan data and appends to a file
 def buildScanPublishedAction = { def buildScan, rootProjectName ->
     if (buildScan.metaClass.respondsTo(buildScan, 'buildScanPublished', Action)) {
         def scanFile = new File(experimentDir, "build-scans.csv")
