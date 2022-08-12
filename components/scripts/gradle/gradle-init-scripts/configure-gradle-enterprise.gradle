@@ -2,7 +2,7 @@ import org.gradle.util.GradleVersion
 import java.nio.charset.StandardCharsets;
 
 initscript {
-    def gradleEnterprisePluginVersion = "3.10.3"
+    def gradleEnterprisePluginVersion = "3.11.1"
 
     repositories {
         gradlePluginPortal()
