@@ -42,8 +42,8 @@ dependencies {
     argbash("argbash:argbash:2.10.0@zip")
     commonComponents(project(path = ":fetch-build-scan-data-cmdline-tool", configuration = "shadow"))
     mavenComponents(project(":capture-build-scan-url-maven-extension"))
-    mavenComponents("com.gradle:gradle-enterprise-maven-extension:1.15.1")
-    mavenComponents("com.gradle:common-custom-user-data-maven-extension:1.11")
+    mavenComponents("com.gradle:gradle-enterprise-maven-extension:1.15.3")
+    mavenComponents("com.gradle:common-custom-user-data-maven-extension:1.11.1")
 }
 
 shellcheck {
