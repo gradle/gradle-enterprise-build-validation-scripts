@@ -21,6 +21,7 @@ dependencies {
     implementation("io.gsonfire:gson-fire:1.8.5")
     implementation("javax.ws.rs:jsr311-api:1.1.1")
     implementation("javax.ws.rs:javax.ws.rs-api:2.1.1")
+    implementation("javax.annotation:javax.annotation-api:1.3.2")
 
     implementation("com.google.guava:guava:31.1-jre")
     implementation("info.picocli:picocli:4.6.3")
