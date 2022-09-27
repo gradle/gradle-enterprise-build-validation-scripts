@@ -154,7 +154,7 @@ fi
 fetch_and_read_build_scan_data() {
   # This isn't the most robust way to read a CSV,
   # but we control the CSV so we don't have to worry about various CSV edge cases
-  local args build_cache_metrics_only fetched_data header_row_read
+  local args build_cache_metrics_only fetched_data header_row_read idx
   args=()
 
   if [[ "$_arg_debug" == "on" ]]; then
@@ -187,6 +187,7 @@ fetch_and_read_build_scan_data() {
   debug ""
 
   header_row_read=false
+  idx=0
   # shellcheck disable=SC2034 # not all scripts use all of the fetched data
   while IFS=, read -r field_1 field_2 field_3 field_4 field_5 field_6 field_7 field_8 field_9 field_10 field_11 field_12 field_13 field_14 field_15 field_16 field_17 field_18 field_19; do
      if [[ "$header_row_read" == "false" ]]; then
@@ -195,28 +196,30 @@ fetch_and_read_build_scan_data() {
      fi
 
      if [[ "${build_cache_metrics_only}" != "true" ]]; then
-       project_names+=("$field_1")
-       base_urls+=("$field_2")
-       build_scan_urls+=("$field_3")
-       build_scan_ids+=("$field_4")
-       git_repos+=("$field_5")
-       git_branches+=("$field_6")
-       git_commit_ids+=("$field_7")
-       requested_tasks+=("$(remove_clean_task "${field_8}")")
-       build_outcomes+=("$field_9")
-       remote_build_cache_urls+=("${field_10}")
-       remote_build_cache_shards+=("${field_11}")
+       project_names[idx]="$field_1"
+       base_urls[idx]="$field_2"
+       build_scan_urls[idx]="$field_3"
+       build_scan_ids[idx]="$field_4"
+       git_repos[idx]="$field_5"
+       git_branches[idx]="$field_6"
+       git_commit_ids[idx]="$field_7"
+       requested_tasks[idx]="$(remove_clean_task "${field_8}")"
+       build_outcomes[idx]="$field_9"
+       remote_build_cache_urls[idx]="${field_10}"
+       remote_build_cache_shards[idx]="${field_11}"
      fi
 
      # Build caching performance metrics
-     avoided_up_to_date_num_tasks+=("${field_12}")
-     avoided_up_to_date_avoidance_savings+=("${field_13}")
-     avoided_from_cache_num_tasks+=("${field_14}")
-     avoided_from_cache_avoidance_savings+=("${field_15}")
-     executed_cacheable_num_tasks+=("${field_16}")
-     executed_cacheable_duration+=("${field_17}")
-     executed_not_cacheable_num_tasks+=("${field_18}")
-     executed_not_cacheable_duration+=("${field_19}")
+     avoided_up_to_date_num_tasks[idx]="${field_12}"
+     avoided_up_to_date_avoidance_savings[idx]="${field_13}"
+     avoided_from_cache_num_tasks[idx]="${field_14}"
+     avoided_from_cache_avoidance_savings[idx]="${field_15}"
+     executed_cacheable_num_tasks[idx]="${field_16}"
+     executed_cacheable_duration[idx]="${field_17}"
+     executed_not_cacheable_num_tasks[idx]="${field_18}"
+     executed_not_cacheable_duration[idx]="${field_19}"
+
+     ((idx++))
   done <<< "${fetched_data}"
 }
 
