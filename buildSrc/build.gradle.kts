@@ -15,5 +15,5 @@ repositories {
 }
 
 tasks.withType<KotlinCompile>().configureEach {
-    targetCompatibility = JavaVersion.VERSION_1_8.toString()
+    kotlinOptions.jvmTarget = JavaVersion.VERSION_1_8.toString()
 }
