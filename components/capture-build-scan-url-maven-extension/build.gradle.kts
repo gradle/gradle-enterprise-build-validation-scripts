@@ -22,4 +22,5 @@ java {
 
 tasks.withType(JavaCompile::class).configureEach {
     options.encoding = "UTF-8"
+    options.release.set(8)
 }

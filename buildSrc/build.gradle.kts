@@ -1,3 +1,5 @@
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+
 plugins {
     kotlin("jvm") version "1.6.0"
 }
@@ -10,4 +12,8 @@ kotlin {
 
 repositories {
     mavenCentral()
+}
+
+tasks.withType<KotlinCompile>().configureEach {
+    targetCompatibility = JavaVersion.VERSION_1_8.toString()
 }
