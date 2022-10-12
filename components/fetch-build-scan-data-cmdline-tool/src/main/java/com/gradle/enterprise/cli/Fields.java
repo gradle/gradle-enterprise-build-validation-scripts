@@ -20,7 +20,7 @@ public enum Fields {
     GIT_COMMIT_ID("Git Commit ID", BuildValidationData::getGitCommitId),
     REQUESTED_TASKS("Requested Tasks", d -> String.join(" ", d.getRequestedTasks())),
     BUILD_OUTCOME("Build Outcome", BuildValidationData::getBuildOutcome),
-    REMOTE_BUILD_CACHE_URL("Remote Build Cache URL", d -> toStringSafely(d.getRemoteBuildCacheUrl())),
+    REMOTE_BUILD_CACHE_URL("Remote Build Cache URL", d -> toStringSafelyWithTrailingSlash(d.getRemoteBuildCacheUrl())),
     REMOTE_BUILD_CACHE_SHARD("Remote Build Cache Shard", BuildValidationData::getRemoteBuildCacheShard),
     AVOIDED_UP_TO_DATE("Avoided Up To Date", d -> totalTasks(d, "avoided_up_to_date")),
     AVOIDED_UP_TO_DATE_AVOIDANCE_SAVINGS("Avoided up-to-date avoidance savings", d -> totalAvoidanceSavings(d, "avoided_up_to_date")),
@@ -49,6 +49,14 @@ public enum Fields {
             return "";
         }
         return object.toString();
+    }
+
+    private static String toStringSafelyWithTrailingSlash(Object object) {
+        String value = toStringSafely(object);
+        if (value.isEmpty() || value.endsWith("/")) {
+            return value;
+        }
+        return value + "/";
     }
 
     private static String totalTasks(BuildValidationData data, String avoidanceOutcome) {
