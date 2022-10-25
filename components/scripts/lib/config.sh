@@ -17,6 +17,10 @@ process_arguments() {
     git_commit_id="${_arg_git_commit_id}"
   fi
 
+  if [ -n "${_arg_git_options+x}" ]; then
+    git_options="${_arg_git_options}"
+  fi
+
   if [ -n "${_arg_project_dir+x}" ]; then
     project_dir="${_arg_project_dir}"
   fi
@@ -116,6 +120,7 @@ collect_git_details() {
   collect_git_repo
   collect_git_branch
   collect_git_commit_id
+  collect_git_options
 }
 
 collect_git_repo() {
@@ -140,6 +145,14 @@ collect_git_commit_id() {
     git_commit_id=''
   fi
 }
+
+collect_git_options() {
+   local default_git_options="<none>"
+   prompt_for_setting "What are additional options to use when cloning the Git repository?" "${git_options}" "${default_git_options}" git_options
+   if [[ "${git_options}" == "${default_git_options}" ]]; then
+     git_options=''
+   fi
+ }
 
 collect_gradle_details() {
   collect_root_project_directory
