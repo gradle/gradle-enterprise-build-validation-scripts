@@ -18,8 +18,8 @@ The build validation scripts are compatible with a large range of Gradle version
 
 | Build Validation Scripts version | Compatible Gradle versions | Compatible Gradle Enterprise versions |
 |----------------------------------|----------------------------|---------------------------------------|
-| 1.0 - 1.0.2                      | 5.0+                       | 2021.2+                               |
 | 2.0+                             | 5.0+                       | 2022.1+                               |  
+| 1.0 - 1.0.2                      | 5.0+                       | 2021.2+                               |
 
 ## Installation
 
