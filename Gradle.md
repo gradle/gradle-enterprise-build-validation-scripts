@@ -92,7 +92,7 @@ You can find a complete example of how to apply the Common Custom User Data Grad
 
 ## Authenticating with Gradle Enterprise
 
-Some scripts fetch data from build scans that were published as part of running an experiment. The build scan data is fetched by leveraging the [Gradle Enterprise API](https://docs.gradle.com/enterprise/api-manual/) and the [Gradle Enterprise Export API](https://docs.gradle.com/enterprise/export-api/). It is not strictly necessary that you have permission to call these APIs to execute a script successfully, but the summary provided once the script has finished running its experiment will be more comprehensive if the build scan data is accessible.
+Some scripts fetch data from build scans that were published as part of running an experiment. The build scan data is fetched by leveraging the [Gradle Enterprise API](https://docs.gradle.com/enterprise/api-manual/). It is not strictly necessary that you have permission to call these APIs to execute a script successfully, but the summary provided once the script has finished running its experiment will be more comprehensive if the build scan data is accessible.
 
 You can check your granted permissions by navigating in the browser to the 'My Settings' section from the user menu of your Gradle Enterprise UI. You need the 'Access build data via the API' permission. Additionally, the script needs an access key to authenticate with the APIs. See [Authenticating with Gradle Enterprise](https://docs.gradle.com/enterprise/gradle-plugin/#authenticating_with_gradle_enterprise) for details on how to create an access key and storing it locally.
 
