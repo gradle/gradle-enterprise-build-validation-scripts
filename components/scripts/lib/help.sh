@@ -33,6 +33,9 @@ print_option_usage() {
     -m)
        _print_option_usage "-m, --mapping-file" "Specifies the mapping file for the custom value names used in the build scans."
        ;;
+    -o)
+       _print_option_usage "-o, --git-options" "Specifies additional arguments use when cloning the Git repository."
+       ;;
     -p)
        _print_option_usage "-p, --project-dir" "Specifies the build invocation directory within the Git repository."
        ;;
