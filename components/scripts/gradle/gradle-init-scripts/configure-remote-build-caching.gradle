@@ -9,13 +9,9 @@ if (isTopLevelBuild) {
             remote(HttpBuildCache) {
                 enabled = true
                 push = false
-                def remoteBuildCacheUrl = getRemoteBuildCacheUrl()
+                def remoteBuildCacheUrl = remoteBuildCacheUrl
                 if (remoteBuildCacheUrl) {
-                    if (remoteBuildCacheUrl.path.endsWith("/")) {
-                        url = remoteBuildCacheUrl
-                    } else {
-                        url = withPathTrailingSlash(remoteBuildCacheUrl)
-                    }
+                    url = remoteBuildCacheUrl.path.endsWith("/") ? remoteBuildCacheUrl : withPathTrailingSlash(remoteBuildCacheUrl)
                 }
             }
         }
