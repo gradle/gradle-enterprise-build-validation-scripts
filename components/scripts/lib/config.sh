@@ -62,19 +62,19 @@ process_arguments() {
 
 validate_required_config() {
   if [ -z "${git_repo}" ]; then
-    _PRINT_HELP=yes die "ERROR: Missing required argument: --git-repo" 1
+    _PRINT_HELP=yes die "ERROR: Missing required argument: --git-repo" "${INVALID_INPUT}"
   fi
   if [ -z "${tasks}" ]; then
     if [[ "${BUILD_TOOL}" == "Maven" ]]; then
-      _PRINT_HELP=yes die "ERROR: Missing required argument: --goals" 1
+      _PRINT_HELP=yes die "ERROR: Missing required argument: --goals" "${INVALID_INPUT}"
     else
-      _PRINT_HELP=yes die "ERROR: Missing required argument: --tasks" 1
+      _PRINT_HELP=yes die "ERROR: Missing required argument: --tasks" "${INVALID_INPUT}"
     fi
   fi
 
   if [[ "${enable_ge}" == "on" ]]; then
     if [ -z "${ge_server}" ]; then
-      _PRINT_HELP=yes die "ERROR: --gradle-enterprise-server is required when using --enable-gradle-enterprise."
+      _PRINT_HELP=yes die "ERROR: --gradle-enterprise-server is required when using --enable-gradle-enterprise." "${INVALID_INPUT}"
     fi
   fi
 }
