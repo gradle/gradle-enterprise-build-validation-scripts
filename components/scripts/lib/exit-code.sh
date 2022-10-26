@@ -13,8 +13,10 @@ die() {
   # The return code defaults to 2 if it is not specified (the "-" in the expression below is part of the syntax for assigning a default value).
   local _ret="${2:-${UNEXPECTED_ERROR}}"
   printf "${ERROR_COLOR}%s${RESTORE}\n" "$1"
-  echo
-  if [ "${_PRINT_HELP:-no}" = yes ] && print_help >&2
+  if [ "${_PRINT_HELP:-no}" = yes ]; then
+    print_bl
+    print_help >&2
+  fi
   exit "${_ret}"
 }
 
