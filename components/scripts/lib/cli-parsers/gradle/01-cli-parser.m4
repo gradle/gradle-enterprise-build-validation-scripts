@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
 # shellcheck disable=SC2034  # It is common for variables in this auto-generated file to go unused
 # Created by argbash-init v2.10.0
-# ARGBASH_WRAP([common])
 # ARG_HELP([This function is overridden later on.])
 # ARG_VERSION([print_version],[v],[version],[])
+# ARGBASH_WRAP([common])
 # ARGBASH_SET_INDENT([  ])
 # ARGBASH_PREPARE()
 # needed because of Argbash --> m4_ignore([
