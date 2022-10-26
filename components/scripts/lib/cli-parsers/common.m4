@@ -3,7 +3,7 @@
 # ARG_OPTIONAL_BOOLEAN([enable-gradle-enterprise],[e],[])
 # ARG_OPTIONAL_SINGLE([git-branch],[b],[])
 # ARG_OPTIONAL_SINGLE([git-commit-id],[c],[])
-# ARG_OPTIONAL_SINGLE([git-options],[o],[--depth=1])
+# ARG_OPTIONAL_SINGLE([git-options],[o],[],[--depth=1])
 # ARG_OPTIONAL_SINGLE([gradle-enterprise-server],[s],[],[])
 # ARG_OPTIONAL_SINGLE([git-repo],[r],[])
 # ARG_OPTIONAL_SINGLE([project-dir],[p],[],[])
