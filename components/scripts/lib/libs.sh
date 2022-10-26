@@ -3,7 +3,7 @@
 # shellcheck source=lib/color.sh
 source "${LIB_DIR}/color.sh" || { echo "Couldn't find '${LIB_DIR}/color.sh'"; exit 2; }
 
-# shellcheck source=lib/color.sh
+# shellcheck source=lib/exit-code.sh
 source "${LIB_DIR}/exit-code.sh" || { echo "Couldn't find '${LIB_DIR}/exit-code.sh'"; exit 2; }
 
 # shellcheck source=lib/info.sh
