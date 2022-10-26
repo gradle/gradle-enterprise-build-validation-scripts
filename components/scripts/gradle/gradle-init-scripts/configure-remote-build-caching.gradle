@@ -11,7 +11,7 @@ if (isTopLevelBuild) {
                 push = false
                 def remoteBuildCacheUrl = remoteBuildCacheUrl
                 if (remoteBuildCacheUrl) {
-                    url = remoteBuildCacheUrl.path.endsWith("/") ? remoteBuildCacheUrl : withPathTrailingSlash(remoteBuildCacheUrl)
+                    url = withPathTrailingSlash(remoteBuildCacheUrl)
                 }
             }
         }
@@ -28,5 +28,5 @@ URI getRemoteBuildCacheUrl() {
 }
 
 static URI withPathTrailingSlash(URI uri) {
-    new URI(uri.scheme, uri.userInfo, uri.host, uri.port, uri.path + "/", uri.query, uri.fragment)
+    uri.path.endsWith("/") ? uri : new URI(uri.scheme, uri.userInfo, uri.host, uri.port, uri.path + "/", uri.query, uri.fragment)
 }
