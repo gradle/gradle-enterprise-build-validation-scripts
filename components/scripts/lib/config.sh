@@ -149,6 +149,7 @@ collect_git_commit_id() {
 collect_git_options() {
    local default_git_options="<none>"
    prompt_for_setting "What are additional options to use when cloning the Git repository?" "${git_options}" "${default_git_options}" git_options
+   
    if [[ "${git_options}" == "${default_git_options}" ]]; then
      git_options=''
    fi
