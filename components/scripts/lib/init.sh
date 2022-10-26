@@ -2,7 +2,7 @@
 
 make_experiment_dir() {
   mkdir -p "${EXP_DIR}"
-  cd "${EXP_DIR}" || die "Unable to access the experiment dir (${EXP_DIR})." 2
+  cd "${EXP_DIR}" || die "Unable to access the experiment dir (${EXP_DIR})."
 
   make_symlink_to_latest_experiment_dir
 }

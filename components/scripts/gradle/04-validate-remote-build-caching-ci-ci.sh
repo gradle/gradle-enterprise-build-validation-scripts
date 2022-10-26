@@ -105,10 +105,10 @@ wizard_execute() {
 
 validate_required_args() {
   if [ -z "${_arg_first_build_ci}" ]; then
-    _PRINT_HELP=yes die "ERROR: Missing required argument: --first-build-ci" 1
+    _PRINT_HELP=yes die "ERROR: Missing required argument: --first-build-ci" "${INVALID_INPUT}"
   fi
   if [ -z "${_arg_second_build_ci}" ]; then
-    _PRINT_HELP=yes die "ERROR: Missing required argument: --second-build-ci" 1
+    _PRINT_HELP=yes die "ERROR: Missing required argument: --second-build-ci" "${INVALID_INPUT}"
   fi
   build_scan_urls+=("${_arg_first_build_ci}")
   build_scan_urls+=("${_arg_second_build_ci}")
@@ -137,7 +137,7 @@ parse_build_scan_urls() {
       base_urls+=("${protocol}://${ge_host}${port}")
       build_scan_ids+=("$build_scan_id")
     else
-      die "${url} is not a parsable URL." 4
+      die "${url} is not a parsable URL."
     fi
   done
 }
