@@ -45,8 +45,8 @@ print_option_usage() {
     -e)
        _print_option_usage "-e, --enable-gradle-enterprise" "Enables Gradle Enterprise on a project not already connected."
        ;;
-    -x)
-       _print_option_usage "-x, --fail-if-not-optimized" "Causes the script to exit with exit code -2 if the script detects that the build is not optimized."
+    -f)
+       _print_option_usage "-f, --fail-if-not-fully-cacheable" "Terminates with exit code 3 if the build is not fully cacheable."
        ;;
     -v)
        _print_option_usage "-v, --version" "Prints version info."

@@ -4,7 +4,7 @@
 # ARG_OPTIONAL_SINGLE([first-build-ci],[1],[])
 # ARG_OPTIONAL_SINGLE([mapping-file],[m],[])
 # ARG_OPTIONAL_SINGLE([remote-build-cache-url],[u],[])
-# ARG_OPTIONAL_BOOLEAN([fail-if-not-optimized],[x],[])
+# ARG_OPTIONAL_BOOLEAN([fail-if-not-fully-cacheable],[f],[])
 # ARG_HELP([This function is overridden later on.])
 # ARG_VERSION([print_version],[v],[version],[])
 # ARGBASH_WRAP([common])
@@ -33,7 +33,7 @@ function print_help() {
   print_option_usage "-u, --remote-build-cache-url" "Specifies the URL for the remote build cache to access in the second build run locally."
   print_option_usage -s
   print_option_usage -e
-  print_option_usage -x
+  print_option_usage -f
   print_option_usage -v
   print_option_usage -h
 }

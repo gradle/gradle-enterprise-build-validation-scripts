@@ -26,7 +26,7 @@ function print_help() {
   print_option_usage -a
   print_option_usage -s
   print_option_usage -e
-  print_option_usage -x
+  print_option_usage -f
   print_option_usage -v
   print_option_usage -h
 }
