@@ -20,11 +20,9 @@ if (isTopLevelBuild) {
 
 URI getRemoteBuildCacheUrl() {
     def projectProperties = gradle.startParameter.projectProperties
-    if (projectProperties.containsKey("com.gradle.enterprise.build_validation.remoteBuildCacheUrl")) {
-        return new URI(projectProperties.get("com.gradle.enterprise.build_validation.remoteBuildCacheUrl"))
-    } else {
-        return null
-    }
+    projectProperties.containsKey("com.gradle.enterprise.build_validation.remoteBuildCacheUrl")
+            ? new URI(projectProperties.get("com.gradle.enterprise.build_validation.remoteBuildCacheUrl"))
+            : null
 }
 
 static URI withPathTrailingSlash(URI uri) {
