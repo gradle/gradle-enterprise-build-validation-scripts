@@ -10,7 +10,6 @@ readonly SUCCESS INVALID_INPUT UNEXPECTED_ERROR BUILD_FAILED BUILD_IS_NOT_FULLY_
 
 # Overrides the die() function loaded from the argbash-generated parsing libs
 die() {
-  # The return code defaults to 2 if it is not specified (the "-" in the expression below is part of the syntax for assigning a default value).
   local _ret="${2:-${UNEXPECTED_ERROR}}"
   printf "${ERROR_COLOR}%s${RESTORE}\n" "$1"
   if [ "${_PRINT_HELP:-no}" = yes ]; then
@@ -27,7 +26,6 @@ exit_with_return_code() {
 
   # shellcheck disable=SC2034 # not all of the scripts have the fail if not optimized CLI argument
   if [ -n "${_arg_+x}" ]; then
-    # If the script has the "fail if not optimized CLI argument", then see if the build is optimized
     local executed_avoidable_tasks
     executed_avoidable_tasks=$(( executed_cacheable_num_tasks[1] ))
     if [[ "${fail_if_not_fully_cacheable}" == "on" ]] && (( executed_avoidable_tasks > 0 )); then
