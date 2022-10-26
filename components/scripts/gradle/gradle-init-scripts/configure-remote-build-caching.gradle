@@ -9,11 +9,22 @@ if (isTopLevelBuild) {
             remote(HttpBuildCache) {
                 enabled = true
                 push = false
-                def projectProperties = gradle.startParameter.projectProperties
-                if (projectProperties.containsKey("com.gradle.enterprise.build_validation.remoteBuildCacheUrl")) {
-                    url = projectProperties.get("com.gradle.enterprise.build_validation.remoteBuildCacheUrl")
+                def remoteBuildCacheUrl = remoteBuildCacheUrl
+                if (remoteBuildCacheUrl) {
+                    url = withPathTrailingSlash(remoteBuildCacheUrl)
                 }
             }
         }
     }
+}
+
+URI getRemoteBuildCacheUrl() {
+    def projectProperties = gradle.startParameter.projectProperties
+    projectProperties.containsKey("com.gradle.enterprise.build_validation.remoteBuildCacheUrl")
+            ? new URI(projectProperties.get("com.gradle.enterprise.build_validation.remoteBuildCacheUrl"))
+            : null
+}
+
+static URI withPathTrailingSlash(URI uri) {
+    uri.path.endsWith("/") ? uri : new URI(uri.scheme, uri.userInfo, uri.host, uri.port, uri.path + "/", uri.query, uri.fragment)
 }
