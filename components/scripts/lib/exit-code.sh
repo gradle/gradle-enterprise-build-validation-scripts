@@ -30,7 +30,7 @@ exit_with_return_code() {
     # If the script has the "fail if not optimized CLI argument", then see if the build is optimized
     local executed_avoidable_tasks
     executed_avoidable_tasks=$(( executed_cacheable_num_tasks[1] ))
-    if [[ "${_arg_fail_if_not_fully_cacheable}" == "on" ]] && (( executed_avoidable_tasks > 0 )); then
+    if [[ "${fail_if_not_fully_cacheable}" == "on" ]] && (( executed_avoidable_tasks > 0 )); then
       print_bl
       die "FAILURE: Build is not fully cacheable for the given task graph." "${BUILD_IS_NOT_FULLY_CACHEABLE}"
     fi

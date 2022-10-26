@@ -54,6 +54,10 @@ process_arguments() {
     interactive_mode="${_arg_interactive}"
   fi
 
+  if [ -n "${_arg_fail_if_not_fully_cacheable+x}" ]; then
+    fail_if_not_fully_cacheable="${_arg_fail_if_not_fully_cacheable}"
+  fi
+
   #shellcheck disable=SC2154
   if [ -n "${_arg_mapping_file+x}" ]; then
     mapping_file="${_arg_mapping_file}"
@@ -256,6 +260,10 @@ print_command_to_repeat_experiment() {
 
   if [[ "${enable_ge}" == "on" ]]; then
     cmd+=("-e")
+  fi
+
+  if [[ "${fail_if_not_fully_cacheable}" == "on" ]]; then
+    cmd+=("-f")
   fi
 
   info "Command Line Invocation"
