@@ -11,8 +11,10 @@ readonly SUCCESS INVALID_INPUT UNEXPECTED_ERROR BUILD_FAILED
 die() {
   local _ret="${2:-${UNEXPECTED_ERROR}}"
   printf "${ERROR_COLOR}%s${RESTORE}\n" "$1"
-  echo
-  test "${_PRINT_HELP:-no}" = yes && print_help >&2
+  if [[ "${_PRINT_HELP:-no}" == "yes" ]]; then
+    print_bl
+    print_help >&2
+  fi
   exit "${_ret}"
 }
 
