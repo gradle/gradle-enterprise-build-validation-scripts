@@ -142,8 +142,8 @@ collect_git_commit_id() {
   prompt_for_setting "What is the commit id for the Git repository that contains the project to validate?" "${git_commit_id}" "${default_commit_id}" git_commit_id
 
     if [[ "${git_commit_id}" == "${default_commit_id}" ]]; then
-    git_commit_id=''
-  fi
+      git_commit_id=''
+    fi
 }
 
 collect_git_options() {
