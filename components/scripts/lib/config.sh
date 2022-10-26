@@ -147,12 +147,8 @@ collect_git_commit_id() {
 }
 
 collect_git_options() {
-   local default_git_options="<none>"
+   local default_git_options="--depth=1"
    prompt_for_setting "What are additional options to use when cloning the Git repository?" "${git_options}" "${default_git_options}" git_options
-   
-   if [[ "${git_options}" == "${default_git_options}" ]]; then
-     git_options=''
-   fi
  }
 
 collect_gradle_details() {
@@ -233,6 +229,10 @@ print_command_to_repeat_experiment() {
 
   if [ -n "${git_commit_id}" ]; then
     cmd+=("-c" "${git_commit_id}")
+  fi
+
+  if [ "${git_options}" != "--depth=1" ]; then
+    cmd+=("-o" "${git_options}")
   fi
 
   if [ -n "${project_dir}" ]; then
