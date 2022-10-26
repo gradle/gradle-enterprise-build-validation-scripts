@@ -29,7 +29,7 @@ git_clone_project() {
    debug git clone ${git_options} ${branch} "${git_repo}" "${clone_dir}"
 
    # shellcheck disable=SC2086  # we want $git_options and $branch to expand into multiple arguments
-   git clone --depth=1 ${git_options} ${branch} "${git_repo}" "${clone_dir}" || die "ERROR: Unable to clone from ${git_repo}." 2
+   git clone ${git_options} ${branch} "${git_repo}" "${clone_dir}" || die "ERROR: Unable to clone from ${git_repo}." 2
    cd "${clone_dir}" || die "Unable to access git repository directory ${clone_dir}." 2
 }
 
