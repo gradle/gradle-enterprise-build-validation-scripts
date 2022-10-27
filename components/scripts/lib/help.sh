@@ -9,8 +9,11 @@ print_option_usage() {
   local key="$1"
 
   case "$key" in
-    -a)
-       _print_option_usage "-a, --args" "Specifies additional arguments to pass to ${BUILD_TOOL}."
+    -i)
+       _print_option_usage "-i, --interactive" "Enables interactive mode."
+       ;;
+    -r)
+       _print_option_usage "-r, --git-repo" "Specifies the URL for the Git repository to validate."
        ;;
     -b)
        _print_option_usage "-b, --git-branch" "Specifies the branch for the Git repository to validate."
@@ -21,35 +24,35 @@ print_option_usage() {
     -o)
        _print_option_usage "-o, --git-options" "Specifies additional arguments use when cloning the Git repository."
        ;;
-    -e)
-       _print_option_usage "-e, --enable-gradle-enterprise" "Enables Gradle Enterprise on a project not already connected."
-       ;;
-    -g)
-       _print_option_usage "-g, --goals" "Specifies the Maven goals to invoke."
-       ;;
-    -h)
-       _print_option_usage "-h, --help" "Shows this help message."
-       ;;
-    -i)
-       _print_option_usage "-i, --interactive" "Enables interactive mode."
-       ;;
-    -m)
-       _print_option_usage "-m, --mapping-file" "Specifies the mapping file for the custom value names used in the build scans."
-       ;;
     -p)
        _print_option_usage "-p, --project-dir" "Specifies the build invocation directory within the Git repository."
-       ;;
-    -r)
-       _print_option_usage "-r, --git-repo" "Specifies the URL for the Git repository to validate."
-       ;;
-    -s)
-       _print_option_usage "-s, --gradle-enterprise-server" "Specifies the URL for the Gradle Enterprise server to connect to."
        ;;
     -t)
        _print_option_usage "-t, --tasks" "Specifies the Gradle tasks to invoke."
        ;;
+    -g)
+       _print_option_usage "-g, --goals" "Specifies the Maven goals to invoke."
+       ;;
+    -a)
+       _print_option_usage "-a, --args" "Specifies additional arguments to pass to ${BUILD_TOOL}."
+       ;;
+    -m)
+       _print_option_usage "-m, --mapping-file" "Specifies the mapping file for the custom value names used in the build scans."
+       ;;
+    -s)
+       _print_option_usage "-s, --gradle-enterprise-server" "Specifies the URL for the Gradle Enterprise server to connect to."
+       ;;
+    -e)
+       _print_option_usage "-e, --enable-gradle-enterprise" "Enables Gradle Enterprise on a project not already connected."
+       ;;
+    -f)
+       _print_option_usage "-f, --fail-if-not-fully-cacheable" "Terminates with exit code 3 if the build is not fully cacheable."
+       ;;
     -v)
        _print_option_usage "-v, --version" "Prints version info."
+       ;;
+    -h)
+       _print_option_usage "-h, --help" "Shows this help message."
        ;;
     *)
        _print_option_usage "$1" "$2"
