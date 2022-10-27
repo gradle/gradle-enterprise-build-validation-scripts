@@ -66,8 +66,10 @@ strip_color_codes() {
 die() {
   local _ret="${2:-1}"
   printf "${ERROR_COLOR}%s${RESTORE}\n" "$1"
-  echo
-  test "${_PRINT_HELP:-no}" = yes && print_help >&2
+  if [[ "${_PRINT_HELP:-no}" == "yes" ]]; then
+    print_bl
+    print_help >&2
+  fi
   exit "${_ret}"
 }
 
@@ -236,6 +238,16 @@ create_receipt_file() {
 exit_with_return_code() {
   if [[ " ${build_outcomes[*]} " =~ " FAILED " ]]; then
     exit 3
+  fi
+
+  # shellcheck disable=SC2034 # not all of the scripts have the fail if not optimized CLI argument
+  if [ -n "${fail_if_not_fully_cacheable+x}" ]; then
+    local executed_avoidable_tasks
+    executed_avoidable_tasks=$(( executed_cacheable_num_tasks[1] ))
+    if [[ "${fail_if_not_fully_cacheable}" == "on" ]] && (( executed_avoidable_tasks > 0 )); then
+      print_bl
+      die "FAILURE: Build is not fully cacheable for the given task graph." 4
+    fi
   fi
 
   exit 0
