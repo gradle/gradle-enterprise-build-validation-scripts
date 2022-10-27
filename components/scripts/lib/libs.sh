@@ -1,40 +1,52 @@
 #!/usr/bin/env bash
 
+failed_to_load_lib() {
+  local lib_name _RED _BOLD _RESTORE _UNEXPECTED_ERROR
+  _RED=$(echo -en '\033[00;31m')
+  _BOLD=$(echo -en '\033[1m')
+  _RESTORE=$(echo -en '\033[0m')
+  _UNEXPECTED_ERROR=2
+
+  lib_name="${LIB_DIR}/$1"
+  echo "${_RED}${_BOLD}ERROR: Couldn't find '${lib_name}'${_RESTORE}"
+  exit "${_UNEXPECTED_ERROR}"
+}
+
 # shellcheck source=lib/color.sh
-source "${LIB_DIR}/color.sh" || { echo "Couldn't find '${LIB_DIR}/color.sh'"; exit 2; }
+source "${LIB_DIR}/color.sh" || failed_to_load_lib color.sh
 
 # shellcheck source=lib/exit-code.sh
-source "${LIB_DIR}/exit-code.sh" || { echo "Couldn't find '${LIB_DIR}/exit-code.sh'"; exit 2; }
+source "${LIB_DIR}/exit-code.sh" || failed_to_load_lib exit-code.sh
 
 # shellcheck source=lib/info.sh
-source "${LIB_DIR}/info.sh" || { echo "Couldn't find '${LIB_DIR}/info.sh'"; exit 2; }
+source "${LIB_DIR}/info.sh" || failed_to_load_lib info.sh
 
 # shellcheck source=lib/wizard.sh
-source "${LIB_DIR}/wizard.sh" || { echo "Couldn't find '${LIB_DIR}/wizard.sh'"; exit 2; }
+source "${LIB_DIR}/wizard.sh" || failed_to_load_lib wizard.sh
 
 # shellcheck source=lib/config.sh
-source "${LIB_DIR}/config.sh" || { echo "Couldn't find '${LIB_DIR}/config.sh'"; exit 2; }
+source "${LIB_DIR}/config.sh" || failed_to_load_lib config.sh
 
 # shellcheck source=lib/init.sh
-source "${LIB_DIR}/init.sh" || { echo "Couldn't find '${LIB_DIR}/init.sh'"; exit 2; }
+source "${LIB_DIR}/init.sh" || failed_to_load_lib init.sh
 
 # shellcheck source=lib/git.sh
-source "${LIB_DIR}/git.sh" || { echo "Couldn't find '${LIB_DIR}/git.sh'"; exit 2; }
+source "${LIB_DIR}/git.sh" || failed_to_load_lib git.sh
 
 # shellcheck source=lib/build_scan.sh
-source "${LIB_DIR}/build_scan.sh" || { echo "Couldn't find '${LIB_DIR}/build_scan.sh'"; exit 2; }
+source "${LIB_DIR}/build_scan.sh" || failed_to_load_lib build_scan.sh
 
 # shellcheck source=lib/gradle.sh
-source "${LIB_DIR}/gradle.sh" || { echo "Couldn't find '${LIB_DIR}/gradle.sh'"; exit 2; }
+source "${LIB_DIR}/gradle.sh" || failed_to_load_lib gradle.sh
 
 # shellcheck source=lib/maven.sh
-source "${LIB_DIR}/maven.sh" || { echo "Couldn't find '${LIB_DIR}/maven.sh'"; exit 2; }
+source "${LIB_DIR}/maven.sh" || failed_to_load_lib maven.sh
 
 # shellcheck source=lib/help.sh
-source "${LIB_DIR}/help.sh" || { echo "Couldn't find '${LIB_DIR}/help.sh'"; exit 2; }
+source "${LIB_DIR}/help.sh" || failed_to_load_lib help.sh
 
 # shellcheck source=lib/paths.sh
-source "${LIB_DIR}/paths.sh" || { echo "Couldn't find '${LIB_DIR}/paths.sh'"; exit 2; }
+source "${LIB_DIR}/paths.sh" || failed_to_load_lib paths.sh
 
 # shellcheck source=lib/project.sh
-source "${LIB_DIR}/project.sh" || { echo "Couldn't find '${LIB_DIR}/project.sh'"; exit 2; }
+source "${LIB_DIR}/project.sh" || failed_to_load_lib project.sh
