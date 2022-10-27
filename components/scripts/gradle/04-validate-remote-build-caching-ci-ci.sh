@@ -137,7 +137,7 @@ parse_build_scan_urls() {
       base_urls+=("${protocol}://${ge_host}${port}")
       build_scan_ids+=("$build_scan_id")
     else
-      die "${url} is not a parsable URL."
+      die "${url} is not a parsable URL." "${INVALID_INPUT}"
     fi
   done
 }

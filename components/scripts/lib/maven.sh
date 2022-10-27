@@ -18,7 +18,7 @@ invoke_maven() {
 
   mvn=$(find_maven_executable)
   if [ -z "$mvn" ]; then
-    die "Unable to find the Maven executable. Add MAVEN_INSTALL_DIR/bin to your PATH environment variable, or install the Maven Wrapper." "${INVALID_INPUT}"
+    die "Unable to find the Maven executable. Add MAVEN_INSTALL_DIR/bin to your PATH environment variable, or install the Maven Wrapper."
   fi
 
   local extension_classpath

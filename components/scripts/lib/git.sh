@@ -56,8 +56,8 @@ git_checkout_commit() {
 
   rm -rf "${clone_dir:?}"
   mkdir -p "${clone_dir}"
-  cd "${clone_dir}" || die "ERROR: Unable access git repository directory ${clone_dir}"
-  git init > /dev/null || die "ERROR: Unable initialize git"
+  cd "${clone_dir}" || die "ERROR: Unable to access git repository directory ${clone_dir}"
+  git init > /dev/null || die "ERROR: Unable to initialize git"
   git remote add origin "${git_repo}" || die "ERROR: Unable to fetch from ${git_repo}"
 
   if [[ "${#git_commit_id}" -lt 40 ]]; then
