@@ -42,25 +42,25 @@ process_arguments() {
   fi
 
   #shellcheck disable=SC2154
-  if [ -n "${_arg_enable_gradle_enterprise+x}" ]; then
-    enable_ge="${_arg_enable_gradle_enterprise}"
+  if [ -n "${_arg_mapping_file+x}" ]; then
+    mapping_file="${_arg_mapping_file}"
   fi
 
   if [ -n "${_arg_gradle_enterprise_server+x}" ]; then
     ge_server="${_arg_gradle_enterprise_server}"
   fi
 
-  if [ -n "${_arg_interactive+x}" ]; then
-    interactive_mode="${_arg_interactive}"
+  #shellcheck disable=SC2154
+  if [ -n "${_arg_enable_gradle_enterprise+x}" ]; then
+    enable_ge="${_arg_enable_gradle_enterprise}"
   fi
 
   if [ -n "${_arg_fail_if_not_fully_cacheable+x}" ]; then
     fail_if_not_fully_cacheable="${_arg_fail_if_not_fully_cacheable}"
   fi
 
-  #shellcheck disable=SC2154
-  if [ -n "${_arg_mapping_file+x}" ]; then
-    mapping_file="${_arg_mapping_file}"
+  if [ -n "${_arg_interactive+x}" ]; then
+    interactive_mode="${_arg_interactive}"
   fi
 }
 
@@ -68,6 +68,7 @@ validate_required_config() {
   if [ -z "${git_repo}" ]; then
     _PRINT_HELP=yes die "ERROR: Missing required argument: --git-repo" 1
   fi
+
   if [ -z "${tasks}" ]; then
     if [[ "${BUILD_TOOL}" == "Maven" ]]; then
       _PRINT_HELP=yes die "ERROR: Missing required argument: --goals" 1
@@ -246,6 +247,7 @@ print_command_to_repeat_experiment() {
   if [[ "${BUILD_TOOL}" == "Gradle" ]]; then
     cmd+=("-t" "${tasks}")
   fi
+
   if [[ "${BUILD_TOOL}" == "Maven" ]]; then
     cmd+=("-g" "${tasks}")
   fi
