@@ -13,7 +13,7 @@ invoke_gradle() {
   local init_scripts_dir
   init_scripts_dir="$(init_scripts_path)"
 
-  pushd "${project_dir}" > /dev/null 2>&1 || die "ERROR: The subdirectory ${project_dir} (set with --project-dir) does not exist in ${project_name}."
+  pushd "${project_dir}" > /dev/null 2>&1 || die "ERROR: The subdirectory ${project_dir} (set with --project-dir) does not exist in ${project_name}." "${INVALID_INPUT}"
 
   if [ "$enable_ge" == "on" ]; then
     args+=(--init-script "${init_scripts_dir}/enable-gradle-enterprise.gradle")
