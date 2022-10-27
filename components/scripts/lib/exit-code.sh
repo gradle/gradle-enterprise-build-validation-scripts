@@ -25,7 +25,7 @@ exit_with_return_code() {
   fi
 
   # shellcheck disable=SC2034 # not all of the scripts have the fail if not optimized CLI argument
-  if [ -n "${_arg_+x}" ]; then
+  if [ -n "${fail_if_not_fully_cacheable+x}" ]; then
     local executed_avoidable_tasks
     executed_avoidable_tasks=$(( executed_cacheable_num_tasks[1] ))
     if [[ "${fail_if_not_fully_cacheable}" == "on" ]] && (( executed_avoidable_tasks > 0 )); then
