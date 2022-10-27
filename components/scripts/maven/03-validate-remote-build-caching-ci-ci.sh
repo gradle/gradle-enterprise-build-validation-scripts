@@ -22,10 +22,10 @@ readonly LIB_DIR="${SCRIPT_DIR}/lib"
 
 # Include and parse the command line arguments
 # shellcheck source=lib/03-cli-parser.sh
-source "${LIB_DIR}/${EXP_NO}-cli-parser.sh" || { echo "Couldn't find '${LIB_DIR}/${EXP_NO}-cli-parser.sh' parsing library."; exit 1; }
+source "${LIB_DIR}/${EXP_NO}-cli-parser.sh" || { echo -e "\033[00;31m\033[1mERROR: Couldn't find '${LIB_DIR}/${EXP_NO}-cli-parser.sh' parsing library.\033[0m"; exit 100; }
 # shellcheck source=lib/libs.sh
 # shellcheck disable=SC2154 # the libs include scripts that reference CLI arguments that this script does not create
-source "${LIB_DIR}/libs.sh" || { echo "Couldn't find '${LIB_DIR}/libs.sh'"; exit 1; }
+source "${LIB_DIR}/libs.sh" || { echo -e "\033[00;31m\033[1mERROR: Couldn't find '${LIB_DIR}/libs.sh'\033[0m"; exit 100; }
 
 # These will be set by the config functions (see lib/config.sh)
 git_repo=''
@@ -103,10 +103,10 @@ wizard_execute() {
 
 validate_required_args() {
   if [ -z "${_arg_first_build_ci}" ]; then
-    _PRINT_HELP=yes die "ERROR: Missing required argument: --first-build-ci" 1
+    _PRINT_HELP=yes die "ERROR: Missing required argument: --first-build-ci" "${INVALID_INPUT}"
   fi
   if [ -z "${_arg_second_build_ci}" ]; then
-    _PRINT_HELP=yes die "ERROR: Missing required argument: --second-build-ci" 1
+    _PRINT_HELP=yes die "ERROR: Missing required argument: --second-build-ci" "${INVALID_INPUT}"
   fi
   build_scan_urls+=("${_arg_first_build_ci}")
   build_scan_urls+=("${_arg_second_build_ci}")
@@ -135,7 +135,7 @@ parse_build_scan_urls() {
       base_urls+=("${protocol}://${ge_host}${port}")
       build_scan_ids+=("$build_scan_id")
     else
-      die "${url} is not a parsable URL." 4
+      die "${url} is not a parsable URL." "${INVALID_INPUT}"
     fi
   done
 }
