@@ -121,6 +121,7 @@ print_experiment_info() {
   comparison_summary_row "Git repo:" "${git_repos[@]}"
   comparison_summary_row "Git branch:" "${git_branches[@]}"
   comparison_summary_row "Git commit id:" "${git_commit_ids[@]}"
+  summary_row "Git options:" "${git_options}"
   summary_row "Project dir:" "${project_dir:-<root directory>}"
   comparison_summary_row "${BUILD_TOOL} ${BUILD_TOOL_TASK}s:" "${requested_tasks[@]}"
   summary_row "${BUILD_TOOL} arguments:" "${extra_args:-<none>}"
