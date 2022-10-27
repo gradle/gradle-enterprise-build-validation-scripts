@@ -1,4 +1,5 @@
 - [FIX] Count non-cacheable tasks with overlapping outputs as cacheable tasks in summary section
 - [FIX] Count non-cacheable tasks to ensure correctness as cacheable tasks in summary section
 - [FIX] Experiment 5 provides incorrect summary for avoided / executed cacheable tasks
-- [NEW] Add `-o` / `--git-options` option to control what arguments are passed to Git when cloning
+- [NEW] Add `-o` command line option to control what arguments are passed to Git when cloning
+- [NEW] Add `-f` command line option to fail the experiment if the build is not fully cacheable
