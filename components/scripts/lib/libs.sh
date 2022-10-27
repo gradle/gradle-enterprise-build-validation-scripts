@@ -5,7 +5,7 @@ failed_to_load_lib() {
   _RED=$(echo -en '\033[00;31m')
   _BOLD=$(echo -en '\033[1m')
   _RESTORE=$(echo -en '\033[0m')
-  _UNEXPECTED_ERROR=2
+  _UNEXPECTED_ERROR=100
 
   lib_name="${LIB_DIR}/$1"
   echo "${_RED}${_BOLD}ERROR: Couldn't find '${lib_name}'${_RESTORE}"
