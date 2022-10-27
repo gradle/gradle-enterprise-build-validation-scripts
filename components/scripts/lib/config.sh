@@ -66,19 +66,19 @@ process_arguments() {
 
 validate_required_config() {
   if [ -z "${git_repo}" ]; then
-    _PRINT_HELP=yes die "ERROR: Missing required argument: --git-repo" "${INVALID_INPUT}"
+    _PRINT_HELP=yes die "ERROR: Missing required argument: --git-repo" 1
   fi
   if [ -z "${tasks}" ]; then
     if [[ "${BUILD_TOOL}" == "Maven" ]]; then
-      _PRINT_HELP=yes die "ERROR: Missing required argument: --goals" "${INVALID_INPUT}"
+      _PRINT_HELP=yes die "ERROR: Missing required argument: --goals" 1
     else
-      _PRINT_HELP=yes die "ERROR: Missing required argument: --tasks" "${INVALID_INPUT}"
+      _PRINT_HELP=yes die "ERROR: Missing required argument: --tasks" 1
     fi
   fi
 
   if [[ "${enable_ge}" == "on" ]]; then
     if [ -z "${ge_server}" ]; then
-      _PRINT_HELP=yes die "ERROR: --gradle-enterprise-server is required when using --enable-gradle-enterprise." "${INVALID_INPUT}"
+      _PRINT_HELP=yes die "ERROR: --gradle-enterprise-server is required when using --enable-gradle-enterprise."
     fi
   fi
 }
@@ -153,7 +153,7 @@ collect_git_commit_id() {
 collect_git_options() {
    local default_git_options="<none>"
    prompt_for_setting "What are additional options to use when cloning the Git repository?" "${git_options}" "${default_git_options}" git_options
-
+   
    if [[ "${git_options}" == "${default_git_options}" ]]; then
      git_options=''
    fi

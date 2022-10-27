@@ -14,11 +14,11 @@ invoke_maven() {
   local args mvn
   args=()
 
-  pushd "${project_dir}" > /dev/null 2>&1 || die "ERROR: The subdirectory ${project_dir} (set with --project-dir) does not exist in ${project_name}." "${INVALID_INPUT}"
+  pushd "${project_dir}" > /dev/null 2>&1 || die "ERROR: The subdirectory ${project_dir} (set with --project-dir) does not exist in ${project_name}." 3
 
   mvn=$(find_maven_executable)
   if [ -z "$mvn" ]; then
-    die "Unable to find the Maven executable. Add MAVEN_INSTALL_DIR/bin to your PATH environment variable, or install the Maven Wrapper." "${INVALID_INPUT}"
+    die "Unable to find the Maven executable. Add MAVEN_INSTALL_DIR/bin to your PATH environment variable, or install the Maven Wrapper." 2
   fi
 
   local extension_classpath

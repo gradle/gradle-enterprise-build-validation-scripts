@@ -142,7 +142,7 @@ process_script_arguments() {
 
 validate_required_args() {
   if [ -z "${ci_build_scan_url}" ]; then
-    _PRINT_HELP=yes die "ERROR: Missing required argument: --first-build-ci" "${INVALID_INPUT}"
+    _PRINT_HELP=yes die "ERROR: Missing required argument: --first-build-ci" 1
   fi
 }
 
@@ -173,18 +173,18 @@ read_build_params_from_build_scan_data() {
 
 validate_build_config() {
   if [ -z "${git_repo}" ]; then
-    _PRINT_HELP=yes die "ERROR: The Git repository URL was not found in the build scan. Please specify --git-repo and try again." "${INVALID_INPUT}"
+    _PRINT_HELP=yes die "ERROR: The Git repository URL was not found in the build scan. Please specify --git-repo and try again." 1
   fi
   if [ -z "${tasks}" ]; then
-      _PRINT_HELP=yes die "ERROR: The Maven goals were not found in the build scan. Please specify --goals and try again." "${INVALID_INPUT}"
+      _PRINT_HELP=yes die "ERROR: The Maven goals were not found in the build scan. Please specify --goals and try again." 1
   fi
   if [ -z "${git_commit_id}" ]; then
-      _PRINT_HELP=yes die "ERROR: The Git commit id was not found in the build scan. Please specify --git-commit-id and try again." "${INVALID_INPUT}"
+      _PRINT_HELP=yes die "ERROR: The Git commit id was not found in the build scan. Please specify --git-commit-id and try again." 1
   fi
 
   if [[ "${enable_ge}" == "on" ]]; then
     if [ -z "${ge_server}" ]; then
-      _PRINT_HELP=yes die "ERROR: --gradle-enterprise-server is required when using --enable-gradle-enterprise." "${INVALID_INPUT}"
+      _PRINT_HELP=yes die "ERROR: --gradle-enterprise-server is required when using --enable-gradle-enterprise."
     fi
   fi
 }

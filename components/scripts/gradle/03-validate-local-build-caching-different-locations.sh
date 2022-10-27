@@ -139,7 +139,7 @@ execute_first_build() {
 execute_second_build() {
   info "Running second build:"
 
-  cd "${EXP_DIR}/second-build_${project_name}" || die "Unable to cd to ${EXP_DIR}/second-build_${project_name}"
+  cd "${EXP_DIR}/second-build_${project_name}" || die "Unable to cd to ${EXP_DIR}/second-build_${project_name}" 2
 
   local init_scripts_dir
   init_scripts_dir="$(init_scripts_path)"
