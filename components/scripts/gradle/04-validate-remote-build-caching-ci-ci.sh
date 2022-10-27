@@ -31,6 +31,7 @@ source "${LIB_DIR}/libs.sh" || { echo -e "\033[00;31m\033[1mERROR: Couldn't find
 git_repo=''
 project_name=''
 git_branch=''
+git_options='<not available>'
 project_dir='<not available>'
 extra_args='<not available>'
 tasks=''
