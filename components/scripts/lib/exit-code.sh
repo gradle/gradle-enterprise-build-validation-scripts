@@ -24,11 +24,10 @@ exit_with_return_code() {
     exit "${BUILD_FAILED}"
   fi
 
-  # shellcheck disable=SC2034 # not all of the scripts have the --fail-if-not-fully-cacheable CLI argument
-  if [ -n "${fail_if_not_fully_cacheable+x}" ]; then
+  if [[ "${fail_if_not_fully_cacheable}" == "on" ]]; then
     local executed_avoidable_tasks
     executed_avoidable_tasks=$(( executed_cacheable_num_tasks[1] ))
-    if [[ "${fail_if_not_fully_cacheable}" == "on" ]] && (( executed_avoidable_tasks > 0 )); then
+    if (( executed_avoidable_tasks > 0 )); then
       print_bl
       die "FAILURE: Build is not fully cacheable for the given task graph." "${BUILD_NOT_FULLY_CACHEABLE}"
     fi
