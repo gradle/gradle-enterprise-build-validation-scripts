@@ -59,8 +59,10 @@ process_arguments() {
     fail_if_not_fully_cacheable="${_arg_fail_if_not_fully_cacheable}"
   fi
 
-  if [ -n "${_arg_no_build_scan_publishing+x}" ]; then
-    no_build_scan_publishing_mode="${_arg_no_build_scan_publishing}"
+  if [ -n "${_arg_build_scan_publishing+x}" ]; then
+    build_scan_publishing_mode="${_arg_build_scan_publishing}"
+  else
+    build_scan_publishing_mode=on
   fi
 
   if [ -n "${_arg_interactive+x}" ]; then
@@ -272,7 +274,7 @@ print_command_to_repeat_experiment() {
     cmd+=("-f")
   fi
 
-  if [[ "${no_build_scan_publishing_mode}" == "on" ]]; then
+  if [[ "${build_scan_publishing_mode}" == "off" ]]; then
     cmd+=("--no-build-scan-publishing")
   fi
 
