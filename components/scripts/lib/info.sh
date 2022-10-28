@@ -101,8 +101,11 @@ print_summary() {
   print_build_scans
   print_warnings
   print_performance_metrics
-  print_bl
-  print_quick_links
+
+  if [[ "${build_scan_publishing_mode}" == "on" ]]; then
+    print_bl
+    print_quick_links
+  fi
 }
 
 print_experiment_info() {
@@ -204,12 +207,16 @@ warn_if_nonzero() {
 
 print_build_scans() {
   for (( i=0; i<2; i++ )); do
-    if [ -z "${build_outcomes[i]}" ]; then
-      summary_row "Build scan ${ORDINALS[i]} build:" "${WARN_COLOR}${build_scan_urls[i]:+${build_scan_urls[i]} }BUILD SCAN DATA FETCH FAILED${RESTORE}"
-    elif [[ "${build_outcomes[i]}" == "FAILED" ]]; then
-      summary_row "Build scan ${ORDINALS[i]} build:" "${WARN_COLOR}${build_scan_urls[i]:+${build_scan_urls[i]} }FAILED${RESTORE}"
+    if [[ "${build_scan_publishing_mode}" == "on" ]]; then
+      if [ -z "${build_outcomes[i]}" ]; then
+        summary_row "Build scan ${ORDINALS[i]} build:" "${WARN_COLOR}${build_scan_urls[i]:+${build_scan_urls[i]} }BUILD SCAN DATA FETCH FAILED${RESTORE}"
+      elif [[ "${build_outcomes[i]}" == "FAILED" ]]; then
+        summary_row "Build scan ${ORDINALS[i]} build:" "${WARN_COLOR}${build_scan_urls[i]:+${build_scan_urls[i]} }FAILED${RESTORE}"
+      else
+        summary_row "Build scan ${ORDINALS[i]} build:" "${build_scan_urls[i]}"
+      fi
     else
-      summary_row "Build scan ${ORDINALS[i]} build:" "${build_scan_urls[i]}"
+      summary_row "Build scan ${ORDINALS[i]} build:" "Build scan publishing is disabled"
     fi
   done
 }

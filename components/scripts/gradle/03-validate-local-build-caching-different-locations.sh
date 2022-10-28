@@ -320,20 +320,12 @@ explain_and_print_summary() {
   read_build_scan_metadata
   local text
   IFS='' read -r -d '' text <<EOF
-The ‘Summary’ section below captures the configuration of the experiment and the
-two build scans that were published as part of running the experiment. The build
-scan of the second build is particularly interesting since this is where you can
-inspect what tasks were not leveraging the local build cache.
+$(explain_summary)
 
 The ‘Build Caching Leverage’ section below reveals the realized and potential
 savings from build caching. All cacheable tasks' outputs need to be taken from
 the build cache in the second build for the build to be fully cacheable.
-
-The ‘Investigation Quick Links’ section below allows quick navigation to the
-most relevant views in build scans to investigate what tasks were avoided due to
-local build caching and what tasks executed in the second build, which of those
-tasks had the biggest impact on build performance, and what caused those tasks
-to not be taken from the local build cache.
+$(explain_quick_links)
 
 $(explain_command_to_repeat_experiment)
 
@@ -344,6 +336,40 @@ $(print_command_to_repeat_experiment)
 $(explain_when_to_rerun_experiment)
 EOF
   print_wizard_text "${text}"
+}
+
+explain_summary() {
+  local text
+  if [[ "${build_scan_publishing_mode}" == "on" ]]; then
+    IFS='' read -r -d '' text <<EOF
+The ‘Summary’ section below captures the configuration of the experiment and the
+two build scans that were published as part of running the experiment. The build
+scan of the second build is particularly interesting since this is where you can
+inspect what tasks were not leveraging the local build cache.
+EOF
+  else
+    IFS='' read -r -d '' text <<EOF
+The ‘Summary’ section below captures the configuration of the experiment and the
+two build scans that were published as part of running the experiment.
+EOF
+  fi
+  echo -n "${text}"
+}
+
+
+explain_quick_links() {
+  local text
+  if [[ "${build_scan_publishing_mode}" == "on" ]]; then
+    IFS='' read -r -d '' text <<EOF
+
+The ‘Investigation Quick Links’ section below allows quick navigation to the
+most relevant views in build scans to investigate what tasks were avoided due to
+local build caching and what tasks executed in the second build, which of those
+tasks had the biggest impact on build performance, and what caused those tasks
+to not be taken from the local build cache.
+EOF
+    echo -n "${text}"
+  fi
 }
 
 process_arguments "$@"
