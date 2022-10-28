@@ -62,6 +62,10 @@ process_arguments() {
   if [ -n "${_arg_interactive+x}" ]; then
     interactive_mode="${_arg_interactive}"
   fi
+
+  if [ -n "${_arg_offline+x}" ]; then
+    offline_mode="${_arg_offline}"
+  fi
 }
 
 validate_required_config() {
@@ -266,6 +270,10 @@ print_command_to_repeat_experiment() {
 
   if [[ "${fail_if_not_fully_cacheable}" == "on" ]]; then
     cmd+=("-f")
+  fi
+
+  if [[ "${offline_mode}" == "on" ]]; then
+    cmd+=("--offline")
   fi
 
   info "Command Line Invocation"

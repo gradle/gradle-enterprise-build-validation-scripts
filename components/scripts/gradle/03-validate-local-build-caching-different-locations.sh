@@ -38,6 +38,10 @@ ge_server=''
 interactive_mode=''
 
 main() {
+  if [[ "$_arg_debug" == "on" && "$offline_mode" == "on" ]]; then
+    debug "Running experiment in offline mode."
+  fi
+
   if [ "${interactive_mode}" == "on" ]; then
     wizard_execute
   else
