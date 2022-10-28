@@ -59,6 +59,10 @@ process_arguments() {
     fail_if_not_fully_cacheable="${_arg_fail_if_not_fully_cacheable}"
   fi
 
+  if [ -n "${_arg_no_build_scan_publishing+x}" ]; then
+    no_build_scan_publishing_mode="${_arg_no_build_scan_publishing}"
+  fi
+
   if [ -n "${_arg_interactive+x}" ]; then
     interactive_mode="${_arg_interactive}"
   fi
@@ -266,6 +270,10 @@ print_command_to_repeat_experiment() {
 
   if [[ "${fail_if_not_fully_cacheable}" == "on" ]]; then
     cmd+=("-f")
+  fi
+
+  if [[ "${no_build_scan_publishing_mode}" == "on" ]]; then
+    cmd+=("--no-build-scan-publishing")
   fi
 
   info "Command Line Invocation"
