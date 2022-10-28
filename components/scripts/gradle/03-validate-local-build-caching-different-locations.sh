@@ -38,7 +38,7 @@ ge_server=''
 interactive_mode=''
 
 main() {
-  if [[ "$no_build_scan_publishing_mode" == "on" ]]; then
+  if [[ "$build_scan_publishing_mode" == "off" ]]; then
     debug "Running experiment with Build Scan publishing disabled."
   fi
 
