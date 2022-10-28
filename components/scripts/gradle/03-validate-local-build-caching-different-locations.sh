@@ -38,6 +38,10 @@ enable_ge=''
 ge_server=''
 interactive_mode=''
 
+# Used with Build Scan publishing disabled
+first_build_scan_dump=''
+second_build_scan_dump=''
+
 main() {
   if [[ "$build_scan_publishing_mode" == "off" ]]; then
     verify_scans_support_tools
@@ -169,8 +173,33 @@ execute_second_build() {
 }
 
 fetch_build_cache_metrics() {
-  read_build_scan_metadata
-  fetch_and_read_build_scan_data build_cache_metrics_only "${build_scan_urls[@]}"
+  if [ "$build_scan_publishing_mode" == "on" ]; then
+    read_build_scan_metadata
+    fetch_and_read_build_scan_data build_cache_metrics_only "${build_scan_urls[@]}"
+  else
+    find_build_scan_dumps
+    read_build_scan_dumps
+  fi
+}
+
+find_build_scan_dumps() {
+  local first_build_dir="${EXP_DIR}/first-build_${project_name}"
+  first_build_scan_dump="$(find "$first_build_dir" -maxdepth 1 -regex '^.*build-scan.*\.scan$')"
+  if [ -z "$first_build_scan_dump" ]; then
+    die "ERROR: No Build Scan dump found for the first build"
+  fi
+
+  local second_build_dir="${EXP_DIR}/second-build_${project_name}"
+  second_build_scan_dump="$(find "$second_build_dir" -maxdepth 1 -regex '^.*build-scan.*\.scan$')"
+  if [ -z "$second_build_scan_dump" ]; then
+    die "ERROR: No Build Scan dump found for the second build"
+  fi
+}
+
+read_build_scan_dumps() {
+  local build_scan_csv
+  build_scan_csv="$(invoke_java "$SCANS_SUPPORT_TOOLS_JAR" extract "$first_build_scan_dump" "$second_build_scan_dump")"
+  parse_build_scan_csv "$build_scan_csv"
 }
 
 # Overrides info.sh#print_performance_metrics
