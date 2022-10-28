@@ -19,6 +19,10 @@ invoke_gradle() {
     args+=(--init-script "${init_scripts_dir}/enable-gradle-enterprise.gradle")
   fi
 
+  if [ "$build_scan_publishing_mode" == "off" ]; then
+    args+=("-Dscan.dump")
+  fi
+
   args+=(--init-script "${init_scripts_dir}/configure-gradle-enterprise.gradle")
   args+=(--init-script "${init_scripts_dir}/capture-published-build-scan.gradle")
 
