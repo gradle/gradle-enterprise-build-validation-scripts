@@ -84,6 +84,15 @@ is invoked, as shown in the example below.
 ./02-validate-local-build-caching-same-location.sh -i -r https://github.com/gradle/gradle-build-scan-quickstart
 ```
 
+The scripts return with an exit code that depends on the outcome of running a given experiment.
+
+| Exit Code | Reason                                                                                                 | 
+|-----------|--------------------------------------------------------------------------------------------------------|
+| 0         | The experiment completed successfully                                                                  |
+| 1         | An invalid input was provided while attempting to run the experiment                                   |
+| 2         | One of the builds that is part of the experiment failed                                                |
+| 3         | The build was not fully cacheable for the given task graph and `--fail-if-not-fully-cacheable` was set |
+
 ## Applying the Common Custom User Data Gradle plugin
 
 To get the most out of the experiments and also when building with Gradle Enterprise during daily development, it is highly recommended that you apply the [Common Custom User Data Gradle plugin](https://github.com/gradle/common-custom-user-data-gradle-plugin) to your build. This free, open-source plugin enhances build scans with additional tags, links, and custom values that are considered during the experiments.
