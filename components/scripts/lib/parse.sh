@@ -25,14 +25,17 @@ executed_cacheable_duration=()
 executed_not_cacheable_num_tasks=()
 executed_not_cacheable_duration=()
 
-parse_raw_build_scan_data() {
+parse_build_scan_csv() {
+  # This isn't the most robust way to read a CSV,
+  # but we control the CSV so we don't have to worry about various CSV edge cases
+
   local header_row_read idx
-  local raw_scan_data="$1"
+  local build_scan_csv="$1"
   local build_cache_metrics_only="$2"
 
   debug "Raw build scan data"
   debug "---------------------------"
-  debug "${raw_scan_data}"
+  debug "${build_scan_csv}"
   debug ""
 
   header_row_read=false
@@ -45,7 +48,7 @@ parse_raw_build_scan_data() {
          continue;
      fi
 
-     if [[ "${build_cache_metrics_only}" != "true" ]]; then
+  if [[ "$build_cache_metrics_only" != "build_cache_metrics_only" ]]; then
        project_names[idx]="$field_1"
        base_urls[idx]="$field_2"
        build_scan_urls[idx]="$field_3"
@@ -70,5 +73,5 @@ parse_raw_build_scan_data() {
      executed_not_cacheable_duration[idx]="${field_19}"
 
      ((idx++))
-  done <<< "${raw_scan_data}"
+  done <<< "${build_scan_csv}"
 }

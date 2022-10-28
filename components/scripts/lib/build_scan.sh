@@ -23,10 +23,10 @@ read_build_data_from_current_dir() {
 }
 
 fetch_and_read_build_scan_data() {
-  # This isn't the most robust way to read a CSV,
-  # but we control the CSV so we don't have to worry about various CSV edge cases
-  local args build_cache_metrics_only
-  args=()
+  local build_cache_metrics_only="$1"
+  shift
+
+  local args=()
 
   if [[ "$_arg_debug" == "on" ]]; then
     args+=("--debug")
@@ -41,18 +41,16 @@ fetch_and_read_build_scan_data() {
     args+=("--network-settings-file" "${SCRIPT_DIR}/network.settings")
   fi
 
-  if [[ "$1" == "build_cache_metrics_only" ]]; then
-    build_cache_metrics_only="true"
+  if [[ "$build_cache_metrics_only" == "build_cache_metrics_only" ]]; then
     args+=("--brief-logging")
     debug "Only using the task metrics found in the build scan data"
   else
-      info "Fetching build scan data"
+    info "Fetching build scan data"
   fi
-  shift
   args+=( "$@" )
 
-  raw_build_scan_data="$(invoke_java "$FETCH_BUILD_SCAN_DATA_JAR" "${args[@]}")"
-  parse_raw_build_scan_data "$raw_build_scan_data" "$build_cache_metrics_only"
+  build_scan_csv="$(invoke_java "$FETCH_BUILD_SCAN_DATA_JAR" "${args[@]}")"
+  parse_build_scan_csv "$build_scan_csv" "$build_cache_metrics_only"
 }
 
 detect_warnings_from_build_scans() {
