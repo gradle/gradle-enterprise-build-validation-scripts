@@ -45,8 +45,8 @@ source "${LIB_DIR}/java.sh" || failed_to_load_lib java.sh
 # shellcheck source=lib/maven.sh
 source "${LIB_DIR}/maven.sh" || failed_to_load_lib maven.sh
 
-# shellcheck source=lib/parse.sh
-source "${LIB_DIR}/parse.sh" || failed_to_load_lib parse.sh
+# shellcheck source=lib/build-scan-parse.sh
+source "${LIB_DIR}/build-scan-parse.sh" || failed_to_load_lib build-scan-parse.sh
 
 # shellcheck source=lib/paths.sh
 source "${LIB_DIR}/paths.sh" || failed_to_load_lib paths.sh
