@@ -327,9 +327,7 @@ two build scans that were published as part of running the experiment. The build
 scan of the second build is particularly interesting since this is where you can
 inspect what tasks were not leveraging the local build cache.
 
-The ‘Build Caching Leverage’ section below reveals the realized and potential
-savings from build caching. All cacheable tasks' outputs need to be taken from
-the build cache in the second build for the build to be fully cacheable.
+$(explain_build_cache_leverage)
 
 The ‘Investigation Quick Links’ section below allows quick navigation to the
 most relevant views in build scans to investigate what tasks were avoided due to
@@ -349,9 +347,7 @@ EOF
     IFS='' read -r -d '' text <<EOF
 The ‘Summary’ section below captures the configuration of the experiment.
 
-The ‘Build Caching Leverage’ section below reveals the realized and potential
-savings from build caching. All cacheable tasks' outputs need to be taken from
-the build cache in the second build for the build to be fully cacheable.
+$(explain_build_cache_leverage)
 
 $(explain_command_to_repeat_experiment)
 
@@ -364,6 +360,17 @@ EOF
   fi
   print_wizard_text "${text}"
 }
+
+explain_build_cache_leverage() {
+  local text
+  IFS='' read -r -d '' text <<EOF
+The ‘Build Caching Leverage’ section below reveals the realized and potential
+savings from build caching. All cacheable tasks' outputs need to be taken from
+the build cache in the second build for the build to be fully cacheable.
+EOF
+  echo -n "${text}"
+}
+
 
 process_arguments "$@"
 main
