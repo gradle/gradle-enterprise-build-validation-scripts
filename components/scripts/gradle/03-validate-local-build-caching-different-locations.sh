@@ -38,7 +38,7 @@ ge_server=''
 interactive_mode=''
 
 main() {
-  if [[ "$_arg_debug" == "on" && "$offline_mode" == "on" ]]; then
+  if [[ "$offline_mode" == "on" ]]; then
     debug "Running experiment in offline mode."
   fi
 
