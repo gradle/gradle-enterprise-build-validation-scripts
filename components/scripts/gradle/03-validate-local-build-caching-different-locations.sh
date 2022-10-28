@@ -38,8 +38,8 @@ ge_server=''
 interactive_mode=''
 
 main() {
-  if [[ "$offline_mode" == "on" ]]; then
-    debug "Running experiment in offline mode."
+  if [[ "$no_build_scan_publishing_mode" == "on" ]]; then
+    debug "Running experiment with Build Scan publishing disabled."
   fi
 
   if [ "${interactive_mode}" == "on" ]; then
