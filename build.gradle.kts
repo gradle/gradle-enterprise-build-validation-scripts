@@ -6,7 +6,7 @@ plugins {
     id("com.felipefzdz.gradle.shellcheck") version "1.4.6"
     id("com.github.breadmoirai.github-release") version "2.4.1"
     id("org.gradle.crypto.checksum") version "1.4.0"
-    id("org.gradle.wrapper-upgrade") version "0.10.2"
+    id("org.gradle.wrapper-upgrade") version "0.11.1"
 }
 
 repositories {
