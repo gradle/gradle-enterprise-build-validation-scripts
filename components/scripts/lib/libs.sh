@@ -50,3 +50,9 @@ source "${LIB_DIR}/paths.sh" || failed_to_load_lib paths.sh
 
 # shellcheck source=lib/project.sh
 source "${LIB_DIR}/project.sh" || failed_to_load_lib project.sh
+
+# shellcheck source=lib/java.sh
+source "${LIB_DIR}/java.sh" || failed_to_load_lib java.sh
+
+# shellcheck source=lib/parse.sh
+source "${LIB_DIR}/parse.sh" || failed_to_load_lib parse.sh

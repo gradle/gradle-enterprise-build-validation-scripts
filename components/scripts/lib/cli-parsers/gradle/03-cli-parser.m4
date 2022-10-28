@@ -3,6 +3,7 @@
 # Created by argbash-init v2.10.0
 # ARG_OPTIONAL_BOOLEAN([fail-if-not-fully-cacheable],[f],[])
 # ARG_HELP([This function is overridden later on.])
+# ARG_OPTIONAL_BOOLEAN([offline],[],[],[off])
 # ARG_VERSION([print_version],[v],[version],[])
 # ARGBASH_WRAP([common])
 # ARGBASH_SET_INDENT([  ])

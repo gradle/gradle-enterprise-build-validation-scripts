@@ -154,8 +154,12 @@ execute_second_build() {
 }
 
 fetch_build_cache_metrics() {
-  read_build_scan_metadata
-  fetch_and_read_build_scan_data build_cache_metrics_only "${build_scan_urls[@]}"
+  if [ "${offline_mode}" == "on" ]; then
+    read_build_scan_from_scan_dump
+  else
+    read_build_scan_metadata
+    fetch_and_read_build_scan_data build_cache_metrics_only "${build_scan_urls[@]}"
+  fi
 }
 
 # Overrides info.sh#print_performance_metrics

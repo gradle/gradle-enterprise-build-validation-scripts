@@ -42,6 +42,8 @@ rootProject.name = "build-validation-scripts"
 
 include("components/capture-build-scan-url-maven-extension")
 include("components/fetch-build-scan-data-cmdline-tool")
+include("components/mock-scan-dump-to-csv-tool")
 
 project(":components/capture-build-scan-url-maven-extension").name = "capture-build-scan-url-maven-extension"
 project(":components/fetch-build-scan-data-cmdline-tool").name = "fetch-build-scan-data-cmdline-tool"
+project(":components/mock-scan-dump-to-csv-tool").name = "mock-scan-dump-to-csv-tool"
