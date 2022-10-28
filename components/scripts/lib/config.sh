@@ -62,10 +62,6 @@ process_arguments() {
   if [ -n "${_arg_interactive+x}" ]; then
     interactive_mode="${_arg_interactive}"
   fi
-
-  if [ -n "${_arg_offline+x}" ]; then
-    offline_mode="${_arg_offline}"
-  fi
 }
 
 validate_required_config() {
