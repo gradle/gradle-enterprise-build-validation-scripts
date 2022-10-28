@@ -49,7 +49,7 @@ invoke_gradle() {
       build_outcomes+=("FAILED")
   fi
 
-  if [ -f "${EXP_DIR}/build-scan-publish-error.txt" ]; then
+  if [ -f "${EXP_DIR}/build-scan-publish-error.txt" ] && [[ "${build_scan_publishing_mode}" == "on" ]]; then
     die "ERROR: The experiment cannot continue because publishing the build scan failed."
   fi
 
