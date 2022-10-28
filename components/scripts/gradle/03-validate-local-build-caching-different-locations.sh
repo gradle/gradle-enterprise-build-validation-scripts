@@ -349,8 +349,7 @@ inspect what tasks were not leveraging the local build cache.
 EOF
   else
     IFS='' read -r -d '' text <<EOF
-The ‘Summary’ section below captures the configuration of the experiment and the
-two build scans that were published as part of running the experiment.
+The ‘Summary’ section below captures the configuration of the experiment.
 EOF
   fi
   echo -n "${text}"
