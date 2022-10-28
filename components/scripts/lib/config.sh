@@ -59,12 +59,12 @@ process_arguments() {
     fail_if_not_fully_cacheable="${_arg_fail_if_not_fully_cacheable}"
   fi
 
-  if [ -n "${_arg_interactive+x}" ]; then
-    interactive_mode="${_arg_interactive}"
-  fi
-
   if [ -n "${_arg_offline+x}" ]; then
     offline_mode="${_arg_offline}"
+  fi
+
+  if [ -n "${_arg_interactive+x}" ]; then
+    interactive_mode="${_arg_interactive}"
   fi
 }
 
