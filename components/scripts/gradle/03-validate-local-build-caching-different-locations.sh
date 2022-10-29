@@ -38,7 +38,7 @@ enable_ge=''
 ge_server=''
 interactive_mode=''
 
-# Used with Build Scan publishing disabled
+# Used when Build Scan publishing is disabled
 first_build_scan_dump=''
 second_build_scan_dump=''
 
