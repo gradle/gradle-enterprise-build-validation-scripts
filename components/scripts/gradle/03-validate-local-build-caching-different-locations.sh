@@ -307,8 +307,8 @@ Now that the second build has finished successfully, you are ready to measure in
 Gradle Enterprise how well your build leverages Gradle’s local build cache for
 the invoked set of Gradle tasks.
 
-Some of the build scan data will be fetched from the build scans produced by the two builds
-to assist you in your investigation.
+Some of the build scan data will be fetched from the build scans produced by the
+two builds to assist you in your investigation.
 
 ${USER_ACTION_COLOR}Press <Enter> to measure the build results.${RESTORE}
 EOF

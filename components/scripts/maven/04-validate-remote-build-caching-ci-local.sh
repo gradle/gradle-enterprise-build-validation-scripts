@@ -441,8 +441,8 @@ At this point, you are ready to measure in Gradle Enterprise how well your
 build leverages Gradle Enterprise's remote build cache for the set of Gradle
 goals invoked from a CI agent and then on a local machine.
 
-Some of the build scan data will be fetched from the build scans produced by the two builds
-to assist you in your investigation.
+Some of the build scan data will be fetched from the build scans produced by the
+two builds to assist you in your investigation.
 
 ${USER_ACTION_COLOR}Press <Enter> to measure the build results.${RESTORE}
 EOF
