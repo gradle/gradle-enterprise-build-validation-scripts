@@ -55,14 +55,14 @@ process_arguments() {
     enable_ge="${_arg_enable_gradle_enterprise}"
   fi
 
-  if [ -n "${_arg_fail_if_not_fully_cacheable+x}" ]; then
-    fail_if_not_fully_cacheable="${_arg_fail_if_not_fully_cacheable}"
-  fi
-
   if [ -n "${_arg_build_scan_publishing+x}" ]; then
     build_scan_publishing_mode="${_arg_build_scan_publishing}"
   else
     build_scan_publishing_mode=on
+  fi
+
+  if [ -n "${_arg_fail_if_not_fully_cacheable+x}" ]; then
+    fail_if_not_fully_cacheable="${_arg_fail_if_not_fully_cacheable}"
   fi
 
   if [ -n "${_arg_interactive+x}" ]; then
@@ -270,12 +270,12 @@ print_command_to_repeat_experiment() {
     cmd+=("-e")
   fi
 
-  if [[ "${fail_if_not_fully_cacheable}" == "on" ]]; then
-    cmd+=("-f")
-  fi
-
   if [[ "${build_scan_publishing_mode}" == "off" ]]; then
     cmd+=("--no-build-scan-publishing")
+  fi
+
+  if [[ "${fail_if_not_fully_cacheable}" == "on" ]]; then
+    cmd+=("-f")
   fi
 
   info "Command Line Invocation"
