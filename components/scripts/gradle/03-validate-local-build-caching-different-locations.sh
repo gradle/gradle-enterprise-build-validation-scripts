@@ -58,7 +58,7 @@ main() {
 
 verify_scans_support_tools() {
   if [ ! -f "$SCANS_SUPPORT_TOOLS_JAR" ]; then
-    die "ERROR: scans-support-tools.jar is required when running with --no-build-scan-publishing."
+    die "ERROR: scans-support-tools.jar is required when running with --disable-build-scan-publishing."
   fi
 }
 
