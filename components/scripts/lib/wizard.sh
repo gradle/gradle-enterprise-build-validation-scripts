@@ -248,22 +248,21 @@ EOF
 }
 
 explain_prerequisites_api_access() {
-  if [[ "${build_scan_publishing_mode}" == "on" ]]; then
-    local text preparation_step documentation_link
+  local text preparation_step documentation_link
 
-    if [ -n "$1" ]; then
-      preparation_step="$1 "
-    else
-      preparation_step=""
-    fi
+  if [ -n "$1" ]; then
+    preparation_step="$1 "
+  else
+    preparation_step=""
+  fi
 
-    if [[ "${BUILD_TOOL}" == "Maven" ]]; then
-      documentation_link="https://github.com/gradle/gradle-enterprise-build-validation-scripts/blob/main/Maven.md#authenticating-with-gradle-enterprise"
-    else
-      documentation_link="https://github.com/gradle/gradle-enterprise-build-validation-scripts/blob/main/Gradle.md#authenticating-with-gradle-enterprise"
-    fi
+  if [[ "${BUILD_TOOL}" == "Maven" ]]; then
+    documentation_link="https://github.com/gradle/gradle-enterprise-build-validation-scripts/blob/main/Maven.md#authenticating-with-gradle-enterprise"
+  else
+    documentation_link="https://github.com/gradle/gradle-enterprise-build-validation-scripts/blob/main/Gradle.md#authenticating-with-gradle-enterprise"
+  fi
 
-    IFS='' read -r -d '' text <<EOF
+  IFS='' read -r -d '' text <<EOF
 $(print_separator)
 ${HEADER_COLOR}Preparation ${preparation_step}- Ensure Gradle Enterprise API access${RESTORE}
 
@@ -279,9 +278,8 @@ ${documentation_link}
 
 ${USER_ACTION_COLOR}Press <Enter> once you have (optionally) adjusted your access permissions and configured the API credentials on your machine.${RESTORE}
 EOF
-    print_wizard_text "${text}"
-    wait_for_enter
-  fi
+  print_wizard_text "${text}"
+  wait_for_enter
 }
 
 explain_experiment_dir() {

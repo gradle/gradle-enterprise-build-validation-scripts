@@ -78,8 +78,10 @@ wizard_execute() {
   print_bl
   explain_prerequisites_ccud_gradle_plugin "I."
 
-  print_bl
-  explain_prerequisites_api_access "II."
+  if [[ "${build_scan_publishing_mode}" == "on" ]]; then
+    print_bl
+    explain_prerequisites_api_access "II."
+  fi
 
   print_bl
   explain_collect_git_details
