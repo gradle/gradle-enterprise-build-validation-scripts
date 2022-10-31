@@ -295,7 +295,9 @@ EOF
 
 explain_measure_build_results() {
   local text
-  IFS='' read -r -d '' text <<EOF
+
+  if [[ "${build_scan_publishing_mode}" == "on" ]]; then
+    IFS='' read -r -d '' text <<EOF
 $(print_separator)
 ${HEADER_COLOR}Measure build results${RESTORE}
 
@@ -308,6 +310,21 @@ two builds to assist you in your investigation.
 
 ${USER_ACTION_COLOR}Press <Enter> to measure the build results.${RESTORE}
 EOF
+  else
+    IFS='' read -r -d '' text <<EOF
+$(print_separator)
+${HEADER_COLOR}Measure build results${RESTORE}
+
+Now that the second build has finished successfully, you are ready to measure in
+Gradle Enterprise how well your build leverages Gradle’s local build cache for
+the invoked set of Gradle tasks.
+
+Some of the build scan data will be extracted from the locally stored, intermediate
+build data produced by the two builds to assist you in your investigation.
+
+${USER_ACTION_COLOR}Press <Enter> to measure the build results.${RESTORE}
+EOF
+  fi
   print_wizard_text "${text}"
   wait_for_enter
 }
