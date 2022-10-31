@@ -183,17 +183,18 @@ fetch_build_cache_metrics() {
 }
 
 find_build_scan_dumps() {
-  local first_build_dir="${EXP_DIR}/first-build_${project_name}"
-  first_build_scan_dump="$(find "$first_build_dir" -maxdepth 1 -regex '^.*build-scan.*\.scan$')"
-  if [ -z "$first_build_scan_dump" ]; then
-    die "ERROR: No Build Scan dump found for the first build"
-  fi
+  find_build_scan_dump "first"
+  find_build_scan_dump "second"
+}
 
-  local second_build_dir="${EXP_DIR}/second-build_${project_name}"
-  second_build_scan_dump="$(find "$second_build_dir" -maxdepth 1 -regex '^.*build-scan.*\.scan$')"
-  if [ -z "$second_build_scan_dump" ]; then
-    die "ERROR: No Build Scan dump found for the second build"
+find_build_scan_dump() {
+  local build_name="$1"
+  local build_dir="${EXP_DIR}/$build_name-build_${project_name}"
+  build_scan_dump="$(find "$build_dir" -maxdepth 1 -regex '^.*build-scan.*\.scan$')"
+  if [ -z "$build_scan_dump" ]; then
+    die "ERROR: No Build Scan dump found for the $build_name build"
   fi
+  eval "${build_name}_build_scan_dump=\${build_scan_dump}"
 }
 
 read_build_scan_dumps() {
