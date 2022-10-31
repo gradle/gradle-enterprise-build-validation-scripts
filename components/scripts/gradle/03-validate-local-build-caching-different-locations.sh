@@ -39,8 +39,7 @@ ge_server=''
 interactive_mode=''
 
 # Used when Build Scan publishing is disabled
-first_build_scan_dump=''
-second_build_scan_dump=''
+build_scan_dumps=()
 
 main() {
   if [[ "$build_scan_publishing_mode" == "off" ]]; then
@@ -202,13 +201,13 @@ find_build_scan_dump() {
   if [ -z "$build_scan_dump" ]; then
     die "ERROR: No Build Scan dump found for the $build_name build"
   fi
-  eval "${build_name}_build_scan_dump=\${build_scan_dump}"
+  build_scan_dumps+=("${build_scan_dump}")
 }
 
 read_build_scan_dumps() {
   local build_scan_csv
   echo -n "Extracting build scan data"
-  build_scan_csv="$(invoke_java "$SCANS_SUPPORT_TOOLS_JAR" extract "$first_build_scan_dump" "$second_build_scan_dump")"
+  build_scan_csv="$(invoke_java "$SCANS_SUPPORT_TOOLS_JAR" extract "${build_scan_dumps[0]}"  "${build_scan_dumps[1]}")"
   parse_build_scan_csv "$build_scan_csv"
   echo ", done."
 }
