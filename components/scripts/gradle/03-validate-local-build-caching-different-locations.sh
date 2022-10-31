@@ -199,8 +199,10 @@ find_build_scan_dump() {
 
 read_build_scan_dumps() {
   local build_scan_csv
+  echo -n "Extracting build scan data"
   build_scan_csv="$(invoke_java "$SCANS_SUPPORT_TOOLS_JAR" extract "$first_build_scan_dump" "$second_build_scan_dump")"
   parse_build_scan_csv "$build_scan_csv"
+  echo ", done."
 }
 
 # Overrides info.sh#print_performance_metrics
