@@ -55,11 +55,7 @@ process_arguments() {
     enable_ge="${_arg_enable_gradle_enterprise}"
   fi
 
-  if [ -n "${_arg_build_scan_publishing+x}" ]; then
-    build_scan_publishing_mode="${_arg_build_scan_publishing}"
-  else
-    build_scan_publishing_mode=on
-  fi
+  build_scan_publishing_mode=on
   if [ -n "${_arg_disable_build_scan_publishing+x}" ]; then
     if [[ "${_arg_disable_build_scan_publishing}" == "on" ]]; then
       build_scan_publishing_mode=off
