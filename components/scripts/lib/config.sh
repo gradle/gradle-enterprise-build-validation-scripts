@@ -271,7 +271,7 @@ print_command_to_repeat_experiment() {
   fi
 
   if [[ "${build_scan_publishing_mode}" == "off" ]]; then
-    cmd+=("--no-build-scan-publishing")
+    cmd+=("-x")
   fi
 
   if [[ "${fail_if_not_fully_cacheable}" == "on" ]]; then
