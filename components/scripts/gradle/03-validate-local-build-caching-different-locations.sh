@@ -341,7 +341,9 @@ $(explain_when_to_rerun_experiment)
 EOF
   else
     IFS='' read -r -d '' text <<EOF
-The ‘Summary’ section below captures the configuration of the experiment.
+The ‘Summary’ section below captures the configuration of the experiment. No
+build scans are available for inspection since publishing was disabled for the
+experiment.
 
 $(explain_build_cache_leverage)
 
