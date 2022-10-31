@@ -46,7 +46,7 @@ print_option_usage() {
        _print_option_usage "-e, --enable-gradle-enterprise" "Enables Gradle Enterprise on a project not already connected."
        ;;
     -x)
-       _print_option_usage "-x, --no-build-scan-publishing" "Disables the publication of build scans on the invoked builds."
+       _print_option_usage "-x, --disable-build-scan-publishing" "Disables the publication of build scans on the invoked builds."
        ;;
     -f)
        _print_option_usage "-f, --fail-if-not-fully-cacheable" "Terminates with exit code ${BUILD_NOT_FULLY_CACHEABLE} if the build is not fully cacheable."
