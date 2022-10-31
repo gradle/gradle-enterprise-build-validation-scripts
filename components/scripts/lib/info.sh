@@ -216,7 +216,7 @@ print_build_scans() {
         summary_row "Build scan ${ORDINALS[i]} build:" "${build_scan_urls[i]}"
       fi
     else
-      summary_row "Build scan ${ORDINALS[i]} build:" "Build scan publishing is disabled"
+      summary_row "Build scan ${ORDINALS[i]} build:" "<publication disabled>"
     fi
   done
 }
