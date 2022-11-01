@@ -122,7 +122,7 @@ wizard_execute() {
 
 execute_first_build() {
   info "Running first build:"
-  info "./mvnw -Dscan -Dscan.tag.${EXP_SCAN_TAG} -Dscan.value.runId=${RUN_ID} clean ${tasks}$(print_extra_args)"
+  print_maven_command
 
   # shellcheck disable=SC2086  # we want tasks to expand with word splitting in this case
   invoke_maven \
@@ -134,7 +134,7 @@ execute_first_build() {
 
 execute_second_build() {
   info "Running second build:"
-  info "./mvnw -Dscan -Dscan.tag.${EXP_SCAN_TAG} -Dscan.value.runId=${RUN_ID} clean ${tasks}$(print_extra_args)"
+  print_maven_command
 
   cd "${EXP_DIR}/second-build_${project_name}" || die "Unable to cd to ${EXP_DIR}/second-build_${project_name}"
 
@@ -146,9 +146,21 @@ execute_second_build() {
      clean ${tasks}
 }
 
+print_maven_command() {
+  if [[ "${build_scan_publishing_mode}" == "on" ]]; then
+    info "./mvnw -Dscan -Dscan.tag.${EXP_SCAN_TAG} -Dscan.value.runId=${RUN_ID} clean ${tasks}$(print_extra_args)"
+  else
+    info "./mvnw -Dscan.dump -Dscan.tag.${EXP_SCAN_TAG} -Dscan.value.runId=${RUN_ID} clean ${tasks}$(print_extra_args)"
+  fi
+}
+
 fetch_build_cache_metrics() {
-  read_build_scan_metadata
-  fetch_and_read_build_scan_data build_cache_metrics_only "${build_scan_urls[@]}"
+  if [ "$build_scan_publishing_mode" == "on" ]; then
+    read_build_scan_metadata
+    fetch_and_read_build_scan_data build_cache_metrics_only "${build_scan_urls[@]}"
+  else
+    find_and_read_build_scan_dumps
+  fi
 }
 
 # Overrides info.sh#print_performance_metrics
