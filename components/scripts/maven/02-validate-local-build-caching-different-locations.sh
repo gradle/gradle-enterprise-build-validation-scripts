@@ -38,6 +38,10 @@ ge_server=''
 interactive_mode=''
 
 main() {
+  if [[ "$build_scan_publishing_mode" == "off" ]]; then
+    verify_scans_support_tools
+  fi
+
   if [ "${interactive_mode}" == "on" ]; then
     wizard_execute
   else
