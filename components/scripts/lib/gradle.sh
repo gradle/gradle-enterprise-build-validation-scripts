@@ -19,10 +19,6 @@ invoke_gradle() {
     args+=(--init-script "${init_scripts_dir}/enable-gradle-enterprise.gradle")
   fi
 
-  if [ "$build_scan_publishing_mode" == "off" ]; then
-    args+=("-Dscan.dump")
-  fi
-
   args+=(--init-script "${init_scripts_dir}/configure-gradle-enterprise.gradle")
   args+=(--init-script "${init_scripts_dir}/capture-published-build-scan.gradle")
 
@@ -32,8 +28,13 @@ invoke_gradle() {
     args+=("-Pcom.gradle.enterprise.build_validation.server=https://0.0.0.0")
   fi
 
+  if [ "$build_scan_publishing_mode" == "off" ]; then
+    args+=("-Dscan.dump")
+  else
+    args+=("--scan")
+  fi
+
   args+=(
-    --scan
     -Pcom.gradle.enterprise.build_validation.experimentDir="${EXP_DIR}"
     -Pcom.gradle.enterprise.build_validation.expId="${EXP_SCAN_TAG}"
     -Pcom.gradle.enterprise.build_validation.runId="${RUN_ID}"
