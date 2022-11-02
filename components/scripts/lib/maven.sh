@@ -49,10 +49,8 @@ invoke_maven() {
     -Dgradle.scan.captureGoalInputFiles=true
   )
 
-  if [ -n "${ge_server}" ]; then
+  if [ "$build_scan_publishing_mode" == "on" ] && [ -n "${ge_server}" ]; then
     args+=("-Dgradle.enterprise.url=${ge_server}")
-  elif [ "$build_scan_publishing_mode" == "off" ]; then
-    args+=("-Dgradle.enterprise.url=https://0.0.0.0")
   fi
 
   # shellcheck disable=SC2206
