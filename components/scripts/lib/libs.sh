@@ -12,6 +12,12 @@ failed_to_load_lib() {
   exit "${_UNEXPECTED_ERROR}"
 }
 
+# shellcheck source=lib/build-scan-dump.sh
+source "${LIB_DIR}/build-scan-dump.sh" || failed_to_load_lib build-scan-dump.sh
+
+# shellcheck source=lib/build-scan-parse.sh
+source "${LIB_DIR}/build-scan-parse.sh" || failed_to_load_lib build-scan-parse.sh
+
 # shellcheck source=lib/build_scan.sh
 source "${LIB_DIR}/build_scan.sh" || failed_to_load_lib build_scan.sh
 
@@ -44,9 +50,6 @@ source "${LIB_DIR}/java.sh" || failed_to_load_lib java.sh
 
 # shellcheck source=lib/maven.sh
 source "${LIB_DIR}/maven.sh" || failed_to_load_lib maven.sh
-
-# shellcheck source=lib/build-scan-parse.sh
-source "${LIB_DIR}/build-scan-parse.sh" || failed_to_load_lib build-scan-parse.sh
 
 # shellcheck source=lib/paths.sh
 source "${LIB_DIR}/paths.sh" || failed_to_load_lib paths.sh
