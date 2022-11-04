@@ -49,7 +49,7 @@ invoke_maven() {
     -Dgradle.scan.captureGoalInputFiles=true
   )
 
-  if [ "$build_scan_publishing_mode" == "on" ] && [ -n "${ge_server}" ]; then
+  if [ -n "${ge_server}" ]; then
     args+=("-Dgradle.enterprise.url=${ge_server}")
   fi
 
