@@ -23,7 +23,7 @@ dependencies {
     implementation("javax.ws.rs:javax.ws.rs-api:2.1.1")
 
     implementation("com.google.guava:guava:31.1-jre")
-    implementation("info.picocli:picocli:4.6.3")
+    implementation("info.picocli:picocli:4.7.0")
     annotationProcessor("info.picocli:picocli-codegen:4.6.3")
 }
 
