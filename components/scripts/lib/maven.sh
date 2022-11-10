@@ -48,6 +48,7 @@ invoke_maven() {
     -Dcom.gradle.enterprise.build_validation.runId="${RUN_ID}"
     -Dgradle.scan.captureGoalInputFiles=true
   )
+
   if [ -n "${ge_server}" ]; then
     args+=("-Dgradle.enterprise.url=${ge_server}")
   fi

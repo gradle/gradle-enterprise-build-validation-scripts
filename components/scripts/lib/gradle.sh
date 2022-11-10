@@ -24,6 +24,8 @@ invoke_gradle() {
 
   if [ -n "${ge_server}" ]; then
     args+=("-Pcom.gradle.enterprise.build_validation.server=${ge_server}")
+  elif [ "$build_scan_publishing_mode" == "off" ]; then
+    args+=("-Pcom.gradle.enterprise.build_validation.server=https://0.0.0.0")
   fi
 
   args+=(
