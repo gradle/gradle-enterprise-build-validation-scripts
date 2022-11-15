@@ -17,7 +17,7 @@ dependencies {
     implementation("com.squareup.okhttp3:okhttp-tls")
     implementation("com.squareup.okhttp3:logging-interceptor")
 
-    implementation("io.swagger:swagger-annotations:1.6.8")
+    implementation("io.swagger:swagger-annotations:1.6.9")
     implementation("io.gsonfire:gson-fire:1.8.5")
     implementation("javax.ws.rs:jsr311-api:1.1.1")
     implementation("javax.ws.rs:javax.ws.rs-api:2.1.1")
