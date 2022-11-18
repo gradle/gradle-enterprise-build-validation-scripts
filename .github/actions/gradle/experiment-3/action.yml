@@ -88,7 +88,7 @@ runs:
           ${ARG_GE_URL:+"-s" "$ARG_GE_URL"} \
           ${ARG_GE_ENABLE:+"-e"}
 
-        # set scans url as output
+        # Set the Build Scan urls as outputs
         RECEIPT_FILE=".data/03-validate-local-build-caching-different-locations/latest/exp3-*.receipt"
         BUILD_SCAN_1=$(grep "first build" ${RECEIPT_FILE} | sed 's/.* //')
         BUILD_SCAN_2=$(grep "second build" ${RECEIPT_FILE} | sed 's/.* //')
