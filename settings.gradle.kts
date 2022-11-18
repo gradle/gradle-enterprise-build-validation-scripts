@@ -26,13 +26,7 @@ buildCache {
         isEnabled = true
     }
 
-    remote<HttpBuildCache> {
-        url = uri("https://ge.solutions-team.gradle.com/cache/")
-        isAllowUntrustedServer = false
-        credentials {
-            username = System.getenv("GRADLE_ENTERPRISE_CACHE_USERNAME")
-            password = System.getenv("GRADLE_ENTERPRISE_CACHE_PASSWORD")
-        }
+    remote(gradleEnterprise.buildCache) {
         isEnabled = true
         isPush = isCI
     }
