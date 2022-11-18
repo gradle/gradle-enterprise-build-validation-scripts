@@ -1,6 +1,11 @@
 name: Verify Build
 
-on: [ push, pull_request, workflow_dispatch ]
+on:
+  push:
+    branches-ignore:
+      - main
+  pull_request:
+  workflow_dispatch:
 
 jobs:
   verification:
