@@ -14,16 +14,16 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-18.04, ubuntu-20.04, macos-10.15, macos-11, windows-2019]
+        os: [ubuntu-20.04, ubuntu-22.04, macos-11, macos-12, windows-2019]
         java-version: [ '8', '11', '17' ]
         include:
-          - os: ubuntu-18.04
-            shell: bash
           - os: ubuntu-20.04
             shell: bash
-          - os: macos-10.15
+          - os: ubuntu-22.04
             shell: bash
           - os: macos-11
+            shell: bash
+          - os: macos-12
             shell: bash
           - os: windows-2019
             shell: wsl-bash
