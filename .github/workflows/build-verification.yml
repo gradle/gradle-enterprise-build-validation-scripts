@@ -6,8 +6,6 @@ jobs:
   verification:
     name: Verification
     runs-on: ubuntu-latest
-    env:
-      GRADLE_ENTERPRISE_ACCESS_KEY: ${{ secrets.GE_SOLUTIONS_ACCESS_TOKEN }}
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -20,3 +18,5 @@ jobs:
         uses: gradle/gradle-build-action@v2
       - name: Build with Gradle
         run: ./gradlew build -i
+        env:
+          GRADLE_ENTERPRISE_ACCESS_KEY: ${{ secrets.GE_SOLUTIONS_ACCESS_TOKEN }}
