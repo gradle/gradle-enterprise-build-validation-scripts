@@ -28,8 +28,13 @@ invoke_gradle() {
     args+=("-Pcom.gradle.enterprise.build_validation.server=https://0.0.0.0")
   fi
 
+  if [[ "${build_scan_publishing_mode}" == "on" ]]; then
+    args+=("--scan")
+  else
+    args+=("-Dscan.dump")
+  fi
+
   args+=(
-    --scan
     -Pcom.gradle.enterprise.build_validation.experimentDir="${EXP_DIR}"
     -Pcom.gradle.enterprise.build_validation.expId="${EXP_SCAN_TAG}"
     -Pcom.gradle.enterprise.build_validation.runId="${RUN_ID}"
