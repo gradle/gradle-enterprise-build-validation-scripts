@@ -1,12 +1,12 @@
 #!/usr/bin/env bash
 
-readonly SCANS_SUPPORT_TOOLS_JAR="${SCRIPT_DIR}/scans-support-tools.jar"
+readonly BUILD_SCAN_SUPPORT_TOOL_JAR="${SCRIPT_DIR}/build-scan-support-tool.jar"
 
 build_scan_dumps=()
 
-verify_scans_support_tools() {
-  if [ ! -f "$SCANS_SUPPORT_TOOLS_JAR" ]; then
-    die "ERROR: scans-support-tools.jar is required when running with --disable-build-scan-publishing."
+verify_build_scan_support_tool_exists() {
+  if [ ! -f "$BUILD_SCAN_SUPPORT_TOOL_JAR" ]; then
+    die "ERROR: build-scan-support-tool.jar is required when using --disable-build-scan-publishing."
   fi
 }
 
@@ -33,7 +33,7 @@ find_build_scan_dump() {
 read_build_scan_dumps() {
   local build_scan_csv
   echo -n "Extracting build scan data"
-  build_scan_csv="$(invoke_java "$SCANS_SUPPORT_TOOLS_JAR" extract "${build_scan_dumps[0]}"  "${build_scan_dumps[1]}")"
+  build_scan_csv="$(invoke_java "$BUILD_SCAN_SUPPORT_TOOL_JAR" extract "${build_scan_dumps[0]}"  "${build_scan_dumps[1]}")"
   parse_build_scan_csv "$build_scan_csv"
   echo ", done."
 }
