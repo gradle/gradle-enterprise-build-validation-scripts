@@ -197,6 +197,9 @@ find_build_scan_dumps() {
 find_build_scan_dump() {
   local build_name="$1"
   local build_dir="${EXP_DIR}/$build_name-build_${project_name}"
+  if [ -n "${project_dir}" ]; then
+    build_dir="$build_dir/$project_dir"
+  fi
   build_scan_dump="$(find "$build_dir" -maxdepth 1 -type f -regex '^.*build-scan-.*-.*-.*-.*\.scan' | sort | tail -n 1)"
   if [ -z "$build_scan_dump" ]; then
     die "ERROR: No Build Scan dump found for the $build_name build"
