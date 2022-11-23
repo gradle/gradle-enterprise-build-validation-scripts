@@ -73,7 +73,7 @@ runs:
           ARG_GE_URL="${{ inputs.gradleEnterpriseUrl }}"
         fi
         ARG_GE_ENABLE=""
-        if [ ! -z "${{ inputs.enableGradleEnterprise }}" ]; then
+        if [ "${{ inputs.enableGradleEnterprise }}" == "true" ]; then
           ARG_GE_ENABLE="${{ inputs.enableGradleEnterprise }}"
         fi
         ARG_FAIL_IF_NOT_FULLY_CACHEABLE=""
