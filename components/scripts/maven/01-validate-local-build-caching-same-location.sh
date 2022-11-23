@@ -143,8 +143,12 @@ execute_build() {
 }
 
 fetch_build_cache_metrics() {
-  read_build_scan_metadata
-  fetch_and_read_build_scan_data build_cache_metrics_only "${build_scan_urls[@]}"
+  if [ "$build_scan_publishing_mode" == "on" ]; then
+    read_build_scan_metadata
+    fetch_and_read_build_scan_data build_cache_metrics_only "${build_scan_urls[@]}"
+  else
+    find_and_read_build_scan_dumps
+  fi
 }
 
 # Overrides info.sh#print_performance_metrics
