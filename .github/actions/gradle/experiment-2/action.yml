@@ -26,6 +26,9 @@ inputs:
   enableGradleEnterprise:
     description: "Enables Gradle Enterprise on a project not already connected"
     required: false
+  failIfNotFullyCacheable:
+    description: "Fail the build if it is not fully cacheable"
+    required: false
 outputs:
   buildScanFirstBuild:
     description: "First build scan url"
@@ -73,6 +76,10 @@ runs:
         if [ ! -z "${{ inputs.enableGradleEnterprise }}" ]; then
           ARG_GE_ENABLE="${{ inputs.enableGradleEnterprise }}"
         fi
+        ARG_FAIL_IF_NOT_FULLY_CACHEABLE=""
+        if [ "${{ inputs.failIfNotFullyCacheable }}" == "true" ]; then
+          ARG_FAIL_IF_NOT_FULLY_CACHEABLE="${{ inputs.failIfNotFullyCacheable }}"
+        fi
 
         # Navigate into the folder containing the validation scripts
         cd gradle-enterprise-gradle-build-validation
@@ -86,7 +93,8 @@ runs:
           ${ARG_TASKS:+"-t" "$ARG_TASKS"} \
           ${ARG_ARGS:+"-a" "$ARG_ARGS"} \
           ${ARG_GE_URL:+"-s" "$ARG_GE_URL"} \
-          ${ARG_GE_ENABLE:+"-e"}
+          ${ARG_GE_ENABLE:+"-e"} \
+          ${ARG_FAIL_IF_NOT_FULLY_CACHEABLE:+"-f"}
 
         # Set the Build Scan urls as outputs
         RECEIPT_FILE=".data/02-validate-local-build-caching-same-location/latest/exp2-*.receipt"
