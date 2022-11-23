@@ -11,6 +11,9 @@ inputs:
   gitCommitId:
     description: "The Git commit id for the Git repository to validate"
     required: false
+  gitOptions:
+    description: "Additional arguments to apply when cloning the Git repository"
+    required: false
   projectDir:
     description: "The build invocation directory within the Git repository"
     required: false
@@ -53,6 +56,10 @@ runs:
         if [ ! -z "${{ inputs.gitCommitId }}" ]; then
           ARG_GIT_COMMIT_ID="${{ inputs.gitCommitId }}"
         fi
+        ARG_GIT_OPTIONS=""
+        if [ ! -z "${{ inputs.gitOptions }}" ]; then
+          ARG_GIT_OPTIONS="${{ inputs.gitOptions }}"
+        fi
         ARG_PROJECT_DIR=""
         if [ ! -z "${{ inputs.projectDir }}" ]; then
           ARG_PROJECT_DIR="${{ inputs.projectDir }}"
@@ -82,6 +89,7 @@ runs:
           ${ARG_GIT_REPO:+"-r" "$ARG_GIT_REPO"} \
           ${ARG_GIT_BRANCH:+"-b" "$ARG_GIT_BRANCH"} \
           ${ARG_GIT_COMMIT_ID:+"-c" "$ARG_GIT_COMMIT_ID"} \
+          ${ARG_GIT_OPTIONS:+"-o" "$ARG_GIT_OPTIONS"} \
           ${ARG_PROJECT_DIR:+"-p" "$ARG_PROJECT_DIR"} \
           ${ARG_TASKS:+"-t" "$ARG_TASKS"} \
           ${ARG_ARGS:+"-a" "$ARG_ARGS"} \
