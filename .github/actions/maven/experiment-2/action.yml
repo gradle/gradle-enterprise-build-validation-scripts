@@ -12,7 +12,7 @@ inputs:
     description: "The Git commit id for the Git repository to validate"
     required: false
   gitOptions:
-    description: "The Git CLI arguments"
+    description: "Additional arguments to apply when cloning the Git repository"
     required: false
   projectDir:
     description: "The build invocation directory within the Git repository"
