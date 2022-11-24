@@ -22,7 +22,7 @@ print_option_usage() {
        _print_option_usage "-c, --git-commit-id" "Specifies the Git commit id for the Git repository to validate."
        ;;
     -o)
-       _print_option_usage "-o, --git-options" "Specifies additional arguments use when cloning the Git repository."
+       _print_option_usage "-o, --git-options" "Specifies additional arguments to apply when cloning the Git repository."
        ;;
     -p)
        _print_option_usage "-p, --project-dir" "Specifies the build invocation directory within the Git repository."

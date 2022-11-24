@@ -11,6 +11,9 @@ inputs:
   gitCommitId:
     description: "The Git commit id for the Git repository to validate"
     required: false
+  gitOptions:
+    description: "Additional arguments to apply when cloning the Git repository"
+    required: false
   projectDir:
     description: "The build invocation directory within the Git repository"
     required: false
@@ -56,6 +59,10 @@ runs:
         if [ ! -z "${{ inputs.gitCommitId }}" ]; then
           ARG_GIT_COMMIT_ID="${{ inputs.gitCommitId }}"
         fi
+        ARG_GIT_OPTIONS=""
+        if [ ! -z "${{ inputs.gitOptions }}" ]; then
+          ARG_GIT_OPTIONS="${{ inputs.gitOptions }}"
+        fi
         ARG_PROJECT_DIR=""
         if [ ! -z "${{ inputs.projectDir }}" ]; then
           ARG_PROJECT_DIR="${{ inputs.projectDir }}"
@@ -89,6 +96,7 @@ runs:
           ${ARG_GIT_REPO:+"-r" "$ARG_GIT_REPO"} \
           ${ARG_GIT_BRANCH:+"-b" "$ARG_GIT_BRANCH"} \
           ${ARG_GIT_COMMIT_ID:+"-c" "$ARG_GIT_COMMIT_ID"} \
+          ${ARG_GIT_OPTIONS:+"-o" "$ARG_GIT_OPTIONS"} \
           ${ARG_PROJECT_DIR:+"-p" "$ARG_PROJECT_DIR"} \
           ${ARG_TASKS:+"-t" "$ARG_TASKS"} \
           ${ARG_ARGS:+"-a" "$ARG_ARGS"} \
@@ -98,8 +106,8 @@ runs:
 
         # Set the Build Scan urls as outputs
         RECEIPT_FILE=".data/02-validate-local-build-caching-same-location/latest/exp2-*.receipt"
-        BUILD_SCAN_1=$(grep "first build" ${RECEIPT_FILE} | sed 's/.* //')
-        BUILD_SCAN_2=$(grep "second build" ${RECEIPT_FILE} | sed 's/.* //')
+        BUILD_SCAN_1=$(grep -m 1 "first build" ${RECEIPT_FILE} | sed 's/.* //')
+        BUILD_SCAN_2=$(grep -m 1 "second build" ${RECEIPT_FILE} | sed 's/.* //')
         
         echo "buildScanFirstBuild=$BUILD_SCAN_1" >> $GITHUB_OUTPUT
         echo "buildScanSecondBuild=$BUILD_SCAN_2" >> $GITHUB_OUTPUT
