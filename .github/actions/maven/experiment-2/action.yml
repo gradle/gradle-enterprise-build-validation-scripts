@@ -27,7 +27,7 @@ inputs:
     description: "Enables Gradle Enterprise on a project not already connected"
     required: false
   failIfNotFullyCacheable:
-    description: "Fail the build if it is not fully cacheable"
+    description: "Terminates with exit code 3 if the build is not fully cacheable"
     required: false
 outputs:
   buildScanFirstBuild:
