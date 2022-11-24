@@ -98,8 +98,8 @@ runs:
 
         # Set the Build Scan urls as outputs
         RECEIPT_FILE=".data/02-validate-local-build-caching-different-locations/latest/exp2-*.receipt"
-        BUILD_SCAN_1=$(grep "first build" ${RECEIPT_FILE} | sed 's/.* //')
-        BUILD_SCAN_2=$(grep "second build" ${RECEIPT_FILE} | sed 's/.* //')
+        BUILD_SCAN_1=$(grep -m 1 "first build" ${RECEIPT_FILE} | sed 's/.* //')
+        BUILD_SCAN_2=$(grep -m 1 "second build" ${RECEIPT_FILE} | sed 's/.* //')
        
         echo "buildScanFirstBuild=$BUILD_SCAN_1" >> $GITHUB_OUTPUT
         echo "buildScanSecondBuild=$BUILD_SCAN_2" >> $GITHUB_OUTPUT
