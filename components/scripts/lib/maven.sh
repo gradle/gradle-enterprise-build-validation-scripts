@@ -40,10 +40,10 @@ invoke_maven() {
     done
   fi
 
-  if [ "$build_scan_publishing_mode" == "off" ]; then
-    args+=("-Dscan.dump")
-  else
+  if [ "$build_scan_publishing_mode" == "on" ]; then
     args+=("-Dscan")
+  else
+    args+=("-Dscan.dump")
   fi
 
   args+=(
