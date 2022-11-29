@@ -1,11 +1,13 @@
 # Composite GitHub Actions
 
-The composite actions provided here will simplify running the build validation scripts from your GitHub Actions workflow.
+Composite actions that will simplify running the build validation scripts that validate Build Cache compatibility
+from your GitHub Actions workflow.
 
 ## Usage
 
-Create a GitHub Actions workflow, add the steps to configure the build requirements like JDK, etc., and then add the
-following steps to invoke the actual experiments:
+Create a GitHub Actions workflow with the following steps:
+- Configure the build requirements like JDK, etc.
+- Add the following composite steps to invoke the actual experiments
 
 ```yaml
 steps:
@@ -29,5 +31,5 @@ steps:
       ...
 ```
 
-Once the workflow has been triggered and finishes executing, you can navigate to the workflow's output and investigate the summary
-produced by the build validation scripts.
+Once the workflow has been triggered and finishes executing, you can navigate to the workflow's output and investigate
+the summary produced by the build validation scripts.

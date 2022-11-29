@@ -1,13 +1,15 @@
 # Composite GitHub Actions
 
-## Validation scripts
+## Build cache compatibility
 
-The composite actions provided here will simplify running the build validation scripts from your GitHub Actions workflow.
+Composite actions that will simplify running the build validation scripts that validate Build Cache compatibility
+from your GitHub Actions workflow.
 
 ### Usage
 
-Create a GitHub Actions workflow, add the steps to configure the build requirements like JDK, etc., and then add the
-following steps to invoke the actual experiments:
+Create a GitHub Actions workflow with the following steps:
+- Configure the build requirements like JDK, etc.
+- Add the following composite steps to invoke the actual experiments
 
 ```yaml
 steps:
@@ -38,12 +40,13 @@ steps:
       ...
 ```
 
-Once the workflow has been triggered and finishes executing, you can navigate to the workflow's output and investigate the summary
-produced by the build validation scripts.
+Once the workflow has been triggered and finishes executing, you can navigate to the workflow's output and investigate
+the summary produced by the build validation scripts.
 
 ## Configuration cache compatibility
 
-The configuration cache compatibility can be assessed from your GitHub Actions workflow.
+Composite actions that will simplify validating Configuration Cache compatibility 
+from your GitHub Actions workflow.
 
 ### Usage
 Create a GitHub Actions workflow with the following steps:
@@ -60,4 +63,5 @@ steps:
       args: "-Pfoo=bar"
 ```
 
-The workflow will succeed if a configuration cache entry was successfully restored when building the second time, fail otherwise.
+Once the workflow has been triggered and finishes executing, the workflow will either have succeeded if the invoked 
+build is Configuration Cache compatible, or it will have failed if the invoked build is not Configuration Cache compatible.
