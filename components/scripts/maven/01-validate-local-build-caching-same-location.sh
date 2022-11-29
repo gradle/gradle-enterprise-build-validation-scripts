@@ -81,6 +81,7 @@ wizard_execute() {
   if [[ "${build_scan_publishing_mode}" == "on" ]]; then
     print_bl
     explain_prerequisites_ccud_maven_extension "I."
+
     print_bl
     explain_prerequisites_api_access "II."
   else
