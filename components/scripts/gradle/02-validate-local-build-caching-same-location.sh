@@ -128,22 +128,15 @@ wizard_execute() {
 
 execute_first_build() {
   info "Running first build:"
-
-  local init_scripts_dir
-  init_scripts_dir="$(init_scripts_path)"
-
-  print_gradle_command
-
-  # shellcheck disable=SC2086  # we want tasks to expand with word splitting in this case
-  invoke_gradle \
-     --build-cache \
-     --init-script "${init_scripts_dir}/configure-local-build-caching.gradle" \
-     clean ${tasks}
+  execute_build
 }
 
 execute_second_build() {
   info "Running second build:"
+  execute_build
+}
 
+execute_build() {
   local init_scripts_dir
   init_scripts_dir="$(init_scripts_path)"
 

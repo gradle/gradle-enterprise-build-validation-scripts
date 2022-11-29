@@ -131,21 +131,17 @@ wizard_execute() {
 
 execute_first_build() {
   info "Running first build:"
-  print_maven_command
-
-  # shellcheck disable=SC2086  # we want tasks to expand with word splitting in this case
-  invoke_maven \
-     -Dgradle.cache.local.enabled=true \
-     -Dgradle.cache.remote.enabled=false \
-     -Dgradle.cache.local.directory="${BUILD_CACHE_DIR}" \
-     clean ${tasks}
+  execute_build
 }
 
 execute_second_build() {
   info "Running second build:"
-  print_maven_command
-
   cd "${EXP_DIR}/second-build_${project_name}" || die "Unable to cd to ${EXP_DIR}/second-build_${project_name}"
+  execute_build
+}
+
+execute_build() {
+  print_maven_command
 
   # shellcheck disable=SC2086  # we want tasks to expand with word splitting in this case
   invoke_maven \
