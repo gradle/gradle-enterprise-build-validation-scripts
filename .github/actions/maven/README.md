@@ -1,9 +1,11 @@
 # Composite GitHub Actions
 
+## Build cache compatibility
+
 Composite actions that will simplify running the build validation scripts that validate Build Cache compatibility
 from your GitHub Actions workflow.
 
-## Usage
+### Usage
 
 Create a GitHub Actions workflow with the following steps:
 - Configure the build requirements like JDK, etc.
