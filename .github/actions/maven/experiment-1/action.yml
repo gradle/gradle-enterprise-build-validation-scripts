@@ -111,8 +111,8 @@ runs:
       
         echo "buildScanFirstBuild=$BUILD_SCAN_1" >> $GITHUB_OUTPUT
         echo "buildScanSecondBuild=$BUILD_SCAN_2" >> $GITHUB_OUTPUT
-        echo "::notice title="Experiment 1 - First Build Scan"::$BUILD_SCAN_1"
-        echo "::notice title="Experiment 1 - Second Build Scan"::$BUILD_SCAN_2"
+
+        cat $RECEIPT_FILE >> $GITHUB_STEP_SUMMARY
       shell: bash
     - name: Archive receipt
       uses: actions/upload-artifact@v3
