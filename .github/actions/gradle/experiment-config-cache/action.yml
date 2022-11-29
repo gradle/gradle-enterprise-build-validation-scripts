@@ -1,10 +1,13 @@
-name: Check Gradle configuration cache compatibility
-description: "Runs the build twice to check that configuration cache entry is restored on second run"
+name: Run configuration cache experiment
+description: "Runs the configuration cache experiment"
 
 inputs:
-  gradleArgs:
-    description: "Arguments to pass to Gradle"
-    required: true
+  tasks:
+    description: "The Gradle tasks to invoke"
+    required: false
+  args:
+    description: "Additional arguments to pass to Gradle"
+    required: false
 
 runs:
   using: "composite"
@@ -18,9 +21,9 @@ runs:
       run: |
         # Need to run both builds within same job id to avoid calculating task graph as
         # configuration cache cannot be reused when environment variable 'GITHUB_ACTION' has changed
-        ./gradlew --configuration-cache ${{ inputs.gradleArgs }} 2>&1 | tee -a /tmp/run-1.log
+        ./gradlew --configuration-cache ${{ inputs.tasks }} ${{ inputs.args }} 2>&1 | tee -a /tmp/run-1.log
         echo "configCacheStored=$(grep "Configuration cache entry stored" /tmp/run-1.log | wc -l)" >> $GITHUB_OUTPUT
-        ./gradlew --configuration-cache ${{ inputs.gradleArgs }} 2>&1 | tee -a /tmp/run-2.log
+        ./gradlew --configuration-cache ${{ inputs.tasks }} ${{ inputs.args }} 2>&1 | tee -a /tmp/run-2.log
         echo "configCacheReused=$(grep "Configuration cache entry reused" /tmp/run-2.log | wc -l)" >> $GITHUB_OUTPUT
       shell: bash
     - name: Verify Gradle Configuration Cache was reused
