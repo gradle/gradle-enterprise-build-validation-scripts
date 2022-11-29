@@ -289,8 +289,8 @@ $(print_separator)
 ${HEADER_COLOR}Measure build results${RESTORE}
 
 Now that the second build has finished successfully, you are ready to measure in
-Gradle Enterprise how well your build leverages the local build cache for
-the invoked set of Maven goals.
+Gradle Enterprise how well your build leverages Gradle Enterprise's local build
+caching functionality for the invoked set of Maven goals.
 
 Some of the build scan data will be extracted from the locally stored, intermediate
 build data produced by the two builds to assist you in your investigation.
