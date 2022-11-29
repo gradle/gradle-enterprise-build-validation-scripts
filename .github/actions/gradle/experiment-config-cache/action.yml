@@ -1,5 +1,5 @@
 name: Run configuration cache experiment
-description: "Runs the configuration cache experiment"
+description: "Runs the experiment to validate compatibility with the Gradle Configuration Cache"
 
 inputs:
   tasks:
@@ -26,7 +26,7 @@ runs:
         ./gradlew --configuration-cache ${{ inputs.tasks }} ${{ inputs.args }} 2>&1 | tee -a /tmp/run-2.log
         echo "configCacheReused=$(grep "Configuration cache entry reused" /tmp/run-2.log | wc -l)" >> $GITHUB_OUTPUT
       shell: bash
-    - name: Verify Gradle Configuration Cache was reused
-      run: exit 1
+    - name: Validate Gradle Configuration Cache compatibility
+      run: exit 3
       if: steps.run.outputs.configCacheStored != '1' || steps.run.outputs.configCacheReused != '1'
       shell: bash
