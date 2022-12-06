@@ -183,6 +183,6 @@ git clone https://github.com/gradle/gradle-build-scan-quickstart $HOME/gradle-bu
 
 When the scripts clone the Git project, an error might occur on Windows when the absolute paths of the checked out files are longer than 260 characters. This problem can be addressed by passing the `core.longpaths` Git configuration option to the scripts.
 
-```
-./02-validate-local-build-caching-same-location.sh --git-options "--depth=1 -c core.longpaths=true"
+```bash
+./02-validate-local-build-caching-same-location.sh -i -o "--depth=1 -c core.longpaths=true"
 ```
