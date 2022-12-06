@@ -178,3 +178,11 @@ In the example below, the Git repository is first checked out to a location on t
 git clone https://github.com/gradle/gradle-build-scan-quickstart $HOME/gradle-build-scan-quickstart
 ./02-validate-local-build-caching-same-location.sh -i -r file://$HOME/gradle-build-scan-quickstart
 ```
+
+## Dealing with filename too long errors on Windows
+
+When the scripts clone the Git project, an error might occur on Windows when the absolute paths of the checked out files are longer than 260 characters. This problem can be addressed by passing the `core.longpaths` Git configuration option to the scripts.
+
+```
+./02-validate-local-build-caching-same-location.sh --git-options "--depth=1 -c core.longpaths=true"
+```
