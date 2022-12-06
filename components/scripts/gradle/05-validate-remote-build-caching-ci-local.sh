@@ -446,8 +446,8 @@ EOF
   wait_for_enter
 }
 
-#Overrides config.sh#print_command_to_repeat_experiment
-print_command_to_repeat_experiment() {
+#Overrides config.sh#generate_command_to_repeat_experiment
+generate_command_to_repeat_experiment() {
   local cmd
   cmd=("./${SCRIPT_NAME}")
 
@@ -495,9 +495,7 @@ print_command_to_repeat_experiment() {
     cmd+=("-e")
   fi
 
-  info "Command Line Invocation"
-  info "-----------------------"
-  info "$(printf '%q ' "${cmd[@]}")"
+  printf '%q ' "${cmd[@]}"
 }
 
 explain_and_print_summary() {
