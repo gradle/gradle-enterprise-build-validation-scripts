@@ -10,7 +10,7 @@ There are currently five experiments for Gradle. You could also perform these ex
 
 You need to have [Bash](https://www.gnu.org/software/bash/) installed in order to run the build validation scripts.
 
-If you plan to use the build validation scripts on Windows, then you will need to [install Windows Subsystem for Linux (WSL)](https://docs.microsoft.com/en-us/windows/wsl/install). The build validation scripts work well on the WSL default distribution (Ubuntu).
+If you plan to use the build validation scripts on Windows, then you will need to [install Windows Subsystem for Linux (WSL)](https://docs.microsoft.com/en-us/windows/wsl/install). The build validation scripts work well on the WSL default distribution (Ubuntu). Note how to deal with the eventuality of facing filename too long errors [here](#dealing-with-filename-too-long-errors-on-windows).
 
 ## Compatibility
 
@@ -183,6 +183,6 @@ git clone https://github.com/gradle/gradle-build-scan-quickstart $HOME/gradle-bu
 
 When the scripts clone the Git project, an error might occur on Windows when the absolute paths of the checked out files are longer than 260 characters. This problem can be addressed by passing the `core.longpaths` Git configuration option to the scripts.
 
-```
-./02-validate-local-build-caching-same-location.sh --git-options "--depth=1 -c core.longpaths=true"
+```bash
+./02-validate-local-build-caching-same-location.sh -i -o "--depth=1 -c core.longpaths=true"
 ```
