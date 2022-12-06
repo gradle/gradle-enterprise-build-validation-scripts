@@ -115,6 +115,7 @@ wizard_execute() {
   explain_remote_build_cache_url
   print_bl
   collect_remote_build_cache_url
+  explain_command_to_repeat_experiment_after_collecting_parameters
 
   print_bl
   explain_clone_project

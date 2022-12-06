@@ -89,6 +89,7 @@ wizard_execute() {
   explain_collect_gradle_details
   print_bl
   collect_gradle_details
+  explain_command_to_repeat_experiment_after_collecting_parameters
 
   print_bl
   explain_clone_project

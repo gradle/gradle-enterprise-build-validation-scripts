@@ -341,15 +341,26 @@ EOF
   print_wizard_text "${text}"
 }
 
+explain_command_to_repeat_experiment_after_collecting_parameters() {
+  local text
+  IFS='' read -r -d '' text <<EOF
+
+All configuration to run the experiment has been collected. You can repeat
+the experiment in the future by running:
+
+$(generate_command_to_repeat_experiment)
+EOF
+  print_wizard_text "${text}"
+}
+
 explain_clone_project() {
   local text
   IFS='' read -r -d '' text <<EOF
 $(print_separator)
 ${HEADER_COLOR}Check out project from Git${RESTORE}
 
-All configuration to run the experiment has been collected. In the first
-step of the experiment, the Git repository that contains the project to
-validate will be checked out.
+In the first step of the experiment, the Git repository that contains the
+project to validate will be checked out.
 
 ${USER_ACTION_COLOR}Press <Enter> to check out the project from Git.${RESTORE}
 EOF
@@ -374,4 +385,10 @@ changes to your Git repository, you can rerun the experiment and start over
 the cycle of run → measure → improve → run.
 EOF
   echo -n "${text}"
+}
+
+print_command_to_repeat_experiment() {
+    info "Command Line Invocation"
+    info "-----------------------"
+    info "$(generate_command_to_repeat_experiment)"
 }
