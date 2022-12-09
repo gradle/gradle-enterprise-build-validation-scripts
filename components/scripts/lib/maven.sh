@@ -40,8 +40,13 @@ invoke_maven() {
     done
   fi
 
+  if [ "$build_scan_publishing_mode" == "on" ]; then
+    args+=("-Dscan")
+  else
+    args+=("-Dscan.dump")
+  fi
+
   args+=(
-    -Dscan
     -Dmaven.ext.class.path="${extension_classpath}"
     -Dcom.gradle.enterprise.build_validation.experimentDir="${EXP_DIR}"
     -Dcom.gradle.enterprise.build_validation.expId="${EXP_SCAN_TAG}"
