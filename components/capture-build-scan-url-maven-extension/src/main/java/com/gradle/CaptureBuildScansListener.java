@@ -85,4 +85,5 @@ public class CaptureBuildScansListener implements GradleEnterpriseListener {
             }
         });
     }
+
 }
