@@ -1,1 +1,1 @@
-- TBD
+- [NEW] Add `-x` command line option to control if build scan should be published
