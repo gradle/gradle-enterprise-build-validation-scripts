@@ -92,6 +92,7 @@ wizard_execute() {
   explain_collect_mapping_file
   print_bl
   collect_mapping_file
+  explain_command_to_repeat_experiment_after_collecting_parameters
 
   print_bl
   parse_build_scan_urls
@@ -311,8 +312,8 @@ EOF
   wait_for_enter
 }
 
-#Overrides config.sh#print_command_to_repeat_experiment
-print_command_to_repeat_experiment() {
+#Overrides config.sh#generate_command_to_repeat_experiment
+generate_command_to_repeat_experiment() {
   local cmd
   cmd=("./${SCRIPT_NAME}")
   cmd+=("-1" "${build_scan_urls[0]}")
@@ -322,9 +323,7 @@ print_command_to_repeat_experiment() {
     cmd+=("-m" "${mapping_file}")
   fi
 
-  info "Command Line Invocation"
-  info "-----------------------"
-  info "$(printf '%q ' "${cmd[@]}")"
+  printf '%q ' "${cmd[@]}"
 }
 
 explain_and_print_summary() {

@@ -231,7 +231,7 @@ print_extra_args() {
   fi
 }
 
-print_command_to_repeat_experiment() {
+generate_command_to_repeat_experiment() {
   local cmd
   cmd=("./${SCRIPT_NAME}" "-r" "${git_repo}")
 
@@ -279,8 +279,6 @@ print_command_to_repeat_experiment() {
     cmd+=("-f")
   fi
 
-  info "Command Line Invocation"
-  info "-----------------------"
-  info "$(printf '%q ' "${cmd[@]}")"
+  printf '%q ' "${cmd[@]}"
 }
 
