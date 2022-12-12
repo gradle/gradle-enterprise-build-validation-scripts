@@ -46,7 +46,7 @@ relative_path() {
     printf '%s\n' "$result"
 }
 
-pushd_with_project_dir() {
+pushd_to_project_dir() {
     # pushd and pushd "" behave differently when CDPATH is set
     if [ -z "${project_dir}" ]; then
       #shellcheck disable=SC2164  # We will handle the error when we try to invoke the build
@@ -58,7 +58,7 @@ pushd_with_project_dir() {
 }
 
 relative_lib_path() {
-  pushd_with_project_dir
+  pushd_to_project_dir
 
   local lib_dir_rel
   lib_dir_rel=$(relative_path "$( pwd )" "${LIB_DIR}")

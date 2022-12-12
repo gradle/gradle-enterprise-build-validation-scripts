@@ -14,7 +14,7 @@ invoke_maven() {
   local args mvn
   args=()
 
-  pushd_with_project_dir
+  pushd_to_project_dir
 
   mvn=$(find_maven_executable)
   if [ -z "$mvn" ]; then
