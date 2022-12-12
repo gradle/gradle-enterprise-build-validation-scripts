@@ -504,6 +504,10 @@ generate_command_to_repeat_experiment() {
     cmd+=("-f")
   fi
 
+  if [[ "${_arg_debug}" == "on" ]]; then
+    cmd+=("-d")
+  fi
+
   printf '%q ' "${cmd[@]}"
 }
 
