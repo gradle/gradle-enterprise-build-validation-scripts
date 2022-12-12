@@ -1,1 +1,2 @@
+- [FIX] Maven experiments ensure correctness of `storeEnabled` for local caching
 - [NEW] Add `-x` command line option to control if build scan should be published
