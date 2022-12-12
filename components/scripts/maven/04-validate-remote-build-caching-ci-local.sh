@@ -500,6 +500,14 @@ generate_command_to_repeat_experiment() {
     cmd+=("-e")
   fi
 
+  if [[ "${fail_if_not_fully_cacheable}" == "on" ]]; then
+    cmd+=("-f")
+  fi
+
+  if [[ "${_arg_debug}" == "on" ]]; then
+    cmd+=("-d")
+  fi
+
   printf '%q ' "${cmd[@]}"
 }
 
