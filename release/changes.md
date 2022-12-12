@@ -1,1 +1,2 @@
+- [FIX] Several experiments missing `-f` in their command to repeat experiment
 - [NEW] Add `-x` command line option to control if build scan should be published
