@@ -40,7 +40,7 @@ public class CaptureBuildScansListener implements GradleEnterpriseListener {
     }
 
     private static void addCustomDataOnBuildFinished(BuildScanApi buildScan) {
-        // Encapsulation in buildFinished block to ensure GE server URL is set (required by buildScan.getServer())
+        // Links are set in buildFinished block to ensure buildScan.getServer() is set (required by addCustomValueAndSearchLink())
         buildScan.buildFinished(ignored -> {
             String expId = System.getProperty("com.gradle.enterprise.build_validation.expId");
             addCustomValueAndSearchLink(buildScan, "Experiment id", expId);
