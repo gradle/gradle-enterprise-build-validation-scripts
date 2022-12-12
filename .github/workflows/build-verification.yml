@@ -25,7 +25,7 @@ jobs:
         run: ./gradlew build -i
         env:
           GRADLE_ENTERPRISE_ACCESS_KEY: ${{ secrets.GE_SOLUTIONS_ACCESS_TOKEN }}
-      - name: Download and extract build validation Scripts
+      - name: Extract build validation Scripts
         working-directory: build/distributions
         run: |
           unzip -o gradle-enterprise-gradle-build-validation-*.zip
