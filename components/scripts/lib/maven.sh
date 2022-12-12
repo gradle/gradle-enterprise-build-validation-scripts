@@ -14,7 +14,7 @@ invoke_maven() {
   local args mvn
   args=()
 
-  pushd_with_project_dir
+  pushd "${project_dir}" > /dev/null 2>&1 || die "ERROR: The subdirectory ${project_dir} (set with --project-dir) does not exist in ${project_name}." "${INVALID_INPUT}"
 
   mvn=$(find_maven_executable)
   if [ -z "$mvn" ]; then
