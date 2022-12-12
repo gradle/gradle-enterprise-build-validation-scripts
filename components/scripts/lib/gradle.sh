@@ -13,7 +13,7 @@ invoke_gradle() {
   local init_scripts_dir
   init_scripts_dir="$(init_scripts_path)"
 
-  pushd_to_project_dir
+  pushd_with_project_dir
 
   if [ "$enable_ge" == "on" ]; then
     args+=(--init-script "${init_scripts_dir}/enable-gradle-enterprise.gradle")
