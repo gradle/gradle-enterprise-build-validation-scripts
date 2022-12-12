@@ -5,7 +5,6 @@ import com.gradle.maven.extension.api.GradleEnterpriseListener;
 import com.gradle.maven.extension.api.scan.BuildScanApi;
 import org.apache.maven.execution.MavenSession;
 import org.apache.maven.project.MavenProject;
-import org.codehaus.plexus.component.annotations.Component;
 import org.codehaus.plexus.logging.Logger;
 
 import javax.inject.Inject;
@@ -36,17 +35,20 @@ public class CaptureBuildScansListener implements GradleEnterpriseListener {
 
         BuildScanApi buildScan = api.getBuildScan();
 
-        addCustomData(buildScan);
+        addCustomDataOnBuildFinished(buildScan);
         capturePublishedBuildScan(buildScan, rootProjectExtractor.extractRootProject(session));
     }
 
-    private static void addCustomData(BuildScanApi buildScan) {
-        String expId = System.getProperty("com.gradle.enterprise.build_validation.expId");
-        addCustomValueAndSearchLink(buildScan, "Experiment id", expId);
-        buildScan.tag(expId);
+    private static void addCustomDataOnBuildFinished(BuildScanApi buildScan) {
+        // Links are set in buildFinished block to ensure buildScan.getServer() is set (required by addCustomValueAndSearchLink())
+        buildScan.buildFinished(ignored -> {
+            String expId = System.getProperty("com.gradle.enterprise.build_validation.expId");
+            addCustomValueAndSearchLink(buildScan, "Experiment id", expId);
+            buildScan.tag(expId);
 
-        String runId = System.getProperty("com.gradle.enterprise.build_validation.runId");
-        addCustomValueAndSearchLink(buildScan, "Experiment run id", runId);
+            String runId = System.getProperty("com.gradle.enterprise.build_validation.runId");
+            addCustomValueAndSearchLink(buildScan, "Experiment run id", runId);
+        });
     }
 
     private static void addCustomValueAndSearchLink(BuildScanApi buildScan, String label, String value) {
@@ -76,9 +78,9 @@ public class CaptureBuildScansListener implements GradleEnterpriseListener {
             String baseUrl = String.format("%s://%s%s", scan.getBuildScanUri().getScheme(), scan.getBuildScanUri().getHost(), port);
 
             try (FileWriter fw = new FileWriter(EXPERIMENT_DIR + "/build-scans.csv", true);
-                 BufferedWriter bw = new BufferedWriter(fw);
-                 PrintWriter out = new PrintWriter(bw)) {
-                out.println(String.format("%s,%s,%s,%s", rootProject.getName(), baseUrl, scan.getBuildScanUri(), scan.getBuildScanId()));
+                BufferedWriter bw = new BufferedWriter(fw);
+                PrintWriter out = new PrintWriter(bw)) {
+               out.println(String.format("%s,%s,%s,%s", rootProject.getName(), baseUrl, scan.getBuildScanUri(), scan.getBuildScanId()));
             } catch (IOException e) {
                 logger.error("Unable to save scan data to build-scans.csv: " + e.getMessage(), e);
                 throw new RuntimeException("Unable to save scan data to build-scans.csv: " + e.getMessage(), e);
