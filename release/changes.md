@@ -1,3 +1,3 @@
 - [FIX] Several experiments missing `-f` in their command to repeat experiment
 - [NEW] Add `-x` command line option to control if build scan should be published
-- [NEW] Show `-d` in the command repeat experiment
+- [NEW] Include `-d` in the command to repeat experiment
