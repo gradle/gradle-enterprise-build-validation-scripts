@@ -47,14 +47,19 @@ relative_path() {
 }
 
 relative_lib_path() {
-  #shellcheck disable=SC2164  # We will handle the error when we try to invoke the build
-  pushd "${project_dir}" > /dev/null 2>&1
+  local original_dir
+  if [ -n "${project_dir}" ]; then
+    original_dir="$(pwd)"
+    cd "${project_dir}" > /dev/null 2>&1 || die "ERROR: The subdirectory ${project_dir} (set with --project-dir) does not exist in ${project_name}." "${INVALID_INPUT}"
+  fi
 
   local lib_dir_rel
   lib_dir_rel=$(relative_path "$( pwd )" "${LIB_DIR}")
 
-  #shellcheck disable=SC2164  #This is extremely unlikely to fail
-  popd > /dev/null 2>&1
+  if [ -n "${project_dir}" ]; then
+    # shellcheck disable=SC2164 # We are just navigating back to the original directory
+    cd "${original_dir}"
+  fi
 
   echo "${lib_dir_rel}"
 }
