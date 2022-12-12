@@ -35,17 +35,20 @@ public class CaptureBuildScansListener implements GradleEnterpriseListener {
 
         BuildScanApi buildScan = api.getBuildScan();
 
-        addCustomData(buildScan);
+        addCustomDataOnBuildFinished(buildScan);
         capturePublishedBuildScan(buildScan, rootProjectExtractor.extractRootProject(session));
     }
 
-    private static void addCustomData(BuildScanApi buildScan) {
-        String expId = System.getProperty("com.gradle.enterprise.build_validation.expId");
-        addCustomValueAndSearchLink(buildScan, "Experiment id", expId);
-        buildScan.tag(expId);
+    private static void addCustomDataOnBuildFinished(BuildScanApi buildScan) {
+        // Encapsulation in buildFinished block to ensure GE server URL is set (required by buildScan.getServer())
+        buildScan.buildFinished(ignored -> {
+            String expId = System.getProperty("com.gradle.enterprise.build_validation.expId");
+            addCustomValueAndSearchLink(buildScan, "Experiment id", expId);
+            buildScan.tag(expId);
 
-        String runId = System.getProperty("com.gradle.enterprise.build_validation.runId");
-        addCustomValueAndSearchLink(buildScan, "Experiment run id", runId);
+            String runId = System.getProperty("com.gradle.enterprise.build_validation.runId");
+            addCustomValueAndSearchLink(buildScan, "Experiment run id", runId);
+        });
     }
 
     private static void addCustomValueAndSearchLink(BuildScanApi buildScan, String label, String value) {
