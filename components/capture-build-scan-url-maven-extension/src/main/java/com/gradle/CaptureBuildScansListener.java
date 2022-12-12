@@ -5,7 +5,6 @@ import com.gradle.maven.extension.api.GradleEnterpriseListener;
 import com.gradle.maven.extension.api.scan.BuildScanApi;
 import org.apache.maven.execution.MavenSession;
 import org.apache.maven.project.MavenProject;
-import org.codehaus.plexus.component.annotations.Component;
 import org.codehaus.plexus.logging.Logger;
 
 import javax.inject.Inject;
@@ -76,8 +75,8 @@ public class CaptureBuildScansListener implements GradleEnterpriseListener {
             String baseUrl = String.format("%s://%s%s", scan.getBuildScanUri().getScheme(), scan.getBuildScanUri().getHost(), port);
 
             try (FileWriter fw = new FileWriter(EXPERIMENT_DIR + "/build-scans.csv", true);
-                 BufferedWriter bw = new BufferedWriter(fw);
-                 PrintWriter out = new PrintWriter(bw)) {
+                BufferedWriter bw = new BufferedWriter(fw);
+                PrintWriter out = new PrintWriter(bw)) {
                 out.println(String.format("%s,%s,%s,%s", rootProject.getName(), baseUrl, scan.getBuildScanUri(), scan.getBuildScanId()));
             } catch (IOException e) {
                 logger.error("Unable to save scan data to build-scans.csv: " + e.getMessage(), e);
