@@ -46,9 +46,19 @@ relative_path() {
     printf '%s\n' "$result"
 }
 
+pushd_to_project_dir() {
+    # pushd and pushd "" behave differently when CDPATH is set
+    if [ -z "${project_dir}" ]; then
+      #shellcheck disable=SC2164  # We will handle the error when we try to invoke the build
+      pushd > /dev/null 2>&1
+    else
+      #shellcheck disable=SC2164  # We will handle the error when we try to invoke the build
+      pushd "${project_dir}" > /dev/null 2>&1 || die "ERROR: The subdirectory ${project_dir} (set with --project-dir) does not exist in ${project_name}." "${INVALID_INPUT}"
+    fi
+}
+
 relative_lib_path() {
-  #shellcheck disable=SC2164  # We will handle the error when we try to invoke the build
-  pushd "${project_dir}" > /dev/null 2>&1
+  pushd_to_project_dir
 
   local lib_dir_rel
   lib_dir_rel=$(relative_path "$( pwd )" "${LIB_DIR}")
