@@ -143,6 +143,7 @@ execute_build() {
   #shellcheck disable=SC2086  # we actually want ${tasks} to expand because it may have more than one maven goal
   invoke_maven \
      -Dgradle.cache.local.enabled=true \
+     -Dgradle.cache.local.storeEnabled=true \
      -Dgradle.cache.remote.enabled=false \
      -Dgradle.cache.local.directory="${BUILD_CACHE_DIR}" \
      clean ${tasks}

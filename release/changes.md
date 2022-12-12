@@ -1,3 +1,4 @@
-- [FIX] Several experiments missing `-f` in their command to repeat experiment
 - [NEW] Add `-x` command line option to control if build scan should be published
-- [NEW] Include `-d` in the command to repeat experiment
+- [NEW] Include `-d` in the command to repeat the experiment
+- [FIX] Several experiments missing `-f` in their command to repeat the experiment
+- [FIX] Maven experiments ensure correctness of `storeEnabled` for local caching
