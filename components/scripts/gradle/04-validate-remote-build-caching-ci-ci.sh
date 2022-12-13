@@ -328,7 +328,7 @@ generate_command_to_repeat_experiment() {
   fi
 
   if [[ "${_arg_debug}" == "on" ]]; then
-    cmd+=("-d")
+    cmd+=("--debug")
   fi
 
   printf '%q ' "${cmd[@]}"
