@@ -13,7 +13,11 @@ invoke_gradle() {
   local init_scripts_dir
   init_scripts_dir="$(init_scripts_path)"
 
-  pushd_to_project_dir
+  local original_dir
+  if [ -n "${project_dir}" ]; then
+    original_dir="$(pwd)"
+    cd "${project_dir}" > /dev/null 2>&1 || die "ERROR: The subdirectory ${project_dir} (set with --project-dir) does not exist in ${project_name}." "${INVALID_INPUT}"
+  fi
 
   if [ "$enable_ge" == "on" ]; then
     args+=(--init-script "${init_scripts_dir}/enable-gradle-enterprise.gradle")
@@ -63,8 +67,10 @@ invoke_gradle() {
   # defined in build_scan.sh
   read_build_data_from_current_dir
 
-  #shellcheck disable=SC2164  # This is extremely unlikely to fail. and if it does, nothing really terrible will happen
-  popd > /dev/null 2>&1
+  if [ -n "${project_dir}" ]; then
+    # shellcheck disable=SC2164 # We are just navigating back to the original directory
+    cd "${original_dir}"
+  fi
 }
 
 make_local_cache_dir() {
