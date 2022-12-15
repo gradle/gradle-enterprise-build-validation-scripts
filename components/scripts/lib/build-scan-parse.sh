@@ -49,7 +49,6 @@ parse_build_scan_csv() {
     fi
 
     if [[ "$build_cache_metrics_only" != "build_cache_metrics_only" ]]; then
-      project_names[idx]="$field_1"
       base_urls[idx]="$field_2"
       build_scan_urls[idx]="$field_3"
       build_scan_ids[idx]="$field_4"
@@ -61,6 +60,8 @@ parse_build_scan_csv() {
       remote_build_cache_urls[idx]="${field_10}"
       remote_build_cache_shards[idx]="${field_11}"
     fi
+
+    project_names[idx]="$field_1"
 
     # Build caching performance metrics
     avoided_up_to_date_num_tasks[idx]="${field_12}"
