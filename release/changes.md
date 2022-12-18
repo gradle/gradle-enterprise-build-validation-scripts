@@ -1,4 +1,7 @@
 - [NEW] Add `-x` command line option to control if build scan should be published
-- [NEW] Include `--debug` in the command to repeat the experiment
-- [FIX] Several experiments missing `-f` in their command to repeat the experiment
-- [FIX] Maven experiments ensure correctness of `storeEnabled` for local caching
+- [NEW] Full command is shown as soon as the user has provided all info in interactive mode
+- [FIX] Several experiments are missing `-f` in the shown command to repeat the experiment
+- [FIX] All experiments are missing `--debug` in the shown command to repeat the experiment
+- [FIX] Maven local build caching experiments do not enable `storeEnabled` explicitly
+- [FIX] Using `pushd` may cause failures when running the experiments
+- [FIX] Capturing Build Scan URL does not work when Maven build uses convention extension 
