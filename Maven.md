@@ -26,7 +26,7 @@ The build validation scripts are compatible with a large range of Maven versions
 Use the following command to download and unpack the build validation scripts for Maven to the current directory:
 
 ```bash
-curl -s -L -O https://github.com/gradle/gradle-enterprise-build-validation-scripts/releases/download/v2.1/gradle-enterprise-maven-build-validation-2.1.zip && unzip -q -o gradle-enterprise-maven-build-validation-2.1.zip
+curl -s -L -O https://github.com/gradle/gradle-enterprise-build-validation-scripts/releases/download/v2.2/gradle-enterprise-maven-build-validation-2.2.zip && unzip -q -o gradle-enterprise-maven-build-validation-2.2.zip
 ```
 
 ## Structure
