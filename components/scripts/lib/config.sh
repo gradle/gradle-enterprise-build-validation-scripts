@@ -84,10 +84,8 @@ validate_required_config() {
     fi
   fi
 
-  if [[ "${enable_ge}" == "on" && "${build_scan_publishing_mode}" == "on" ]]; then
-    if [ -z "${ge_server}" ]; then
-      _PRINT_HELP=yes die "ERROR: --gradle-enterprise-server is required when using --enable-gradle-enterprise." "${INVALID_INPUT}"
-    fi
+  if [[ "${enable_ge}" == "on" && -z "${ge_server}" && "${build_scan_publishing_mode}" == "on" ]]; then
+    _PRINT_HELP=yes die "ERROR: --gradle-enterprise-server is required when using --enable-gradle-enterprise." "${INVALID_INPUT}"
   fi
 }
 
