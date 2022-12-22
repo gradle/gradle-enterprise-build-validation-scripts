@@ -19,6 +19,7 @@ readonly SCRIPT_NAME
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")"; cd -P "$(dirname "$(readlink "${BASH_SOURCE[0]}" || echo .)")"; pwd)"
 readonly SCRIPT_DIR
 readonly LIB_DIR="${SCRIPT_DIR}/lib"
+readonly INIT_SCRIPTS_DIR="${LIB_DIR}/gradle-init-scripts"
 
 # Include and parse the command line arguments
 # shellcheck source=lib/05-cli-parser.sh
@@ -192,11 +193,8 @@ validate_build_config() {
 }
 
 execute_build() {
-  local init_scripts_dir
-  init_scripts_dir="$(init_scripts_path)"
-
   local args
-  args=(--build-cache --init-script "${init_scripts_dir}/configure-remote-build-caching.gradle")
+  args=(--build-cache --init-script "${INIT_SCRIPTS_DIR}/configure-remote-build-caching.gradle")
   if [ -n "${remote_build_cache_url}" ]; then
     args+=("-Pcom.gradle.enterprise.build_validation.remoteBuildCacheUrl=${remote_build_cache_url}")
   fi

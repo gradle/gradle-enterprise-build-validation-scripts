@@ -19,6 +19,7 @@ readonly SCRIPT_NAME
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")"; cd -P "$(dirname "$(readlink "${BASH_SOURCE[0]}" || echo .)")"; pwd)"
 readonly SCRIPT_DIR
 readonly LIB_DIR="${SCRIPT_DIR}/lib"
+readonly INIT_SCRIPTS_DIR="${LIB_DIR}/gradle-init-scripts"
 
 # Include and parse the command line arguments
 # shellcheck source=lib/03-cli-parser.sh
@@ -143,15 +144,12 @@ execute_second_build() {
 }
 
 execute_build() {
-  local init_scripts_dir
-  init_scripts_dir="$(init_scripts_path)"
-
   print_gradle_command
 
   # shellcheck disable=SC2086  # we want tasks to expand with word splitting in this case
   invoke_gradle \
      --build-cache \
-     --init-script "${init_scripts_dir}/configure-local-build-caching.gradle" \
+     --init-script "${INIT_SCRIPTS_DIR}/configure-local-build-caching.gradle" \
      clean ${tasks}
 }
 
