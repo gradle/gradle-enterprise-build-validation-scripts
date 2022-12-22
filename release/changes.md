@@ -1,2 +1,1 @@
-- [FIX] Gradle initialization scripts cannot be found
-- [FIX] Enable Gradle Enterprise with Build Scan publishing disabled requires a server to be defined for Maven
+- [NEW] TBD
