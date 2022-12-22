@@ -1,11 +1,5 @@
 #!/usr/bin/env bash
 
-init_scripts_path() {
-  # The gradle --init-script flag only accepts a relative directory path. ¯\_(ツ)_/¯
-  lib_dir_rel="$(relative_lib_path)"
-  echo "${lib_dir_rel}/gradle-init-scripts"
-}
-
 invoke_gradle() {
   local args
   args=()
@@ -16,15 +10,12 @@ invoke_gradle() {
     cd "${project_dir}" > /dev/null 2>&1 || die "ERROR: The subdirectory ${project_dir} (set with --project-dir) does not exist in ${project_name}." "${INVALID_INPUT}"
   fi
 
-  local init_scripts_dir
-  init_scripts_dir="$(init_scripts_path)"
-
   if [ "$enable_ge" == "on" ]; then
-    args+=(--init-script "${init_scripts_dir}/enable-gradle-enterprise.gradle")
+    args+=(--init-script "${INIT_SCRIPTS_DIR}/enable-gradle-enterprise.gradle")
   fi
 
-  args+=(--init-script "${init_scripts_dir}/configure-gradle-enterprise.gradle")
-  args+=(--init-script "${init_scripts_dir}/capture-published-build-scan.gradle")
+  args+=(--init-script "${INIT_SCRIPTS_DIR}/configure-gradle-enterprise.gradle")
+  args+=(--init-script "${INIT_SCRIPTS_DIR}/capture-published-build-scan.gradle")
 
   if [ -n "${ge_server}" ]; then
     args+=("-Pcom.gradle.enterprise.build_validation.server=${ge_server}")
