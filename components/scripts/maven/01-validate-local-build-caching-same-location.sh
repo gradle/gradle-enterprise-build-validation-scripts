@@ -353,9 +353,10 @@ EOF
 explain_build_cache_leverage() {
   local text
   IFS='' read -r -d '' text <<EOF
-The ‘Build Caching Leverage’ section below reveals the realized and potential
-savings from build caching. All cacheable goals' outputs need to be taken from
-the build cache in the second build for the build to be fully cacheable.
+The ‘Performance Characteristics’ section below reveals the realized and
+potential savings from build caching. All cacheable goals' outputs need to be
+taken from the build cache in the second build for the build to be fully
+cacheable.
 EOF
   echo -n "${text}"
 }

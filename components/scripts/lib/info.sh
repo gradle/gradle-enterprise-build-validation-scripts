@@ -139,7 +139,7 @@ print_performance_metrics() {
 
 print_build_caching_leverage_metrics() {
   print_bl
-  info "Build Caching Leverage"
+  info "Performance Characteristics"
   info "----------------------"
 
   local task_count_padding

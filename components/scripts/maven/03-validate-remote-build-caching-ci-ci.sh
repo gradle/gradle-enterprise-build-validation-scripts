@@ -340,9 +340,10 @@ two build scans that were published as part of running the experiment. The build
 scan of the second build is particularly interesting since this is where you can
 inspect what goals were not leveraging the remote build cache.
 
-The ‘Build Caching Leverage’ section below reveals the realized and potential
-savings from build caching. All cacheable goals' outputs need to be taken from
-the build cache in the second build for the build to be fully cacheable.
+The ‘Performance Characteristics’ section below reveals the realized and
+potential savings from build caching. All cacheable goals' outputs need to be
+taken from the build cache in the second build for the build to be fully
+cacheable.
 
 The ‘Investigation Quick Links’ section below allows quick navigation to the
 most relevant views in build scans to investigate what goals were avoided due to
