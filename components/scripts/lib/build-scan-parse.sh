@@ -25,6 +25,9 @@ executed_cacheable_duration=()
 executed_not_cacheable_num_tasks=()
 executed_not_cacheable_duration=()
 
+# Build duration metrics
+effective_task_execution_duration=()
+
 parse_build_scan_csv() {
   # This isn't the most robust way to read a CSV,
   # but we control the CSV so we don't have to worry about various CSV edge cases
@@ -42,7 +45,7 @@ parse_build_scan_csv() {
   idx=0
 
   # shellcheck disable=SC2034 # not all scripts use all of the fetched data
-  while IFS=, read -r field_1 field_2 field_3 field_4 field_5 field_6 field_7 field_8 field_9 field_10 field_11 field_12 field_13 field_14 field_15 field_16 field_17 field_18 field_19; do
+  while IFS=, read -r field_1 field_2 field_3 field_4 field_5 field_6 field_7 field_8 field_9 field_10 field_11 field_12 field_13 field_14 field_15 field_16 field_17 field_18 field_19 field_20; do
     if [[ "$header_row_read" == "false" ]]; then
       header_row_read=true
       continue;
@@ -72,6 +75,11 @@ parse_build_scan_csv() {
     executed_cacheable_duration[idx]="${field_17}"
     executed_not_cacheable_num_tasks[idx]="${field_18}"
     executed_not_cacheable_duration[idx]="${field_19}"
+
+    # todo conditional until build-scan-support-tool supports this field
+    if [[ -n "$field_20" ]]; then
+      effective_task_execution_duration[idx]="${field_20}"
+    fi
 
     ((idx++))
     done <<< "${build_scan_csv}"
