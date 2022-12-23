@@ -168,7 +168,7 @@ fetch_build_cache_metrics() {
 
 # Overrides info.sh#print_performance_metrics
 print_performance_metrics() {
-  print_build_caching_leverage_metrics
+  print_performance_characteristics
 }
 
 print_quick_links() {
@@ -314,7 +314,7 @@ two build scans that were published as part of running the experiment. The build
 scan of the second build is particularly interesting since this is where you can
 inspect what goals were not leveraging the local build cache.
 
-$(explain_build_cache_leverage)
+$(explain_performance_characteristics)
 
 The ‘Investigation Quick Links’ section below allows quick navigation to the
 most relevant views in build scans to investigate what goals were avoided due to
@@ -336,7 +336,7 @@ The ‘Summary’ section below captures the configuration of the experiment. No
 build scans are available for inspection since publishing was disabled for the
 experiment.
 
-$(explain_build_cache_leverage)
+$(explain_performance_characteristics)
 
 $(explain_command_to_repeat_experiment)
 
@@ -350,7 +350,7 @@ EOF
   print_wizard_text "${text}"
 }
 
-explain_build_cache_leverage() {
+explain_performance_characteristics() {
   local text
   IFS='' read -r -d '' text <<EOF
 The ‘Performance Characteristics’ section below reveals the realized and

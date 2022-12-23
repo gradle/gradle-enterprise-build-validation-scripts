@@ -137,7 +137,7 @@ print_performance_metrics() {
   true
 }
 
-print_build_caching_leverage_metrics() {
+print_performance_characteristics() {
   print_bl
   info "Performance Characteristics"
   info "----------------------"

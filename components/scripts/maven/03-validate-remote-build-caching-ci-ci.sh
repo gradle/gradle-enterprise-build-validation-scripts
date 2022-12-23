@@ -153,7 +153,7 @@ print_experiment_specific_summary_info() {
 
 # Overrides info.sh#print_performance_metrics
 print_performance_metrics() {
-  print_build_caching_leverage_metrics
+  print_performance_characteristics
 }
 
 print_quick_links() {
