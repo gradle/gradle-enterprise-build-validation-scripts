@@ -20,8 +20,9 @@ public class BuildValidationData {
     private final String buildOutcome;
     private final URL remoteBuildCacheUrl;
     private final Map<String, TaskExecutionSummary> tasksByAvoidanceOutcome;
+    private final Long effectiveTaskExecutionDuration;
 
-    public BuildValidationData(String rootProjectName, String buildScanId, URL gradleEnterpriseServerUrl, String gitUrl, String gitBranch, String gitCommitId, List<String> requestedTasks, String buildOutcome, URL remoteBuildCacheUrl, Map<String, TaskExecutionSummary> tasksByAvoidanceOutcome) {
+    public BuildValidationData(String rootProjectName, String buildScanId, URL gradleEnterpriseServerUrl, String gitUrl, String gitBranch, String gitCommitId, List<String> requestedTasks, String buildOutcome, URL remoteBuildCacheUrl, Map<String, TaskExecutionSummary> tasksByAvoidanceOutcome, Long effectiveTaskExecutionDuration) {
         this.rootProjectName = rootProjectName;
         this.buildScanId = buildScanId;
         this.gradleEnterpriseServerUrl = gradleEnterpriseServerUrl;
@@ -32,6 +33,7 @@ public class BuildValidationData {
         this.buildOutcome = buildOutcome;
         this.remoteBuildCacheUrl = remoteBuildCacheUrl;
         this.tasksByAvoidanceOutcome = tasksByAvoidanceOutcome;
+        this.effectiveTaskExecutionDuration = effectiveTaskExecutionDuration;
     }
 
     public String getRootProjectName() {
@@ -123,5 +125,9 @@ public class BuildValidationData {
 
     public Map<String, TaskExecutionSummary> getTasksByAvoidanceOutcome() {
         return tasksByAvoidanceOutcome;
+    }
+
+    public Long getEffectiveTaskExecutionDuration() {
+        return effectiveTaskExecutionDuration;
     }
 }

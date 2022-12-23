@@ -105,7 +105,8 @@ public class FetchBuildValidationDataCommand implements Callable<Integer> {
                 Collections.emptyList(),
                 "",
                 null,
-                Collections.emptyMap());
+                Collections.emptyMap(),
+                null);
         }
     }
 
