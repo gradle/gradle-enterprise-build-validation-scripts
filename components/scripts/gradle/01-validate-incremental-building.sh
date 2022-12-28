@@ -109,6 +109,8 @@ wizard_execute() {
   print_bl
   explain_measure_build_results
   print_bl
+  fetch_build_cache_metrics
+  print_bl
   explain_and_print_summary
 }
 
@@ -264,6 +266,8 @@ most relevant views in build scans to investigate what tasks were uptodate and
 what tasks executed in the second build, which of those tasks had the biggest
 impact on build performance, and what caused those tasks to not be uptodate.
 
+$(explain_performance_characteristics)
+
 $(explain_command_to_repeat_experiment)
 
 $(print_summary)
@@ -273,6 +277,15 @@ $(print_command_to_repeat_experiment)
 $(explain_when_to_rerun_experiment)
 EOF
   print_wizard_text "${text}"
+}
+
+explain_performance_characteristics() {
+  local text
+  IFS='' read -r -d '' text <<EOF
+The ‘Performance Characteristics’ section below reveals the realized build time
+savings as a result of leveraging Gradle’s incremental build functionality.
+EOF
+  echo -n "${text}"
 }
 
 process_arguments "$@"
