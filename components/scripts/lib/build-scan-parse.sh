@@ -76,7 +76,7 @@ parse_build_scan_csv() {
     executed_not_cacheable_num_tasks[idx]="${field_18}"
     executed_not_cacheable_duration[idx]="${field_19}"
 
-    # todo conditional until build-scan-support-tool supports this field
+    # Conditional because build-scan-support-tool does not yet support this field
     if [[ -n "$field_20" ]]; then
       effective_task_execution_duration[idx]="${field_20}"
     fi
