@@ -1,7 +1,9 @@
 package com.gradle.enterprise.model;
 
+import javax.annotation.Nonnull;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.time.Duration;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
@@ -20,9 +22,20 @@ public class BuildValidationData {
     private final String buildOutcome;
     private final URL remoteBuildCacheUrl;
     private final Map<String, TaskExecutionSummary> tasksByAvoidanceOutcome;
-    private final Long effectiveTaskExecutionDuration;
+    @Nonnull private final Duration effectiveTaskExecutionDuration;
 
-    public BuildValidationData(String rootProjectName, String buildScanId, URL gradleEnterpriseServerUrl, String gitUrl, String gitBranch, String gitCommitId, List<String> requestedTasks, String buildOutcome, URL remoteBuildCacheUrl, Map<String, TaskExecutionSummary> tasksByAvoidanceOutcome, Long effectiveTaskExecutionDuration) {
+    public BuildValidationData(
+            String rootProjectName,
+            String buildScanId,
+            URL gradleEnterpriseServerUrl,
+            String gitUrl,
+            String gitBranch,
+            String gitCommitId,
+            List<String> requestedTasks,
+            String buildOutcome,
+            URL remoteBuildCacheUrl,
+            Map<String, TaskExecutionSummary> tasksByAvoidanceOutcome,
+            @Nonnull Duration effectiveTaskExecutionDuration) {
         this.rootProjectName = rootProjectName;
         this.buildScanId = buildScanId;
         this.gradleEnterpriseServerUrl = gradleEnterpriseServerUrl;
@@ -127,7 +140,8 @@ public class BuildValidationData {
         return tasksByAvoidanceOutcome;
     }
 
-    public Long getEffectiveTaskExecutionDuration() {
+    @Nonnull
+    public Duration getEffectiveTaskExecutionDuration() {
         return effectiveTaskExecutionDuration;
     }
 }

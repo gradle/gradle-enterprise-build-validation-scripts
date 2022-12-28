@@ -116,7 +116,7 @@ public class GradleEnterpriseApiClient {
                     buildOutcomeFrom(attributes),
                     remoteBuildCacheUrlFrom(buildCachePerformance),
                     summarizeTaskExecutions(buildCachePerformance),
-                    buildCachePerformance.getEffectiveTaskExecutionTime()
+                    toDuration(buildCachePerformance.getEffectiveTaskExecutionTime())
                 );
             }
             if (build.getBuildToolType().equalsIgnoreCase("maven")) {
@@ -134,7 +134,7 @@ public class GradleEnterpriseApiClient {
                     buildOutcomeFrom(attributes),
                     remoteBuildCacheUrlFrom(buildCachePerformance),
                     summarizeTaskExecutions(buildCachePerformance),
-                    buildCachePerformance.getEffectiveProjectExecutionTime()
+                    toDuration(buildCachePerformance.getEffectiveProjectExecutionTime())
                 );
             }
             throw new UnknownBuildAgentException(baseUrl, buildScanId, build.getBuildToolType());
