@@ -138,15 +138,19 @@ print_performance_metrics() {
 }
 
 print_performance_characteristics() {
-  print_bl
-  info "Performance Characteristics"
-  info "----------------------"
+  print_performance_characteristics_header
 
   print_realized_build_time_savings
 
   print_build_caching_leverage_metrics
 
   print_executed_cacheable_tasks_warning
+}
+
+print_performance_characteristics_header() {
+  print_bl
+  info "Performance Characteristics"
+  info "----------------------"
 }
 
 print_realized_build_time_savings() {
