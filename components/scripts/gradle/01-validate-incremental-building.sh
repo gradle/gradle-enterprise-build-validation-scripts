@@ -64,6 +64,9 @@ execute() {
   rename_project_dir "build_${project_name}" "second-build_${project_name}"
 
   print_bl
+  fetch_build_cache_metrics
+
+  print_bl
   print_summary
 }
 
@@ -123,6 +126,23 @@ execute_second_build() {
 
   # shellcheck disable=SC2086  # we want tasks to expand with word splitting in this case
   invoke_gradle --no-build-cache ${tasks}
+}
+
+fetch_build_cache_metrics() {
+  read_build_scan_metadata
+  fetch_and_read_build_scan_data build_cache_metrics_only "${build_scan_urls[@]}"
+}
+
+# Overrides info.sh#print_performance_metrics
+print_performance_metrics() {
+  print_performance_characteristics
+}
+
+# Overrides info.sh#print_performance_characteristics
+print_performance_characteristics() {
+  print_performance_characteristics_header
+
+  print_realized_build_time_savings
 }
 
 print_quick_links() {
