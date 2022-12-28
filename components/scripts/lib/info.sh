@@ -154,16 +154,22 @@ print_performance_characteristics_header() {
 }
 
 print_realized_build_time_savings() {
-  local value
-  value=""
+  # Do not print realized build time savings at all if these values do not exist
+  # This can happen since build-scan-support-tool does not yet support these fields
   if [[ -n "${effective_task_execution_duration[0]}" && -n "${effective_task_execution_duration[1]}" ]]; then
-    local first_build second_build realized_savings
-    first_build=$(format_duration "${effective_task_execution_duration[0]}")
-    second_build=$(format_duration "${effective_task_execution_duration[1]}")
-    realized_savings=$(format_duration effective_task_execution_duration[0]-effective_task_execution_duration[1])
-    value="${realized_savings} wall-clock time (from ${first_build} to ${second_build})"
+    local value
+    value=""
+    # Only calculate realized build time savings when these values are non-zero
+    # These values can be returned as zero when an error occurs processing the Build Scan data
+    if [[ "${effective_task_execution_duration[0]}" && "${effective_task_execution_duration[1]}" ]]; then
+      local first_build second_build realized_savings
+      first_build=$(format_duration "${effective_task_execution_duration[0]}")
+      second_build=$(format_duration "${effective_task_execution_duration[1]}")
+      realized_savings=$(format_duration effective_task_execution_duration[0]-effective_task_execution_duration[1])
+      value="${realized_savings} wall-clock time (from ${first_build} to ${second_build})"
+    fi
+    summary_row "Realized build time savings:" "${value}"
   fi
-  summary_row "Realized build time savings:" "${value}"
 }
 
 print_build_caching_leverage_metrics() {
