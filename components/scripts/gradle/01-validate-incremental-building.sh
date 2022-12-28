@@ -39,6 +39,10 @@ ge_server=''
 interactive_mode=''
 
 main() {
+  if [[ "$build_scan_publishing_mode" == "off" ]]; then
+    verify_build_scan_support_tool_exists
+  fi
+
   if [ "${interactive_mode}" == "on" ]; then
     wizard_execute
   else
@@ -114,25 +118,38 @@ wizard_execute() {
   explain_and_print_summary
 }
 
+# shellcheck disable=SC2086 # splitting expected
 execute_first_build() {
   info "Running first build:"
-  info "./gradlew --no-build-cache --scan -Dscan.tag.${EXP_SCAN_TAG} -Dscan.value.runId=${RUN_ID} clean ${tasks}$(print_extra_args)"
-
-  # shellcheck disable=SC2086  # we want tasks to expand with word splitting in this case
-  invoke_gradle --no-build-cache clean ${tasks}
+  execute_build clean ${tasks}
 }
 
+# shellcheck disable=SC2086 # splitting expected
 execute_second_build() {
   info "Running second build:"
-  info "./gradlew --no-build-cache --scan -Dscan.tag.${EXP_SCAN_TAG} -Dscan.value.runId=${RUN_ID} ${tasks}$(print_extra_args)"
+  execute_build ${tasks}
+}
 
-  # shellcheck disable=SC2086  # we want tasks to expand with word splitting in this case
-  invoke_gradle --no-build-cache ${tasks}
+execute_build() {
+  print_gradle_command "$@"
+  invoke_gradle --no-build-cache "$@"
+}
+
+print_gradle_command() {
+  if [[ "${build_scan_publishing_mode}" == "on" ]]; then
+    info "./gradlew --no-build-cache --scan -Dscan.tag.${EXP_SCAN_TAG} -Dscan.value.runId=${RUN_ID} $*$(print_extra_args)"
+  else
+    info "./gradlew --no-build-cache -Dscan.dump -Dscan.tag.${EXP_SCAN_TAG} -Dscan.value.runId=${RUN_ID} $*$(print_extra_args)"
+  fi
 }
 
 fetch_build_cache_metrics() {
-  read_build_scan_metadata
-  fetch_and_read_build_scan_data build_cache_metrics_only "${build_scan_urls[@]}"
+  if [ "$build_scan_publishing_mode" == "on" ]; then
+    read_build_scan_metadata
+    fetch_and_read_build_scan_data build_cache_metrics_only "${build_scan_urls[@]}"
+  else
+    find_and_read_build_scan_dumps
+  fi
 }
 
 # Overrides info.sh#print_performance_metrics
@@ -142,9 +159,11 @@ print_performance_metrics() {
 
 # Overrides info.sh#print_performance_characteristics
 print_performance_characteristics() {
-  print_performance_characteristics_header
+  if [[ "$build_scan_publishing_mode" == "on" ]]; then
+    print_performance_characteristics_header
 
-  print_realized_build_time_savings
+    print_realized_build_time_savings
+  fi
 }
 
 print_quick_links() {
