@@ -1,6 +1,5 @@
 package com.gradle.enterprise.model;
 
-import javax.annotation.Nonnull;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.time.Duration;
@@ -22,7 +21,7 @@ public class BuildValidationData {
     private final String buildOutcome;
     private final URL remoteBuildCacheUrl;
     private final Map<String, TaskExecutionSummary> tasksByAvoidanceOutcome;
-    @Nonnull private final Duration effectiveTaskExecutionDuration;
+    private final Duration effectiveTaskExecutionDuration;
 
     public BuildValidationData(
             String rootProjectName,
@@ -35,7 +34,7 @@ public class BuildValidationData {
             String buildOutcome,
             URL remoteBuildCacheUrl,
             Map<String, TaskExecutionSummary> tasksByAvoidanceOutcome,
-            @Nonnull Duration effectiveTaskExecutionDuration) {
+            Duration effectiveTaskExecutionDuration) {
         this.rootProjectName = rootProjectName;
         this.buildScanId = buildScanId;
         this.gradleEnterpriseServerUrl = gradleEnterpriseServerUrl;
@@ -140,7 +139,6 @@ public class BuildValidationData {
         return tasksByAvoidanceOutcome;
     }
 
-    @Nonnull
     public Duration getEffectiveTaskExecutionDuration() {
         return effectiveTaskExecutionDuration;
     }
