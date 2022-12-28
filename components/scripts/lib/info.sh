@@ -90,8 +90,6 @@ print_warnings() {
 
 print_summary() {
   #defined in build_scan.sh
-  read_build_scan_metadata
-  #defined in build_scan.sh
   detect_warnings_from_build_scans
 
   info "Summary"

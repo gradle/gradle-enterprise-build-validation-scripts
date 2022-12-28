@@ -512,7 +512,6 @@ generate_command_to_repeat_experiment() {
 }
 
 explain_and_print_summary() {
-  read_build_scan_metadata
   local text
   IFS='' read -r -d '' text <<EOF
 The ‘Summary‘ section below captures the configuration of the experiment and the
