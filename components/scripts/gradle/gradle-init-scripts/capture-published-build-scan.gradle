@@ -12,21 +12,21 @@ if (isTopLevelBuild) {
             if (!settings.pluginManager.hasPlugin("com.gradle.enterprise")) {
                 throw new IllegalStateException("The com.gradle.enterprise plugin is missing from the project (see https://docs.gradle.com/enterprise/gradle-plugin/#gradle_6_x_and_later).")
             }
-            registerCallbacks(settings.extensions["gradleEnterprise"], settings.rootProject.name)
+            registerCallbacks(settings.extensions["gradleEnterprise"])
         }
     } else if (atLeastGradle5) {
         projectsEvaluated { gradle ->
             if (!gradle.rootProject.pluginManager.hasPlugin("com.gradle.build-scan")) {
                 throw new IllegalStateException("The com.gradle.build-scan plugin is missing from the project (see https://docs.gradle.com/enterprise/gradle-plugin/#gradle_5_x).")
             }
-            registerCallbacks(gradle.rootProject.extensions["gradleEnterprise"], gradle.rootProject.name)
+            registerCallbacks(gradle.rootProject.extensions["gradleEnterprise"])
         }
     } else {
         throw new IllegalStateException("Build validation not supported for Gradle ${GradleVersion.current()}. Upgrade your project's build to Gradle 5 or newer.")
     }
 }
 
-def registerCallbacks(gradleEnterprise, rootProjectName) {
+void registerCallbacks(gradleEnterprise) {
     gradleEnterprise.with {
         buildScan {
             def scanFile = new File(experimentDir, "build-scans.csv")
@@ -35,7 +35,7 @@ def registerCallbacks(gradleEnterprise, rootProjectName) {
                 def buildScanId = buildScan.buildScanId
                 def port = (buildScanUri.port != -1) ? ":" + buildScanUri.port : ""
                 def baseUrl = "${buildScanUri.scheme}://${buildScanUri.host}${port}"
-                scanFile.append("${rootProjectName},${baseUrl},${buildScanUri},${buildScanId}\n")
+                scanFile.append("${baseUrl},${buildScanUri},${buildScanId}\n")
             }
             def errorFile = new File(experimentDir, "build-scan-publish-error.txt")
             onError { error ->
