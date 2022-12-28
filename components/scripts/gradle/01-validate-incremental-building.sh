@@ -78,8 +78,16 @@ wizard_execute() {
   print_bl
   print_introduction
 
-  print_bl
-  explain_prerequisites_ccud_gradle_plugin ""
+  if [[ "${build_scan_publishing_mode}" == "on" ]]; then
+    print_bl
+    explain_prerequisites_ccud_gradle_plugin "I."
+
+    print_bl
+    explain_prerequisites_api_access "II."
+  else
+    print_bl
+    explain_prerequisites_ccud_gradle_plugin
+  fi
 
   print_bl
   explain_collect_git_details
@@ -257,16 +265,36 @@ EOF
 
 explain_measure_build_results() {
   local text
-  IFS='' read -r -d '' text <<EOF
+  if [[ "${build_scan_publishing_mode}" == "on" ]]; then
+    IFS='' read -r -d '' text <<EOF
 $(print_separator)
 ${HEADER_COLOR}Measure build results${RESTORE}
 
-Now that the second build has finished successfully, you are ready to measure in
-Gradle Enterprise how well your build leverages Gradle’s incremental build
+Now that the second build has finished successfully, you are ready to measure
+in Gradle Enterprise how well your build leverages Gradle’s incremental build
 functionality for the invoked set of Gradle tasks.
+
+Some of the build scan data will be fetched from the build scans produced by
+the two builds to assist you in your investigation.
 
 ${USER_ACTION_COLOR}Press <Enter> to measure the build results.${RESTORE}
 EOF
+  else
+    IFS='' read -r -d '' text <<EOF
+$(print_separator)
+${HEADER_COLOR}Measure build results${RESTORE}
+
+Now that the second build has finished successfully, you are ready to measure
+how well your build leverages Gradle’s incremental build functionality for the
+invoked set of Gradle tasks.
+
+Some of the build scan data will be extracted from the locally stored,
+intermediate build data produced by the two builds to assist you in your
+investigation.
+
+${USER_ACTION_COLOR}Press <Enter> to measure the build results.${RESTORE}
+EOF
+  fi
   print_wizard_text "${text}"
   wait_for_enter
 }
@@ -295,6 +323,53 @@ $(print_command_to_repeat_experiment)
 
 $(explain_when_to_rerun_experiment)
 EOF
+  print_wizard_text "${text}"
+}
+
+explain_and_print_summary() {
+  read_build_scan_metadata
+  local text
+  if [[ "${build_scan_publishing_mode}" == "on" ]]; then
+    IFS='' read -r -d '' text <<EOF
+The 'Summary' section below captures the configuration of the experiment and
+the two build scans that were published as part of running the experiment. The
+build scan of the second build is particularly interesting since this is where
+you can inspect what tasks were not leveraging Gradle’s incremental build
+functionality.
+
+$(explain_performance_characteristics)
+
+The 'Investigation Quick Links' section below allows quick navigation to the
+most relevant views in build scans to investigate what tasks were up-to-date
+and what tasks executed in the second build, which of those tasks had the
+biggest impact on build performance, and what caused those tasks to not be
+up-to-date.
+
+$(explain_command_to_repeat_experiment)
+
+$(print_summary)
+
+$(print_command_to_repeat_experiment)
+
+$(explain_when_to_rerun_experiment)
+EOF
+  else
+    IFS='' read -r -d '' text <<EOF
+The ‘Summary’ section below captures the configuration of the experiment. No
+build scans are available for inspection since publishing was disabled for the
+experiment.
+
+$(explain_performance_characteristics)
+
+$(explain_command_to_repeat_experiment)
+
+$(print_summary)
+
+$(print_command_to_repeat_experiment)
+
+$(explain_when_to_rerun_experiment)
+EOF
+  fi
   print_wizard_text "${text}"
 }
 
