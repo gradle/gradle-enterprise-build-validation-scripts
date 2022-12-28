@@ -5,6 +5,7 @@ import com.gradle.enterprise.model.TaskExecutionSummary;
 
 import java.time.Duration;
 import java.util.Arrays;
+import java.util.Locale;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
@@ -29,7 +30,7 @@ public enum Fields {
     EXECUTED_CACHEABLE_DURATION("Executed cacheable duration", d -> totalDuration(d, "executed_cacheable")),
     EXECUTED_NOT_CACHEABLE("Executed not cacheable", d -> totalTasks(d, "executed_not_cacheable")),
     EXECUTED_NOT_CACHEABLE_DURATION("Executed not cacheable duration", d -> totalDuration(d, "executed_not_cacheable")),
-    EFFECTIVE_TASK_EXECUTION_DURATION("Effective task execution duration", d -> formatDuration(d.getEffectiveTaskExecutionDuration())),
+    EFFECTIVE_TASK_EXECUTION_DURATION("Effective task execution duration", d -> String.valueOf(d.getEffectiveTaskExecutionDuration().toMillis())),
     ;
 
     public final String label;
@@ -75,6 +76,19 @@ public enum Fields {
     }
 
     private static String formatDuration(Duration duration) {
-        return String.valueOf(duration.toMillis());
+        long hours = duration.toHours();
+        long minutes = duration.minusHours(hours).toMinutes();
+        double seconds = duration.minusHours(hours).minusMinutes(minutes).toMillis() / 1000d;
+
+        StringBuilder s = new StringBuilder();
+        if (hours != 0) {
+            s.append(hours + "h ");
+        }
+        if (minutes != 0) {
+            s.append(minutes + "m ");
+        }
+        s.append(String.format(Locale.ROOT, "%.3fs", seconds));
+
+        return s.toString().trim();
     }
 }
