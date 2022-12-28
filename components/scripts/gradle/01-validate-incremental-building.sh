@@ -154,16 +154,16 @@ fetch_build_cache_metrics() {
 
 # Overrides info.sh#print_performance_metrics
 print_performance_metrics() {
-  print_performance_characteristics
+  if [[ "$build_scan_publishing_mode" == "on" ]]; then
+    print_performance_characteristics
+  fi
 }
 
 # Overrides info.sh#print_performance_characteristics
 print_performance_characteristics() {
-  if [[ "$build_scan_publishing_mode" == "on" ]]; then
     print_performance_characteristics_header
 
     print_realized_build_time_savings
-  fi
 }
 
 print_quick_links() {
