@@ -1,1 +1,2 @@
-- [NEW] Include realized build time savings in experiment summary
+- [NEW] Include realized build time savings in all experiment summaries
+- [NEW] Support `-x` command line option for Gradle experiment 1 
