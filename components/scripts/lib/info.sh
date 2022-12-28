@@ -175,7 +175,7 @@ print_build_caching_leverage_metrics() {
   if [[ "${avoided_from_cache_num_tasks[1]}" ]]; then
     local taskCount
     taskCount="$(printf "%${task_count_padding}s" "${avoided_from_cache_num_tasks[1]}" )"
-    value="${taskCount} ${BUILD_TOOL_TASK}s, ${avoided_from_cache_avoidance_savings[1]} total saved execution time"
+    value="${taskCount} ${BUILD_TOOL_TASK}s, $(format_duration avoided_from_cache_avoidance_savings[1]) total saved execution time"
   fi
   summary_row "Avoided cacheable ${BUILD_TOOL_TASK}s:" "${value}"
 
@@ -188,14 +188,14 @@ print_build_caching_leverage_metrics() {
     fi
 
     taskCount="$(printf "%${task_count_padding}s" "${executed_cacheable_num_tasks[1]}" )"
-    value="${summary_color}${taskCount} ${BUILD_TOOL_TASK}s, ${executed_cacheable_duration[1]} total execution time${RESTORE}"
+    value="${summary_color}${taskCount} ${BUILD_TOOL_TASK}s, $(format_duration executed_cacheable_duration[1]) total execution time${RESTORE}"
   fi
   summary_row "Executed cacheable ${BUILD_TOOL_TASK}s:" "${value}"
 
   value=""
   if [[ "${executed_not_cacheable_num_tasks[1]}" ]]; then
     taskCount="$(printf "%${task_count_padding}s" "${executed_not_cacheable_num_tasks[1]}" )"
-    value="${taskCount} ${BUILD_TOOL_TASK}s, ${executed_not_cacheable_duration[1]} total execution time"
+    value="${taskCount} ${BUILD_TOOL_TASK}s, $(format_duration executed_not_cacheable_duration[1]) total execution time"
   fi
   summary_row "Executed non-cacheable ${BUILD_TOOL_TASK}s:" "${value}"
 }
