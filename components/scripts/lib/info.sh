@@ -157,11 +157,11 @@ print_realized_build_time_savings() {
   local value
   value=""
   if [[ -n "${effective_task_execution_duration[0]}" && -n "${effective_task_execution_duration[1]}" ]]; then
-    local first_build_effective_duration second_build_effective_duration realized_savings
-    first_build_effective_duration=$(format_duration "${effective_task_execution_duration[0]}")
-    second_build_effective_duration=$(format_duration "${effective_task_execution_duration[1]}")
+    local first_build second_build realized_savings
+    first_build=$(format_duration "${effective_task_execution_duration[0]}")
+    second_build=$(format_duration "${effective_task_execution_duration[1]}")
     realized_savings=$(format_duration effective_task_execution_duration[0]-effective_task_execution_duration[1])
-    value="${realized_savings} wall-clock time (from ${first_build_effective_duration} to ${second_build_effective_duration})"
+    value="${realized_savings} wall-clock time (from ${first_build} to ${second_build})"
   fi
   summary_row "Realized build time savings:" "${value}"
 }
