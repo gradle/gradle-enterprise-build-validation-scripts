@@ -83,7 +83,6 @@ if (GradleVersion.current() < GradleVersion.version('6.0')) {
             }
             if (!scanPluginComponent) {
                 if (enableGradleEnterprise) {
-                    logger.quiet("Applying $BUILD_SCAN_PLUGIN_CLASS via init script")
                     pluginManager.apply(initscript.classLoader.loadClass(BUILD_SCAN_PLUGIN_CLASS))
                 } else {
                     throw new IllegalStateException("The com.gradle.build-scan plugin is missing from the project.\n" +
@@ -97,7 +96,6 @@ if (GradleVersion.current() < GradleVersion.version('6.0')) {
             }
             if (!ccudPluginComponent) {
                 if (enableGradleEnterprise) {
-                    logger.quiet("Applying $CCUD_PLUGIN_CLASS via init script")
                     pluginManager.apply(initscript.classLoader.loadClass(CCUD_PLUGIN_CLASS))
                 } else {
                     logWarningMissingCommonCustomUserDataGradlePlugin()
@@ -119,7 +117,6 @@ if (GradleVersion.current() < GradleVersion.version('6.0')) {
     gradle.settingsEvaluated { settings ->
         if (!settings.pluginManager.hasPlugin(GRADLE_ENTERPRISE_PLUGIN_ID)) {
             if (enableGradleEnterprise) {
-                logger.quiet("Applying $GRADLE_ENTERPRISE_PLUGIN_CLASS via init script")
                 settings.pluginManager.apply(initscript.classLoader.loadClass(GRADLE_ENTERPRISE_PLUGIN_CLASS))
             } else {
                 throw new IllegalStateException("The com.gradle.enterprise plugin is missing from the project.\n" +
@@ -129,7 +126,6 @@ if (GradleVersion.current() < GradleVersion.version('6.0')) {
         }
         if (!settings.pluginManager.hasPlugin(CCUD_PLUGIN_ID)) {
             if (enableGradleEnterprise) {
-                logger.quiet("Applying $CCUD_PLUGIN_CLASS via init script")
                 settings.pluginManager.apply(initscript.classLoader.loadClass(CCUD_PLUGIN_CLASS))
             } else {
                 logWarningMissingCommonCustomUserDataGradlePlugin()
