@@ -2,6 +2,13 @@
 
 readonly FETCH_BUILD_SCAN_DATA_JAR="${LIB_DIR}/export-api-clients/fetch-build-scan-data-cmdline-tool-${SCRIPT_VERSION}-all.jar"
 
+# This is a helper method for the common pattern of reading Build Scan metadata from the build-scans.csv file, then
+# retrieving build metrics using the Gradle Enterprise API.
+process_build_scan_data_online() {
+  read_build_scan_metadata
+  fetch_and_read_build_scan_data build_cache_metrics_only "${build_scan_urls[@]}"
+}
+
 read_build_scan_metadata() {
   # This isn't the most robust way to read a CSV,
   # but we control the CSV so we don't have to worry about various CSV edge cases
