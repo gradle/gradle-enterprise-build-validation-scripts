@@ -20,9 +20,7 @@ invoke_gradle() {
     args+=("-Dcom.gradle.enterprise.build_validation.server=${ge_server}")
   fi
 
-  if [[ "${build_scan_publishing_mode}" == "on" ]]; then
-    args+=("--scan")
-  else
+  if [[ "${build_scan_publishing_mode}" == "off" ]]; then
     args+=("-Dscan.dump")
   fi
 
