@@ -65,7 +65,7 @@ execute() {
   execute_build
 
   print_bl
-  fetch_build_cache_metrics
+  process_build_scan_data_online
 
   print_bl
   print_summary
