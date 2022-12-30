@@ -69,6 +69,10 @@ process_arguments() {
   if [ -n "${_arg_interactive+x}" ]; then
     interactive_mode="${_arg_interactive}"
   fi
+
+  if [ -n "${_arg_debug+x}" ]; then
+    debug_mode="${_arg_debug}"
+  fi
 }
 
 validate_required_config() {
@@ -277,7 +281,7 @@ generate_command_to_repeat_experiment() {
     cmd+=("-f")
   fi
 
-  if [[ "${_arg_debug}" == "on" ]]; then
+  if [[ "${debug_mode}" == "on" ]]; then
     cmd+=("--debug")
   fi
 

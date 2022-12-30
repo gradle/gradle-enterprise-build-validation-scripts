@@ -98,7 +98,7 @@ invoke_java() {
   eval set -- -Dpicocli.ansi=true -jar "\"$classpath\"" "$(save "${args[@]}")"
 
   # shellcheck disable=SC2154
-  if [[ "$_arg_debug" == "on" ]]; then
+  if [[ "${debug_mode}" == "on" ]]; then
     debug "$JAVACMD $*" 1>&2
     print_bl 1>&2
   fi
