@@ -142,6 +142,8 @@ print_performance_characteristics() {
 
   print_build_caching_leverage_metrics
 
+  print_serialization_factor
+
   print_executed_cacheable_tasks_warning
 }
 
@@ -202,6 +204,14 @@ print_build_caching_leverage_metrics() {
     value="${taskCount} ${BUILD_TOOL_TASK}s, ${executed_not_cacheable_duration[1]} total execution time"
   fi
   summary_row "Executed non-cacheable ${BUILD_TOOL_TASK}s:" "${value}"
+}
+
+print_serialization_factor() {
+  # Do not print serialization factor at all if these values do not exist
+  # This can happen since build-scan-support-tool does not yet support these fields
+  if [[ -n "${serialization_factors[0]}" ]]; then
+    summary_row "Serialization factor:" "${serialization_factors[0]}"
+  fi
 }
 
 print_executed_cacheable_tasks_warning() {

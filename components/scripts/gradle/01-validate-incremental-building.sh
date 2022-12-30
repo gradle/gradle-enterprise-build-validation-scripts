@@ -171,6 +171,8 @@ print_performance_characteristics() {
   print_performance_characteristics_header
 
   print_realized_build_time_savings
+
+  print_serialization_factor
 }
 
 print_quick_links() {

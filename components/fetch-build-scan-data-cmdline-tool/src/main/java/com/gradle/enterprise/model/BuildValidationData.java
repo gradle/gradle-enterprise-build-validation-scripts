@@ -1,5 +1,6 @@
 package com.gradle.enterprise.model;
 
+import java.math.BigDecimal;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.time.Duration;
@@ -22,6 +23,7 @@ public class BuildValidationData {
     private final URL remoteBuildCacheUrl;
     private final Map<String, TaskExecutionSummary> tasksByAvoidanceOutcome;
     private final Duration effectiveTaskExecutionDuration;
+    private final BigDecimal serializationFactor;
 
     public BuildValidationData(
             String rootProjectName,
@@ -34,7 +36,8 @@ public class BuildValidationData {
             String buildOutcome,
             URL remoteBuildCacheUrl,
             Map<String, TaskExecutionSummary> tasksByAvoidanceOutcome,
-            Duration effectiveTaskExecutionDuration) {
+            Duration effectiveTaskExecutionDuration,
+            BigDecimal serializationFactor) {
         this.rootProjectName = rootProjectName;
         this.buildScanId = buildScanId;
         this.gradleEnterpriseServerUrl = gradleEnterpriseServerUrl;
@@ -46,6 +49,7 @@ public class BuildValidationData {
         this.remoteBuildCacheUrl = remoteBuildCacheUrl;
         this.tasksByAvoidanceOutcome = tasksByAvoidanceOutcome;
         this.effectiveTaskExecutionDuration = effectiveTaskExecutionDuration;
+        this.serializationFactor = serializationFactor;
     }
 
     public String getRootProjectName() {
@@ -141,5 +145,9 @@ public class BuildValidationData {
 
     public Duration getEffectiveTaskExecutionDuration() {
         return effectiveTaskExecutionDuration;
+    }
+
+    public BigDecimal getSerializationFactor() {
+        return serializationFactor;
     }
 }
