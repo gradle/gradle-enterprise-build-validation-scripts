@@ -33,6 +33,7 @@ public enum Fields {
     EXECUTED_NOT_CACHEABLE_DURATION("Executed not cacheable duration", d -> totalDuration(d, "executed_not_cacheable")),
     EFFECTIVE_TASK_EXECUTION_DURATION("Effective task execution duration", d -> String.valueOf(d.getEffectiveTaskExecutionDuration().toMillis())),
     SERIALIZATION_FACTOR("Serialization factor", d -> formatBigDecimal(d.getSerializationFactor())),
+    EXECUTED_CACHEABLE_DURATION_MILLISECONDS("Executed cacheable duration milliseconds", d -> totalDurationMillis(d, "executed_cacheable")),
     ;
 
     public final String label;
@@ -74,6 +75,15 @@ public enum Fields {
             data.getTasksByAvoidanceOutcome()
                 .getOrDefault(avoidanceOutcome, TaskExecutionSummary.ZERO)
                 .totalDuration()
+        );
+    }
+
+    private static String totalDurationMillis(BuildValidationData data, String avoidanceOutcome) {
+        return String.valueOf(
+            data.getTasksByAvoidanceOutcome()
+                .getOrDefault(avoidanceOutcome, TaskExecutionSummary.ZERO)
+                .totalDuration()
+                .toMillis()
         );
     }
 

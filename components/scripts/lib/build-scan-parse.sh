@@ -28,6 +28,7 @@ executed_not_cacheable_duration=()
 # Build duration metrics
 effective_task_execution_duration=()
 serialization_factors=()
+executed_cacheable_duration_milliseconds=()
 
 parse_build_scan_csv() {
   # This isn't the most robust way to read a CSV,
@@ -46,7 +47,7 @@ parse_build_scan_csv() {
   idx=0
 
   # shellcheck disable=SC2034 # not all scripts use all of the fetched data
-  while IFS=, read -r field_1 field_2 field_3 field_4 field_5 field_6 field_7 field_8 field_9 field_10 field_11 field_12 field_13 field_14 field_15 field_16 field_17 field_18 field_19 field_20 field_21; do
+  while IFS=, read -r field_1 field_2 field_3 field_4 field_5 field_6 field_7 field_8 field_9 field_10 field_11 field_12 field_13 field_14 field_15 field_16 field_17 field_18 field_19 field_20 field_21 field_22; do
     if [[ "$header_row_read" == "false" ]]; then
       header_row_read=true
       continue;
@@ -84,6 +85,10 @@ parse_build_scan_csv() {
 
     if [[ -n "$field_21" ]]; then
       serialization_factors[idx]="${field_21}"
+    fi
+
+    if [[ -n "$field_22" ]]; then
+      executed_cacheable_duration_milliseconds[idx]="${field_22}"
     fi
 
     ((idx++))
