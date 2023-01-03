@@ -94,10 +94,10 @@ public enum Fields {
         return s.toString().trim();
     }
 
-    private static String formatBigDecimal(BigDecimal serializationFactor) {
-        if (serializationFactor.compareTo(BigDecimal.ZERO) == 0) {
+    private static String formatBigDecimal(BigDecimal value) {
+        if (value.compareTo(BigDecimal.ZERO) == 0) {
             return "";
         }
-        return serializationFactor.toPlainString();
+        return value.toPlainString();
     }
 }
