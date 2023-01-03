@@ -4,7 +4,6 @@ import com.gradle.enterprise.model.BuildValidationData;
 import com.gradle.enterprise.model.TaskExecutionSummary;
 
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.time.Duration;
 import java.util.Arrays;
 import java.util.Locale;
@@ -33,7 +32,7 @@ public enum Fields {
     EXECUTED_NOT_CACHEABLE("Executed not cacheable", d -> totalTasks(d, "executed_not_cacheable")),
     EXECUTED_NOT_CACHEABLE_DURATION("Executed not cacheable duration", d -> totalDuration(d, "executed_not_cacheable")),
     EFFECTIVE_TASK_EXECUTION_DURATION("Effective task execution duration", d -> String.valueOf(d.getEffectiveTaskExecutionDuration().toMillis())),
-    SERIALIZATION_FACTOR("Serialization factor", d -> formatSerializationFactor(d.getSerializationFactor())),
+    SERIALIZATION_FACTOR("Serialization factor", d -> formatBigDecimal(d.getSerializationFactor())),
     ;
 
     public final String label;
@@ -95,11 +94,10 @@ public enum Fields {
         return s.toString().trim();
     }
 
-    // todo get feedback on RoundingMode https://gradle.slack.com/archives/C012L0276KF/p1672437793010059
-    private static String formatSerializationFactor(BigDecimal serializationFactor) {
-        if (serializationFactor == null || serializationFactor.compareTo(BigDecimal.ZERO) == 0) {
+    private static String formatBigDecimal(BigDecimal serializationFactor) {
+        if (serializationFactor.compareTo(BigDecimal.ZERO) == 0) {
             return "";
         }
-        return String.valueOf(serializationFactor.setScale(1, RoundingMode.HALF_UP));
+        return serializationFactor.toPlainString();
     }
 }

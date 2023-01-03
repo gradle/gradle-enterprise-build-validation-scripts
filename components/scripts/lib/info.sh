@@ -207,10 +207,10 @@ print_build_caching_leverage_metrics() {
 }
 
 print_serialization_factor() {
-  # Do not print serialization factor at all if these values do not exist
-  # This can happen since build-scan-support-tool does not yet support these fields
+  # Do not print serialization factor at all if this value does not exist
+  # This can happen since build-scan-support-tool does not yet support this field
   if [[ -n "${serialization_factors[0]}" ]]; then
-    summary_row "Serialization factor:" "${serialization_factors[0]}"
+    summary_row "Serialization factor:" "$(to_two_decimal_places "${serialization_factors[0]}")"
   fi
 }
 
@@ -288,4 +288,10 @@ format_duration() {
   fi
 
   printf "%d.%03ds" "${seconds}" "${millis}"
+}
+
+# Rounds the argument to two decimal places
+# See: https://unix.stackexchange.com/a/167059
+to_two_decimal_places() {
+  echo "$1" | LC_ALL=C xargs printf "%.2f"
 }
