@@ -194,6 +194,7 @@ print_potential_build_time_savings() {
   if [[ "${build_1_effective_execution_duration}" && "${build_2_effective_execution_duration}" && -n "${build_2_serialization_factor}" ]]; then
     local first_build second_build potential_build_duration potential_savings
     first_build=$(format_duration "${effective_task_execution_duration[0]}")
+    # shellcheck disable=SC2034 # it's used on the next few lines
     potential_build_duration=$(echo "${build_2_effective_execution_duration}-(${build_2_executed_cacheable_duration}/${build_2_serialization_factor})" | bc)
     potential_savings=$(format_duration build_1_effective_execution_duration-potential_build_duration)
     second_build=$(format_duration potential_build_duration)
