@@ -56,10 +56,6 @@ public class BuildValidationData {
         return rootProjectName;
     }
 
-    public boolean isRootProjectNameFound() {
-        return isFound(rootProjectName);
-    }
-
     public String getBuildScanId() {
         return buildScanId;
     }
@@ -104,24 +100,12 @@ public class BuildValidationData {
         return requestedTasks;
     }
 
-    public boolean isRequestedTasksFound() {
-        return !requestedTasks.isEmpty();
-    }
-
     public String getBuildOutcome() {
         return buildOutcome;
     }
 
-    public boolean isBuildOutcomeFound() {
-        return isFound(buildOutcome);
-    }
-
     public URL getRemoteBuildCacheUrl() {
         return remoteBuildCacheUrl;
-    }
-
-    public boolean isRemoteBuildCacheUrlFound() {
-        return remoteBuildCacheUrl != null;
     }
 
     public String getRemoteBuildCacheShard() {
