@@ -57,26 +57,22 @@ public enum Fields {
     }
 
     private static String totalTasks(BuildValidationData data, String avoidanceOutcome) {
-        if (data.getTasksByAvoidanceOutcome().containsKey(avoidanceOutcome)) {
-            return data.getTasksByAvoidanceOutcome().get(avoidanceOutcome).totalTasks().toString();
-        }
-        return NO_VALUE;
+        return summaryTotal(data, avoidanceOutcome, t -> String.valueOf(t.totalTasks()));
     }
 
     private static String totalAvoidanceSavings(BuildValidationData data, String avoidanceOutcome) {
-        return formatDuration(
-            data.getTasksByAvoidanceOutcome()
-                .getOrDefault(avoidanceOutcome, TaskExecutionSummary.ZERO)
-                .totalAvoidanceSavings()
-        );
+        return summaryTotal(data, avoidanceOutcome, t -> formatDuration(t.totalAvoidanceSavings()));
     }
 
     private static String totalDuration(BuildValidationData data, String avoidanceOutcome) {
-        return formatDuration(
-            data.getTasksByAvoidanceOutcome()
-                .getOrDefault(avoidanceOutcome, TaskExecutionSummary.ZERO)
-                .totalDuration()
-        );
+        return summaryTotal(data, avoidanceOutcome, t -> formatDuration(t.totalDuration()));
+    }
+
+    private static String summaryTotal(BuildValidationData data, String avoidanceOutcome, Function<TaskExecutionSummary, String> toString) {
+        if (data.getTasksByAvoidanceOutcome().containsKey(avoidanceOutcome)) {
+            return toString.apply(data.getTasksByAvoidanceOutcome().get(avoidanceOutcome));
+        }
+        return NO_VALUE;
     }
 
     private static String formatDuration(Duration duration) {
