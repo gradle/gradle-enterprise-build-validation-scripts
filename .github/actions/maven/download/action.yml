@@ -12,24 +12,18 @@ runs:
     - name: Download latest Maven build validation scripts
       run: |
         # Set curl general options
-        curlOpts="--silent --fail --show-error --retry 3 --retry-delay 5 --location"
+        curlOpts=(--silent --fail --show-error --retry 3 --retry-delay 5 --location)
 
         # Set authorization header if needed
         if [ ! -z "${{ inputs.token }}" ]; then
-          curlOpts="$curlOpts --header 'Authorization: Bearer ${{ inputs.token }}'"
+          curlOpts+=(--header 'Authorization: Bearer ${{ inputs.token }}')
         fi
 
-        # Set curl params to get latest release data of the build validation scripts
-        curlParamsGetLatestReleaseData="$curlOpts https://api.github.com/repos/gradle/gradle-enterprise-build-validation-scripts/releases/latest"
-
         # Get the download url of the latest release
-        downloadUrl=$(eval curl $curlParamsGetLatestReleaseData | jq -c '.assets[] | select(.content_type == "application/zip")' | jq -r .browser_download_url | grep maven)
-
-        # Set curl params to download the build validation scripts
-        curlParamsDownloadScripts="$curlOpts --output gradle-enterprise-maven-build-validation.zip $downloadUrl"
+        downloadUrl=$(curl "${curlOpts[@]}" https://api.github.com/repos/gradle/gradle-enterprise-build-validation-scripts/releases/latest | jq -c '.assets[] | select(.content_type == "application/zip")' | jq -r .browser_download_url | grep maven)
 
         # Download the latest version of the build validation scripts
-        eval curl $curlParamsDownloadScripts
+        curl "${curlOpts[@]}" --output gradle-enterprise-maven-build-validation.zip $downloadUrl
 
         # Unzip the downloaded build validation scripts
         unzip -q -o gradle-enterprise-maven-build-validation.zip
