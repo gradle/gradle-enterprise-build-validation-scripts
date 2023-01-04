@@ -11,7 +11,6 @@ import picocli.CommandLine.Option;
 import picocli.CommandLine.Parameters;
 
 import java.io.IOException;
-import java.math.BigDecimal;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.file.Path;
@@ -109,7 +108,7 @@ public class FetchBuildValidationDataCommand implements Callable<Integer> {
                 null,
                 Collections.emptyMap(),
                 Duration.ZERO,
-                BigDecimal.ZERO);
+                null);
         }
     }
 
