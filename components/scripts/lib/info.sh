@@ -97,8 +97,10 @@ print_summary() {
   print_experiment_info
   print_experiment_specific_summary_info
   print_build_scans
+
   print_warnings
-  print_performance_metrics
+
+  print_performance_characteristics
 
   if [[ "${build_scan_publishing_mode}" == "on" ]]; then
     print_bl
@@ -124,12 +126,6 @@ print_experiment_info() {
 }
 
 print_experiment_specific_summary_info() {
-  # this function is intended to be overridden by experiments as-needed
-  # have one command to satisfy shellcheck
-  true
-}
-
-print_performance_metrics() {
   # this function is intended to be overridden by experiments as-needed
   # have one command to satisfy shellcheck
   true

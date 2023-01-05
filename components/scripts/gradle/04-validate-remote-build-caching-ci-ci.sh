@@ -153,11 +153,6 @@ print_experiment_specific_summary_info() {
   summary_row "Custom value mapping file:" "${mapping_file:-<none>}"
 }
 
-# Overrides info.sh#print_performance_metrics
-print_performance_metrics() {
-  print_performance_characteristics
-}
-
 print_quick_links() {
   info "Investigation Quick Links"
   info "-------------------------"
