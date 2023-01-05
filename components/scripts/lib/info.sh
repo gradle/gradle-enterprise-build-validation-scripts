@@ -135,6 +135,10 @@ print_performance_metrics() {
   true
 }
 
+# This function is responsible for printing the "Performance Characteristics"
+# section of the experiment summary.
+#
+# Experiments may override this function to include only relevant metrics.
 print_performance_characteristics() {
   print_performance_characteristics_header
 
