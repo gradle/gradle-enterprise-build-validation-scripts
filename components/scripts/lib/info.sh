@@ -155,50 +155,43 @@ print_performance_characteristics_header() {
   info "---------------------------"
 }
 
+# The _realized_ build time savings is the difference in the wall-clock build
+# time between the first and second build.
 print_realized_build_time_savings() {
-  # Do not print realized build time savings at all if these values do not exist
-  # This can happen since build-scan-support-tool does not yet support these fields
+  local value
+  # Only calculate realized build time savings when these values exist
+  # These values can be returned as empty when an error occurs processing the Build Scan data
   if [[ -n "${effective_task_execution_duration[0]}" && -n "${effective_task_execution_duration[1]}" ]]; then
-    local value
-    value=""
-    # Only calculate realized build time savings when these values are non-zero
-    # These values can be returned as zero when an error occurs processing the Build Scan data
-    if [[ "${effective_task_execution_duration[0]}" && "${effective_task_execution_duration[1]}" ]]; then
-      local first_build second_build realized_savings
-      first_build=$(format_duration "${effective_task_execution_duration[0]}")
-      second_build=$(format_duration "${effective_task_execution_duration[1]}")
-      realized_savings=$(format_duration effective_task_execution_duration[0]-effective_task_execution_duration[1])
-      value="${realized_savings} wall-clock time (from ${first_build} to ${second_build})"
-    fi
-    summary_row "Realized build time savings:" "${value}"
+    local realized_build_time_savings=$((effective_task_execution_duration[0]-effective_task_execution_duration[1]))
+    printf -v value "%s wall-clock time (from %s to %s)" \
+      "$(format_duration "${realized_build_time_savings}")" \
+      "$(format_duration "${effective_task_execution_duration[0]}")" \
+      "$(format_duration "${effective_task_execution_duration[1]}")"
   fi
+  summary_row "Realized build time savings:" "${value}"
 }
 
+# The _potential_ build time savings is the difference in wall-clock build time
+# between the first build and the _potential_ build time of the second build.
+#
+# The _potential_ build time is an estimation of the build time if no cacheable
+# tasks had been executed.
 print_potential_build_time_savings() {
-  local build_1_effective_execution_duration="${effective_task_execution_duration[0]}"
-
-  local build_2_effective_execution_duration="${effective_task_execution_duration[1]}"
-  local build_2_executed_cacheable_duration="${executed_cacheable_duration_milliseconds[1]}"
-  local build_2_serialization_factor="${serialization_factors[1]}"
-
-  # Do not print potential build time savings at all if these values do not exist
-  # This can happen since build-scan-support-tool does not yet support these fields
-  if [[ -z "${build_1_effective_execution_duration}" || -z "${build_2_effective_execution_duration}" || -z "${build_2_executed_cacheable_duration}" || -z "${build_2_serialization_factor}" ]]; then
-    return 0
-  fi
-
   local value
-  value=""
-  # Only calculate realized build time savings when these have valid values
-  # These values can be returned as zero when an error occurs processing the Build Scan data
-  if [[ "${build_1_effective_execution_duration}" && "${build_2_effective_execution_duration}" && -n "${build_2_serialization_factor}" ]]; then
-    local first_build second_build potential_build_duration potential_savings
-    first_build=$(format_duration "${effective_task_execution_duration[0]}")
-    # shellcheck disable=SC2034 # it's used on the next few lines
-    potential_build_duration=$(echo "${build_2_effective_execution_duration}-(${build_2_executed_cacheable_duration}/${build_2_serialization_factor})" | bc)
-    potential_savings=$(format_duration build_1_effective_execution_duration-potential_build_duration)
-    second_build=$(format_duration potential_build_duration)
-    value="${potential_savings} wall-clock time (from ${first_build} to ${second_build})"
+  # Only calculate realized build time savings when these values exist
+  # These values can be returned as empty when an error occurs processing the Build Scan data
+  if [[ -n "${effective_task_execution_duration[0]}" && \
+        -n "${effective_task_execution_duration[1]}" && \
+        -n "${executed_cacheable_duration[1]}" && \
+        -n "${serialization_factors[1]}" ]]
+  then
+    local potential_build_time potential_build_time_savings
+    potential_build_time=$(echo "${effective_task_execution_duration[1]}-(${executed_cacheable_duration[1]}/${serialization_factors[1]})" | bc)
+    potential_build_time_savings=$((effective_task_execution_duration[0]-potential_build_time))
+    printf -v value "%s wall-clock time (from %s to %s)" \
+      "$(format_duration "${potential_build_time_savings}")" \
+      "$(format_duration "${effective_task_execution_duration[0]}")" \
+      "$(format_duration "${potential_build_time}")"
   fi
   summary_row "Potential build time savings:" "${value}"
 }
@@ -207,32 +200,43 @@ print_build_caching_leverage_metrics() {
   local task_count_padding
   task_count_padding=$(max_length "${avoided_from_cache_num_tasks[1]}" "${executed_cacheable_num_tasks[1]}" "${executed_not_cacheable_num_tasks[1]}")
 
-  local value
-  value=""
-  if [[ "${avoided_from_cache_num_tasks[1]}" ]]; then
-    local taskCount
-    taskCount="$(printf "%${task_count_padding}s" "${avoided_from_cache_num_tasks[1]}" )"
-    value="${taskCount} ${BUILD_TOOL_TASK}s, ${avoided_from_cache_avoidance_savings[1]} total saved execution time"
+  print_avoided_cacheable_tasks "${task_count_padding}"
+
+  print_executed_cacheable_tasks "${task_count_padding}"
+
+  print_executed_non_cacheable_tasks "${task_count_padding}"
+}
+
+print_avoided_cacheable_tasks() {
+  local value task_count_padding="$1"
+  if [[ -n "${avoided_from_cache_num_tasks[1]}" && -n "${avoided_from_cache_avoidance_savings[1]}" ]]; then
+    local task_count
+    task_count="$(printf "%${task_count_padding}s" "${avoided_from_cache_num_tasks[1]}" )"
+    value="${task_count} ${BUILD_TOOL_TASK}s, ${avoided_from_cache_avoidance_savings[1]} total saved execution time"
   fi
   summary_row "Avoided cacheable ${BUILD_TOOL_TASK}s:" "${value}"
+}
 
-  value=""
-  if [[ "${executed_cacheable_num_tasks[1]}" ]]; then
-    local summary_color
-    summary_color=""
+print_executed_cacheable_tasks() {
+  local value task_count_padding="$1"
+  if [[ -n "${executed_cacheable_num_tasks[1]}" && -n "${executed_cacheable_duration[1]}" ]]; then
+    local summary_color task_count
     if (( executed_cacheable_num_tasks[1] > 0)); then
       summary_color="${WARN_COLOR}"
     fi
 
-    taskCount="$(printf "%${task_count_padding}s" "${executed_cacheable_num_tasks[1]}" )"
-    value="${summary_color}${taskCount} ${BUILD_TOOL_TASK}s, ${executed_cacheable_duration[1]} total execution time${RESTORE}"
+    task_count="$(printf "%${task_count_padding}s" "${executed_cacheable_num_tasks[1]}" )"
+    value="${summary_color}${task_count} ${BUILD_TOOL_TASK}s, ${executed_cacheable_duration[1]} total execution time${RESTORE}"
   fi
   summary_row "Executed cacheable ${BUILD_TOOL_TASK}s:" "${value}"
+}
 
-  value=""
-  if [[ "${executed_not_cacheable_num_tasks[1]}" ]]; then
-    taskCount="$(printf "%${task_count_padding}s" "${executed_not_cacheable_num_tasks[1]}" )"
-    value="${taskCount} ${BUILD_TOOL_TASK}s, ${executed_not_cacheable_duration[1]} total execution time"
+print_executed_non_cacheable_tasks() {
+  local value task_count_padding="$1"
+  if [[ -n "${executed_not_cacheable_num_tasks[1]}" && -n "${executed_not_cacheable_duration[1]}" ]]; then
+    local task_count
+    task_count="$(printf "%${task_count_padding}s" "${executed_not_cacheable_num_tasks[1]}" )"
+    value="${task_count} ${BUILD_TOOL_TASK}s, ${executed_not_cacheable_duration[1]} total execution time"
   fi
   summary_row "Executed non-cacheable ${BUILD_TOOL_TASK}s:" "${value}"
 }
