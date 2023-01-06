@@ -76,6 +76,6 @@ public enum Fields {
     }
 
     private static String formatDuration(Duration duration) {
-        return String.valueOf(duration.toMillis());
+        return duration == null ? NO_VALUE : String.valueOf(duration.toMillis());
     }
 }
