@@ -29,7 +29,7 @@ public class NetworkSettingsConfigurator {
     }
 
     private static boolean isNetworkProperty(String key) {
-        return isSslProperty(key) || isProxyProperty(key);
+        return isSslProperty(key) || isProxyProperty(key) || isTimeoutProperty(key);
     }
     private static boolean isSslProperty(String key) {
         return key.startsWith("javax.net.ssl")
@@ -41,6 +41,10 @@ public class NetworkSettingsConfigurator {
             || key.startsWith("https.proxy")
             || key.startsWith("socksProxy")
             || key.endsWith(".nonProxyHosts");
+    }
+
+    private static boolean isTimeoutProperty(String key) {
+        return key.startsWith("timeout");
     }
 
     private static Properties loadProperties(Path propertiesFile) throws IOException {

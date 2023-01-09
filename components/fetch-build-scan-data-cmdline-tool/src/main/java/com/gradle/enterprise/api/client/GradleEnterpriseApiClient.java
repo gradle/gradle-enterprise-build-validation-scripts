@@ -26,6 +26,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 import static com.gradle.enterprise.api.model.GradleBuildCachePerformanceTaskExecutionEntry.AvoidanceOutcomeEnum.EXECUTED_CACHEABLE;
@@ -60,6 +61,7 @@ public class GradleEnterpriseApiClient {
 
         configureSsl(httpClientBuilder);
         configureProxyAuthentication(httpClientBuilder);
+        configureTimeouts(httpClientBuilder);
 
         return httpClientBuilder.build();
     }
@@ -96,6 +98,37 @@ public class GradleEnterpriseApiClient {
 
     private boolean allowUntrustedServer() {
         return Boolean.parseBoolean(System.getProperty("ssl.allowUntrustedServer"));
+    }
+
+    private void configureTimeouts(OkHttpClient.Builder httpClientBuilder) {
+        Long connectTimeout = parseTimeoutValue("timeout.connect");
+        if (connectTimeout != null) {
+            httpClientBuilder.connectTimeout(connectTimeout, TimeUnit.MILLISECONDS);
+        }
+        Long readTimeout = parseTimeoutValue("timeout.read");
+        if (readTimeout != null) {
+            httpClientBuilder.readTimeout(readTimeout, TimeUnit.MILLISECONDS);
+        }
+    }
+
+    private Long parseTimeoutValue(String key) {
+        String value = System.getProperty(key);
+        if (value == null) {
+            // value is not set
+            return null;
+        } else {
+            try {
+                long longValue = Long.parseLong(value);
+                if (longValue < 0) {
+                    throw new IllegalArgumentException("Timeout value cannot be negative");
+                }
+                return longValue;
+            } catch (IllegalArgumentException e) {
+                logger.error(String.format("Value of %s is not a valid timeout. Should be a non-negative long value. " +
+                        "Default http client value will be used", key), e);
+                return null;
+            }
+        }
     }
 
     public BuildValidationData fetchBuildValidationData(String buildScanId) {
