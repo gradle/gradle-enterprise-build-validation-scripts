@@ -2,7 +2,7 @@
 
 readonly FETCH_BUILD_SCAN_DATA_JAR="${LIB_DIR}/export-api-clients/fetch-build-scan-data-cmdline-tool-${SCRIPT_VERSION}-all.jar"
 
-# This is a helper method for the common pattern of reading Build Scan metadata
+# This is a helper function for the common pattern of reading Build Scan metadata
 # from the build-scans.csv file, then retrieving build metrics using the Gradle
 # Enterprise API.
 process_build_scan_data_online() {
