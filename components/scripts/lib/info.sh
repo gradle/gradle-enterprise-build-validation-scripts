@@ -246,11 +246,11 @@ print_executed_non_cacheable_tasks() {
 }
 
 print_serialization_factor() {
-  # Do not print serialization factor at all if this value does not exist
-  # This can happen since build-scan-support-tool does not yet support this field
+  local value
   if [[ -n "${serialization_factors[0]}" ]]; then
-    summary_row "Serialization factor:" "$(to_two_decimal_places "${serialization_factors[0]}")x"
+    value="$(to_two_decimal_places "${serialization_factors[0]}")x"
   fi
+  summary_row "Serialization factor:" "${value}"
 }
 
 print_executed_cacheable_tasks_warning() {
