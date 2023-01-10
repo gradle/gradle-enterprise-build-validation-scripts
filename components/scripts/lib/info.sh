@@ -208,35 +208,39 @@ print_build_caching_leverage_metrics() {
 }
 
 print_avoided_cacheable_tasks() {
-  local value task_count_padding="$1"
+  local value
   if [[ -n "${avoided_from_cache_num_tasks[1]}" && -n "${avoided_from_cache_avoidance_savings[1]}" ]]; then
-    local task_count
-    task_count="$(printf "%${task_count_padding}s" "${avoided_from_cache_num_tasks[1]}" )"
-    value="${task_count} ${BUILD_TOOL_TASK}s, ${avoided_from_cache_avoidance_savings[1]} total saved execution time"
+    printf -v value "%$1s %ss, %s total saved execution time" \
+      "${avoided_from_cache_num_tasks[1]}" \
+      "${BUILD_TOOL_TASK}" \
+      "$(format_duration avoided_from_cache_avoidance_savings[1])"
   fi
   summary_row "Avoided cacheable ${BUILD_TOOL_TASK}s:" "${value}"
 }
 
 print_executed_cacheable_tasks() {
-  local value task_count_padding="$1"
+  local value
   if [[ -n "${executed_cacheable_num_tasks[1]}" && -n "${executed_cacheable_duration[1]}" ]]; then
-    local summary_color task_count
+    local summary_color
     if (( executed_cacheable_num_tasks[1] > 0)); then
       summary_color="${WARN_COLOR}"
     fi
 
-    task_count="$(printf "%${task_count_padding}s" "${executed_cacheable_num_tasks[1]}" )"
-    value="${summary_color}${task_count} ${BUILD_TOOL_TASK}s, ${executed_cacheable_duration[1]} total execution time${RESTORE}"
+    printf -v value "${summary_color}%$1s %ss, %s total execution time${RESTORE}" \
+      "${executed_cacheable_num_tasks[1]}" \
+      "${BUILD_TOOL_TASK}" \
+      "$(format_duration executed_cacheable_duration[1])"
   fi
   summary_row "Executed cacheable ${BUILD_TOOL_TASK}s:" "${value}"
 }
 
 print_executed_non_cacheable_tasks() {
-  local value task_count_padding="$1"
+  local value
   if [[ -n "${executed_not_cacheable_num_tasks[1]}" && -n "${executed_not_cacheable_duration[1]}" ]]; then
-    local task_count
-    task_count="$(printf "%${task_count_padding}s" "${executed_not_cacheable_num_tasks[1]}" )"
-    value="${task_count} ${BUILD_TOOL_TASK}s, ${executed_not_cacheable_duration[1]} total execution time"
+    printf -v value "%$1s %ss, %s total execution time" \
+      "${executed_not_cacheable_num_tasks[1]}" \
+      "${BUILD_TOOL_TASK}" \
+      "$(format_duration executed_not_cacheable_duration[1])"
   fi
   summary_row "Executed non-cacheable ${BUILD_TOOL_TASK}s:" "${value}"
 }
