@@ -41,6 +41,7 @@ openApiGenerate {
     modelPackage.set("com.gradle.enterprise.api.model")
     apiPackage.set("com.gradle.enterprise.api")
     invokerPackage.set("com.gradle.enterprise.api.client")
+    cleanupOutput.set(true)
     // see https://github.com/OpenAPITools/openapi-generator/blob/master/docs/generators/java.md for a description of each configuration option
     configOptions.set(mapOf(
         "library" to "okhttp-gson",
