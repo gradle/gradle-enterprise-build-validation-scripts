@@ -115,7 +115,7 @@ If your Gradle Enteprise can only be reached via a HTTP(S) proxy, edit the `netw
 
 If your Gradle Enterprise server is using a certificate signed by an internal Certificate Authority (CA), edit the `network.settings` file and uncomment and update the lines that start with `javax.net.ssl.trustStore`, specifying where your custom trust store is, what type of trust store it is, and the password required to access the trust store.
 
-In the unlikely and insecure case that your Gradle Enterprise server is using a self-signed certificate, edit the `network.settings` file and uncomment and update the lines that start with ` ssl`.
+In the unlikely and insecure case that your Gradle Enterprise server is using a self-signed certificate, edit the `network.settings` file and uncomment and update the lines that start with `ssl`.
 
 ## Configuring custom value lookup names
 
