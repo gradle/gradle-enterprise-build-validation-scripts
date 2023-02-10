@@ -34,8 +34,11 @@ invoke_gradle() {
     -Dscan.capture-task-input-files=true
   )
 
-  # shellcheck disable=SC2206
-  args+=(${extra_args})
+  # https://stackoverflow.com/a/31485948
+  while IFS= read -r -d ''; do
+    args+=("$REPLY")
+  done < <( xargs printf '%s\0' <<< "$extra_args")
+
   args+=("$@")
 
   rm -f "${EXP_DIR}/build-scan-publish-error.txt"
