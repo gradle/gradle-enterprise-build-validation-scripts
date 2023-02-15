@@ -236,14 +236,9 @@ tasks.check {
 val generateChecksums by tasks.registering(Checksum::class) {
     group = "distribution"
     description = "Generates checksums for the distribution zip files."
-    inputFiles.setFrom(assembleGradleScripts.flatMap { gradleScripts: Zip ->
-        assembleMavenScripts.map { mavenScripts: Zip ->
-            gradleScripts.outputs.files.plus(mavenScripts.outputs.files)
-        }
-    })
+    inputFiles.setFrom(assembleGradleScripts, assembleMavenScripts)
     outputDirectory.set(layout.buildDirectory.dir("distributions/checksums").get().asFile)
     checksumAlgorithm.set(Checksum.Algorithm.SHA512)
-    dependsOn(assembleGradleScripts, assembleMavenScripts)
 }
 
 val isDevelopmentRelease = !hasProperty("finalRelease")
