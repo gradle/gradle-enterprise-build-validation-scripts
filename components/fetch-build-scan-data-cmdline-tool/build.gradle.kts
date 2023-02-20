@@ -2,7 +2,7 @@ plugins {
     java
     application
     id("com.github.johnrengelman.shadow") version "7.1.2"
-    id("org.openapi.generator") version "6.3.0"
+    id("org.openapi.generator") version "6.4.0"
 }
 
 description = "Application to fetch build scan data using the Gradle Enterprise Export API"
