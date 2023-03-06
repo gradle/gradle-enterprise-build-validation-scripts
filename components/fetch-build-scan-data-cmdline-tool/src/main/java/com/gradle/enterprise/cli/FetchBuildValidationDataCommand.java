@@ -14,6 +14,7 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.file.Path;
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -105,7 +106,8 @@ public class FetchBuildValidationDataCommand implements Callable<Integer> {
                 Collections.emptyList(),
                 "",
                 null,
-                Collections.emptyMap());
+                Collections.emptyMap(),
+                Duration.ZERO);
         }
     }
 

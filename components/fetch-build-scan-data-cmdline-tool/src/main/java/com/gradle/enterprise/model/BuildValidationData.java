@@ -2,13 +2,14 @@ package com.gradle.enterprise.model;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.time.Duration;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class BuildValidationData {
-    private static Pattern REMOTE_BUILD_CACHE_SHARD_PATTERN = Pattern.compile(".*/cache/(.+)$");
+    private static final Pattern REMOTE_BUILD_CACHE_SHARD_PATTERN = Pattern.compile(".*/cache/(.+)$");
 
     private final String rootProjectName;
     private final String buildScanId;
@@ -20,8 +21,20 @@ public class BuildValidationData {
     private final String buildOutcome;
     private final URL remoteBuildCacheUrl;
     private final Map<String, TaskExecutionSummary> tasksByAvoidanceOutcome;
+    private final Duration effectiveTaskExecutionDuration;
 
-    public BuildValidationData(String rootProjectName, String buildScanId, URL gradleEnterpriseServerUrl, String gitUrl, String gitBranch, String gitCommitId, List<String> requestedTasks, String buildOutcome, URL remoteBuildCacheUrl, Map<String, TaskExecutionSummary> tasksByAvoidanceOutcome) {
+    public BuildValidationData(
+            String rootProjectName,
+            String buildScanId,
+            URL gradleEnterpriseServerUrl,
+            String gitUrl,
+            String gitBranch,
+            String gitCommitId,
+            List<String> requestedTasks,
+            String buildOutcome,
+            URL remoteBuildCacheUrl,
+            Map<String, TaskExecutionSummary> tasksByAvoidanceOutcome,
+            Duration effectiveTaskExecutionDuration) {
         this.rootProjectName = rootProjectName;
         this.buildScanId = buildScanId;
         this.gradleEnterpriseServerUrl = gradleEnterpriseServerUrl;
@@ -32,6 +45,7 @@ public class BuildValidationData {
         this.buildOutcome = buildOutcome;
         this.remoteBuildCacheUrl = remoteBuildCacheUrl;
         this.tasksByAvoidanceOutcome = tasksByAvoidanceOutcome;
+        this.effectiveTaskExecutionDuration = effectiveTaskExecutionDuration;
     }
 
     public String getRootProjectName() {
@@ -123,5 +137,9 @@ public class BuildValidationData {
 
     public Map<String, TaskExecutionSummary> getTasksByAvoidanceOutcome() {
         return tasksByAvoidanceOutcome;
+    }
+
+    public Duration getEffectiveTaskExecutionDuration() {
+        return effectiveTaskExecutionDuration;
     }
 }

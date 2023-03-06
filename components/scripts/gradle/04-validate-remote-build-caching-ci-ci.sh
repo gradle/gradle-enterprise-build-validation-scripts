@@ -155,7 +155,7 @@ print_experiment_specific_summary_info() {
 
 # Overrides info.sh#print_performance_metrics
 print_performance_metrics() {
-  print_build_caching_leverage_metrics
+  print_performance_characteristics
 }
 
 print_quick_links() {
@@ -342,9 +342,10 @@ two build scans that were published as part of running the experiment. The build
 scan of the second build is particularly interesting since this is where you can
 inspect what tasks were not leveraging Gradle’s remote build cache.
 
-The ‘Build Caching Leverage’ section below reveals the realized and potential
-savings from build caching. All cacheable tasks' outputs need to be taken from
-the build cache in the second build for the build to be fully cacheable.
+The ‘Performance Characteristics’ section below reveals the realized and
+potential savings from build caching. All cacheable tasks' outputs need to be
+taken from the build cache in the second build for the build to be fully
+cacheable.
 
 The ‘Investigation Quick Links’ section below allows quick navigation to the
 most relevant views in build scans to investigate what tasks were avoided due to
