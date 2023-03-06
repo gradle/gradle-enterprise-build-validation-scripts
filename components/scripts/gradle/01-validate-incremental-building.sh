@@ -39,6 +39,10 @@ ge_server=''
 interactive_mode=''
 
 main() {
+  if [[ "$build_scan_publishing_mode" == "off" ]]; then
+    verify_build_scan_support_tool_exists
+  fi
+
   if [ "${interactive_mode}" == "on" ]; then
     wizard_execute
   else
@@ -64,6 +68,9 @@ execute() {
   rename_project_dir "build_${project_name}" "second-build_${project_name}"
 
   print_bl
+  fetch_build_cache_metrics
+
+  print_bl
   print_summary
 }
 
@@ -71,8 +78,16 @@ wizard_execute() {
   print_bl
   print_introduction
 
-  print_bl
-  explain_prerequisites_ccud_gradle_plugin ""
+  if [[ "${build_scan_publishing_mode}" == "on" ]]; then
+    print_bl
+    explain_prerequisites_ccud_gradle_plugin "I."
+
+    print_bl
+    explain_prerequisites_api_access "II."
+  else
+    print_bl
+    explain_prerequisites_ccud_gradle_plugin
+  fi
 
   print_bl
   explain_collect_git_details
@@ -106,23 +121,57 @@ wizard_execute() {
   print_bl
   explain_measure_build_results
   print_bl
+  fetch_build_cache_metrics
+  print_bl
   explain_and_print_summary
 }
 
+# shellcheck disable=SC2086 # splitting expected
 execute_first_build() {
   info "Running first build:"
-  info "./gradlew --no-build-cache --scan -Dscan.tag.${EXP_SCAN_TAG} -Dscan.value.runId=${RUN_ID} clean ${tasks}$(print_extra_args)"
-
-  # shellcheck disable=SC2086  # we want tasks to expand with word splitting in this case
-  invoke_gradle --no-build-cache clean ${tasks}
+  execute_build clean ${tasks}
 }
 
+# shellcheck disable=SC2086 # splitting expected
 execute_second_build() {
   info "Running second build:"
-  info "./gradlew --no-build-cache --scan -Dscan.tag.${EXP_SCAN_TAG} -Dscan.value.runId=${RUN_ID} ${tasks}$(print_extra_args)"
+  execute_build ${tasks}
+}
 
-  # shellcheck disable=SC2086  # we want tasks to expand with word splitting in this case
-  invoke_gradle --no-build-cache ${tasks}
+execute_build() {
+  print_gradle_command "$@"
+  invoke_gradle --no-build-cache "$@"
+}
+
+print_gradle_command() {
+  local scan_arg
+  if [[ "${build_scan_publishing_mode}" == "on" ]]; then
+    scan_arg="--scan"
+  else
+    scan_arg="-Dscan.dump"
+  fi
+  info "./gradlew --no-build-cache ${scan_arg} -Dscan.tag.${EXP_SCAN_TAG} -Dscan.value.runId=${RUN_ID} $*$(print_extra_args)"
+}
+
+fetch_build_cache_metrics() {
+  if [ "$build_scan_publishing_mode" == "on" ]; then
+    read_build_scan_metadata
+    fetch_and_read_build_scan_data build_cache_metrics_only "${build_scan_urls[@]}"
+  else
+    find_and_read_build_scan_dumps
+  fi
+}
+
+# Overrides info.sh#print_performance_metrics
+print_performance_metrics() {
+  print_performance_characteristics
+}
+
+# Overrides info.sh#print_performance_characteristics
+print_performance_characteristics() {
+  print_performance_characteristics_header
+
+  print_realized_build_time_savings
 }
 
 print_quick_links() {
@@ -216,16 +265,36 @@ EOF
 
 explain_measure_build_results() {
   local text
-  IFS='' read -r -d '' text <<EOF
+  if [[ "${build_scan_publishing_mode}" == "on" ]]; then
+    IFS='' read -r -d '' text <<EOF
 $(print_separator)
 ${HEADER_COLOR}Measure build results${RESTORE}
 
-Now that the second build has finished successfully, you are ready to measure in
-Gradle Enterprise how well your build leverages Gradle’s incremental build
+Now that the second build has finished successfully, you are ready to measure
+in Gradle Enterprise how well your build leverages Gradle’s incremental build
 functionality for the invoked set of Gradle tasks.
+
+Some of the build scan data will be fetched from the build scans produced by
+the two builds to assist you in your investigation.
 
 ${USER_ACTION_COLOR}Press <Enter> to measure the build results.${RESTORE}
 EOF
+  else
+    IFS='' read -r -d '' text <<EOF
+$(print_separator)
+${HEADER_COLOR}Measure build results${RESTORE}
+
+Now that the second build has finished successfully, you are ready to measure
+how well your build leverages Gradle’s incremental build functionality for the
+invoked set of Gradle tasks.
+
+Some of the build scan data will be extracted from the locally stored,
+intermediate build data produced by the two builds to assist you in your
+investigation.
+
+${USER_ACTION_COLOR}Press <Enter> to measure the build results.${RESTORE}
+EOF
+  fi
   print_wizard_text "${text}"
   wait_for_enter
 }
@@ -233,16 +302,21 @@ EOF
 explain_and_print_summary() {
   read_build_scan_metadata
   local text
-  IFS='' read -r -d '' text <<EOF
-The 'Summary' section below captures the configuration of the experiment and the
-two build scans that were published as part of running the experiment. The build
-scan of the second build is particularly interesting since this is where you can
-inspect what tasks were not leveraging Gradle’s incremental build functionality.
+  if [[ "${build_scan_publishing_mode}" == "on" ]]; then
+    IFS='' read -r -d '' text <<EOF
+The ‘Summary’ section below captures the configuration of the experiment and
+the two build scans that were published as part of running the experiment. The
+build scan of the second build is particularly interesting since this is where
+you can inspect what tasks were not leveraging Gradle’s incremental build
+functionality.
 
-The 'Investigation Quick Links' section below allows quick navigation to the
-most relevant views in build scans to investigate what tasks were uptodate and
-what tasks executed in the second build, which of those tasks had the biggest
-impact on build performance, and what caused those tasks to not be uptodate.
+$(explain_performance_characteristics)
+
+The ‘Investigation Quick Links’ section below allows quick navigation to the
+most relevant views in build scans to investigate what tasks were up-to-date
+and what tasks executed in the second build, which of those tasks had the
+biggest impact on build performance, and what caused those tasks to not be
+up-to-date.
 
 $(explain_command_to_repeat_experiment)
 
@@ -252,7 +326,33 @@ $(print_command_to_repeat_experiment)
 
 $(explain_when_to_rerun_experiment)
 EOF
+  else
+    IFS='' read -r -d '' text <<EOF
+The ‘Summary’ section below captures the configuration of the experiment. No
+build scans are available for inspection since publishing was disabled for the
+experiment.
+
+$(explain_performance_characteristics)
+
+$(explain_command_to_repeat_experiment)
+
+$(print_summary)
+
+$(print_command_to_repeat_experiment)
+
+$(explain_when_to_rerun_experiment)
+EOF
+  fi
   print_wizard_text "${text}"
+}
+
+explain_performance_characteristics() {
+  local text
+  IFS='' read -r -d '' text <<EOF
+The ‘Performance Characteristics’ section below reveals the realized build time
+savings as a result of leveraging Gradle’s incremental build functionality.
+EOF
+  echo -n "${text}"
 }
 
 process_arguments "$@"
