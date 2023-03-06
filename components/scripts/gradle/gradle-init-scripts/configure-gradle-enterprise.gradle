@@ -1,5 +1,5 @@
 import org.gradle.util.GradleVersion
-import java.nio.charset.StandardCharsets;
+import java.nio.charset.StandardCharsets
 
 // note that there is no mechanism to share code between the initscript{} block and the main script, so some logic is duplicated
 
@@ -67,7 +67,6 @@ def getInputParam = { String name ->
 def geUrl = getInputParam('com.gradle.enterprise.build_validation.gradle-enterprise.url')
 def geAllowUntrustedServer = Boolean.parseBoolean(getInputParam('com.gradle.enterprise.build_validation.gradle-enterprise.allow-untrusted-server'))
 def gePluginVersion = getInputParam('com.gradle.enterprise.build_validation.gradle-enterprise.plugin.version')
-def gePluginScanDump = getInputParam('com.gradle.enterprise.build_validation.gradle-enterprise.plugin.scan-dump')
 def ccudPluginVersion = getInputParam('com.gradle.enterprise.build_validation.ccud.plugin.version')
 
 def atLeastGradle4 = GradleVersion.current() >= GradleVersion.version('4.0')
@@ -78,8 +77,8 @@ if (ccudPluginVersion && isNotAtLeast(ccudPluginVersion, '1.7')) {
     return
 }
 
-// define a buildScanPublished listener that captures the build scan URL and id and appends it to a file
-def registerBuildScanCallbacks = { def buildScan ->
+// register build scan listeners to capture build scan URL/id and to track publishing errors
+def registerBuildScanActions = { def buildScan ->
     def scanFile = new File(experimentDir, 'build-scans.csv')
     buildScan.buildScanPublished { publishedBuildScan ->
         def buildScanUri = publishedBuildScan.buildScanUri
@@ -88,14 +87,35 @@ def registerBuildScanCallbacks = { def buildScan ->
         def baseUrl = "${buildScanUri.scheme}://${buildScanUri.host}${port}"
         scanFile.append("${baseUrl},${buildScanUri},${buildScanId}\n")
     }
+
     def errorFile = new File(experimentDir, 'build-scan-publish-error.txt')
     buildScan.onError { error ->
         errorFile.text = error
     }
 }
 
-// register buildScanPublished listener and optionally apply the GE / Build Scan plugin
+// configure build scan publishing behavior
+def configureBuildScanPublishing = { def buildScan ->
+    buildScan.publishAlways()
+    buildScan.captureTaskInputFiles = true // too late to be set here for Gradle 5, set via sys prop
+    if (buildScan.metaClass.respondsTo(buildScan, 'setUploadInBackground', Boolean)) buildScan.uploadInBackground = false // uploadInBackground not available for build-scan-plugin 1.16
+}
+
+// add custom data identifying the experiment
+def addBuildScanCustomData = { def buildScan ->
+    def projectProperties = gradle.startParameter.projectProperties
+
+    def expId = projectProperties.get("com.gradle.enterprise.build_validation.expId")
+    addCustomValueAndSearchLink(buildScan, "Experiment id", expId)
+    buildScan.tag(expId)
+
+    def runId = projectProperties.get("com.gradle.enterprise.build_validation.runId")
+    addCustomValueAndSearchLink(buildScan, "Experiment run id", runId)
+}
+
+// configure build scan behavior and optionally apply the GE / Build Scan / CCUD plugin
 if (GradleVersion.current() < GradleVersion.version('6.0')) {
+    //noinspection GroovyAssignabilityCheck
     rootProject {
         buildscript.configurations.getByName("classpath").incoming.afterResolve { ResolvableDependencies incoming ->
             def resolutionResult = incoming.resolutionResult
@@ -109,10 +129,8 @@ if (GradleVersion.current() < GradleVersion.version('6.0')) {
                     logger.quiet("Applying $BUILD_SCAN_PLUGIN_CLASS via init script")
                     logger.quiet("Connection to Gradle Enterprise: $geUrl, allowUntrustedServer: $geAllowUntrustedServer")
                     pluginManager.apply(initscript.classLoader.loadClass(BUILD_SCAN_PLUGIN_CLASS))
-                    buildScan.server = geUrl
-                    buildScan.allowUntrustedServer = geAllowUntrustedServer
-                    buildScan.publishAlways()
-                    if (buildScan.metaClass.respondsTo(buildScan, 'setUploadInBackground', Boolean)) buildScan.uploadInBackground = false  // uploadInBackground not available for build-scan-plugin 1.16
+                    if (geUrl) buildScan.server = geUrl
+                    if (geAllowUntrustedServer) buildScan.allowUntrustedServer = geAllowUntrustedServer
                 }
             } else {
                 if (!scanPluginComponent) {
@@ -139,14 +157,14 @@ if (GradleVersion.current() < GradleVersion.version('6.0')) {
         }
 
         pluginManager.withPlugin(BUILD_SCAN_PLUGIN_ID) {
-            registerBuildScanCallbacks(buildScan)
-        }
-    }
+            afterEvaluate(___ -> {
+                if (geUrl) buildScan.server = geUrl
+                if (geAllowUntrustedServer) buildScan.allowUntrustedServer = geAllowUntrustedServer
 
-    // todo (etst)
-    if (!gePluginScanDump) {
-        projectsEvaluated { gradle ->
-            configureGradleEnterprise(gradle.rootProject.extensions["gradleEnterprise"])
+                registerBuildScanActions(buildScan)
+                addBuildScanCustomData(buildScan)
+                configureBuildScanPublishing(buildScan)
+            })
         }
     }
 } else {
@@ -157,10 +175,8 @@ if (GradleVersion.current() < GradleVersion.version('6.0')) {
                 logger.quiet("Connection to Gradle Enterprise: $geUrl, allowUntrustedServer: $geAllowUntrustedServer")
                 settings.pluginManager.apply(initscript.classLoader.loadClass(GRADLE_ENTERPRISE_PLUGIN_CLASS))
                 extensionsWithPublicType(settings, GRADLE_ENTERPRISE_EXTENSION_CLASS).collect { settings[it.name] }.each { ext ->
-                    ext.server = geUrl
-                    ext.allowUntrustedServer = geAllowUntrustedServer
-                    ext.buildScan.publishAlways()
-                    ext.buildScan.uploadInBackground = false
+                    if (geUrl) ext.server = geUrl
+                    if (geAllowUntrustedServer) ext.allowUntrustedServer = geAllowUntrustedServer
                 }
             }
         } else {
@@ -183,10 +199,12 @@ if (GradleVersion.current() < GradleVersion.version('6.0')) {
         }
 
         extensionsWithPublicType(settings, GRADLE_ENTERPRISE_EXTENSION_CLASS).collect { settings[it.name] }.each { ext ->
-            if (!gePluginScanDump) {
-                configureGradleEnterprise(ext)
-            }
-            registerBuildScanCallbacks(ext.buildScan)
+            if (geUrl) ext.server = geUrl
+            if (geAllowUntrustedServer) ext.allowUntrustedServer = geAllowUntrustedServer
+
+            registerBuildScanActions(ext.buildScan)
+            addBuildScanCustomData(ext.buildScan)
+            configureBuildScanPublishing(ext.buildScan)
         }
     }
 }
@@ -197,35 +215,6 @@ static def extensionsWithPublicType(def container, String publicType) {
 
 static boolean isNotAtLeast(String versionUnderTest, String referenceVersion) {
     GradleVersion.version(versionUnderTest) < GradleVersion.version(referenceVersion)
-}
-
-void configureGradleEnterprise(gradleEnterprise) {
-    gradleEnterprise.with {
-        def serverOverride = System.getProperty("com.gradle.enterprise.build_validation.server")
-        if (serverOverride) {
-            server = serverOverride
-        } else if (!server) {
-            throw new IllegalStateException("A Gradle Enterprise server URL has not been configured.", null)
-        }
-
-        buildScan {
-            // captureTaskInputFiles = true (too late to be set here for Gradle 5, set via sys prop)
-            uploadInBackground = false
-            publishAlways()
-        }
-        addCustomData(buildScan)
-    }
-}
-
-void addCustomData(buildScan) {
-    def projectProperties = gradle.startParameter.projectProperties
-
-    def expId = projectProperties.get("com.gradle.enterprise.build_validation.expId")
-    addCustomValueAndSearchLink(buildScan, "Experiment id", expId)
-    buildScan.tag(expId)
-
-    def runId = projectProperties.get("com.gradle.enterprise.build_validation.runId")
-    addCustomValueAndSearchLink(buildScan, "Experiment run id", runId)
 }
 
 void addCustomValueAndSearchLink(buildScan, String label, String value) {
