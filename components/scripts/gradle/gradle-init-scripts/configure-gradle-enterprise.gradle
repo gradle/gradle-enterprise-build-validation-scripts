@@ -16,8 +16,8 @@ initscript {
 
     def enableGradleEnterprise = Boolean.getBoolean("com.gradle.enterprise.build_validation.enableGradleEnterprise")
 
-    def gePluginVersion = enableGradleEnterprise ? "3.12.1" : null
-    def ccudPluginVersion = enableGradleEnterprise ? "1.8.2" : null
+    def gePluginVersion = enableGradleEnterprise ? "3.12.4" : null
+    def ccudPluginVersion = enableGradleEnterprise ? "1.9" : null
 
     repositories {
         gradlePluginPortal()
