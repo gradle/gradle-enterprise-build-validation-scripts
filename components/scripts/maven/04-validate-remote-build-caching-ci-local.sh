@@ -65,7 +65,7 @@ execute() {
   execute_build
 
   print_bl
-  fetch_build_cache_metrics
+  process_build_scan_data_online
 
   print_bl
   print_summary
@@ -130,7 +130,7 @@ wizard_execute() {
   print_bl
   explain_measure_build_results
   print_bl
-  fetch_build_cache_metrics
+  process_build_scan_data_online
   print_bl
   explain_and_print_summary
 }
@@ -210,11 +210,6 @@ execute_build() {
 # Overrides info.sh#print_experiment_specific_summary_info
 print_experiment_specific_summary_info() {
   summary_row "Custom value mapping file:" "${mapping_file:-<none>}"
-}
-
-fetch_build_cache_metrics() {
-  read_build_scan_metadata
-  fetch_and_read_build_scan_data build_cache_metrics_only "${build_scan_urls[@]}"
 }
 
 # Overrides info.sh#print_performance_metrics
@@ -512,7 +507,6 @@ generate_command_to_repeat_experiment() {
 }
 
 explain_and_print_summary() {
-  read_build_scan_metadata
   local text
   IFS='' read -r -d '' text <<EOF
 The ‘Summary‘ section below captures the configuration of the experiment and the

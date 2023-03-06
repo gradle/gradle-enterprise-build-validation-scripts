@@ -163,8 +163,7 @@ print_gradle_command() {
 
 fetch_build_cache_metrics() {
   if [ "$build_scan_publishing_mode" == "on" ]; then
-    read_build_scan_metadata
-    fetch_and_read_build_scan_data build_cache_metrics_only "${build_scan_urls[@]}"
+    process_build_scan_data_online
   else
     find_and_read_build_scan_dumps
   fi
@@ -307,7 +306,6 @@ EOF
 
 explain_measure_build_results() {
   local text
-
   if [[ "${build_scan_publishing_mode}" == "on" ]]; then
     IFS='' read -r -d '' text <<EOF
 $(print_separator)
@@ -342,7 +340,6 @@ EOF
 }
 
 explain_and_print_summary() {
-  read_build_scan_metadata
   local text
 
   if [[ "${build_scan_publishing_mode}" == "on" ]]; then

@@ -4,7 +4,6 @@ import com.gradle.maven.extension.api.GradleEnterpriseApi;
 import com.gradle.maven.extension.api.GradleEnterpriseListener;
 import com.gradle.maven.extension.api.scan.BuildScanApi;
 import org.apache.maven.execution.MavenSession;
-import org.apache.maven.project.MavenProject;
 import org.codehaus.plexus.logging.Logger;
 
 import javax.inject.Inject;
@@ -20,12 +19,10 @@ import java.nio.charset.StandardCharsets;
 public class CaptureBuildScansListener implements GradleEnterpriseListener {
     private static final String EXPERIMENT_DIR = System.getProperty("com.gradle.enterprise.build_validation.experimentDir");
 
-    private final RootProjectExtractor rootProjectExtractor;
     private final Logger logger;
 
     @Inject
-    public CaptureBuildScansListener(RootProjectExtractor rootProjectExtractor, Logger logger) {
-        this.rootProjectExtractor = rootProjectExtractor;
+    public CaptureBuildScansListener(Logger logger) {
         this.logger = logger;
     }
 
@@ -36,7 +33,7 @@ public class CaptureBuildScansListener implements GradleEnterpriseListener {
         BuildScanApi buildScan = api.getBuildScan();
 
         addCustomDataOnBuildFinished(buildScan);
-        capturePublishedBuildScan(buildScan, rootProjectExtractor.extractRootProject(session));
+        capturePublishedBuildScan(buildScan);
     }
 
     private static void addCustomDataOnBuildFinished(BuildScanApi buildScan) {
@@ -71,7 +68,7 @@ public class CaptureBuildScansListener implements GradleEnterpriseListener {
         }
     }
 
-    private void capturePublishedBuildScan(BuildScanApi buildScan, MavenProject rootProject) {
+    private void capturePublishedBuildScan(BuildScanApi buildScan) {
         buildScan.buildScanPublished(scan -> {
             logger.debug("Saving build scan data to build-scans.csv");
             String port = scan.getBuildScanUri().getPort() != -1 ? ":" + scan.getBuildScanUri().getPort() : "";
@@ -80,7 +77,7 @@ public class CaptureBuildScansListener implements GradleEnterpriseListener {
             try (FileWriter fw = new FileWriter(EXPERIMENT_DIR + "/build-scans.csv", true);
                 BufferedWriter bw = new BufferedWriter(fw);
                 PrintWriter out = new PrintWriter(bw)) {
-               out.println(String.format("%s,%s,%s,%s", rootProject.getName(), baseUrl, scan.getBuildScanUri(), scan.getBuildScanId()));
+               out.println(String.format("%s,%s,%s", baseUrl, scan.getBuildScanUri(), scan.getBuildScanId()));
             } catch (IOException e) {
                 logger.error("Unable to save scan data to build-scans.csv: " + e.getMessage(), e);
                 throw new RuntimeException("Unable to save scan data to build-scans.csv: " + e.getMessage(), e);
