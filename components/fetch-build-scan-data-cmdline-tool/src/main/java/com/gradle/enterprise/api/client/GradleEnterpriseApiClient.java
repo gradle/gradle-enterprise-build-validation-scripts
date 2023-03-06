@@ -139,8 +139,8 @@ public class GradleEnterpriseApiClient {
                     buildOutcomeFrom(attributes),
                     remoteBuildCacheUrlFrom(buildCachePerformance),
                     summarizeTaskExecutions(buildCachePerformance),
-                    toDuration(buildCachePerformance.getBuildTime()),
-                    BigDecimal.valueOf(buildCachePerformance.getSerializationFactor())
+                    buildTimeFrom(buildCachePerformance),
+                    serializationFactorFrom(buildCachePerformance)
                 );
             }
             if (build.getBuildToolType().equalsIgnoreCase("maven")) {
@@ -158,8 +158,8 @@ public class GradleEnterpriseApiClient {
                     buildOutcomeFrom(attributes),
                     remoteBuildCacheUrlFrom(buildCachePerformance),
                     summarizeTaskExecutions(buildCachePerformance),
-                    toDuration(buildCachePerformance.getBuildTime()),
-                    BigDecimal.valueOf(buildCachePerformance.getSerializationFactor())
+                    buildTimeFrom(buildCachePerformance),
+                    serializationFactorFrom(buildCachePerformance)
                 );
             }
             throw new UnknownBuildAgentException(baseUrl, buildScanId, build.getBuildToolType());
@@ -256,6 +256,22 @@ public class GradleEnterpriseApiClient {
             return EXECUTED_CACHEABLE.toString();
         }
         return avoidanceOutcome.toString();
+    }
+
+    private Duration buildTimeFrom(GradleBuildCachePerformance buildCachePerformance) {
+        return toDuration(buildCachePerformance.getBuildTime());
+    }
+
+    private Duration buildTimeFrom(MavenBuildCachePerformance buildCachePerformance) {
+        return toDuration(buildCachePerformance.getBuildTime());
+    }
+
+    private BigDecimal serializationFactorFrom(GradleBuildCachePerformance buildCachePerformance) {
+        return BigDecimal.valueOf(buildCachePerformance.getSerializationFactor());
+    }
+
+    private BigDecimal serializationFactorFrom(MavenBuildCachePerformance buildCachePerformance) {
+        return BigDecimal.valueOf(buildCachePerformance.getSerializationFactor());
     }
 
     @NotNull
