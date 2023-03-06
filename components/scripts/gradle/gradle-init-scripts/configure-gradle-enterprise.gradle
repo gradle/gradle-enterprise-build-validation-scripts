@@ -1,10 +1,6 @@
 import org.gradle.util.GradleVersion
 import java.nio.charset.StandardCharsets;
 
-if (GradleVersion.current() < GradleVersion.version("5.0")) {
-    throw new IllegalStateException("The Gradle Enterprise Build Validation Scripts are not supported with Gradle ${GradleVersion.current()}. Please upgrade your project's build to Gradle 5 or newer.")
-}
-
 // note that there is no mechanism to share code between the initscript{} block and the main script, so some logic is duplicated
 
 // conditionally apply the GE / Build Scan plugin to the classpath so it can be applied to the build further down in this script
@@ -14,21 +10,35 @@ initscript {
         return
     }
 
-    def enableGradleEnterprise = Boolean.getBoolean("com.gradle.enterprise.build_validation.enableGradleEnterprise")
+    def getInputParam = { String name ->
+        def envVarName = name.toUpperCase().replace('.', '_').replace('-', '_')
+        return System.getProperty(name) ?: System.getenv(envVarName)
+    }
 
-    def gePluginVersion = enableGradleEnterprise ? "3.12.4" : null
-    def ccudPluginVersion = enableGradleEnterprise ? "1.9" : null
+    def pluginRepositoryUrl = getInputParam('com.gradle.enterprise.build_validation.gradle.plugin-repository.url')
+    def gePluginVersion = getInputParam('com.gradle.enterprise.build_validation.gradle-enterprise.plugin.version')
+    def ccudPluginVersion = getInputParam('com.gradle.enterprise.build_validation.ccud.plugin.version')
 
-    repositories {
-        gradlePluginPortal()
+    def atLeastGradle5 = GradleVersion.current() >= GradleVersion.version('5.0')
+    def atLeastGradle4 = GradleVersion.current() >= GradleVersion.version('4.0')
+
+    if (gePluginVersion || ccudPluginVersion && atLeastGradle4) {
+        pluginRepositoryUrl = pluginRepositoryUrl ?: 'https://plugins.gradle.org/m2'
+        logger.quiet("Gradle Enterprise plugins resolution: $pluginRepositoryUrl")
+
+        repositories {
+            maven { url pluginRepositoryUrl }
+        }
     }
 
     dependencies {
         if (gePluginVersion) {
-            classpath "com.gradle:gradle-enterprise-gradle-plugin:$gePluginVersion"
+            classpath atLeastGradle5 ?
+                    "com.gradle:gradle-enterprise-gradle-plugin:$gePluginVersion" :
+                    "com.gradle:build-scan-plugin:1.16"
         }
 
-        if (ccudPluginVersion) {
+        if (ccudPluginVersion && atLeastGradle4) {
             classpath "com.gradle:common-custom-user-data-gradle-plugin:$ccudPluginVersion"
         }
     }
@@ -49,26 +59,38 @@ if (!isTopLevelBuild) {
     return
 }
 
-def enableGradleEnterprise = Boolean.getBoolean("com.gradle.enterprise.build_validation.enableGradleEnterprise")
-def isScanDump = System.properties.containsKey("scan.dump")
+def getInputParam = { String name ->
+    def envVarName = name.toUpperCase().replace('.', '_').replace('-', '_')
+    return System.getProperty(name) ?: System.getenv(envVarName)
+}
 
-clearWarnings()
+def geUrl = getInputParam('com.gradle.enterprise.build_validation.gradle-enterprise.url')
+def geAllowUntrustedServer = Boolean.parseBoolean(getInputParam('com.gradle.enterprise.build_validation.gradle-enterprise.allow-untrusted-server'))
+def gePluginVersion = getInputParam('com.gradle.enterprise.build_validation.gradle-enterprise.plugin.version')
+def gePluginScanDump = getInputParam('com.gradle.enterprise.build_validation.gradle-enterprise.plugin.scan-dump')
+def ccudPluginVersion = getInputParam('com.gradle.enterprise.build_validation.ccud.plugin.version')
 
-// define a buildScanPublished listener that captures the build scan data and appends to a file
-def buildScanPublishedAction = { def buildScan ->
-    if (buildScan.metaClass.respondsTo(buildScan, 'buildScanPublished', Action)) {
-        def scanFile = new File(experimentDir, "build-scans.csv")
-        buildScan.buildScanPublished { publishedBuildScan ->
-            def buildScanUri = publishedBuildScan.buildScanUri
-            def buildScanId = publishedBuildScan.buildScanId
-            def port = (buildScanUri.port != -1) ? ":" + buildScanUri.port : ""
-            def baseUrl = "${buildScanUri.scheme}://${buildScanUri.host}${port}"
-            scanFile.append("${baseUrl},${buildScanUri},${buildScanId}\n")
-        }
-        def errorFile = new File(experimentDir, "build-scan-publish-error.txt")
-        buildScan.onError { error ->
-            errorFile.text = error
-        }
+def atLeastGradle4 = GradleVersion.current() >= GradleVersion.version('4.0')
+
+// finish early if configuration parameters passed in via system properties are not valid/supported
+if (ccudPluginVersion && isNotAtLeast(ccudPluginVersion, '1.7')) {
+    logger.warn("Common Custom User Data Gradle plugin must be at least 1.7. Configured version is $ccudPluginVersion.")
+    return
+}
+
+// define a buildScanPublished listener that captures the build scan URL and id and appends it to a file
+def registerBuildScanCallbacks = { def buildScan ->
+    def scanFile = new File(experimentDir, 'build-scans.csv')
+    buildScan.buildScanPublished { publishedBuildScan ->
+        def buildScanUri = publishedBuildScan.buildScanUri
+        def buildScanId = publishedBuildScan.buildScanId
+        def port = (buildScanUri.port != -1) ? ':' + buildScanUri.port : ''
+        def baseUrl = "${buildScanUri.scheme}://${buildScanUri.host}${port}"
+        scanFile.append("${baseUrl},${buildScanUri},${buildScanId}\n")
+    }
+    def errorFile = new File(experimentDir, 'build-scan-publish-error.txt')
+    buildScan.onError { error ->
+        errorFile.text = error
     }
 }
 
@@ -81,68 +103,100 @@ if (GradleVersion.current() < GradleVersion.version('6.0')) {
             def scanPluginComponent = resolutionResult.allComponents.find {
                 it.moduleVersion.with { group == "com.gradle" && (name == "build-scan-plugin" || name == "gradle-enterprise-gradle-plugin") }
             }
-            if (!scanPluginComponent) {
-                if (enableGradleEnterprise) {
+
+            if (gePluginVersion) {
+                if (!scanPluginComponent) {
+                    logger.quiet("Applying $BUILD_SCAN_PLUGIN_CLASS via init script")
+                    logger.quiet("Connection to Gradle Enterprise: $geUrl, allowUntrustedServer: $geAllowUntrustedServer")
                     pluginManager.apply(initscript.classLoader.loadClass(BUILD_SCAN_PLUGIN_CLASS))
-                } else {
+                    buildScan.server = geUrl
+                    buildScan.allowUntrustedServer = geAllowUntrustedServer
+                    buildScan.publishAlways()
+                    if (buildScan.metaClass.respondsTo(buildScan, 'setUploadInBackground', Boolean)) buildScan.uploadInBackground = false  // uploadInBackground not available for build-scan-plugin 1.16
+                }
+            } else {
+                if (!scanPluginComponent) {
                     throw new IllegalStateException("The com.gradle.build-scan plugin is missing from the project.\n" +
-                        "Either apply it directly (see https://docs.gradle.com/enterprise/gradle-plugin/#gradle_5_x),\n" +
-                        "or use `--enable-gradle-enterprise` when running the build validation script.")
+                            "Either apply it directly (see https://docs.gradle.com/enterprise/gradle-plugin/#gradle_5_x) to the project,\n" +
+                            "or use `--enable-gradle-enterprise` when running the build validation script.")
                 }
             }
 
             def ccudPluginComponent = resolutionResult.allComponents.find {
                 it.moduleVersion.with { group == "com.gradle" && name == "common-custom-user-data-gradle-plugin" }
             }
-            if (!ccudPluginComponent) {
-                if (enableGradleEnterprise) {
+
+            if (ccudPluginVersion && atLeastGradle4) {
+                if (!ccudPluginComponent) {
+                    logger.quiet("Applying $CCUD_PLUGIN_CLASS via init script")
                     pluginManager.apply(initscript.classLoader.loadClass(CCUD_PLUGIN_CLASS))
-                } else {
+                }
+            } else {
+                if (!ccudPluginComponent) {
                     logWarningMissingCommonCustomUserDataGradlePlugin()
                 }
             }
         }
 
         pluginManager.withPlugin(BUILD_SCAN_PLUGIN_ID) {
-            buildScanPublishedAction(buildScan)
+            registerBuildScanCallbacks(buildScan)
         }
     }
 
-    if (!isScanDump) {
+    // todo (etst)
+    if (!gePluginScanDump) {
         projectsEvaluated { gradle ->
             configureGradleEnterprise(gradle.rootProject.extensions["gradleEnterprise"])
         }
     }
 } else {
     gradle.settingsEvaluated { settings ->
-        if (!settings.pluginManager.hasPlugin(GRADLE_ENTERPRISE_PLUGIN_ID)) {
-            if (enableGradleEnterprise) {
+        if (gePluginVersion) {
+            if (!settings.pluginManager.hasPlugin(GRADLE_ENTERPRISE_PLUGIN_ID)) {
+                logger.quiet("Applying $GRADLE_ENTERPRISE_PLUGIN_CLASS via init script")
+                logger.quiet("Connection to Gradle Enterprise: $geUrl, allowUntrustedServer: $geAllowUntrustedServer")
                 settings.pluginManager.apply(initscript.classLoader.loadClass(GRADLE_ENTERPRISE_PLUGIN_CLASS))
-            } else {
+                extensionsWithPublicType(settings, GRADLE_ENTERPRISE_EXTENSION_CLASS).collect { settings[it.name] }.each { ext ->
+                    ext.server = geUrl
+                    ext.allowUntrustedServer = geAllowUntrustedServer
+                    ext.buildScan.publishAlways()
+                    ext.buildScan.uploadInBackground = false
+                }
+            }
+        } else {
+            if (!settings.pluginManager.hasPlugin(GRADLE_ENTERPRISE_PLUGIN_ID)) {
                 throw new IllegalStateException("The com.gradle.enterprise plugin is missing from the project.\n" +
-                    "Either apply it directly (see https://docs.gradle.com/enterprise/gradle-plugin/#gradle_6_x_and_later),\n" +
-                    "or use `--enable-gradle-enterprise` when running the build validation script.")
+                        "Either apply it directly (see https://docs.gradle.com/enterprise/gradle-plugin/#gradle_6_x_and_later),\n" +
+                        "or use `--enable-gradle-enterprise` when running the build validation script.")
             }
         }
-        if (!settings.pluginManager.hasPlugin(CCUD_PLUGIN_ID)) {
-            if (enableGradleEnterprise) {
+
+        if (ccudPluginVersion) {
+            if (!settings.pluginManager.hasPlugin(CCUD_PLUGIN_ID)) {
+                logger.quiet("Applying $CCUD_PLUGIN_CLASS via init script")
                 settings.pluginManager.apply(initscript.classLoader.loadClass(CCUD_PLUGIN_CLASS))
-            } else {
+            }
+        } else {
+            if (!settings.pluginManager.hasPlugin(CCUD_PLUGIN_ID)) {
                 logWarningMissingCommonCustomUserDataGradlePlugin()
             }
         }
 
         extensionsWithPublicType(settings, GRADLE_ENTERPRISE_EXTENSION_CLASS).collect { settings[it.name] }.each { ext ->
-            if (!isScanDump) {
+            if (!gePluginScanDump) {
                 configureGradleEnterprise(ext)
             }
-            buildScanPublishedAction(ext.buildScan)
+            registerBuildScanCallbacks(ext.buildScan)
         }
     }
 }
 
 static def extensionsWithPublicType(def container, String publicType) {
     container.extensions.extensionsSchema.elements.findAll { it.publicType.concreteClass.name == publicType }
+}
+
+static boolean isNotAtLeast(String versionUnderTest, String referenceVersion) {
+    GradleVersion.version(versionUnderTest) < GradleVersion.version(referenceVersion)
 }
 
 void configureGradleEnterprise(gradleEnterprise) {
@@ -197,11 +251,6 @@ void logWarningMissingCommonCustomUserDataGradlePlugin() {
 void logWarning(String warning) {
     def warningFile = new File(experimentDir, "warnings.txt")
     warningFile.append(warning + "\n")
-}
-
-void clearWarnings() {
-    def warningFile = new File(experimentDir, "warnings.txt")
-    warningFile.delete()
 }
 
 File getExperimentDir() {
