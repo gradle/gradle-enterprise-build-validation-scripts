@@ -246,7 +246,7 @@ public class GradleEnterpriseApiClient {
         Arrays.stream(GradleBuildCachePerformanceTaskExecutionEntry.AvoidanceOutcomeEnum.values())
             .forEach(outcome -> summariesByOutcome.putIfAbsent(outcome.toString(), TaskExecutionSummary.ZERO));
 
-        return putTotalAvoidedFromCache(summariesByOutcome);
+        return toTotalAvoidedFromCache(summariesByOutcome);
     }
 
     private String avoidanceOutcome(GradleBuildCachePerformanceTaskExecutionEntry task) {
@@ -289,7 +289,7 @@ public class GradleEnterpriseApiClient {
         Arrays.stream(MavenBuildCachePerformanceGoalExecutionEntry.AvoidanceOutcomeEnum.values())
             .forEach(outcome -> summariesByOutcome.putIfAbsent(outcome.toString(), TaskExecutionSummary.ZERO));
 
-        return putTotalAvoidedFromCache(summariesByOutcome);
+        return toTotalAvoidedFromCache(summariesByOutcome);
     }
 
     private static Map.Entry<String, TaskExecutionSummary> summarizeForGradle(Map.Entry<String, List<GradleBuildCachePerformanceTaskExecutionEntry>> entry) {
@@ -329,7 +329,7 @@ public class GradleEnterpriseApiClient {
         return Duration.ofMillis(millis);
     }
 
-    private static Map<String, TaskExecutionSummary> putTotalAvoidedFromCache(Map<String, TaskExecutionSummary> summariesByOutcome) {
+    private static Map<String, TaskExecutionSummary> toTotalAvoidedFromCache(Map<String, TaskExecutionSummary> summariesByOutcome) {
         TaskExecutionSummary fromLocalCache = summariesByOutcome.getOrDefault("avoided_from_local_cache", TaskExecutionSummary.ZERO);
         TaskExecutionSummary fromRemoteCache = summariesByOutcome.getOrDefault("avoided_from_remote_cache", TaskExecutionSummary.ZERO);
 
