@@ -157,14 +157,14 @@ if (GradleVersion.current() < GradleVersion.version('6.0')) {
         }
 
         pluginManager.withPlugin(BUILD_SCAN_PLUGIN_ID) {
-            afterEvaluate(___ -> {
+            afterEvaluate {
                 if (geUrl) buildScan.server = geUrl
                 if (geAllowUntrustedServer) buildScan.allowUntrustedServer = geAllowUntrustedServer
 
                 registerBuildScanActions(buildScan)
                 addBuildScanCustomData(buildScan)
                 configureBuildScanPublishing(buildScan)
-            })
+            }
         }
     }
 } else {
