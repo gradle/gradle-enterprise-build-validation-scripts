@@ -165,11 +165,6 @@ fetch_build_cache_metrics() {
   fi
 }
 
-# Overrides info.sh#print_performance_metrics
-print_performance_metrics() {
-  print_performance_characteristics
-}
-
 print_quick_links() {
   info "Investigation Quick Links"
   info "-------------------------"
