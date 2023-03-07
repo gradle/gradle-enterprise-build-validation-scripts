@@ -219,10 +219,12 @@ static boolean isNotAtLeast(String versionUnderTest, String referenceVersion) {
 
 void addCustomValueAndSearchLink(buildScan, String label, String value) {
     buildScan.value(label, value)
-    String server = buildScan.server
-    String searchParams = "search.names=" + urlEncode(label) + "&search.values=" + urlEncode(value)
-    String url = appendIfMissing(server, "/") + "scans?" + searchParams + "#selection.buildScanB=" + urlEncode("{SCAN_ID}")
-    buildScan.link(label + " build scans", url)
+    if (buildScan.metaClass.respondsTo(buildScan, 'getServer')) {
+        String server = buildScan.server
+        String searchParams = "search.names=" + urlEncode(label) + "&search.values=" + urlEncode(value)
+        String url = appendIfMissing(server, "/") + "scans?" + searchParams + "#selection.buildScanB=" + urlEncode("{SCAN_ID}")
+        buildScan.link(label + " build scans", url)
+    }
 }
 
 String appendIfMissing(String str, String suffix) {
