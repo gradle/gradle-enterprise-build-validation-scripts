@@ -18,6 +18,7 @@ import okhttp3.OkHttpClient;
 import okhttp3.tls.HandshakeCertificates;
 import org.jetbrains.annotations.NotNull;
 
+import java.math.BigDecimal;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.time.Duration;
@@ -116,7 +117,8 @@ public class GradleEnterpriseApiClient {
                     buildOutcomeFrom(attributes),
                     remoteBuildCacheUrlFrom(buildCachePerformance),
                     summarizeTaskExecutions(buildCachePerformance),
-                    toDuration(buildCachePerformance.getEffectiveTaskExecutionTime())
+                    toDuration(buildCachePerformance.getEffectiveTaskExecutionTime()),
+                    BigDecimal.valueOf(buildCachePerformance.getSerializationFactor())
                 );
             }
             if (build.getBuildToolType().equalsIgnoreCase("maven")) {
@@ -134,7 +136,8 @@ public class GradleEnterpriseApiClient {
                     buildOutcomeFrom(attributes),
                     remoteBuildCacheUrlFrom(buildCachePerformance),
                     summarizeTaskExecutions(buildCachePerformance),
-                    toDuration(buildCachePerformance.getEffectiveProjectExecutionTime())
+                    toDuration(buildCachePerformance.getEffectiveProjectExecutionTime()),
+                    BigDecimal.valueOf(buildCachePerformance.getSerializationFactor())
                 );
             }
             throw new UnknownBuildAgentException(baseUrl, buildScanId, build.getBuildToolType());

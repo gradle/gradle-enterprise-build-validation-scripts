@@ -142,6 +142,8 @@ print_performance_characteristics() {
 
   print_build_caching_leverage_metrics
 
+  print_serialization_factor
+
   print_executed_cacheable_tasks_warning
 }
 
@@ -202,6 +204,14 @@ print_build_caching_leverage_metrics() {
     value="${taskCount} ${BUILD_TOOL_TASK}s, ${executed_not_cacheable_duration[1]} total execution time"
   fi
   summary_row "Executed non-cacheable ${BUILD_TOOL_TASK}s:" "${value}"
+}
+
+print_serialization_factor() {
+  # Do not print serialization factor at all if this value does not exist
+  # This can happen since build-scan-support-tool does not yet support this field
+  if [[ -n "${serialization_factors[0]}" ]]; then
+    summary_row "Serialization factor:" "$(to_two_decimal_places "${serialization_factors[0]}")x"
+  fi
 }
 
 print_executed_cacheable_tasks_warning() {
@@ -278,4 +288,10 @@ format_duration() {
   fi
 
   printf "%d.%03ds" "${seconds}" "${millis}"
+}
+
+# Rounds the argument to two decimal places
+# See: https://unix.stackexchange.com/a/167059
+to_two_decimal_places() {
+  LC_ALL=C printf "%.2f" "$1"
 }

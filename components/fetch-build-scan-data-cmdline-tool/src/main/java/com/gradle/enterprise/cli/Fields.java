@@ -3,6 +3,7 @@ package com.gradle.enterprise.cli;
 import com.gradle.enterprise.model.BuildValidationData;
 import com.gradle.enterprise.model.TaskExecutionSummary;
 
+import java.math.BigDecimal;
 import java.time.Duration;
 import java.util.Arrays;
 import java.util.Locale;
@@ -31,6 +32,7 @@ public enum Fields {
     EXECUTED_NOT_CACHEABLE("Executed not cacheable", d -> totalTasks(d, "executed_not_cacheable")),
     EXECUTED_NOT_CACHEABLE_DURATION("Executed not cacheable duration", d -> totalDuration(d, "executed_not_cacheable")),
     EFFECTIVE_TASK_EXECUTION_DURATION("Effective task execution duration", d -> String.valueOf(d.getEffectiveTaskExecutionDuration().toMillis())),
+    SERIALIZATION_FACTOR("Serialization factor", d -> formatBigDecimal(d.getSerializationFactor())),
     ;
 
     public final String label;
@@ -90,5 +92,12 @@ public enum Fields {
         s.append(String.format(Locale.ROOT, "%.3fs", seconds));
 
         return s.toString().trim();
+    }
+
+    private static String formatBigDecimal(BigDecimal value) {
+        if (value.compareTo(BigDecimal.ZERO) == 0) {
+            return "";
+        }
+        return value.toPlainString();
     }
 }
