@@ -293,5 +293,5 @@ format_duration() {
 # Rounds the argument to two decimal places
 # See: https://unix.stackexchange.com/a/167059
 to_two_decimal_places() {
-  echo "$1" | LC_ALL=C xargs printf "%.2f"
+  LC_ALL=C printf "%.2f" "$1"
 }
