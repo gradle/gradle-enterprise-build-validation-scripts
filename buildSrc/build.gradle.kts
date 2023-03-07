@@ -1,10 +1,11 @@
 plugins {
-    kotlin("jvm") version "1.8.10"
+    `kotlin-dsl`
 }
 
 kotlin {
     jvmToolchain {
-        (this as JavaToolchainSpec).languageVersion.set(JavaLanguageVersion.of(8))
+        languageVersion.set(JavaLanguageVersion.of(8))
+        vendor.set(JvmVendorSpec.AZUL)
     }
 }
 

@@ -26,21 +26,21 @@ abstract class CreateGitTag @Inject constructor(
     @TaskAction
     fun applyArgbash() {
         logger.info("Tagging HEAD as ${tagName.get()}")
-        execOperations.exec { execSpec ->
+        execOperations.exec {
             val args = mutableListOf("git", "tag")
             if (overwriteExisting.get()) {
                 args.add("-f")
             }
             args.add(tagName.get())
-            execSpec.commandLine(args)
+            commandLine(args)
         }
-        execOperations.exec { execSpec ->
+        execOperations.exec {
             val args = mutableListOf("git", "push", "origin")
             if (overwriteExisting.get()) {
                 args.add("-f")
             }
             args.add("--tags")
-            execSpec.commandLine(args)
+            commandLine(args)
         }
     }
 }

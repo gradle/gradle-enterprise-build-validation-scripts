@@ -28,7 +28,7 @@ The build validation scripts are available as pre-built, executable Bash scripts
 
 ## Build from source
 
-You can also assemble the build validation scripts from source by running `./gradlew build` from the root folder of this repository. If you run the build on a M1-Apple machine, the build requires Java 8 to already be installed. This requirement is due to Gradle currently not being able to download Java 8 via its Toolchain feature.
+You can also assemble the build validation scripts from source by running `./gradlew build` from the root folder of this repository.
 
 Once the build has finished successfully, you can find two .zip files in the build/distributions folder: one .zip file containing the build validation scripts for Gradle and one .zip file containing the build validation scripts for Maven.
 
