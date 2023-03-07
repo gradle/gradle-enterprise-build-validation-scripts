@@ -210,7 +210,7 @@ print_serialization_factor() {
   # Do not print serialization factor at all if this value does not exist
   # This can happen since build-scan-support-tool does not yet support this field
   if [[ -n "${serialization_factors[0]}" ]]; then
-    summary_row "Serialization factor:" "$(to_two_decimal_places "${serialization_factors[0]}")"
+    summary_row "Serialization factor:" "$(to_two_decimal_places "${serialization_factors[0]}")x"
   fi
 }
 
