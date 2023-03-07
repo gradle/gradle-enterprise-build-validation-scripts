@@ -17,6 +17,7 @@ description = "Maven extension to capture the build scan URL"
 java {
     toolchain {
         languageVersion.set(JavaLanguageVersion.of(8))
+        vendor.set(JvmVendorSpec.AZUL)
     }
 }
 

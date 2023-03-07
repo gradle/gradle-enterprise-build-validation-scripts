@@ -148,7 +148,7 @@ print_performance_characteristics() {
 print_performance_characteristics_header() {
   print_bl
   info "Performance Characteristics"
-  info "----------------------"
+  info "---------------------------"
 }
 
 print_realized_build_time_savings() {
