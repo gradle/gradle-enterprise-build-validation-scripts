@@ -140,6 +140,8 @@ print_performance_characteristics() {
 
   print_realized_build_time_savings
 
+  print_potential_build_time_savings
+
   print_build_caching_leverage_metrics
 
   print_serialization_factor
@@ -170,6 +172,35 @@ print_realized_build_time_savings() {
     fi
     summary_row "Realized build time savings:" "${value}"
   fi
+}
+
+print_potential_build_time_savings() {
+  local build_1_effective_execution_duration="${effective_task_execution_duration[0]}"
+
+  local build_2_effective_execution_duration="${effective_task_execution_duration[1]}"
+  local build_2_executed_cacheable_duration="${executed_cacheable_duration_milliseconds[1]}"
+  local build_2_serialization_factor="${serialization_factors[1]}"
+
+  # Do not print potential build time savings at all if these values do not exist
+  # This can happen since build-scan-support-tool does not yet support these fields
+  if [[ -z "${build_1_effective_execution_duration}" || -z "${build_2_effective_execution_duration}" || -z "${build_2_executed_cacheable_duration}" || -z "${build_2_serialization_factor}" ]]; then
+    return 0
+  fi
+
+  local value
+  value=""
+  # Only calculate realized build time savings when these have valid values
+  # These values can be returned as zero when an error occurs processing the Build Scan data
+  if [[ "${build_1_effective_execution_duration}" && "${build_2_effective_execution_duration}" && -n "${build_2_serialization_factor}" ]]; then
+    local first_build second_build potential_build_duration potential_savings
+    first_build=$(format_duration "${effective_task_execution_duration[0]}")
+    # shellcheck disable=SC2034 # it's used on the next few lines
+    potential_build_duration=$(echo "${build_2_effective_execution_duration}-(${build_2_executed_cacheable_duration}/${build_2_serialization_factor})" | bc)
+    potential_savings=$(format_duration build_1_effective_execution_duration-potential_build_duration)
+    second_build=$(format_duration potential_build_duration)
+    value="${potential_savings} wall-clock time (from ${first_build} to ${second_build})"
+  fi
+  summary_row "Potential build time savings:" "${value}"
 }
 
 print_build_caching_leverage_metrics() {
