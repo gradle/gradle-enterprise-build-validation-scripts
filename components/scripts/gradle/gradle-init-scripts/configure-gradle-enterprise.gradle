@@ -217,7 +217,7 @@ static boolean isNotAtLeast(String versionUnderTest, String referenceVersion) {
     GradleVersion.version(versionUnderTest) < GradleVersion.version(referenceVersion)
 }
 
-void addCustomValueAndSearchLink(buildScan, String label, String value) {
+static void addCustomValueAndSearchLink(buildScan, String label, String value) {
     buildScan.value(label, value)
     if (buildScan.metaClass.respondsTo(buildScan, 'getServer')) { // required for Gradle 4.x / build-scan-plugin 1.16
         String server = buildScan.server
@@ -227,11 +227,11 @@ void addCustomValueAndSearchLink(buildScan, String label, String value) {
     }
 }
 
-String appendIfMissing(String str, String suffix) {
+static String appendIfMissing(String str, String suffix) {
     return str.endsWith(suffix) ? str : str + suffix
 }
 
-String urlEncode(String str) {
+static String urlEncode(String str) {
     return URLEncoder.encode(str, StandardCharsets.UTF_8.name())
 }
 
