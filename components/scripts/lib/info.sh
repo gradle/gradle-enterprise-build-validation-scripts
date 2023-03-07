@@ -152,7 +152,7 @@ print_performance_characteristics() {
 print_performance_characteristics_header() {
   print_bl
   info "Performance Characteristics"
-  info "----------------------"
+  info "---------------------------"
 }
 
 print_realized_build_time_savings() {
@@ -241,7 +241,7 @@ print_serialization_factor() {
   # Do not print serialization factor at all if this value does not exist
   # This can happen since build-scan-support-tool does not yet support this field
   if [[ -n "${serialization_factors[0]}" ]]; then
-    summary_row "Serialization factor:" "$(to_two_decimal_places "${serialization_factors[0]}")"
+    summary_row "Serialization factor:" "$(to_two_decimal_places "${serialization_factors[0]}")x"
   fi
 }
 
@@ -324,5 +324,5 @@ format_duration() {
 # Rounds the argument to two decimal places
 # See: https://unix.stackexchange.com/a/167059
 to_two_decimal_places() {
-  echo "$1" | LC_ALL=C xargs printf "%.2f"
+  LC_ALL=C printf "%.2f" "$1"
 }
