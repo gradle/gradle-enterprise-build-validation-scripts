@@ -10,20 +10,20 @@ invoke_gradle() {
     cd "${project_dir}" > /dev/null 2>&1 || die "ERROR: The subdirectory ${project_dir} (set with --project-dir) does not exist in ${project_name}." "${INVALID_INPUT}"
   fi
 
-  if [ "$enable_ge" == "on" ]; then
-    args+=(--init-script "${INIT_SCRIPTS_DIR}/enable-gradle-enterprise.gradle")
-  fi
-
   args+=(--init-script "${INIT_SCRIPTS_DIR}/configure-gradle-enterprise.gradle")
-  args+=(--init-script "${INIT_SCRIPTS_DIR}/capture-published-build-scan.gradle")
+
+  if [ "$enable_ge" == "on" ]; then
+    args+=("-Dcom.gradle.enterprise.build_validation.gradle.plugin-repository.url=https://plugins.gradle.org/m2")
+    args+=("-Dcom.gradle.enterprise.build_validation.gradle-enterprise.plugin.version=3.12.4")
+    args+=("-Dcom.gradle.enterprise.build_validation.ccud.plugin.version=1.9")
+  fi
 
   if [ -n "${ge_server}" ]; then
-    args+=("-Pcom.gradle.enterprise.build_validation.server=${ge_server}")
+    args+=("-Dcom.gradle.enterprise.build_validation.gradle-enterprise.url=${ge_server}")
+    args+=("-Dcom.gradle.enterprise.build_validation.gradle-enterprise.allow-untrusted-server=false")
   fi
 
-  if [[ "${build_scan_publishing_mode}" == "on" ]]; then
-    args+=("--scan")
-  else
+  if [[ "${build_scan_publishing_mode}" == "off" ]]; then
     args+=("-Dscan.dump")
   fi
 

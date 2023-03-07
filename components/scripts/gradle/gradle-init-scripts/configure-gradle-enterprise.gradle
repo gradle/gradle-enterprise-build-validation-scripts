@@ -1,78 +1,108 @@
 import org.gradle.util.GradleVersion
-import java.nio.charset.StandardCharsets;
+import java.nio.charset.StandardCharsets
 
+// note that there is no mechanism to share code between the initscript{} block and the main script, so some logic is duplicated
+
+// conditionally apply the GE / Build Scan plugin to the classpath so it can be applied to the build further down in this script
 initscript {
-    def gradleEnterprisePluginVersion = "3.12.4"
+    def isTopLevelBuild = !gradle.parent
+    if (!isTopLevelBuild) {
+        return
+    }
 
-    repositories {
-        gradlePluginPortal()
+    def getInputParam = { String name ->
+        def envVarName = name.toUpperCase().replace('.', '_').replace('-', '_')
+        return System.getProperty(name) ?: System.getenv(envVarName)
+    }
+
+    def pluginRepositoryUrl = getInputParam('com.gradle.enterprise.build_validation.gradle.plugin-repository.url')
+    def gePluginVersion = getInputParam('com.gradle.enterprise.build_validation.gradle-enterprise.plugin.version')
+    def ccudPluginVersion = getInputParam('com.gradle.enterprise.build_validation.ccud.plugin.version')
+
+    def atLeastGradle5 = GradleVersion.current() >= GradleVersion.version('5.0')
+    def atLeastGradle4 = GradleVersion.current() >= GradleVersion.version('4.0')
+
+    if (gePluginVersion || ccudPluginVersion && atLeastGradle4) {
+        pluginRepositoryUrl = pluginRepositoryUrl ?: 'https://plugins.gradle.org/m2'
+        logger.quiet("Gradle Enterprise plugins resolution: $pluginRepositoryUrl")
+
+        repositories {
+            maven { url pluginRepositoryUrl }
+        }
     }
 
     dependencies {
-        classpath("com.gradle:gradle-enterprise-gradle-plugin:${gradleEnterprisePluginVersion}")
+        if (gePluginVersion) {
+            classpath atLeastGradle5 ?
+                    "com.gradle:gradle-enterprise-gradle-plugin:$gePluginVersion" :
+                    "com.gradle:build-scan-plugin:1.16"
+        }
+
+        if (ccudPluginVersion && atLeastGradle4) {
+            classpath "com.gradle:common-custom-user-data-gradle-plugin:$ccudPluginVersion"
+        }
     }
 }
 
-// Don't run against the included builds (if the main build has any).
-def isTopLevelBuild = gradle.getParent() == null
-if (isTopLevelBuild) {
-    def version = GradleVersion.current().baseVersion
-    def atLeastGradle5 = version >= GradleVersion.version("5.0")
-    def atLeastGradle6 = version >= GradleVersion.version("6.0")
-    def isScanDump = System.properties.containsKey("scan.dump")
+def BUILD_SCAN_PLUGIN_ID = 'com.gradle.build-scan'
+def BUILD_SCAN_PLUGIN_CLASS = 'com.gradle.scan.plugin.BuildScanPlugin'
 
-    clearWarnings()
+def GRADLE_ENTERPRISE_PLUGIN_ID = 'com.gradle.enterprise'
+def GRADLE_ENTERPRISE_PLUGIN_CLASS = 'com.gradle.enterprise.gradleplugin.GradleEnterprisePlugin'
+def GRADLE_ENTERPRISE_EXTENSION_CLASS = 'com.gradle.enterprise.gradleplugin.GradleEnterpriseExtension'
 
-    if (atLeastGradle6) {
-        settingsEvaluated { settings ->
-            if (!settings.pluginManager.hasPlugin("com.gradle.enterprise")) {
-                throw new IllegalStateException("The com.gradle.enterprise plugin is missing from the project (see https://docs.gradle.com/enterprise/gradle-plugin/#gradle_6_x_and_later).")
-            }
-            if (!settings.pluginManager.hasPlugin("com.gradle.common-custom-user-data-gradle-plugin")) {
-                logWarningMissingCommonCustomUserDataGradlePlugin()
-            }
-            if (!isScanDump) {
-                configureGradleEnterprise(settings.extensions["gradleEnterprise"])
-            }
-        }
-    } else if (atLeastGradle5) {
-        projectsEvaluated { gradle ->
-            if (!gradle.rootProject.pluginManager.hasPlugin("com.gradle.build-scan")) {
-                throw new IllegalStateException("The com.gradle.build-scan plugin is missing from the project (see https://docs.gradle.com/enterprise/gradle-plugin/#gradle_5_x).")
-            }
-            if (!gradle.rootProject.pluginManager.hasPlugin("com.gradle.common-custom-user-data-gradle-plugin")) {
-                logWarningMissingCommonCustomUserDataGradlePlugin()
-            }
-            if (!isScanDump) {
-                configureGradleEnterprise(gradle.rootProject.extensions["gradleEnterprise"])
-            }
-        }
-    } else {
-        throw new IllegalStateException("Build validation not supported for Gradle ${GradleVersion.current()}. Upgrade your project's build to Gradle 5 or newer.")
+def CCUD_PLUGIN_ID = 'com.gradle.common-custom-user-data-gradle-plugin'
+def CCUD_PLUGIN_CLASS = 'com.gradle.CommonCustomUserDataGradlePlugin'
+
+def isTopLevelBuild = !gradle.parent
+if (!isTopLevelBuild) {
+    return
+}
+
+def getInputParam = { String name ->
+    def envVarName = name.toUpperCase().replace('.', '_').replace('-', '_')
+    return System.getProperty(name) ?: System.getenv(envVarName)
+}
+
+def geUrl = getInputParam('com.gradle.enterprise.build_validation.gradle-enterprise.url')
+def geAllowUntrustedServer = Boolean.parseBoolean(getInputParam('com.gradle.enterprise.build_validation.gradle-enterprise.allow-untrusted-server'))
+def gePluginVersion = getInputParam('com.gradle.enterprise.build_validation.gradle-enterprise.plugin.version')
+def ccudPluginVersion = getInputParam('com.gradle.enterprise.build_validation.ccud.plugin.version')
+
+def atLeastGradle4 = GradleVersion.current() >= GradleVersion.version('4.0')
+
+// finish early if configuration parameters passed in via system properties are not valid/supported
+if (ccudPluginVersion && isNotAtLeast(ccudPluginVersion, '1.7')) {
+    logger.warn("Common Custom User Data Gradle plugin must be at least 1.7. Configured version is $ccudPluginVersion.")
+    return
+}
+
+// register build scan listeners to capture build scan URL/id and to track publishing errors
+def registerBuildScanActions = { def buildScan ->
+    def scanFile = new File(experimentDir, 'build-scans.csv')
+    buildScan.buildScanPublished { publishedBuildScan ->
+        def buildScanUri = publishedBuildScan.buildScanUri
+        def buildScanId = publishedBuildScan.buildScanId
+        def port = (buildScanUri.port != -1) ? ':' + buildScanUri.port : ''
+        def baseUrl = "${buildScanUri.scheme}://${buildScanUri.host}${port}"
+        scanFile.append("${baseUrl},${buildScanUri},${buildScanId}\n")
+    }
+
+    def errorFile = new File(experimentDir, 'build-scan-publish-error.txt')
+    buildScan.onError { error ->
+        errorFile.text = error
     }
 }
 
-void configureGradleEnterprise(gradleEnterprise) {
-    gradleEnterprise.with {
-        buildScan {
-            def projectProperties = gradle.startParameter.projectProperties
-            if (projectProperties.containsKey("com.gradle.enterprise.build_validation.server")) {
-                server = projectProperties.get("com.gradle.enterprise.build_validation.server")
-            }
-
-            if (!server) {
-                throw new IllegalStateException("A Gradle Enterprise server URL has not been configured.", null)
-            }
-
-            // captureTaskInputFiles = true (too late to be set here for Gradle 5, set via sys prop)
-            uploadInBackground = false
-            publishAlways()
-        }
-        addCustomData(buildScan)
-    }
+// configure build scan publishing behavior
+def configureBuildScanPublishing = { def buildScan ->
+    buildScan.publishAlways()
+    // buildScan.captureTaskInputFiles = true // too late to be set here for Gradle 5, set via sys prop
+    if (buildScan.metaClass.respondsTo(buildScan, 'setUploadInBackground', Boolean)) buildScan.uploadInBackground = false // uploadInBackground not available for build-scan-plugin 1.16
 }
 
-void addCustomData(buildScan) {
+// add custom data identifying the experiment
+def addBuildScanCustomData = { def buildScan ->
     def projectProperties = gradle.startParameter.projectProperties
 
     def expId = projectProperties.get("com.gradle.enterprise.build_validation.expId")
@@ -83,19 +113,125 @@ void addCustomData(buildScan) {
     addCustomValueAndSearchLink(buildScan, "Experiment run id", runId)
 }
 
-void addCustomValueAndSearchLink(buildScan, String label, String value) {
-    buildScan.value(label, value)
-    String server = buildScan.server
-    String searchParams = "search.names=" + urlEncode(label) + "&search.values=" + urlEncode(value)
-    String url = appendIfMissing(server, "/") + "scans?" + searchParams + "#selection.buildScanB=" + urlEncode("{SCAN_ID}")
-    buildScan.link(label + " build scans", url)
+// configure build scan behavior and optionally apply the GE / Build Scan / CCUD plugin
+if (GradleVersion.current() < GradleVersion.version('6.0')) {
+    //noinspection GroovyAssignabilityCheck
+    rootProject {
+        buildscript.configurations.getByName("classpath").incoming.afterResolve { ResolvableDependencies incoming ->
+            def resolutionResult = incoming.resolutionResult
+
+            def scanPluginComponent = resolutionResult.allComponents.find {
+                it.moduleVersion.with { group == "com.gradle" && (name == "build-scan-plugin" || name == "gradle-enterprise-gradle-plugin") }
+            }
+
+            if (gePluginVersion) {
+                if (!scanPluginComponent) {
+                    logger.quiet("Applying $BUILD_SCAN_PLUGIN_CLASS via init script")
+                    logger.quiet("Connection to Gradle Enterprise: $geUrl, allowUntrustedServer: $geAllowUntrustedServer")
+                    pluginManager.apply(initscript.classLoader.loadClass(BUILD_SCAN_PLUGIN_CLASS))
+                    if (geUrl) buildScan.server = geUrl
+                    if (geAllowUntrustedServer) buildScan.allowUntrustedServer = geAllowUntrustedServer
+                }
+            } else {
+                if (!scanPluginComponent) {
+                    throw new IllegalStateException("The com.gradle.build-scan plugin is missing from the project.\n" +
+                            "Either apply it directly (see https://docs.gradle.com/enterprise/gradle-plugin/#gradle_5_x) to the project,\n" +
+                            "or use `--enable-gradle-enterprise` when running the build validation script.")
+                }
+            }
+
+            def ccudPluginComponent = resolutionResult.allComponents.find {
+                it.moduleVersion.with { group == "com.gradle" && name == "common-custom-user-data-gradle-plugin" }
+            }
+
+            if (ccudPluginVersion && atLeastGradle4) {
+                if (!ccudPluginComponent) {
+                    logger.quiet("Applying $CCUD_PLUGIN_CLASS via init script")
+                    pluginManager.apply(initscript.classLoader.loadClass(CCUD_PLUGIN_CLASS))
+                }
+            } else {
+                if (!ccudPluginComponent) {
+                    logWarningMissingCommonCustomUserDataGradlePlugin()
+                }
+            }
+        }
+
+        pluginManager.withPlugin(BUILD_SCAN_PLUGIN_ID) {
+            afterEvaluate {
+                if (geUrl) buildScan.server = geUrl
+                if (geAllowUntrustedServer) buildScan.allowUntrustedServer = geAllowUntrustedServer
+
+                registerBuildScanActions(buildScan)
+                addBuildScanCustomData(buildScan)
+                configureBuildScanPublishing(buildScan)
+            }
+        }
+    }
+} else {
+    gradle.settingsEvaluated { settings ->
+        if (gePluginVersion) {
+            if (!settings.pluginManager.hasPlugin(GRADLE_ENTERPRISE_PLUGIN_ID)) {
+                logger.quiet("Applying $GRADLE_ENTERPRISE_PLUGIN_CLASS via init script")
+                logger.quiet("Connection to Gradle Enterprise: $geUrl, allowUntrustedServer: $geAllowUntrustedServer")
+                settings.pluginManager.apply(initscript.classLoader.loadClass(GRADLE_ENTERPRISE_PLUGIN_CLASS))
+                extensionsWithPublicType(settings, GRADLE_ENTERPRISE_EXTENSION_CLASS).collect { settings[it.name] }.each { ext ->
+                    if (geUrl) ext.server = geUrl
+                    if (geAllowUntrustedServer) ext.allowUntrustedServer = geAllowUntrustedServer
+                }
+            }
+        } else {
+            if (!settings.pluginManager.hasPlugin(GRADLE_ENTERPRISE_PLUGIN_ID)) {
+                throw new IllegalStateException("The com.gradle.enterprise plugin is missing from the project.\n" +
+                        "Either apply it directly (see https://docs.gradle.com/enterprise/gradle-plugin/#gradle_6_x_and_later),\n" +
+                        "or use `--enable-gradle-enterprise` when running the build validation script.")
+            }
+        }
+
+        if (ccudPluginVersion) {
+            if (!settings.pluginManager.hasPlugin(CCUD_PLUGIN_ID)) {
+                logger.quiet("Applying $CCUD_PLUGIN_CLASS via init script")
+                settings.pluginManager.apply(initscript.classLoader.loadClass(CCUD_PLUGIN_CLASS))
+            }
+        } else {
+            if (!settings.pluginManager.hasPlugin(CCUD_PLUGIN_ID)) {
+                logWarningMissingCommonCustomUserDataGradlePlugin()
+            }
+        }
+
+        extensionsWithPublicType(settings, GRADLE_ENTERPRISE_EXTENSION_CLASS).collect { settings[it.name] }.each { ext ->
+            if (geUrl) ext.server = geUrl
+            if (geAllowUntrustedServer) ext.allowUntrustedServer = geAllowUntrustedServer
+
+            registerBuildScanActions(ext.buildScan)
+            addBuildScanCustomData(ext.buildScan)
+            configureBuildScanPublishing(ext.buildScan)
+        }
+    }
 }
 
-String appendIfMissing(String str, String suffix) {
+static def extensionsWithPublicType(def container, String publicType) {
+    container.extensions.extensionsSchema.elements.findAll { it.publicType.concreteClass.name == publicType }
+}
+
+static boolean isNotAtLeast(String versionUnderTest, String referenceVersion) {
+    GradleVersion.version(versionUnderTest) < GradleVersion.version(referenceVersion)
+}
+
+static void addCustomValueAndSearchLink(buildScan, String label, String value) {
+    buildScan.value(label, value)
+    if (buildScan.metaClass.respondsTo(buildScan, 'getServer')) { // required for Gradle 4.x / build-scan-plugin 1.16
+        String server = buildScan.server
+        String searchParams = "search.names=" + urlEncode(label) + "&search.values=" + urlEncode(value)
+        String url = appendIfMissing(server, "/") + "scans?" + searchParams + "#selection.buildScanB=" + urlEncode("{SCAN_ID}")
+        buildScan.link(label + " build scans", url)
+    }
+}
+
+static String appendIfMissing(String str, String suffix) {
     return str.endsWith(suffix) ? str : str + suffix
 }
 
-String urlEncode(String str) {
+static String urlEncode(String str) {
     return URLEncoder.encode(str, StandardCharsets.UTF_8.name())
 }
 
@@ -106,11 +242,6 @@ void logWarningMissingCommonCustomUserDataGradlePlugin() {
 void logWarning(String warning) {
     def warningFile = new File(experimentDir, "warnings.txt")
     warningFile.append(warning + "\n")
-}
-
-void clearWarnings() {
-    def warningFile = new File(experimentDir, "warnings.txt")
-    warningFile.delete()
 }
 
 File getExperimentDir() {
