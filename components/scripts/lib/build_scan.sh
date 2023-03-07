@@ -17,7 +17,7 @@ read_build_scan_metadata() {
     local build_scan_metadata
     build_scan_metadata=$(< "${BUILD_SCAN_FILE}")
 
-    if [[ "$_arg_debug" == "on" ]]; then
+    if [[ "${debug_mode}" == "on" ]]; then
       debug "Raw Build Scan metadata (build-scans.csv)"
       debug "---------------------------"
       debug "${build_scan_metadata}"
@@ -45,7 +45,7 @@ fetch_and_read_build_scan_data() {
 
   local args=()
 
-  if [[ "$_arg_debug" == "on" ]]; then
+  if [[ "${debug_mode}" == "on" ]]; then
     args+=("--debug")
   fi
 

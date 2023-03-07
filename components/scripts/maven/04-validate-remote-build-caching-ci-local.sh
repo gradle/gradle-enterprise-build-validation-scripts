@@ -499,7 +499,7 @@ generate_command_to_repeat_experiment() {
     cmd+=("-f")
   fi
 
-  if [[ "${_arg_debug}" == "on" ]]; then
+  if [[ "${debug_mode}" == "on" ]]; then
     cmd+=("--debug")
   fi
 

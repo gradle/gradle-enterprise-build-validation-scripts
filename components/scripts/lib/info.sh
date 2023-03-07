@@ -24,7 +24,7 @@ warn() {
 }
 
 debug() {
-  if [[ "$_arg_debug" == "on" ]]; then
+  if [[ "${debug_mode}" == "on" ]]; then
     echo "${DEBUG_COLOR}$*${RESTORE}"
   fi
 }
@@ -48,7 +48,7 @@ comparison_summary_row() {
 }
 
 print_bl() {
-  if [[ "$_arg_debug" == "on" ]]; then
+  if [[ "${debug_mode}" == "on" ]]; then
     debug "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
   else
     echo
