@@ -97,7 +97,7 @@ def registerBuildScanActions = { def buildScan ->
 // configure build scan publishing behavior
 def configureBuildScanPublishing = { def buildScan ->
     buildScan.publishAlways()
-    buildScan.captureTaskInputFiles = true // too late to be set here for Gradle 5, set via sys prop
+    // buildScan.captureTaskInputFiles = true // too late to be set here for Gradle 5, set via sys prop
     if (buildScan.metaClass.respondsTo(buildScan, 'setUploadInBackground', Boolean)) buildScan.uploadInBackground = false // uploadInBackground not available for build-scan-plugin 1.16
 }
 
