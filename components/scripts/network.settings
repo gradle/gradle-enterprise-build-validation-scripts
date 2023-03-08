@@ -17,3 +17,7 @@
 
 # Uncomment to disable SSL certificate validation when connecting to the Gradle Enterprise server
 #ssl.allowUntrustedServer=true
+
+# Uncomment to use a custom connect or read timeout when fetching Build Scan data
+#connect.timeout=PT5S
+#read.timeout=PT30S

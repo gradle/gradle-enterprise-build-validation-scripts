@@ -22,6 +22,7 @@ import java.math.BigDecimal;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.time.Duration;
+import java.time.format.DateTimeParseException;
 import java.util.AbstractMap;
 import java.util.Arrays;
 import java.util.List;
@@ -61,6 +62,7 @@ public class GradleEnterpriseApiClient {
 
         configureSsl(httpClientBuilder);
         configureProxyAuthentication(httpClientBuilder);
+        configureTimeouts(httpClientBuilder);
 
         return httpClientBuilder.build();
     }
@@ -97,6 +99,26 @@ public class GradleEnterpriseApiClient {
 
     private boolean allowUntrustedServer() {
         return Boolean.parseBoolean(System.getProperty("ssl.allowUntrustedServer"));
+    }
+
+    private void configureTimeouts(OkHttpClient.Builder httpClientBuilder) {
+        Duration connectTimeout = parseTimeout("connect.timeout");
+        if (connectTimeout != null) {
+            httpClientBuilder.connectTimeout(connectTimeout);
+        }
+        Duration readTimeout = parseTimeout("read.timeout");
+        if (readTimeout != null) {
+            httpClientBuilder.readTimeout(readTimeout);
+        }
+    }
+
+    private Duration parseTimeout(String key) {
+        String value = System.getProperty(key);
+        try {
+            return value == null ? null : Duration.parse(value);
+        } catch (DateTimeParseException e) {
+            throw new IllegalArgumentException("The value of " + key + " (\"" + value + "\") is not a valid duration.", e);
+        }
     }
 
     public BuildValidationData fetchBuildValidationData(String buildScanId) {
