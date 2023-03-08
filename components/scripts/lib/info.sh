@@ -30,7 +30,7 @@ debug() {
 }
 
 summary_row() {
-    infof "${SUMMARY_FMT}" "$1" "${2:-${WARN_COLOR}<unknown>${RESTORE}}"
+  infof "${SUMMARY_FMT}" "$1" "${2:-${WARN_COLOR}<unknown>${RESTORE}}"
 }
 
 comparison_summary_row() {
@@ -45,6 +45,26 @@ comparison_summary_row() {
   fi
 
   summary_row "${header}" "${value}"
+}
+
+quick_link_row() {
+  local header value unknown_tests unknown_values
+  header="$1"
+  shift
+  value="$1"
+  shift
+  unknown_tests=("$@")
+
+  mark_unknown=false
+  for v in "${unknown_tests[@]}"; do
+    [[ "$v" = "" ]] && mark_unknown=true
+  done
+
+  if [[ "${mark_unknown}" == "true" ]]; then
+    summary_row "${header}" ""
+  else
+    summary_row "${header}" "$value"
+  fi
 }
 
 print_bl() {
@@ -109,13 +129,14 @@ print_summary() {
 }
 
 print_experiment_info() {
-  comparison_summary_row "Project:" "${project_names[@]}"
-  comparison_summary_row "Git repo:" "${git_repos[@]}"
-  comparison_summary_row "Git branch:" "${git_branches[@]}"
-  comparison_summary_row "Git commit id:" "${git_commit_ids[@]}"
+  debug "git repo: 0=${git_repos[0]} 1=${git_repos[1]}"
+  comparison_summary_row "Project:" "${project_names[0]}" "${project_names[1]}"
+  comparison_summary_row "Git repo:" "${git_repos[0]}" "${git_repos[1]}"
+  comparison_summary_row "Git branch:" "${git_branches[0]}" "${git_branches[1]}"
+  comparison_summary_row "Git commit id:" "${git_commit_ids[0]}" "${git_commit_ids[1]}"
   summary_row "Git options:" "${git_options}"
   summary_row "Project dir:" "${project_dir:-<root directory>}"
-  comparison_summary_row "${BUILD_TOOL} ${BUILD_TOOL_TASK}s:" "${requested_tasks[@]}"
+  comparison_summary_row "${BUILD_TOOL} ${BUILD_TOOL_TASK}s:" "${requested_tasks[0]}" "${requested_tasks[1]}"
   summary_row "${BUILD_TOOL} arguments:" "${extra_args:-<none>}"
   summary_row "Experiment:" "${EXP_NO} ${EXP_NAME}"
   summary_row "Experiment id:" "${EXP_SCAN_TAG}"
@@ -271,25 +292,25 @@ print_quick_links() {
 print_gradle_quick_links() {
   info "Investigation Quick Links"
   info "-------------------------"
-  summary_row "Task execution overview:" "${base_urls[0]}/s/${build_scan_ids[1]}/performance/execution"
-  summary_row "Executed tasks timeline:" "${base_urls[0]}/s/${build_scan_ids[1]}/timeline?outcome=success,failed&sort=longest"
-  summary_row "Avoided cacheable tasks:" "${base_urls[0]}/s/${build_scan_ids[1]}/timeline?outcome=from-cache&sort=longest"
-  summary_row "Executed cacheable tasks:" "${base_urls[0]}/s/${build_scan_ids[1]}/timeline?cacheability=cacheable,overlapping-outputs,validation-failure&outcome=success,failed&sort=longest"
-  summary_row "Executed non-cacheable tasks:" "${base_urls[0]}/s/${build_scan_ids[1]}/timeline?cacheability=any-non-cacheable,not:overlapping-outputs,not:validation-failure&outcome=success,failed&sort=longest"
-  summary_row "Build caching statistics:" "${base_urls[0]}/s/${build_scan_ids[1]}/performance/build-cache"
-  summary_row "Task inputs comparison:" "${base_urls[0]}/c/${build_scan_ids[0]}/${build_scan_ids[1]}/task-inputs?cacheability=cacheable"
+  quick_link_row "Task execution overview:" "${base_urls[1]}/s/${build_scan_ids[1]}/performance/execution" "${base_urls[1]}" "${build_scan_ids[1]}"
+  quick_link_row "Executed tasks timeline:" "${base_urls[1]}/s/${build_scan_ids[1]}/timeline?outcome=success,failed&sort=longest" "${base_urls[1]}" "${build_scan_ids[1]}"
+  quick_link_row "Avoided cacheable tasks:" "${base_urls[1]}/s/${build_scan_ids[1]}/timeline?outcome=from-cache&sort=longest" "${base_urls[1]}" "${build_scan_ids[1]}"
+  quick_link_row "Executed cacheable tasks:" "${base_urls[1]}/s/${build_scan_ids[1]}/timeline?cacheability=cacheable,overlapping-outputs,validation-failure&outcome=success,failed&sort=longest" "${base_urls[1]}" "${build_scan_ids[1]}"
+  quick_link_row "Executed non-cacheable tasks:" "${base_urls[1]}/s/${build_scan_ids[1]}/timeline?cacheability=any-non-cacheable,not:overlapping-outputs,not:validation-failure&outcome=success,failed&sort=longest" "${base_urls[1]}" "${build_scan_ids[1]}"
+  quick_link_row "Build caching statistics:" "${base_urls[1]}/s/${build_scan_ids[1]}/performance/build-cache" "${base_urls[1]}" "${build_scan_ids[1]}"
+  quick_link_row "Task inputs comparison:" "${base_urls[1]}/c/${build_scan_ids[0]}/${build_scan_ids[1]}/task-inputs?cacheability=cacheable" "${base_urls[1]}" "${build_scan_ids[0]}" "${build_scan_ids[1]}"
 }
 
 print_maven_quick_links() {
   info "Investigation Quick Links"
   info "-------------------------"
-  summary_row "Goal execution overview:" "${base_urls[0]}/s/${build_scan_ids[1]}/performance/execution"
-  summary_row "Executed goals timeline:" "${base_urls[0]}/s/${build_scan_ids[1]}/timeline?outcome=success,failed&sort=longest"
-  summary_row "Avoided cacheable goals:" "${base_urls[0]}/s/${build_scan_ids[1]}/timeline?outcome=from-cache&sort=longest"
-  summary_row "Executed cacheable goals:" "${base_urls[0]}/s/${build_scan_ids[1]}/timeline?cacheability=cacheable&outcome=success,failed&sort=longest"
-  summary_row "Executed non-cacheable goals:" "${base_urls[0]}/s/${build_scan_ids[1]}/timeline?cacheability=any-non-cacheable&outcome=success,failed&sort=longest"
-  summary_row "Build caching statistics:" "${base_urls[0]}/s/${build_scan_ids[1]}/performance/build-cache"
-  summary_row "Goal inputs comparison:" "${base_urls[0]}/c/${build_scan_ids[0]}/${build_scan_ids[1]}/goal-inputs?cacheability=cacheable"
+  quick_link_row "Goal execution overview:" "${base_urls[0]}/s/${build_scan_ids[1]}/performance/execution" "${base_urls[1]}" "${build_scan_ids[1]}"
+  quick_link_row "Executed goals timeline:" "${base_urls[0]}/s/${build_scan_ids[1]}/timeline?outcome=success,failed&sort=longest" "${base_urls[1]}" "${build_scan_ids[1]}"
+  quick_link_row "Avoided cacheable goals:" "${base_urls[0]}/s/${build_scan_ids[1]}/timeline?outcome=from-cache&sort=longest" "${base_urls[1]}" "${build_scan_ids[1]}"
+  quick_link_row "Executed cacheable goals:" "${base_urls[0]}/s/${build_scan_ids[1]}/timeline?cacheability=cacheable&outcome=success,failed&sort=longest" "${base_urls[1]}" "${build_scan_ids[1]}"
+  quick_link_row "Executed non-cacheable goals:" "${base_urls[0]}/s/${build_scan_ids[1]}/timeline?cacheability=any-non-cacheable&outcome=success,failed&sort=longest" "${base_urls[1]}" "${build_scan_ids[1]}"
+  quick_link_row "Build caching statistics:" "${base_urls[0]}/s/${build_scan_ids[1]}/performance/build-cache" "${base_urls[1]}" "${build_scan_ids[1]}"
+  quick_link_row "Goal inputs comparison:" "${base_urls[0]}/c/${build_scan_ids[0]}/${build_scan_ids[1]}/goal-inputs?cacheability=cacheable" "${base_urls[1]}" "${build_scan_ids[0]}" "${build_scan_ids[1]}"
 }
 
 max_length() {

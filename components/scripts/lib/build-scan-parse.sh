@@ -52,12 +52,13 @@ parse_build_scan_csv() {
       continue;
     fi
 
+    idx="$(find_build_number "$field_4")"
+    debug "Build Scan $field_4 is for build $idx"
     project_names[idx]="$field_1"
 
     if [[ "$build_cache_metrics_only" != "build_cache_metrics_only" ]]; then
       base_urls[idx]="$field_2"
       build_scan_urls[idx]="$field_3"
-      build_scan_ids[idx]="$field_4"
       git_repos[idx]="$field_5"
       git_branches[idx]="$field_6"
       git_commit_ids[idx]="$field_7"
@@ -81,6 +82,17 @@ parse_build_scan_csv() {
     effective_task_execution_duration[idx]="${field_20}"
     serialization_factors[idx]="${field_21}"
 
-    ((idx++))
     done <<< "${build_scan_csv}"
+}
+
+find_build_number() {
+  local build_scan_id
+  build_scan_id="$1"
+
+  idx=0
+  for i in "${!build_scan_ids[@]}"; do
+    [[ "${build_scan_ids[$i]}" == "${build_scan_id}" ]] && idx="$i"
+  done
+
+  echo "$idx"
 }

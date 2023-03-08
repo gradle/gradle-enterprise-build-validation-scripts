@@ -205,7 +205,7 @@ execute_build() {
   info "Running build:"
   info "./gradlew --build-cache --scan -Dscan.tag.${EXP_SCAN_TAG} -Dscan.value.runId=${RUN_ID} clean ${tasks}$(print_extra_args)"
 
-  invoke_gradle "${args[@]}"
+  invoke_gradle 1 "${args[@]}"
 }
 
 # Overrides info.sh#print_experiment_specific_summary_info

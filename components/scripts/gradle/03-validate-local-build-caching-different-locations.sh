@@ -134,20 +134,24 @@ wizard_execute() {
 
 execute_first_build() {
   info "Running first build:"
-  execute_build
+  execute_build 0
 }
 
 execute_second_build() {
   info "Running second build:"
   cd "${EXP_DIR}/second-build_${project_name}" || die "Unable to cd to ${EXP_DIR}/second-build_${project_name}"
-  execute_build
+  execute_build 1
 }
 
 execute_build() {
+  local build_number
+  build_number="$1"
+  shift
+
   print_gradle_command
 
   # shellcheck disable=SC2086  # we want tasks to expand with word splitting in this case
-  invoke_gradle \
+  invoke_gradle "${build_number}" \
      --build-cache \
      --init-script "${INIT_SCRIPTS_DIR}/configure-local-build-caching.gradle" \
      clean ${tasks}
@@ -167,6 +171,18 @@ fetch_build_cache_metrics() {
   else
     find_and_read_build_scan_dumps
   fi
+}
+
+print_quick_links() {
+  info "Investigation Quick Links"
+  info "-------------------------"
+  quick_link_row "Task execution overview:" "${base_urls[1]}/s/${build_scan_ids[1]}/performance/execution" "${base_urls[1]}" "${build_scan_ids[1]}"
+  quick_link_row "Executed tasks timeline:" "${base_urls[1]}/s/${build_scan_ids[1]}/timeline?outcome=success,failed&sort=longest" "${base_urls[1]}" "${build_scan_ids[1]}"
+  quick_link_row "Avoided cacheable tasks:" "${base_urls[1]}/s/${build_scan_ids[1]}/timeline?outcome=from-cache&sort=longest" "${base_urls[1]}" "${build_scan_ids[1]}"
+  quick_link_row "Executed cacheable tasks:" "${base_urls[1]}/s/${build_scan_ids[1]}/timeline?cacheability=cacheable,overlapping-outputs,validation-failure&outcome=success,failed&sort=longest" "${base_urls[1]}" "${build_scan_ids[1]}"
+  quick_link_row "Executed non-cacheable tasks:" "${base_urls[1]}/s/${build_scan_ids[1]}/timeline?cacheability=any-non-cacheable,not:overlapping-outputs,not:validation-failure&outcome=success,failed&sort=longest" "${base_urls[1]}" "${build_scan_ids[1]}"
+  quick_link_row "Build caching statistics:" "${base_urls[1]}/s/${build_scan_ids[1]}/performance/build-cache" "${base_urls[1]}" "${build_scan_ids[1]}"
+  quick_link_row "Task inputs comparison:" "${base_urls[1]}/c/${build_scan_ids[0]}/${build_scan_ids[1]}/task-inputs?cacheability=cacheable" "${base_urls[1]}" "${build_scan_ids[0]}" "${build_scan_ids[1]}"
 }
 
 print_introduction() {

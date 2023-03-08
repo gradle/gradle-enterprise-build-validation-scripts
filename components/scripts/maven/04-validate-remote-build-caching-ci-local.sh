@@ -204,7 +204,7 @@ execute_build() {
   info "./mvnw -Dscan -Dscan.tag.${EXP_SCAN_TAG} -Dscan.value.runId=${RUN_ID} clean ${tasks}$(print_extra_args)"
 
   # shellcheck disable=SC2086  # we want tasks to expand with word splitting in this case
-  invoke_maven "${args[@]}"
+  invoke_maven 1 "${args[@]}"
 }
 
 # Overrides info.sh#print_experiment_specific_summary_info

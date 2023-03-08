@@ -81,11 +81,12 @@ if (ccudPluginVersion && isNotAtLeast(ccudPluginVersion, '1.7')) {
 def registerBuildScanActions = { def buildScan ->
     def scanFile = new File(experimentDir, 'build-scans.csv')
     buildScan.buildScanPublished { publishedBuildScan ->
+        def buildNumber = System.getProperty("com.gradle.enterprise.build_validation.build_number")
         def buildScanUri = publishedBuildScan.buildScanUri
         def buildScanId = publishedBuildScan.buildScanId
         def port = (buildScanUri.port != -1) ? ':' + buildScanUri.port : ''
         def baseUrl = "${buildScanUri.scheme}://${buildScanUri.host}${port}"
-        scanFile.append("${baseUrl},${buildScanUri},${buildScanId}\n")
+        scanFile.append("${buildNumber},${baseUrl},${buildScanUri},${buildScanId}\n")
     }
 
     def errorFile = new File(experimentDir, 'build-scan-publish-error.txt')

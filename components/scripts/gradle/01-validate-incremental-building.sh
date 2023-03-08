@@ -129,18 +129,22 @@ wizard_execute() {
 # shellcheck disable=SC2086 # splitting expected
 execute_first_build() {
   info "Running first build:"
-  execute_build clean ${tasks}
+  execute_build 0 clean ${tasks}
 }
 
 # shellcheck disable=SC2086 # splitting expected
 execute_second_build() {
   info "Running second build:"
-  execute_build ${tasks}
+  execute_build 1 ${tasks}
 }
 
 execute_build() {
+  local build_number
+  build_number="$1"
+  shift
+
   print_gradle_command "$@"
-  invoke_gradle --no-build-cache "$@"
+  invoke_gradle "${build_number}" --no-build-cache "$@"
 }
 
 print_gradle_command() {
