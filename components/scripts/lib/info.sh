@@ -183,8 +183,7 @@ print_instant_build_time_savings() {
 # tasks had been executed.
 print_pending_build_time_savings() {
   local value
-  if [[ -n "${build_time[0]}" && \
-        -n "${build_time[1]}" && \
+  if [[ -n "${build_time[1]}" && \
         -n "${executed_cacheable_duration[1]}" && \
         -n "${serialization_factors[1]}" ]]
   then
