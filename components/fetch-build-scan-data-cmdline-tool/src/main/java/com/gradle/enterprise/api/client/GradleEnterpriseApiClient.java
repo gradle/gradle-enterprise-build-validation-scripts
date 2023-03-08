@@ -258,22 +258,6 @@ public class GradleEnterpriseApiClient {
         return avoidanceOutcome.toString();
     }
 
-    private Duration buildTimeFrom(GradleBuildCachePerformance buildCachePerformance) {
-        return toDuration(buildCachePerformance.getBuildTime());
-    }
-
-    private Duration buildTimeFrom(MavenBuildCachePerformance buildCachePerformance) {
-        return toDuration(buildCachePerformance.getBuildTime());
-    }
-
-    private BigDecimal serializationFactorFrom(GradleBuildCachePerformance buildCachePerformance) {
-        return BigDecimal.valueOf(buildCachePerformance.getSerializationFactor());
-    }
-
-    private BigDecimal serializationFactorFrom(MavenBuildCachePerformance buildCachePerformance) {
-        return BigDecimal.valueOf(buildCachePerformance.getSerializationFactor());
-    }
-
     @NotNull
     private Map<String, TaskExecutionSummary> summarizeTaskExecutions(MavenBuildCachePerformance buildCachePerformance) {
         Map<String, List<MavenBuildCachePerformanceGoalExecutionEntry>> tasksByOutcome = buildCachePerformance.getGoalExecution().stream()
@@ -320,6 +304,22 @@ public class GradleEnterpriseApiClient {
                         summary.totalAvoidanceSavings().plus(toDuration(task.getAvoidanceSavings()))),
                 TaskExecutionSummary::plus
             );
+    }
+
+    private static Duration buildTimeFrom(GradleBuildCachePerformance buildCachePerformance) {
+        return toDuration(buildCachePerformance.getBuildTime());
+    }
+
+    private static Duration buildTimeFrom(MavenBuildCachePerformance buildCachePerformance) {
+        return toDuration(buildCachePerformance.getBuildTime());
+    }
+
+    private static BigDecimal serializationFactorFrom(GradleBuildCachePerformance buildCachePerformance) {
+        return BigDecimal.valueOf(buildCachePerformance.getSerializationFactor());
+    }
+
+    private static BigDecimal serializationFactorFrom(MavenBuildCachePerformance buildCachePerformance) {
+        return BigDecimal.valueOf(buildCachePerformance.getSerializationFactor());
     }
 
     private static Duration toDuration(Long millis) {
