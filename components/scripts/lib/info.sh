@@ -188,10 +188,9 @@ print_pending_build_time_savings() {
         -n "${executed_cacheable_duration[1]}" && \
         -n "${serialization_factors[1]}" ]]
   then
-    local instant_build_time_savings pending_additional_build_time_savings pending_build_time
-    instant_build_time_savings=$((build_time[0]-build_time[1]))
+    local pending_additional_build_time_savings pending_build_time
     pending_additional_build_time_savings=$(echo "${executed_cacheable_duration[1]}/${serialization_factors[1]}" | bc)
-    pending_build_time=$((build_time[0]-instant_build_time_savings-pending_additional_build_time_savings))
+    pending_build_time=$((build_time[1]-pending_additional_build_time_savings))
     printf -v value "%s, %s additional savings" \
       "$(format_duration "${pending_build_time}")" \
       "$(format_duration "${pending_additional_build_time_savings}")"
