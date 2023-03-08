@@ -62,8 +62,11 @@ invoke_maven() {
     args+=("-Dgradle.enterprise.url=${ge_server}")
   fi
 
-  # shellcheck disable=SC2206
-  args+=(${extra_args})
+  # https://stackoverflow.com/a/31485948
+  while IFS= read -r -d ''; do
+    args+=("$REPLY")
+  done < <( xargs printf '%s\0' <<< "$extra_args")
+
   args+=("$@")
 
   debug "Current directory: $(pwd)"
