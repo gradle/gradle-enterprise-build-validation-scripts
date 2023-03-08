@@ -22,6 +22,7 @@ import java.math.BigDecimal;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.time.Duration;
+import java.time.format.DateTimeParseException;
 import java.util.AbstractMap;
 import java.util.Arrays;
 import java.util.List;
@@ -117,7 +118,11 @@ public class GradleEnterpriseApiClient {
             // value is not set
             return null;
         } else {
-            return Duration.parse(value);
+            try {
+                return Duration.parse(value);
+            } catch (DateTimeParseException e) {
+                throw new IllegalArgumentException("The value of " + key + " (\"" + value + "\") is not a valid duration.");
+            }
         }
     }
 
