@@ -129,7 +129,6 @@ print_summary() {
 }
 
 print_experiment_info() {
-  debug "git repo: 0=${git_repos[0]} 1=${git_repos[1]}"
   comparison_summary_row "Project:" "${project_names[0]}" "${project_names[1]}"
   comparison_summary_row "Git repo:" "${git_repos[0]}" "${git_repos[1]}"
   comparison_summary_row "Git branch:" "${git_branches[0]}" "${git_branches[1]}"
