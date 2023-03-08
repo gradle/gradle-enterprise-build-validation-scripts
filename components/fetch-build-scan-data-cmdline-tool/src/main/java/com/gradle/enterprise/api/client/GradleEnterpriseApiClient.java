@@ -117,7 +117,7 @@ public class GradleEnterpriseApiClient {
             // value is not set
             return null;
         } else {
-            return Duration.parse(key);
+            return Duration.parse(value);
         }
     }
 
