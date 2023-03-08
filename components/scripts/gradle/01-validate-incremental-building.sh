@@ -165,7 +165,9 @@ fetch_build_cache_metrics() {
 print_performance_characteristics() {
   print_performance_characteristics_header
 
-  print_realized_build_time_savings
+  print_initial_build_time
+
+  print_instant_build_time_savings
 
   print_serialization_factor
 }
