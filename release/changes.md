@@ -1,6 +1,9 @@
-- [NEW] Include realized build time savings in all experiment summaries
+- [NEW] Include instant build time savings in all experiment summaries
 - [NEW] Include serialization factor in all experiment summaries
+- [NEW] Use renamed query parameters in links to timeline view in all experiment summaries
+- [NEW] Construct more precise query parameters in links to timeline view in all experiment summaries
 - [NEW] Support `-x` command line option for Gradle experiment 1
-- [FIX] Incorrect parsing of additional argument values containing spaces
 - [NEW] Add configuration settings to control the connect and read timeouts when fetching Build Scan data
+- [FIX] Incorrect parsing of additional argument values containing spaces
+
 
