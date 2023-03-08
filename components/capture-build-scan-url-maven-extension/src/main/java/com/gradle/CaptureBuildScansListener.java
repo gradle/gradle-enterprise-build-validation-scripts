@@ -71,7 +71,7 @@ public class CaptureBuildScansListener implements GradleEnterpriseListener {
     private void capturePublishedBuildScan(BuildScanApi buildScan) {
         buildScan.buildScanPublished(scan -> {
             logger.debug("Saving build scan data to build-scans.csv");
-            String buildNumber = System.getProperty("com.gradle.enterprise.build_validation.build_number");
+            String buildNumber = System.getProperty("com.gradle.enterprise.build_validation.buildNumber");
             String port = scan.getBuildScanUri().getPort() != -1 ? ":" + scan.getBuildScanUri().getPort() : "";
             String baseUrl = String.format("%s://%s%s", scan.getBuildScanUri().getScheme(), scan.getBuildScanUri().getHost(), port);
 

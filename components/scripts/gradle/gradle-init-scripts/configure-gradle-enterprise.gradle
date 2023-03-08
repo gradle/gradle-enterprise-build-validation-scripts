@@ -81,7 +81,7 @@ if (ccudPluginVersion && isNotAtLeast(ccudPluginVersion, '1.7')) {
 def registerBuildScanActions = { def buildScan ->
     def scanFile = new File(experimentDir, 'build-scans.csv')
     buildScan.buildScanPublished { publishedBuildScan ->
-        def buildNumber = System.getProperty("com.gradle.enterprise.build_validation.build_number")
+        def buildNumber = System.getProperty("com.gradle.enterprise.build_validation.buildNumber")
         def buildScanUri = publishedBuildScan.buildScanUri
         def buildScanId = publishedBuildScan.buildScanId
         def port = (buildScanUri.port != -1) ? ':' + buildScanUri.port : ''

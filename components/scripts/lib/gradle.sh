@@ -13,7 +13,7 @@ invoke_gradle() {
   fi
 
   args+=(--init-script "${INIT_SCRIPTS_DIR}/configure-gradle-enterprise.gradle")
-  args+=("-Dcom.gradle.enterprise.build_validation.build_number=${build_number}")
+  args+=("-Dcom.gradle.enterprise.build_validation.buildNumber=${build_number}")
 
   if [ "$enable_ge" == "on" ]; then
     args+=("-Dcom.gradle.enterprise.build_validation.gradle.plugin-repository.url=https://plugins.gradle.org/m2")
