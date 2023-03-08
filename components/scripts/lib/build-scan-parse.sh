@@ -96,3 +96,31 @@ find_build_number() {
 
   echo "$idx"
 }
+
+parse_build_scan_url() {
+  # From https://stackoverflow.com/a/63993578/106189
+  # See also https://stackoverflow.com/a/45977232/106189
+  readonly URI_REGEX='^(([^:/?#]+):)?(//((([^:/?#]+)@)?([^:/?#]+)(:([0-9]+))?))?((/|$)([^?#]*))(\?([^#]*))?(#(.*))?$'
+  #                    ↑↑            ↑  ↑↑↑            ↑         ↑ ↑            ↑↑    ↑        ↑  ↑        ↑ ↑
+  #                    ||            |  |||            |         | |            ||    |        |  |        | |
+  #                    |2 scheme     |  ||6 userinfo   7 host    | 9 port       ||    12 rpath |  14 query | 16 fragment
+  #                    1 scheme:     |  |5 userinfo@             8 :...         ||             13 ?...     15 #...
+  #                                  |  4 authority                             |11 / or end-of-string
+  #                                  3  //...                                   10 path
+
+  local build_scan_url build_number protocol ge_host port build_scan_id
+  build_scan_url="$1"
+  build_number="$2"
+
+  if [[ "${build_scan_url}" =~ $URI_REGEX ]]; then
+    protocol="${BASH_REMATCH[2]}"
+    ge_host="${BASH_REMATCH[7]}"
+    port="${BASH_REMATCH[8]}"
+    build_scan_id="$(basename "${BASH_REMATCH[10]}")"
+
+    base_urls[build_number]="${protocol}://${ge_host}${port}"
+    build_scan_ids[build_number]="$build_scan_id"
+  else
+    die "${build_scan_url} is not a parsable URL." "${INVALID_INPUT}"
+  fi
+}

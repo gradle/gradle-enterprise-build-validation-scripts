@@ -148,6 +148,7 @@ validate_required_args() {
 }
 
 fetch_build_params_from_build_scan() {
+  parse_build_scan_url "${ci_build_scan_url}" 0
   fetch_and_read_build_scan_data all_data "${ci_build_scan_url}"
   read_build_params_from_build_scan_data
 }
