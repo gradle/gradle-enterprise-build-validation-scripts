@@ -306,6 +306,21 @@ public class GradleEnterpriseApiClient {
             );
     }
 
+    private static Duration toDuration(Long millis) {
+        if (millis == null) {
+            return Duration.ZERO;
+        }
+        return Duration.ofMillis(millis);
+    }
+
+    private static Map<String, TaskExecutionSummary> toTotalAvoidedFromCache(Map<String, TaskExecutionSummary> summariesByOutcome) {
+        TaskExecutionSummary fromLocalCache = summariesByOutcome.getOrDefault("avoided_from_local_cache", TaskExecutionSummary.ZERO);
+        TaskExecutionSummary fromRemoteCache = summariesByOutcome.getOrDefault("avoided_from_remote_cache", TaskExecutionSummary.ZERO);
+
+        summariesByOutcome.put("avoided_from_cache", fromLocalCache.plus(fromRemoteCache));
+        return summariesByOutcome;
+    }
+
     private static Duration buildTimeFrom(GradleBuildCachePerformance buildCachePerformance) {
         return toDuration(buildCachePerformance.getBuildTime());
     }
@@ -320,20 +335,5 @@ public class GradleEnterpriseApiClient {
 
     private static BigDecimal serializationFactorFrom(MavenBuildCachePerformance buildCachePerformance) {
         return BigDecimal.valueOf(buildCachePerformance.getSerializationFactor());
-    }
-
-    private static Duration toDuration(Long millis) {
-        if (millis == null) {
-            return Duration.ZERO;
-        }
-        return Duration.ofMillis(millis);
-    }
-
-    private static Map<String, TaskExecutionSummary> toTotalAvoidedFromCache(Map<String, TaskExecutionSummary> summariesByOutcome) {
-        TaskExecutionSummary fromLocalCache = summariesByOutcome.getOrDefault("avoided_from_local_cache", TaskExecutionSummary.ZERO);
-        TaskExecutionSummary fromRemoteCache = summariesByOutcome.getOrDefault("avoided_from_remote_cache", TaskExecutionSummary.ZERO);
-
-        summariesByOutcome.put("avoided_from_cache", fromLocalCache.plus(fromRemoteCache));
-        return summariesByOutcome;
     }
 }
