@@ -27,7 +27,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 import static com.gradle.enterprise.api.model.GradleBuildCachePerformanceTaskExecutionEntry.AvoidanceOutcomeEnum.EXECUTED_CACHEABLE;
@@ -102,33 +101,23 @@ public class GradleEnterpriseApiClient {
     }
 
     private void configureTimeouts(OkHttpClient.Builder httpClientBuilder) {
-        Long connectTimeout = parseTimeoutValue("timeout.connect");
+        Duration connectTimeout = parseTimeout("connect.timeout");
         if (connectTimeout != null) {
-            httpClientBuilder.connectTimeout(connectTimeout, TimeUnit.MILLISECONDS);
+            httpClientBuilder.connectTimeout(connectTimeout);
         }
-        Long readTimeout = parseTimeoutValue("timeout.read");
+        Duration readTimeout = parseTimeout("read.timeout");
         if (readTimeout != null) {
-            httpClientBuilder.readTimeout(readTimeout, TimeUnit.MILLISECONDS);
+            httpClientBuilder.readTimeout(readTimeout);
         }
     }
 
-    private Long parseTimeoutValue(String key) {
+    private Duration parseTimeout(String key) {
         String value = System.getProperty(key);
         if (value == null) {
             // value is not set
             return null;
         } else {
-            try {
-                long longValue = Long.parseLong(value);
-                if (longValue < 0) {
-                    throw new IllegalArgumentException("Timeout value cannot be negative");
-                }
-                return longValue;
-            } catch (IllegalArgumentException e) {
-                logger.error(String.format("Value of %s is not a valid timeout. Should be a non-negative long value. " +
-                        "Default http client value will be used", key), e);
-                return null;
-            }
+            return Duration.parse(key);
         }
     }
 

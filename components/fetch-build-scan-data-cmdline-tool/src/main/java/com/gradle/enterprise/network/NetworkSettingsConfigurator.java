@@ -44,7 +44,7 @@ public class NetworkSettingsConfigurator {
     }
 
     private static boolean isTimeoutProperty(String key) {
-        return key.startsWith("timeout");
+        return key.startsWith("connect") || key.startsWith("read");
     }
 
     private static Properties loadProperties(Path propertiesFile) throws IOException {
