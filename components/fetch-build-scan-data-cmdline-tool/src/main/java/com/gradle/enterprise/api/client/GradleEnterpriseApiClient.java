@@ -114,15 +114,10 @@ public class GradleEnterpriseApiClient {
 
     private Duration parseTimeout(String key) {
         String value = System.getProperty(key);
-        if (value == null) {
-            // value is not set
-            return null;
-        } else {
-            try {
-                return Duration.parse(value);
-            } catch (DateTimeParseException e) {
-                throw new IllegalArgumentException("The value of " + key + " (\"" + value + "\") is not a valid duration.");
-            }
+        try {
+            return value == null ? null : Duration.parse(value);
+        } catch (DateTimeParseException e) {
+            throw new IllegalArgumentException("The value of " + key + " (\"" + value + "\") is not a valid duration.", e);
         }
     }
 
