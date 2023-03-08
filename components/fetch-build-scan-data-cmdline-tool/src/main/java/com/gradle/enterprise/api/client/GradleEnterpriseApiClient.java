@@ -139,7 +139,7 @@ public class GradleEnterpriseApiClient {
                     buildOutcomeFrom(attributes),
                     remoteBuildCacheUrlFrom(buildCachePerformance),
                     summarizeTaskExecutions(buildCachePerformance),
-                    toDuration(buildCachePerformance.getEffectiveTaskExecutionTime()),
+                    toDuration(buildCachePerformance.getBuildTime()),
                     BigDecimal.valueOf(buildCachePerformance.getSerializationFactor())
                 );
             }
@@ -158,7 +158,7 @@ public class GradleEnterpriseApiClient {
                     buildOutcomeFrom(attributes),
                     remoteBuildCacheUrlFrom(buildCachePerformance),
                     summarizeTaskExecutions(buildCachePerformance),
-                    toDuration(buildCachePerformance.getEffectiveProjectExecutionTime()),
+                    toDuration(buildCachePerformance.getBuildTime()),
                     BigDecimal.valueOf(buildCachePerformance.getSerializationFactor())
                 );
             }

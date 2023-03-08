@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-readonly SUMMARY_FMT="%-30s%s"
+readonly SUMMARY_FMT="%-33s%s"
 readonly ORDINALS=( first second third fourth fifth sixth seventh eighth ninth tenth )
 
 warnings=()
@@ -158,9 +158,11 @@ print_experiment_specific_summary_info() {
 print_performance_characteristics() {
   print_performance_characteristics_header
 
-  print_realized_build_time_savings
+  print_initial_build_time
 
-  print_potential_build_time_savings
+  print_instant_build_time_savings
+
+  print_pending_build_time_savings
 
   print_build_caching_leverage_metrics
 
@@ -175,45 +177,44 @@ print_performance_characteristics_header() {
   info "---------------------------"
 }
 
-# The _realized_ build time savings is the difference in the wall-clock build
-# time between the first and second build.
-print_realized_build_time_savings() {
+# The _initial_ build time is the build time of the first build.
+print_initial_build_time() {
   local value
-  # Only calculate realized build time savings when these values exist
-  # These values can be returned as empty when an error occurs processing the Build Scan data
-  if [[ -n "${effective_task_execution_duration[0]}" && -n "${effective_task_execution_duration[1]}" ]]; then
-    local realized_build_time_savings=$((effective_task_execution_duration[0]-effective_task_execution_duration[1]))
-    printf -v value "%s wall-clock time (from %s to %s)" \
-      "$(format_duration "${realized_build_time_savings}")" \
-      "$(format_duration "${effective_task_execution_duration[0]}")" \
-      "$(format_duration "${effective_task_execution_duration[1]}")"
+  if [[ -n "${build_time[0]}" ]]; then
+    value="$(format_duration "${build_time[0]}")"
   fi
-  summary_row "Realized build time savings:" "${value}"
+  summary_row "Initial build time:" "${value}"
 }
 
-# The _potential_ build time savings is the difference in wall-clock build time
-# between the first build and the _potential_ build time of the second build.
-#
-# The _potential_ build time is an estimation of the build time if no cacheable
-# tasks had been executed.
-print_potential_build_time_savings() {
+# The _instant_ build time savings is the difference in the wall-clock build
+# time between the first and second build.
+print_instant_build_time_savings() {
   local value
-  # Only calculate realized build time savings when these values exist
-  # These values can be returned as empty when an error occurs processing the Build Scan data
-  if [[ -n "${effective_task_execution_duration[0]}" && \
-        -n "${effective_task_execution_duration[1]}" && \
+  if [[ -n "${build_time[0]}" && -n "${build_time[1]}" ]]; then
+    local instant_build_time_savings=$((build_time[0]-build_time[1]))
+    printf -v value "%s, %s savings" \
+      "$(format_duration "${build_time[1]}")" \
+      "$(format_duration "${instant_build_time_savings}")"
+  fi
+  summary_row "Build time with instant savings:" "${value}"
+}
+
+# The _pending_ build time is an estimation of the build time if all cacheable
+# tasks had been avoided.
+print_pending_build_time_savings() {
+  local value
+  if [[ -n "${build_time[1]}" && \
         -n "${executed_cacheable_duration[1]}" && \
         -n "${serialization_factors[1]}" ]]
   then
-    local potential_build_time potential_build_time_savings
-    potential_build_time=$(echo "${effective_task_execution_duration[1]}-(${executed_cacheable_duration[1]}/${serialization_factors[1]})" | bc)
-    potential_build_time_savings=$((effective_task_execution_duration[0]-potential_build_time))
-    printf -v value "%s wall-clock time (from %s to %s)" \
-      "$(format_duration "${potential_build_time_savings}")" \
-      "$(format_duration "${effective_task_execution_duration[0]}")" \
-      "$(format_duration "${potential_build_time}")"
+    local pending_additional_build_time_savings pending_build_time
+    pending_additional_build_time_savings=$(echo "${executed_cacheable_duration[1]}/${serialization_factors[1]}" | bc)
+    pending_build_time=$((build_time[1]-pending_additional_build_time_savings))
+    printf -v value "%s, %s additional savings" \
+      "$(format_duration "${pending_build_time}")" \
+      "$(format_duration "${pending_additional_build_time_savings}")"
   fi
-  summary_row "Potential build time savings:" "${value}"
+  summary_row "Build time with pending savings:" "${value}"
 }
 
 print_build_caching_leverage_metrics() {
