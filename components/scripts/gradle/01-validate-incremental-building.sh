@@ -174,8 +174,8 @@ print_quick_links() {
   info "Investigation Quick Links"
   info "-------------------------"
   summary_row "Task execution overview:" "${base_urls[0]}/s/${build_scan_ids[1]}/performance/execution"
-  summary_row "Executed tasks timeline:" "${base_urls[0]}/s/${build_scan_ids[1]}/timeline?outcome=SUCCESS,FAILED&sort=longest"
-  summary_row "Uptodate tasks:" "${base_urls[0]}/s/${build_scan_ids[1]}/timeline?outcome=UP-TO-DATE&sort=longest"
+  summary_row "Executed tasks timeline:" "${base_urls[0]}/s/${build_scan_ids[1]}/timeline?outcome=success,failed&sort=longest"
+  summary_row "Uptodate tasks:" "${base_urls[0]}/s/${build_scan_ids[1]}/timeline?outcome=up-to-date&sort=longest"
   summary_row "Task inputs comparison:" "${base_urls[0]}/c/${build_scan_ids[0]}/${build_scan_ids[1]}/task-inputs"
 }
 
