@@ -22,7 +22,7 @@ public class BuildValidationData {
     private final String buildOutcome;
     private final URL remoteBuildCacheUrl;
     private final Map<String, TaskExecutionSummary> tasksByAvoidanceOutcome;
-    private final Duration effectiveTaskExecutionDuration;
+    private final Duration buildTime;
     private final BigDecimal serializationFactor;
 
     public BuildValidationData(
@@ -36,7 +36,7 @@ public class BuildValidationData {
             String buildOutcome,
             URL remoteBuildCacheUrl,
             Map<String, TaskExecutionSummary> tasksByAvoidanceOutcome,
-            Duration effectiveTaskExecutionDuration,
+            Duration buildTime,
             BigDecimal serializationFactor) {
         this.rootProjectName = rootProjectName;
         this.buildScanId = buildScanId;
@@ -48,7 +48,7 @@ public class BuildValidationData {
         this.buildOutcome = buildOutcome;
         this.remoteBuildCacheUrl = remoteBuildCacheUrl;
         this.tasksByAvoidanceOutcome = tasksByAvoidanceOutcome;
-        this.effectiveTaskExecutionDuration = effectiveTaskExecutionDuration;
+        this.buildTime = buildTime;
         this.serializationFactor = serializationFactor;
     }
 
@@ -127,8 +127,8 @@ public class BuildValidationData {
         return tasksByAvoidanceOutcome;
     }
 
-    public Duration getEffectiveTaskExecutionDuration() {
-        return effectiveTaskExecutionDuration;
+    public Duration getBuildTime() {
+        return buildTime;
     }
 
     public BigDecimal getSerializationFactor() {

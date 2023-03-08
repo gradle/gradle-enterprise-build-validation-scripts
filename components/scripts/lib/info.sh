@@ -160,8 +160,8 @@ print_performance_characteristics_header() {
 # The _initial_ build time is the build time of the first build.
 print_initial_build_time() {
   local value
-  if [[ -n "${effective_task_execution_duration[0]}" ]]; then
-    value="$(format_duration "${effective_task_execution_duration[0]}")"
+  if [[ -n "${build_time[0]}" ]]; then
+    value="$(format_duration "${build_time[0]}")"
   fi
   summary_row "Initial build time:" "${value}"
 }
@@ -170,10 +170,10 @@ print_initial_build_time() {
 # time between the first and second build.
 print_instant_build_time_savings() {
   local value
-  if [[ -n "${effective_task_execution_duration[0]}" && -n "${effective_task_execution_duration[1]}" ]]; then
-    local instant_build_time_savings=$((effective_task_execution_duration[0]-effective_task_execution_duration[1]))
+  if [[ -n "${build_time[0]}" && -n "${build_time[1]}" ]]; then
+    local instant_build_time_savings=$((build_time[0]-build_time[1]))
     printf -v value "%s, %s savings" \
-      "$(format_duration "${effective_task_execution_duration[1]}")" \
+      "$(format_duration "${build_time[1]}")" \
       "$(format_duration "${instant_build_time_savings}")"
   fi
   summary_row "Build time with instant savings:" "${value}"
@@ -183,15 +183,15 @@ print_instant_build_time_savings() {
 # tasks had been executed.
 print_pending_build_time_savings() {
   local value
-  if [[ -n "${effective_task_execution_duration[0]}" && \
-        -n "${effective_task_execution_duration[1]}" && \
+  if [[ -n "${build_time[0]}" && \
+        -n "${build_time[1]}" && \
         -n "${executed_cacheable_duration[1]}" && \
         -n "${serialization_factors[1]}" ]]
   then
     local instant_build_time_savings pending_additional_build_time_savings pending_build_time
-    instant_build_time_savings=$((effective_task_execution_duration[0]-effective_task_execution_duration[1]))
+    instant_build_time_savings=$((build_time[0]-build_time[1]))
     pending_additional_build_time_savings=$(echo "${executed_cacheable_duration[1]}/${serialization_factors[1]}" | bc)
-    pending_build_time=$((effective_task_execution_duration[0]-instant_build_time_savings-pending_additional_build_time_savings))
+    pending_build_time=$((build_time[0]-instant_build_time_savings-pending_additional_build_time_savings))
     printf -v value "%s, %s additional savings" \
       "$(format_duration "${pending_build_time}")" \
       "$(format_duration "${pending_additional_build_time_savings}")"

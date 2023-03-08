@@ -30,7 +30,7 @@ public enum Fields {
     EXECUTED_CACHEABLE_DURATION("Executed cacheable duration", d -> totalDuration(d, "executed_cacheable")),
     EXECUTED_NOT_CACHEABLE("Executed not cacheable", d -> totalTasks(d, "executed_not_cacheable")),
     EXECUTED_NOT_CACHEABLE_DURATION("Executed not cacheable duration", d -> totalDuration(d, "executed_not_cacheable")),
-    EFFECTIVE_TASK_EXECUTION_DURATION("Effective task execution duration", d -> formatDuration(d.getEffectiveTaskExecutionDuration())),
+    BUILD_TIME("Build time", d -> formatDuration(d.getBuildTime())),
     SERIALIZATION_FACTOR("Serialization factor", d -> toStringSafely(d.getSerializationFactor())),
     ;
 
