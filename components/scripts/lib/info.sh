@@ -261,6 +261,38 @@ print_executed_cacheable_tasks_warning() {
   fi
 }
 
+print_quick_links() {
+  if [[ "${BUILD_TOOL}" == "Gradle" ]]; then
+    print_gradle_quick_links
+  else
+    print_maven_quick_links
+  fi
+}
+
+print_gradle_quick_links() {
+  info "Investigation Quick Links"
+  info "-------------------------"
+  summary_row "Task execution overview:" "${base_urls[0]}/s/${build_scan_ids[1]}/performance/execution"
+  summary_row "Executed tasks timeline:" "${base_urls[0]}/s/${build_scan_ids[1]}/timeline?outcome=success,failed&sort=longest"
+  summary_row "Avoided cacheable tasks:" "${base_urls[0]}/s/${build_scan_ids[1]}/timeline?outcome=from-cache&sort=longest"
+  summary_row "Executed cacheable tasks:" "${base_urls[0]}/s/${build_scan_ids[1]}/timeline?cacheability=cacheable,overlapping-outputs,validation-failure&outcome=success,failed&sort=longest"
+  summary_row "Executed non-cacheable tasks:" "${base_urls[0]}/s/${build_scan_ids[1]}/timeline?cacheability=any-non-cacheable,not:overlapping-outputs,not:validation-failure&outcome=success,failed&sort=longest"
+  summary_row "Build caching statistics:" "${base_urls[0]}/s/${build_scan_ids[1]}/performance/build-cache"
+  summary_row "Task inputs comparison:" "${base_urls[0]}/c/${build_scan_ids[0]}/${build_scan_ids[1]}/task-inputs?cacheability=cacheable"
+}
+
+print_maven_quick_links() {
+  info "Investigation Quick Links"
+  info "-------------------------"
+  summary_row "Goal execution overview:" "${base_urls[0]}/s/${build_scan_ids[1]}/performance/execution"
+  summary_row "Executed goals timeline:" "${base_urls[0]}/s/${build_scan_ids[1]}/timeline?outcome=success,failed&sort=longest"
+  summary_row "Avoided cacheable goals:" "${base_urls[0]}/s/${build_scan_ids[1]}/timeline?outcome=from-cache&sort=longest"
+  summary_row "Executed cacheable goals:" "${base_urls[0]}/s/${build_scan_ids[1]}/timeline?cacheability=cacheable&outcome=success,failed&sort=longest"
+  summary_row "Executed non-cacheable goals:" "${base_urls[0]}/s/${build_scan_ids[1]}/timeline?cacheability=any-non-cacheable&outcome=success,failed&sort=longest"
+  summary_row "Build caching statistics:" "${base_urls[0]}/s/${build_scan_ids[1]}/performance/build-cache"
+  summary_row "Goal inputs comparison:" "${base_urls[0]}/c/${build_scan_ids[0]}/${build_scan_ids[1]}/goal-inputs?cacheability=cacheable"
+}
+
 max_length() {
   local max_len
 

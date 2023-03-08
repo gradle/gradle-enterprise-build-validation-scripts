@@ -172,6 +172,7 @@ print_performance_characteristics() {
   print_serialization_factor
 }
 
+# Overrides info.sh#print_quick_links
 print_quick_links() {
   info "Investigation Quick Links"
   info "-------------------------"
