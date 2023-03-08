@@ -179,8 +179,8 @@ print_instant_build_time_savings() {
   summary_row "Build time with instant savings:" "${value}"
 }
 
-# The _pending_ build time is an estimation of the build time if no cacheable
-# tasks had been executed.
+# The _pending_ build time is an estimation of the build time if all cacheable
+# tasks had been avoided.
 print_pending_build_time_savings() {
   local value
   if [[ -n "${build_time[1]}" && \
