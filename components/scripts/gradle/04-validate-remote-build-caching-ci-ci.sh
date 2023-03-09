@@ -125,7 +125,7 @@ fetch_build_scans() {
   fetch_and_read_build_scan_data all_data "${build_scan_urls[@]}"
 }
 
-# Overrides info.sh#print_experiment_specific_summary_info
+# Overrides summary.sh#print_experiment_specific_summary_info
 print_experiment_specific_summary_info() {
   summary_row "Custom value mapping file:" "${mapping_file:-<none>}"
 }

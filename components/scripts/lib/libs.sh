@@ -42,8 +42,8 @@ source "${LIB_DIR}/gradle.sh" || failed_to_load_lib gradle.sh
 # shellcheck source=lib/help.sh
 source "${LIB_DIR}/help.sh" || failed_to_load_lib help.sh
 
-# shellcheck source=lib/info.sh
-source "${LIB_DIR}/info.sh" || failed_to_load_lib info.sh
+# shellcheck source=lib/summary.sh
+source "${LIB_DIR}/summary.sh" || failed_to_load_lib summary.sh
 
 # shellcheck source=lib/init.sh
 source "${LIB_DIR}/init.sh" || failed_to_load_lib init.sh

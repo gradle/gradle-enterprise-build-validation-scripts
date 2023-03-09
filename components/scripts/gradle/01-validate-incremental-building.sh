@@ -165,7 +165,7 @@ fetch_build_cache_metrics() {
   fi
 }
 
-# Overrides info.sh#print_performance_characteristics
+# Overrides summary.sh#print_performance_characteristics
 print_performance_characteristics() {
   print_performance_characteristics_header
 
@@ -176,7 +176,7 @@ print_performance_characteristics() {
   print_serialization_factor
 }
 
-# Overrides info.sh#print_quick_links
+# Overrides summary.sh#print_quick_links
 print_quick_links() {
   info "Investigation Quick Links"
   info "-------------------------"
