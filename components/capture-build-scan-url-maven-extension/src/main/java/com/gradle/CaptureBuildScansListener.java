@@ -16,7 +16,7 @@ import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 
 @SuppressWarnings("unused")
-public class CaptureBuildScansListener implements GradleEnterpriseListener {\
+public class CaptureBuildScansListener implements GradleEnterpriseListener {
     
     private static final String EXPERIMENT_DIR = System.getProperty("com.gradle.enterprise.build_validation.expDir");
 
