@@ -129,24 +129,31 @@ calculate_initial_build_time() {
   fi
 }
 
+# The _instant_ savings is the difference in the wall-clock build time between
+# the first and second build.
 calculate_instant_savings() {
   if [[ -n "${build_times[0]}" && -n "${build_times[1]}" ]]; then
     echo "$((build_times[0]-build_times[1]))"
   fi
 }
 
+# The _instant_ build time is the build time of the second build.
 calculate_instant_build_time() {
   if [[ -n "${build_times[1]}" ]]; then
     echo "${build_times[1]}"
   fi
 }
 
+# The _pending_ savings is an estimation of the savings if all cacheable tasks
+# had been avoided.
 calculate_pending_savings() {
   if [[ -n "${executed_cacheable_duration[1]}" && -n "${serialization_factors[1]}" ]]; then
     echo "${executed_cacheable_duration[1]}/${serialization_factors[1]}" | bc
   fi
 }
 
+# The _pending_ build time is an estimation of the build time if all cacheable
+# tasks had been avoided.
 calculate_pending_build_time() {
   if [[ -n "${build_times[1]}" && -n "${pending_additional_build_time_savings}" ]]; then
     echo "$((build_times[1]-pending_additional_build_time_savings))"

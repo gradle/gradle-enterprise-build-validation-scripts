@@ -184,7 +184,6 @@ print_performance_characteristics_header() {
   info "---------------------------"
 }
 
-# The _initial_ build time is the build time of the first build.
 print_initial_build_time() {
   local value
   if [[ -n "${initial_build_time}" ]]; then
@@ -193,8 +192,6 @@ print_initial_build_time() {
   summary_row "Initial build time:" "${value}"
 }
 
-# The _instant_ build time savings is the difference in the wall-clock build
-# time between the first and second build.
 print_build_time_with_instant_savings() {
   local value
   if [[ -n "${instant_build_time}" && -n "${instant_savings}" ]]; then
@@ -205,8 +202,6 @@ print_build_time_with_instant_savings() {
   summary_row "Build time with instant savings:" "${value}"
 }
 
-# The _pending_ build time is an estimation of the build time if all cacheable
-# tasks had been avoided.
 print_build_time_with_pending_savings() {
   local value
   if [[ -n "${pending_build_time}" && -n "${pending_savings}" ]]; then
