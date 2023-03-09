@@ -8,7 +8,7 @@ def getInputParam = { String name ->
     return System.getProperty(name) ?: System.getenv(envVarName)
 }
 
-def expDir = getInputParam('com.gradle.enterprise.build_validation.experimentDir')
+def expDir = getInputParam('com.gradle.enterprise.build_validation.expDir')
 
 settingsEvaluated { settings ->
     settings.buildCache {

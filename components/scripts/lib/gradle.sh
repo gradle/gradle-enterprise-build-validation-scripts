@@ -30,7 +30,7 @@ invoke_gradle() {
   fi
 
   args+=(
-    -Dcom.gradle.enterprise.build_validation.experimentDir="${EXP_DIR}"
+    -Dcom.gradle.enterprise.build_validation.expDir="${EXP_DIR}"
     -Dcom.gradle.enterprise.build_validation.expId="${EXP_SCAN_TAG}"
     -Dcom.gradle.enterprise.build_validation.runId="${RUN_ID}"
     -Dcom.gradle.enterprise.build_validation.runNum="${run_num}"

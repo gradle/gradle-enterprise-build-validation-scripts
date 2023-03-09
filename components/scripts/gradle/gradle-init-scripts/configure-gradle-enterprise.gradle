@@ -69,7 +69,7 @@ def geAllowUntrustedServer = Boolean.parseBoolean(getInputParam('com.gradle.ente
 def gePluginVersion = getInputParam('com.gradle.enterprise.build_validation.gradle-enterprise.plugin.version')
 def ccudPluginVersion = getInputParam('com.gradle.enterprise.build_validation.ccud.plugin.version')
 
-def expDir = getInputParam('com.gradle.enterprise.build_validation.experimentDir')
+def expDir = getInputParam('com.gradle.enterprise.build_validation.expDir')
 def expId = getInputParam('com.gradle.enterprise.build_validation.expId')
 def runId = getInputParam('com.gradle.enterprise.build_validation.runId')
 def runNum = getInputParam('com.gradle.enterprise.build_validation.runNum')
