@@ -26,7 +26,7 @@ executed_not_cacheable_num_tasks=()
 executed_not_cacheable_duration=()
 
 # Build duration metrics
-build_time=()
+build_times=()
 serialization_factors=()
 
 parse_build_scan_csv() {
@@ -77,7 +77,7 @@ parse_build_scan_csv() {
     executed_not_cacheable_duration[run_num]="${field_19}"
 
     # Build time metrics
-    build_time[run_num]="${field_20}"
+    build_times[run_num]="${field_20}"
     serialization_factors[run_num]="${field_21}"
 
     done <<< "${build_scan_csv}"
