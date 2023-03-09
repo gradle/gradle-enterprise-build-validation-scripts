@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
 
 invoke_gradle() {
-  local build_number args
+  local run_num args
   args=()
-  build_number=$1
+  run_num=$1
   shift
 
   local original_dir
@@ -13,17 +13,16 @@ invoke_gradle() {
   fi
 
   args+=(--init-script "${INIT_SCRIPTS_DIR}/configure-gradle-enterprise.gradle")
-  args+=("-Dcom.gradle.enterprise.build_validation.buildNumber=${build_number}")
 
   if [ "$enable_ge" == "on" ]; then
-    args+=("-Dcom.gradle.enterprise.build_validation.gradle.plugin-repository.url=https://plugins.gradle.org/m2")
-    args+=("-Dcom.gradle.enterprise.build_validation.gradle-enterprise.plugin.version=3.12.4")
-    args+=("-Dcom.gradle.enterprise.build_validation.ccud.plugin.version=1.9")
+    args+=("-Dcom.gradle.enterprise.build-validation.gradle.plugin-repository.url=https://plugins.gradle.org/m2")
+    args+=("-Dcom.gradle.enterprise.build-validation.gradle-enterprise.plugin.version=3.12.4")
+    args+=("-Dcom.gradle.enterprise.build-validation.ccud.plugin.version=1.9")
   fi
 
   if [ -n "${ge_server}" ]; then
-    args+=("-Dcom.gradle.enterprise.build_validation.gradle-enterprise.url=${ge_server}")
-    args+=("-Dcom.gradle.enterprise.build_validation.gradle-enterprise.allow-untrusted-server=false")
+    args+=("-Dcom.gradle.enterprise.build-validation.gradle-enterprise.url=${ge_server}")
+    args+=("-Dcom.gradle.enterprise.build-validation.gradle-enterprise.allow-untrusted-server=false")
   fi
 
   if [[ "${build_scan_publishing_mode}" == "off" ]]; then
@@ -31,9 +30,10 @@ invoke_gradle() {
   fi
 
   args+=(
-    -Pcom.gradle.enterprise.build_validation.experimentDir="${EXP_DIR}"
-    -Pcom.gradle.enterprise.build_validation.expId="${EXP_SCAN_TAG}"
-    -Pcom.gradle.enterprise.build_validation.runId="${RUN_ID}"
+    -Dcom.gradle.enterprise.build-validation.expDir="${EXP_DIR}"
+    -Dcom.gradle.enterprise.build-validation.expId="${EXP_SCAN_TAG}"
+    -Dcom.gradle.enterprise.build-validation.runId="${RUN_ID}"
+    -Dcom.gradle.enterprise.build-validation.runNum="${run_num}"
     -Dscan.capture-task-input-files=true
   )
 

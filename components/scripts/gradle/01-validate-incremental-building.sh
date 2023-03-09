@@ -139,12 +139,12 @@ execute_second_build() {
 }
 
 execute_build() {
-  local build_number
-  build_number="$1"
+  local run_num
+  run_num="$1"
   shift
 
   print_gradle_command "$@"
-  invoke_gradle "${build_number}" --no-build-cache "$@"
+  invoke_gradle "${run_num}" --no-build-cache "$@"
 }
 
 print_gradle_command() {

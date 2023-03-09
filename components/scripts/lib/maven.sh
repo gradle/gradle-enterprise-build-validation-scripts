@@ -11,9 +11,9 @@ find_maven_executable() {
 }
 
 invoke_maven() {
-  local build_number args mvn
+  local run_num args mvn
   args=()
-  build_number=$1
+  run_num=$1
   shift
 
   local original_dir
@@ -54,10 +54,10 @@ invoke_maven() {
 
   args+=(
     -Dmaven.ext.class.path="${extension_classpath}"
-    -Dcom.gradle.enterprise.build_validation.buildNumber="${build_number}"
-    -Dcom.gradle.enterprise.build_validation.experimentDir="${EXP_DIR}"
-    -Dcom.gradle.enterprise.build_validation.expId="${EXP_SCAN_TAG}"
-    -Dcom.gradle.enterprise.build_validation.runId="${RUN_ID}"
+    -Dcom.gradle.enterprise.build-validation.expDir="${EXP_DIR}"
+    -Dcom.gradle.enterprise.build-validation.expId="${EXP_SCAN_TAG}"
+    -Dcom.gradle.enterprise.build-validation.runId="${RUN_ID}"
+    -Dcom.gradle.enterprise.build-validation.runNum="${run_num}"
     -Dgradle.scan.captureGoalInputFiles=true
   )
 

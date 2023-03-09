@@ -52,7 +52,7 @@ parse_build_scan_csv() {
       continue;
     fi
 
-    idx="$(find_build_number "$field_4")"
+    idx="$(find_run_num "$field_4")"
     debug "Build Scan $field_4 is for build $idx"
     project_names[idx]="$field_1"
 
@@ -85,7 +85,7 @@ parse_build_scan_csv() {
     done <<< "${build_scan_csv}"
 }
 
-find_build_number() {
+find_run_num() {
   local build_scan_id
   build_scan_id="$1"
 
@@ -108,9 +108,9 @@ parse_build_scan_url() {
   #                                  |  4 authority                             |11 / or end-of-string
   #                                  3  //...                                   10 path
 
-  local build_scan_url build_number protocol ge_host port build_scan_id
+  local build_scan_url run_num protocol ge_host port build_scan_id
   build_scan_url="$1"
-  build_number="$2"
+  run_num="$2"
 
   if [[ "${build_scan_url}" =~ $URI_REGEX ]]; then
     protocol="${BASH_REMATCH[2]}"
@@ -118,8 +118,8 @@ parse_build_scan_url() {
     port="${BASH_REMATCH[8]}"
     build_scan_id="$(basename "${BASH_REMATCH[10]}")"
 
-    base_urls[build_number]="${protocol}://${ge_host}${port}"
-    build_scan_ids[build_number]="$build_scan_id"
+    base_urls[run_num]="${protocol}://${ge_host}${port}"
+    build_scan_ids[run_num]="$build_scan_id"
   else
     die "${build_scan_url} is not a parsable URL." "${INVALID_INPUT}"
   fi
