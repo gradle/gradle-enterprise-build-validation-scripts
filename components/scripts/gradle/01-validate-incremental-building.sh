@@ -169,7 +169,7 @@ print_performance_characteristics() {
 
   print_initial_build_time
 
-  print_instant_build_time_savings
+  print_build_time_with_instant_savings
 
   print_serialization_factor
 }

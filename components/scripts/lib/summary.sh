@@ -167,9 +167,9 @@ print_performance_characteristics() {
 
   print_initial_build_time
 
-  print_instant_build_time_savings
+  print_build_time_with_instant_savings
 
-  print_pending_build_time_savings
+  print_build_time_with_pending_savings
 
   print_build_caching_leverage_metrics
 
@@ -195,7 +195,7 @@ print_initial_build_time() {
 
 # The _instant_ build time savings is the difference in the wall-clock build
 # time between the first and second build.
-print_instant_build_time_savings() {
+print_build_time_with_instant_savings() {
   local value
   if [[ -n "${instant_build_time}" && -n "${instant_savings}" ]]; then
     printf -v value "%s, %s savings" \
@@ -207,7 +207,7 @@ print_instant_build_time_savings() {
 
 # The _pending_ build time is an estimation of the build time if all cacheable
 # tasks had been avoided.
-print_pending_build_time_savings() {
+print_build_time_with_pending_savings() {
   local value
   if [[ -n "${pending_build_time}" && -n "${pending_savings}" ]]; then
     printf -v value "%s, %s additional savings" \
