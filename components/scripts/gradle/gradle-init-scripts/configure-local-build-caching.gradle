@@ -1,21 +1,24 @@
-// Don't run against the included builds (if the main build has any).
-def isTopLevelBuild = gradle.getParent() == null
-if (isTopLevelBuild) {
-    settingsEvaluated { settings ->
-        settings.buildCache {
-            local {
-                enabled = true
-                push = true
-                directory = new File(experimentDir, "build-cache")
-            }
-            remote(HttpBuildCache) {
-                enabled = false
-            }
-        }
-    }
+def isTopLevelBuild = !gradle.parent
+if (!isTopLevelBuild) {
+    return
 }
 
-File getExperimentDir() {
-    def projectProperties = gradle.startParameter.projectProperties
-    new File(projectProperties.get("com.gradle.enterprise.build_validation.experimentDir"))
+def getInputParam = { String name ->
+    def envVarName = name.toUpperCase().replace('.', '_').replace('-', '_')
+    return System.getProperty(name) ?: System.getenv(envVarName)
+}
+
+def expDir = getInputParam('com.gradle.enterprise.build_validation.experimentDir')
+
+settingsEvaluated { settings ->
+    settings.buildCache {
+        local {
+            enabled = true
+            push = true
+            directory = new File(expDir, 'build-cache')
+        }
+        remote(HttpBuildCache) {
+            enabled = false
+        }
+    }
 }

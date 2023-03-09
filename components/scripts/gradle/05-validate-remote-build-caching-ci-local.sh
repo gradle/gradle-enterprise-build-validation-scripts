@@ -197,7 +197,7 @@ execute_build() {
   local args
   args=(--build-cache --init-script "${INIT_SCRIPTS_DIR}/configure-remote-build-caching.gradle")
   if [ -n "${remote_build_cache_url}" ]; then
-    args+=("-Pcom.gradle.enterprise.build_validation.remoteBuildCacheUrl=${remote_build_cache_url}")
+    args+=("-Dcom.gradle.enterprise.build_validation.remoteBuildCacheUrl=${remote_build_cache_url}")
   fi
 
   # shellcheck disable=SC2206  # we want tasks to expand with word splitting in this case

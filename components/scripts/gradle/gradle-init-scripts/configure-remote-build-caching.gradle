@@ -1,28 +1,28 @@
-// Don't run against the included builds (if the main build has any).
-def isTopLevelBuild = gradle.getParent() == null
-if (isTopLevelBuild) {
-    settingsEvaluated { settings ->
-        settings.buildCache {
-            local {
-                enabled = false
-            }
-            remote(HttpBuildCache) {
-                enabled = true
-                push = false
-                def remoteBuildCacheUrl = remoteBuildCacheUrl
-                if (remoteBuildCacheUrl) {
-                    url = withPathTrailingSlash(remoteBuildCacheUrl)
-                }
+def isTopLevelBuild = !gradle.parent
+if (!isTopLevelBuild) {
+    return
+}
+
+def getInputParam = { String name ->
+    def envVarName = name.toUpperCase().replace('.', '_').replace('-', '_')
+    return System.getProperty(name) ?: System.getenv(envVarName)
+}
+
+def remoteBuildCacheUrl = getInputParam('com.gradle.enterprise.build_validation.remoteBuildCacheUrl')
+
+settingsEvaluated { settings ->
+    settings.buildCache {
+        local {
+            enabled = false
+        }
+        remote(HttpBuildCache) {
+            enabled = true
+            push = false
+            if (remoteBuildCacheUrl) {
+                url = withPathTrailingSlash(new URI(remoteBuildCacheUrl))
             }
         }
     }
-}
-
-URI getRemoteBuildCacheUrl() {
-    def projectProperties = gradle.startParameter.projectProperties
-    projectProperties.containsKey("com.gradle.enterprise.build_validation.remoteBuildCacheUrl")
-            ? new URI(projectProperties.get("com.gradle.enterprise.build_validation.remoteBuildCacheUrl"))
-            : null
 }
 
 static URI withPathTrailingSlash(URI uri) {
