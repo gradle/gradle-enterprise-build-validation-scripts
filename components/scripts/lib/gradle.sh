@@ -48,7 +48,7 @@ invoke_gradle() {
 
   args+=("$@")
 
-  rm -f "${EXP_DIR}/build-scan-publish-error.txt"
+  rm -f "${EXP_DIR}/errors.txt"
 
   debug "Current directory: $(pwd)"
   debug ./gradlew "${args[@]}"
@@ -59,8 +59,8 @@ invoke_gradle() {
       build_outcomes+=("FAILED")
   fi
 
-  if [ -f "${EXP_DIR}/build-scan-publish-error.txt" ] && [[ "${build_scan_publishing_mode}" == "on" ]]; then
-    die "ERROR: The experiment cannot continue because publishing the build scan failed."
+  if [ -f "${EXP_DIR}/errors.txt" ]; then
+    die "ERROR: The experiment cannot continue because of a non-recoverable failure while running the build."
   fi
 
   # defined in git.sh

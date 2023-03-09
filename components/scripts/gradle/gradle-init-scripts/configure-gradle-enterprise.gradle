@@ -94,7 +94,7 @@ def registerBuildScanActions = { def buildScan ->
         scanFile.append("${runNum},${baseUrl},${buildScanUri},${buildScanId}\n")
     }
 
-    def errorFile = new File(expDir, 'build-scan-publish-error.txt')
+    def errorFile = new File(expDir, 'errors.txt')
     buildScan.onError { error ->
         errorFile.text = error
     }
