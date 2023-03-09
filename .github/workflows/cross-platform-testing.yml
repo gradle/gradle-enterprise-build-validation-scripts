@@ -1,16 +1,11 @@
 name: Run Cross-Platform Tests
 
-on:
-  workflow_run:
-    workflows: [Create Development Release]
-    types: [completed]
-  workflow_dispatch:
+on: [ push ]
 
 jobs:
   cross_platform_tests:
     name: Test
     runs-on: ${{ matrix.os }}
-    if: ${{ github.event.workflow_run.conclusion == 'success' || github.event_name == 'workflow_dispatch' }}
     strategy:
       fail-fast: false
       matrix:
@@ -39,7 +34,7 @@ jobs:
         uses: Vampire/setup-wsl@v2
         with:
           distribution: Ubuntu-20.04
-          additional-packages: curl unzip wget apt-transport-https gnupg
+          additional-packages: curl unzip wget apt-transport-https gnupg autoconf
       - name: Set up JDK ${{ matrix.java-version }} on WSL
         if: ${{ runner.os == 'Windows' }}
         run: |
@@ -53,38 +48,40 @@ jobs:
         with:
           java-version: ${{ matrix.java-version }}
           distribution: 'temurin'
-      - name: Download and extract build validation Scripts
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Set up Gradle
+        uses: gradle/gradle-build-action@v2
+      - name: Build and extract build validation Scripts
         run: |
-          curl -L -O https://github.com/gradle/gradle-enterprise-build-validation-scripts/releases/download/development-latest/gradle-enterprise-gradle-build-validation-dev.zip
-          unzip -o gradle-enterprise-gradle-build-validation-*.zip
-          curl -L -O https://github.com/gradle/gradle-enterprise-build-validation-scripts/releases/download/development-latest/gradle-enterprise-maven-build-validation-dev.zip
-          unzip -o gradle-enterprise-maven-build-validation-*.zip
+          ./gradlew build
+          unzip -q -o build/distributions/gradle-enterprise-gradle-build-validation-dev.zip
+          unzip -q -o build/distributions/gradle-enterprise-maven-build-validation-dev.zip
       - name: Run Gradle Experiment 01
         run: |
           cd gradle-enterprise-gradle-build-validation
-          ./01-validate-incremental-building.sh -r https://github.com/etiennestuder/java-ordered-properties -t build -s https://ge.solutions-team.gradle.com
+          ./01-validate-incremental-building.sh -r https://github.com/etiennestuder/java-ordered-properties -t build -s https://ge.solutions-team.gradle.com --debug
       - name: Run Gradle Experiment 02
         run: |
           cd gradle-enterprise-gradle-build-validation
-          ./02-validate-local-build-caching-same-location.sh -r https://github.com/etiennestuder/java-ordered-properties -t build -s https://ge.solutions-team.gradle.com
+          ./02-validate-local-build-caching-same-location.sh -r https://github.com/etiennestuder/java-ordered-properties -t build -s https://ge.solutions-team.gradle.com --debug
       - name: Run Gradle Experiment 03
         run: |
           cd gradle-enterprise-gradle-build-validation
-          ./03-validate-local-build-caching-different-locations.sh -r https://github.com/etiennestuder/java-ordered-properties -t build -s https://ge.solutions-team.gradle.com
+          ./03-validate-local-build-caching-different-locations.sh -r https://github.com/etiennestuder/java-ordered-properties -t build -s https://ge.solutions-team.gradle.com --debug
       - name: Run Gradle Experiment 04
         run: |
           cd gradle-enterprise-gradle-build-validation
-          ./04-validate-remote-build-caching-ci-ci.sh -1 https://ge.solutions-team.gradle.com/s/xildcv6frocau -2 https://ge.solutions-team.gradle.com/s/m5e7tyzedn562
+          ./04-validate-remote-build-caching-ci-ci.sh -1 https://ge.solutions-team.gradle.com/s/xildcv6frocau -2 https://ge.solutions-team.gradle.com/s/m5e7tyzedn562 --debug
       - name: Run Maven Experiment 01
         run: |
           cd gradle-enterprise-maven-build-validation
-          ./01-validate-local-build-caching-same-location.sh -r https://github.com/gradle/maven-build-scan-quickstart.git -g test -s https://ge.solutions-team.gradle.com
+          ./01-validate-local-build-caching-same-location.sh -r https://github.com/gradle/maven-build-scan-quickstart.git -g test -s https://ge.solutions-team.gradle.com --debug
       - name: Run Maven Experiment 02
         run: |
           cd gradle-enterprise-maven-build-validation
-          ./02-validate-local-build-caching-different-locations.sh -r https://github.com/gradle/maven-build-scan-quickstart.git -g test -s https://ge.solutions-team.gradle.com
+          ./02-validate-local-build-caching-different-locations.sh -r https://github.com/gradle/maven-build-scan-quickstart.git -g test -s https://ge.solutions-team.gradle.com --debug
       - name: Run Maven Experiment 03
         run: |
           cd gradle-enterprise-maven-build-validation
-          ./03-validate-remote-build-caching-ci-ci.sh -1 https://ge.solutions-team.gradle.com/s/oll3ve3wdv2t6 -2 https://ge.solutions-team.gradle.com/s/eaue4kvqnvnay
-
+          ./03-validate-remote-build-caching-ci-ci.sh -1 https://ge.solutions-team.gradle.com/s/oll3ve3wdv2t6 -2 https://ge.solutions-team.gradle.com/s/eaue4kvqnvnay --debug
