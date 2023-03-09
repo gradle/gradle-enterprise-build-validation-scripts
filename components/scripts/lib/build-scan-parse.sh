@@ -155,7 +155,7 @@ calculate_pending_savings() {
 # The _pending_ build time is an estimation of the build time if all cacheable
 # tasks had been avoided.
 calculate_pending_build_time() {
-  if [[ -n "${build_times[1]}" && -n "${pending_additional_build_time_savings}" ]]; then
-    echo "$((build_times[1]-pending_additional_build_time_savings))"
+  if [[ -n "${build_times[1]}" && -n "${pending_savings}" ]]; then
+    echo "$((build_times[1]-pending_savings))"
   fi
 }

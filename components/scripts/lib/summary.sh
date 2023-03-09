@@ -263,8 +263,8 @@ print_executed_non_cacheable_tasks() {
 
 print_serialization_factor() {
   local value
-  if [[ -n "${serialization_factor}" ]]; then
-    value="$(to_two_decimal_places "${serialization_factor}")x"
+  if [[ -n "${serialization_factors[0]}" ]]; then
+    value="$(to_two_decimal_places "${serialization_factors[0]}")x"
   fi
   summary_row "Serialization factor:" "${value}"
 }
