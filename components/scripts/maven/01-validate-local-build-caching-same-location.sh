@@ -138,14 +138,14 @@ execute_second_build() {
 }
 
 execute_build() {
-  local build_number
-  build_number="$1"
+  local run_num
+  run_num="$1"
   shift
 
   print_maven_command
 
   #shellcheck disable=SC2086  # we actually want ${tasks} to expand because it may have more than one maven goal
-  invoke_maven "${build_number}" \
+  invoke_maven "${run_num}" \
      -Dgradle.cache.local.enabled=true \
      -Dgradle.cache.local.storeEnabled=true \
      -Dgradle.cache.remote.enabled=false \

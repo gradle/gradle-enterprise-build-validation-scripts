@@ -139,14 +139,14 @@ execute_second_build() {
 }
 
 execute_build() {
-  local build_number
-  build_number="$1"
+  local run_num
+  run_num="$1"
   shift
 
   print_gradle_command
 
   # shellcheck disable=SC2086  # we want tasks to expand with word splitting in this case
-  invoke_gradle "${build_number}" \
+  invoke_gradle "${run_num}" \
      --build-cache \
      --init-script "${INIT_SCRIPTS_DIR}/configure-local-build-caching.gradle" \
      clean ${tasks}
