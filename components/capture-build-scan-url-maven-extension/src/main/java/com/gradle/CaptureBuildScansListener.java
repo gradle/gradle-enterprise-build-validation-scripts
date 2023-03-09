@@ -47,8 +47,8 @@ public class CaptureBuildScansListener implements GradleEnterpriseListener {
             String runId = System.getProperty("com.gradle.enterprise.build-validation.runId");
             addCustomValueAndSearchLink(buildScan, "Experiment run id", runId);
 
-            String version = System.getProperty("com.gradle.enterprise.build-validation.version");
-            buildScan.value("Build validation scripts version", version);
+            String scriptsVersion = System.getProperty("com.gradle.enterprise.build-validation.scriptsVersion");
+            buildScan.value("Build validation scripts", scriptsVersion);
         });
     }
 
