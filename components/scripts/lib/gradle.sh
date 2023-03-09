@@ -15,14 +15,14 @@ invoke_gradle() {
   args+=(--init-script "${INIT_SCRIPTS_DIR}/configure-gradle-enterprise.gradle")
 
   if [ "$enable_ge" == "on" ]; then
-    args+=("-Dcom.gradle.enterprise.build_validation.gradle.plugin-repository.url=https://plugins.gradle.org/m2")
-    args+=("-Dcom.gradle.enterprise.build_validation.gradle-enterprise.plugin.version=3.12.4")
-    args+=("-Dcom.gradle.enterprise.build_validation.ccud.plugin.version=1.9")
+    args+=("-Dcom.gradle.enterprise.build-validation.gradle.plugin-repository.url=https://plugins.gradle.org/m2")
+    args+=("-Dcom.gradle.enterprise.build-validation.gradle-enterprise.plugin.version=3.12.4")
+    args+=("-Dcom.gradle.enterprise.build-validation.ccud.plugin.version=1.9")
   fi
 
   if [ -n "${ge_server}" ]; then
-    args+=("-Dcom.gradle.enterprise.build_validation.gradle-enterprise.url=${ge_server}")
-    args+=("-Dcom.gradle.enterprise.build_validation.gradle-enterprise.allow-untrusted-server=false")
+    args+=("-Dcom.gradle.enterprise.build-validation.gradle-enterprise.url=${ge_server}")
+    args+=("-Dcom.gradle.enterprise.build-validation.gradle-enterprise.allow-untrusted-server=false")
   fi
 
   if [[ "${build_scan_publishing_mode}" == "off" ]]; then
@@ -30,10 +30,10 @@ invoke_gradle() {
   fi
 
   args+=(
-    -Dcom.gradle.enterprise.build_validation.expDir="${EXP_DIR}"
-    -Dcom.gradle.enterprise.build_validation.expId="${EXP_SCAN_TAG}"
-    -Dcom.gradle.enterprise.build_validation.runId="${RUN_ID}"
-    -Dcom.gradle.enterprise.build_validation.runNum="${run_num}"
+    -Dcom.gradle.enterprise.build-validation.expDir="${EXP_DIR}"
+    -Dcom.gradle.enterprise.build-validation.expId="${EXP_SCAN_TAG}"
+    -Dcom.gradle.enterprise.build-validation.runId="${RUN_ID}"
+    -Dcom.gradle.enterprise.build-validation.runNum="${run_num}"
     -Dscan.capture-task-input-files=true
   )
 

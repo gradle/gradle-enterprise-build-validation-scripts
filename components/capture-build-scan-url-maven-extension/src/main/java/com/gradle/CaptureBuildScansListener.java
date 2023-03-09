@@ -18,7 +18,7 @@ import java.nio.charset.StandardCharsets;
 @SuppressWarnings("unused")
 public class CaptureBuildScansListener implements GradleEnterpriseListener {
     
-    private static final String EXPERIMENT_DIR = System.getProperty("com.gradle.enterprise.build_validation.expDir");
+    private static final String EXPERIMENT_DIR = System.getProperty("com.gradle.enterprise.build-validation.expDir");
 
     private final Logger logger;
 
@@ -40,11 +40,11 @@ public class CaptureBuildScansListener implements GradleEnterpriseListener {
     private static void addCustomDataOnBuildFinished(BuildScanApi buildScan) {
         // Links are set in buildFinished block to ensure buildScan.getServer() is set (required by addCustomValueAndSearchLink())
         buildScan.buildFinished(ignored -> {
-            String expId = System.getProperty("com.gradle.enterprise.build_validation.expId");
+            String expId = System.getProperty("com.gradle.enterprise.build-validation.expId");
             addCustomValueAndSearchLink(buildScan, "Experiment id", expId);
             buildScan.tag(expId);
 
-            String runId = System.getProperty("com.gradle.enterprise.build_validation.runId");
+            String runId = System.getProperty("com.gradle.enterprise.build-validation.runId");
             addCustomValueAndSearchLink(buildScan, "Experiment run id", runId);
         });
     }
@@ -72,7 +72,7 @@ public class CaptureBuildScansListener implements GradleEnterpriseListener {
     private void capturePublishedBuildScan(BuildScanApi buildScan) {
         buildScan.buildScanPublished(scan -> {
             logger.debug("Saving build scan data to build-scans.csv");
-            String runNum = System.getProperty("com.gradle.enterprise.build_validation.runNum");
+            String runNum = System.getProperty("com.gradle.enterprise.build-validation.runNum");
             String port = scan.getBuildScanUri().getPort() != -1 ? ":" + scan.getBuildScanUri().getPort() : "";
             String baseUrl = String.format("%s://%s%s", scan.getBuildScanUri().getScheme(), scan.getBuildScanUri().getHost(), port);
 

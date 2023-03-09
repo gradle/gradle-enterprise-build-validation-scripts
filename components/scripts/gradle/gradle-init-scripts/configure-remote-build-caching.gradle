@@ -8,7 +8,7 @@ def getInputParam = { String name ->
     return System.getProperty(name) ?: System.getenv(envVarName)
 }
 
-def remoteBuildCacheUrl = getInputParam('com.gradle.enterprise.build_validation.remoteBuildCacheUrl')
+def remoteBuildCacheUrl = getInputParam('com.gradle.enterprise.build-validation.remoteBuildCacheUrl')
 
 settingsEvaluated { settings ->
     settings.buildCache {

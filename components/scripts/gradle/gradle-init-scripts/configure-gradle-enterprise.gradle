@@ -15,9 +15,9 @@ initscript {
         return System.getProperty(name) ?: System.getenv(envVarName)
     }
 
-    def pluginRepositoryUrl = getInputParam('com.gradle.enterprise.build_validation.gradle.plugin-repository.url')
-    def gePluginVersion = getInputParam('com.gradle.enterprise.build_validation.gradle-enterprise.plugin.version')
-    def ccudPluginVersion = getInputParam('com.gradle.enterprise.build_validation.ccud.plugin.version')
+    def pluginRepositoryUrl = getInputParam('com.gradle.enterprise.build-validation.gradle.plugin-repository.url')
+    def gePluginVersion = getInputParam('com.gradle.enterprise.build-validation.gradle-enterprise.plugin.version')
+    def ccudPluginVersion = getInputParam('com.gradle.enterprise.build-validation.ccud.plugin.version')
 
     def atLeastGradle5 = GradleVersion.current() >= GradleVersion.version('5.0')
     def atLeastGradle4 = GradleVersion.current() >= GradleVersion.version('4.0')
@@ -64,15 +64,15 @@ def getInputParam = { String name ->
     return System.getProperty(name) ?: System.getenv(envVarName)
 }
 
-def geUrl = getInputParam('com.gradle.enterprise.build_validation.gradle-enterprise.url')
-def geAllowUntrustedServer = Boolean.parseBoolean(getInputParam('com.gradle.enterprise.build_validation.gradle-enterprise.allow-untrusted-server'))
-def gePluginVersion = getInputParam('com.gradle.enterprise.build_validation.gradle-enterprise.plugin.version')
-def ccudPluginVersion = getInputParam('com.gradle.enterprise.build_validation.ccud.plugin.version')
+def geUrl = getInputParam('com.gradle.enterprise.build-validation.gradle-enterprise.url')
+def geAllowUntrustedServer = Boolean.parseBoolean(getInputParam('com.gradle.enterprise.build-validation.gradle-enterprise.allow-untrusted-server'))
+def gePluginVersion = getInputParam('com.gradle.enterprise.build-validation.gradle-enterprise.plugin.version')
+def ccudPluginVersion = getInputParam('com.gradle.enterprise.build-validation.ccud.plugin.version')
 
-def expDir = getInputParam('com.gradle.enterprise.build_validation.expDir')
-def expId = getInputParam('com.gradle.enterprise.build_validation.expId')
-def runId = getInputParam('com.gradle.enterprise.build_validation.runId')
-def runNum = getInputParam('com.gradle.enterprise.build_validation.runNum')
+def expDir = getInputParam('com.gradle.enterprise.build-validation.expDir')
+def expId = getInputParam('com.gradle.enterprise.build-validation.expId')
+def runId = getInputParam('com.gradle.enterprise.build-validation.runId')
+def runNum = getInputParam('com.gradle.enterprise.build-validation.runNum')
 
 def atLeastGradle4 = GradleVersion.current() >= GradleVersion.version('4.0')
 

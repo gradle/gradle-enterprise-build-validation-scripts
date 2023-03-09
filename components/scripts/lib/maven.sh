@@ -54,10 +54,10 @@ invoke_maven() {
 
   args+=(
     -Dmaven.ext.class.path="${extension_classpath}"
-    -Dcom.gradle.enterprise.build_validation.expDir="${EXP_DIR}"
-    -Dcom.gradle.enterprise.build_validation.expId="${EXP_SCAN_TAG}"
-    -Dcom.gradle.enterprise.build_validation.runId="${RUN_ID}"
-    -Dcom.gradle.enterprise.build_validation.runNum="${run_num}"
+    -Dcom.gradle.enterprise.build-validation.expDir="${EXP_DIR}"
+    -Dcom.gradle.enterprise.build-validation.expId="${EXP_SCAN_TAG}"
+    -Dcom.gradle.enterprise.build-validation.runId="${RUN_ID}"
+    -Dcom.gradle.enterprise.build-validation.runNum="${run_num}"
     -Dgradle.scan.captureGoalInputFiles=true
   )
 
