@@ -67,8 +67,8 @@ invoke_maven() {
 
   # https://stackoverflow.com/a/31485948
   while IFS= read -r -d ''; do
-    args+=("$REPLY")
-  done < <( xargs printf '%s\0' <<< "$extra_args")
+    args+=( "$REPLY" )
+  done < <(xargs printf '%s\0' <<<"$extra_args")
 
   args+=("$@")
 
