@@ -12,6 +12,9 @@ failed_to_load_lib() {
   exit "${_UNEXPECTED_ERROR}"
 }
 
+# shellcheck source=lib/logging.sh
+source "${LIB_DIR}/logging.sh" || failed_to_load_lib logging.sh
+
 # shellcheck source=lib/build-scan-offline.sh
 source "${LIB_DIR}/build-scan-offline.sh" || failed_to_load_lib build-scan-offline.sh
 
