@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-print_wizard_text() {
+print_interactive_text() {
   echo -n "${RESTORE}"
   echo -n "$@"
 }
@@ -51,7 +51,7 @@ Your updated build configuration should be pushed before proceeding.
 
 ${USER_ACTION_COLOR}Press <Enter> once you have (optionally) configured your build with the Common Custom User Data Gradle plugin and pushed the changes.${RESTORE}
 EOF
-  print_wizard_text "${text}"
+  print_interactive_text "${text}"
   wait_for_enter
 }
 
@@ -79,7 +79,7 @@ Your updated build configuration should be pushed before proceeding.
 
 ${USER_ACTION_COLOR}Press <Enter> once you have (optionally) configured your build with the Common Custom User Data Maven extension and pushed the changes.${RESTORE}
 EOF
-  print_wizard_text "${text}"
+  print_interactive_text "${text}"
   wait_for_enter
 }
 
@@ -122,7 +122,7 @@ is only used for running the experiments.
 
 ${USER_ACTION_COLOR}Press <Enter> once you have configured your build for remote build caching and pushed the changes.${RESTORE}
 EOF
-  print_wizard_text "${text}"
+  print_interactive_text "${text}"
   wait_for_enter
 }
 
@@ -168,7 +168,7 @@ is only used for running the experiments.
 
 ${USER_ACTION_COLOR}Press <Enter> once you have configured your build for remote build caching and pushed the changes.${RESTORE}
 EOF
-  print_wizard_text "${text}"
+  print_interactive_text "${text}"
   wait_for_enter
 }
 
@@ -234,7 +234,7 @@ URL every time before you run the experiment.
 ${build_tool_instructions}
 ${USER_ACTION_COLOR}Press <Enter> once you have prepared the experiment to run with an empty remote build cache.${RESTORE}
 EOF
-  print_wizard_text "${text}"
+  print_interactive_text "${text}"
   wait_for_enter
 }
 
@@ -269,7 +269,7 @@ ${documentation_link}
 
 ${USER_ACTION_COLOR}Press <Enter> once you have (optionally) adjusted your access permissions and configured the API credentials on your machine.${RESTORE}
 EOF
-  print_wizard_text "${text}"
+  print_interactive_text "${text}"
   wait_for_enter
 }
 
@@ -277,7 +277,7 @@ explain_experiment_dir() {
     local text
     text="$(echo "All of the work we do for this experiment will be stored in $(info "${EXP_DIR}")" | fmt -w 78)"
 
-    print_wizard_text "${text}" "
+    print_interactive_text "${text}" "
   "
 }
 
@@ -296,7 +296,7 @@ Optionally, the project can be validated and optimized on an existing
 branch and only merged back to the main line once all improvements are
 completed.
 EOF
-  print_wizard_text "${text}"
+  print_interactive_text "${text}"
 }
 
 explain_collect_gradle_details() {
@@ -314,7 +314,7 @@ In order to become familiar with the experiment, it is advisable to
 initially choose a task that does not take too long to complete, for example
 the 'assemble' task.
 EOF
-  print_wizard_text "${text}"
+  print_interactive_text "${text}"
 }
 
 explain_collect_maven_details() {
@@ -332,7 +332,7 @@ In order to become familiar with the experiment, it is advisable to
 initially choose a goal that does not take too long to complete, for example
 the 'install' goal.
 EOF
-  print_wizard_text "${text}"
+  print_interactive_text "${text}"
 }
 
 explain_command_to_repeat_experiment_after_collecting_parameters() {
@@ -344,7 +344,7 @@ the experiment in the future by running:
 
 $(generate_command_to_repeat_experiment)
 EOF
-  print_wizard_text "${text}"
+  print_interactive_text "${text}"
 }
 
 explain_clone_project() {
@@ -358,7 +358,7 @@ project to validate will be checked out.
 
 ${USER_ACTION_COLOR}Press <Enter> to check out the project from Git.${RESTORE}
 EOF
-  print_wizard_text "${text}"
+  print_interactive_text "${text}"
   wait_for_enter
 }
 

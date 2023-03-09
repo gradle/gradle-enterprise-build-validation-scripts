@@ -177,7 +177,7 @@ of run → measure → improve → run.
 ${USER_ACTION_COLOR}Press <Enter> to get started with the experiment.${RESTORE}
 EOF
 
-  print_wizard_text "${text}"
+  print_interactive_text "${text}"
   wait_for_enter
 }
 
@@ -198,7 +198,7 @@ that could influence the experiment.
 Once the build completes, make a note of the commit id that was used, and enter
 the URL of the build scan produced by the build.
 EOF
-  print_wizard_text "${text}"
+  print_interactive_text "${text}"
 }
 
 collect_first_build_scan() {
@@ -222,7 +222,7 @@ build that could influence the experiment.
 
 Once the build completes, enter the URL of the build scan produced by the build.
 EOF
-  print_wizard_text "${text}"
+  print_interactive_text "${text}"
 }
 
 collect_second_build_scan() {
@@ -251,7 +251,7 @@ value names, you can provide a mapping file so that the required data can be
 extracted from your build scans. An example mapping file named 'mapping.example'
 can be found at the same location as the script.
 EOF
-  print_wizard_text "${text}"
+  print_interactive_text "${text}"
 }
 
 explain_measure_build_results() {
@@ -266,7 +266,7 @@ from two different CI agents.
 
 ${USER_ACTION_COLOR}Press <Enter> to measure the build results.${RESTORE}
 EOF
-  print_wizard_text "${text}"
+  print_interactive_text "${text}"
   wait_for_enter
 }
 
@@ -319,7 +319,7 @@ $(print_command_to_repeat_experiment)
 
 $(explain_when_to_rerun_experiment)
 EOF
-  print_wizard_text "${text}"
+  print_interactive_text "${text}"
 }
 
 process_arguments "$@"

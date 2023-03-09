@@ -223,7 +223,7 @@ of run → measure → improve → run.
 ${USER_ACTION_COLOR}Press <Enter> to get started with the experiment.${RESTORE}
 EOF
 
-  print_wizard_text "${text}"
+  print_interactive_text "${text}"
   wait_for_enter
 }
 
@@ -238,7 +238,7 @@ will be checked out.
 
 ${USER_ACTION_COLOR}Press <Enter> to check out the project from Git.${RESTORE}
 EOF
-  print_wizard_text "${text}"
+  print_interactive_text "${text}"
   wait_for_enter
 }
 
@@ -255,7 +255,7 @@ empty local build cache will be used.
 
 ${USER_ACTION_COLOR}Press <Enter> to run the first build of the experiment.${RESTORE}
 EOF
-  print_wizard_text "${text}"
+  print_interactive_text "${text}"
   wait_for_enter
 }
 
@@ -270,7 +270,7 @@ to validate will be copied into a different location.
 
 ${USER_ACTION_COLOR}Press <Enter> to copy the project into a different location.${RESTORE}
 EOF
-  print_wizard_text "${text}"
+  print_interactive_text "${text}"
   wait_for_enter
 }
 
@@ -287,7 +287,7 @@ local build cache populated during the first build will be used.
 
 ${USER_ACTION_COLOR}Press <Enter> to run the second build.${RESTORE}
 EOF
-  print_wizard_text "$text"
+  print_interactive_text "$text"
   wait_for_enter
 }
 
@@ -322,7 +322,7 @@ build data produced by the two builds to assist you in your investigation.
 ${USER_ACTION_COLOR}Press <Enter> to measure the build results.${RESTORE}
 EOF
   fi
-  print_wizard_text "${text}"
+  print_interactive_text "${text}"
   wait_for_enter
 }
 
@@ -368,7 +368,7 @@ $(print_command_to_repeat_experiment)
 $(explain_when_to_rerun_experiment)
 EOF
   fi
-  print_wizard_text "${text}"
+  print_interactive_text "${text}"
 }
 
 explain_performance_characteristics() {
