@@ -187,8 +187,8 @@ print_performance_characteristics_header() {
 # The _initial_ build time is the build time of the first build.
 print_initial_build_time() {
   local value
-  if [[ -n "${build_times[0]}" ]]; then
-    value="$(format_duration "${build_times[0]}")"
+  if [[ -n "${initial_build_time}" ]]; then
+    value="$(format_duration "${initial_build_time}")"
   fi
   summary_row "Initial build time:" "${value}"
 }
@@ -197,11 +197,10 @@ print_initial_build_time() {
 # time between the first and second build.
 print_instant_build_time_savings() {
   local value
-  if [[ -n "${build_times[0]}" && -n "${build_times[1]}" ]]; then
-    local instant_build_time_savings=$((build_times[0]-build_times[1]))
+  if [[ -n "${instant_build_time}" && -n "${instant_savings}" ]]; then
     printf -v value "%s, %s savings" \
-      "$(format_duration "${build_times[1]}")" \
-      "$(format_duration "${instant_build_time_savings}")"
+      "$(format_duration "${instant_build_time}")" \
+      "$(format_duration "${instant_savings}")"
   fi
   summary_row "Build time with instant savings:" "${value}"
 }
@@ -210,16 +209,10 @@ print_instant_build_time_savings() {
 # tasks had been avoided.
 print_pending_build_time_savings() {
   local value
-  if [[ -n "${build_times[1]}" && \
-        -n "${executed_cacheable_duration[1]}" && \
-        -n "${serialization_factors[1]}" ]]
-  then
-    local pending_additional_build_time_savings pending_build_time
-    pending_additional_build_time_savings=$(echo "${executed_cacheable_duration[1]}/${serialization_factors[1]}" | bc)
-    pending_build_time=$((build_times[1]-pending_additional_build_time_savings))
+  if [[ -n "${pending_build_time}" && -n "${pending_savings}" ]]; then
     printf -v value "%s, %s additional savings" \
       "$(format_duration "${pending_build_time}")" \
-      "$(format_duration "${pending_additional_build_time_savings}")"
+      "$(format_duration "${pending_savings}")"
   fi
   summary_row "Build time with pending savings:" "${value}"
 }
@@ -275,8 +268,8 @@ print_executed_non_cacheable_tasks() {
 
 print_serialization_factor() {
   local value
-  if [[ -n "${serialization_factors[0]}" ]]; then
-    value="$(to_two_decimal_places "${serialization_factors[0]}")x"
+  if [[ -n "${serialization_factor}" ]]; then
+    value="$(to_two_decimal_places "${serialization_factor}")x"
   fi
   summary_row "Serialization factor:" "${value}"
 }
