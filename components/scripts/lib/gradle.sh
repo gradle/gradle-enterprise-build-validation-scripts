@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
 
 invoke_gradle() {
-  local build_number args
+  local run_num args
   args=()
-  build_number=$1
+  run_num=$1
   shift
 
   local original_dir
@@ -33,7 +33,7 @@ invoke_gradle() {
     -Dcom.gradle.enterprise.build_validation.experimentDir="${EXP_DIR}"
     -Dcom.gradle.enterprise.build_validation.expId="${EXP_SCAN_TAG}"
     -Dcom.gradle.enterprise.build_validation.runId="${RUN_ID}"
-    -Dcom.gradle.enterprise.build_validation.buildNumber="${build_number}"
+    -Dcom.gradle.enterprise.build_validation.runNum="${run_num}"
     -Dscan.capture-task-input-files=true
   )
 
