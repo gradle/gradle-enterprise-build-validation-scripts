@@ -129,19 +129,23 @@ wizard_execute() {
 
 execute_first_build() {
   info "Running first build:"
-  execute_build
+  execute_build 0
 }
 
 execute_second_build() {
   info "Running second build:"
-  execute_build
+  execute_build 1
 }
 
 execute_build() {
+  local build_number
+  build_number="$1"
+  shift
+
   print_maven_command
 
   #shellcheck disable=SC2086  # we actually want ${tasks} to expand because it may have more than one maven goal
-  invoke_maven \
+  invoke_maven "${build_number}" \
      -Dgradle.cache.local.enabled=true \
      -Dgradle.cache.local.storeEnabled=true \
      -Dgradle.cache.remote.enabled=false \

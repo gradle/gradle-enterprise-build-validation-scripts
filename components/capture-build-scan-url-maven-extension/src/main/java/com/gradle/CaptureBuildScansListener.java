@@ -71,13 +71,14 @@ public class CaptureBuildScansListener implements GradleEnterpriseListener {
     private void capturePublishedBuildScan(BuildScanApi buildScan) {
         buildScan.buildScanPublished(scan -> {
             logger.debug("Saving build scan data to build-scans.csv");
+            String buildNumber = System.getProperty("com.gradle.enterprise.build_validation.buildNumber");
             String port = scan.getBuildScanUri().getPort() != -1 ? ":" + scan.getBuildScanUri().getPort() : "";
             String baseUrl = String.format("%s://%s%s", scan.getBuildScanUri().getScheme(), scan.getBuildScanUri().getHost(), port);
 
             try (FileWriter fw = new FileWriter(EXPERIMENT_DIR + "/build-scans.csv", true);
                 BufferedWriter bw = new BufferedWriter(fw);
                 PrintWriter out = new PrintWriter(bw)) {
-               out.println(String.format("%s,%s,%s", baseUrl, scan.getBuildScanUri(), scan.getBuildScanId()));
+               out.println(String.format("%s,%s,%s,%s", buildNumber, baseUrl, scan.getBuildScanUri(), scan.getBuildScanId()));
             } catch (IOException e) {
                 logger.error("Unable to save scan data to build-scans.csv: " + e.getMessage(), e);
                 throw new RuntimeException("Unable to save scan data to build-scans.csv: " + e.getMessage(), e);

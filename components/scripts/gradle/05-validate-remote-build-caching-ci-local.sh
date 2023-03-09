@@ -150,6 +150,7 @@ validate_required_args() {
 }
 
 fetch_build_params_from_build_scan() {
+  parse_build_scan_url "${ci_build_scan_url}" 0
   fetch_and_read_build_scan_data all_data "${ci_build_scan_url}"
   read_build_params_from_build_scan_data
 }
@@ -205,7 +206,7 @@ execute_build() {
   info "Running build:"
   info "./gradlew --build-cache --scan -Dscan.tag.${EXP_SCAN_TAG} -Dscan.value.runId=${RUN_ID} clean ${tasks}$(print_extra_args)"
 
-  invoke_gradle "${args[@]}"
+  invoke_gradle 1 "${args[@]}"
 }
 
 # Overrides info.sh#print_experiment_specific_summary_info

@@ -24,10 +24,10 @@ read_build_scan_metadata() {
       debug ""
     fi
 
-    while IFS=, read -r field_1 field_2 field_3; do
-       base_urls+=("$field_1")
-       build_scan_urls+=("$field_2")
-       build_scan_ids+=("$field_3")
+    while IFS=, read -r build_number field_1 field_2 field_3; do
+       base_urls[$build_number]="$field_1"
+       build_scan_urls[$build_number]="$field_2"
+       build_scan_ids[$build_number]="$field_3"
     done <<< "${build_scan_metadata}"
   fi
 }
