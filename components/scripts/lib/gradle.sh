@@ -13,7 +13,6 @@ invoke_gradle() {
   fi
 
   args+=(--init-script "${INIT_SCRIPTS_DIR}/configure-gradle-enterprise.gradle")
-  args+=("-Dcom.gradle.enterprise.build_validation.buildNumber=${build_number}")
 
   if [ "$enable_ge" == "on" ]; then
     args+=("-Dcom.gradle.enterprise.build_validation.gradle.plugin-repository.url=https://plugins.gradle.org/m2")
@@ -34,6 +33,7 @@ invoke_gradle() {
     -Dcom.gradle.enterprise.build_validation.experimentDir="${EXP_DIR}"
     -Dcom.gradle.enterprise.build_validation.expId="${EXP_SCAN_TAG}"
     -Dcom.gradle.enterprise.build_validation.runId="${RUN_ID}"
+    -Dcom.gradle.enterprise.build_validation.buildNumber="${build_number}"
     -Dscan.capture-task-input-files=true
   )
 
