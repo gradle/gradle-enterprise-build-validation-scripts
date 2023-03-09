@@ -60,5 +60,5 @@ source "${LIB_DIR}/paths.sh" || failed_to_load_lib paths.sh
 # shellcheck source=lib/project.sh
 source "${LIB_DIR}/project.sh" || failed_to_load_lib project.sh
 
-# shellcheck source=lib/wizard.sh
-source "${LIB_DIR}/wizard.sh" || failed_to_load_lib wizard.sh
+# shellcheck source=lib/interactive-mode.sh
+source "${LIB_DIR}/interactive-mode.sh" || failed_to_load_lib interactive-mode.sh

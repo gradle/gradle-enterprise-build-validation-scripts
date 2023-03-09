@@ -325,7 +325,7 @@ EOF
   print_wizard_text "${text}"
 }
 
-# This overrides explain_collect_git_details found in lib/wizard.sh
+# This overrides explain_collect_git_details found in lib/interactive-mode.sh
 explain_collect_git_details() {
   local text
   IFS='' read -r -d '' text <<EOF
@@ -347,7 +347,7 @@ EOF
   print_wizard_text "${text}"
 }
 
-# This overrides explain_collect_maven_details found in lib/wizard.sh
+# This overrides explain_collect_maven_details found in lib/interactive-mode.sh
 explain_collect_maven_details() {
   local text
   IFS='' read -r -d '' text <<EOF
@@ -380,7 +380,7 @@ collect_remote_build_cache_url() {
   fi
 }
 
-# This overrides explain_clone_project found in lib/wizard.sh
+# This overrides explain_clone_project found in lib/interactive-mode.sh
 explain_clone_project() {
   local text
   IFS='' read -r -d '' text <<EOF
