@@ -58,6 +58,7 @@ invoke_maven() {
     -Dcom.gradle.enterprise.build-validation.expId="${EXP_SCAN_TAG}"
     -Dcom.gradle.enterprise.build-validation.runId="${RUN_ID}"
     -Dcom.gradle.enterprise.build-validation.runNum="${run_num}"
+    -Dcom.gradle.enterprise.build-validation.version="${SCRIPT_VERSION}"
     -Dgradle.scan.captureGoalInputFiles=true
   )
 
