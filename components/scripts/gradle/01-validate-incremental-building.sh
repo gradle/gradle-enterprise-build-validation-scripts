@@ -165,7 +165,7 @@ fetch_build_cache_metrics() {
   fi
 }
 
-# Overrides info.sh#print_performance_characteristics
+# Overrides summary.sh#print_performance_characteristics
 print_performance_characteristics() {
   print_performance_characteristics_header
 
@@ -176,7 +176,7 @@ print_performance_characteristics() {
   print_serialization_factor
 }
 
-# Overrides info.sh#print_quick_links
+# Overrides summary.sh#print_quick_links
 print_quick_links() {
   info "Investigation Quick Links"
   info "-------------------------"
@@ -230,7 +230,7 @@ and run the experiment again. This creates a cycle of run → measure → improv
 
 ${USER_ACTION_COLOR}Press <Enter> to get started with the experiment.${RESTORE}
 EOF
-  print_wizard_text "${text}"
+  print_interactive_text "${text}"
   wait_for_enter
 }
 
@@ -246,7 +246,7 @@ and build caching disabled.
 
 ${USER_ACTION_COLOR}Press <Enter> to run the first build of the experiment.${RESTORE}
 EOF
-  print_wizard_text "${text}"
+  print_interactive_text "${text}"
   wait_for_enter
 }
 
@@ -262,7 +262,7 @@ with the same Gradle tasks. This time, the build will be invoked without the
 
 ${USER_ACTION_COLOR}Press <Enter> to run the second build of the experiment.${RESTORE}
 EOF
-  print_wizard_text "$text"
+  print_interactive_text "$text"
   wait_for_enter
 }
 
@@ -298,7 +298,7 @@ investigation.
 ${USER_ACTION_COLOR}Press <Enter> to measure the build results.${RESTORE}
 EOF
   fi
-  print_wizard_text "${text}"
+  print_interactive_text "${text}"
   wait_for_enter
 }
 
@@ -345,7 +345,7 @@ $(print_command_to_repeat_experiment)
 $(explain_when_to_rerun_experiment)
 EOF
   fi
-  print_wizard_text "${text}"
+  print_interactive_text "${text}"
 }
 
 explain_performance_characteristics() {

@@ -208,7 +208,7 @@ execute_build() {
   invoke_maven 1 "${args[@]}"
 }
 
-# Overrides info.sh#print_experiment_specific_summary_info
+# Overrides summary.sh#print_experiment_specific_summary_info
 print_experiment_specific_summary_info() {
   summary_row "Custom value mapping file:" "${mapping_file:-<none>}"
 }
@@ -266,7 +266,7 @@ of run → measure → improve → run.
 ${USER_ACTION_COLOR}Press <Enter> to get started with the experiment.${RESTORE}
 EOF
 
-  print_wizard_text "${text}"
+  print_interactive_text "${text}"
   wait_for_enter
 }
 
@@ -287,7 +287,7 @@ that could influence the experiment.
 Once the build completes, make a note of the commit id that was used, and enter
 the URL of the build scan produced by the build.
 EOF
-  print_wizard_text "${text}"
+  print_interactive_text "${text}"
 }
 
 collect_ci_build_scan() {
@@ -322,10 +322,10 @@ value names, you can provide a mapping file so that the required data can be
 extracted from your build scans. An example mapping file named 'mapping.example'
 can be found at the same location as the script.
 EOF
-  print_wizard_text "${text}"
+  print_interactive_text "${text}"
 }
 
-# This overrides explain_collect_git_details found in lib/wizard.sh
+# This overrides explain_collect_git_details found in lib/interactive-mode.sh
 explain_collect_git_details() {
   local text
   IFS='' read -r -d '' text <<EOF
@@ -344,10 +344,10 @@ validation process.
 
 Make sure the local build uses the proper branch and commit id.
 EOF
-  print_wizard_text "${text}"
+  print_interactive_text "${text}"
 }
 
-# This overrides explain_collect_maven_details found in lib/wizard.sh
+# This overrides explain_collect_maven_details found in lib/interactive-mode.sh
 explain_collect_maven_details() {
   local text
   IFS='' read -r -d '' text <<EOF
@@ -359,7 +359,7 @@ the goals invoked by the previous CI build.
 The build will be invoked from the project’s root directory or from a given
 sub-directory.
 EOF
-  print_wizard_text "${text}"
+  print_interactive_text "${text}"
 }
 
 explain_remote_build_cache_url() {
@@ -368,7 +368,7 @@ explain_remote_build_cache_url() {
 The local build will connect to the given remote build cache. The remote build
 cache to use should be the same as the one used by the previous CI build.
 EOF
-  print_wizard_text "${text}"
+  print_interactive_text "${text}"
 }
 
 collect_remote_build_cache_url() {
@@ -380,7 +380,7 @@ collect_remote_build_cache_url() {
   fi
 }
 
-# This overrides explain_clone_project found in lib/wizard.sh
+# This overrides explain_clone_project found in lib/interactive-mode.sh
 explain_clone_project() {
   local text
   IFS='' read -r -d '' text <<EOF
@@ -392,7 +392,7 @@ that contains the project to validate will be checked out.
 
 ${USER_ACTION_COLOR}Press <Enter> to check out the project from Git.${RESTORE}
 EOF
-  print_wizard_text "${text}"
+  print_interactive_text "${text}"
   wait_for_enter
 }
 
@@ -407,7 +407,7 @@ given Maven goals.
 
 ${USER_ACTION_COLOR}Press <Enter> to run the local build of the experiment.${RESTORE}
 EOF
-  print_wizard_text "${text}"
+  print_interactive_text "${text}"
   wait_for_enter
 }
 
@@ -426,7 +426,7 @@ two builds to assist you in your investigation.
 
 ${USER_ACTION_COLOR}Press <Enter> to measure the build results.${RESTORE}
 EOF
-  print_wizard_text "${text}"
+  print_interactive_text "${text}"
   wait_for_enter
 }
 
@@ -517,7 +517,7 @@ $(print_command_to_repeat_experiment)
 
 $(explain_when_to_rerun_experiment)
 EOF
-  print_wizard_text "${text}"
+  print_interactive_text "${text}"
 }
 
 process_arguments "$@"

@@ -12,14 +12,17 @@ failed_to_load_lib() {
   exit "${_UNEXPECTED_ERROR}"
 }
 
-# shellcheck source=lib/build-scan-dump.sh
-source "${LIB_DIR}/build-scan-dump.sh" || failed_to_load_lib build-scan-dump.sh
+# shellcheck source=lib/logging.sh
+source "${LIB_DIR}/logging.sh" || failed_to_load_lib logging.sh
+
+# shellcheck source=lib/build-scan-offline.sh
+source "${LIB_DIR}/build-scan-offline.sh" || failed_to_load_lib build-scan-offline.sh
 
 # shellcheck source=lib/build-scan-parse.sh
 source "${LIB_DIR}/build-scan-parse.sh" || failed_to_load_lib build-scan-parse.sh
 
-# shellcheck source=lib/build_scan.sh
-source "${LIB_DIR}/build_scan.sh" || failed_to_load_lib build_scan.sh
+# shellcheck source=lib/build-scan-online.sh
+source "${LIB_DIR}/build-scan-online.sh" || failed_to_load_lib build-scan-online.sh
 
 # shellcheck source=lib/color.sh
 source "${LIB_DIR}/color.sh" || failed_to_load_lib color.sh
@@ -39,8 +42,8 @@ source "${LIB_DIR}/gradle.sh" || failed_to_load_lib gradle.sh
 # shellcheck source=lib/help.sh
 source "${LIB_DIR}/help.sh" || failed_to_load_lib help.sh
 
-# shellcheck source=lib/info.sh
-source "${LIB_DIR}/info.sh" || failed_to_load_lib info.sh
+# shellcheck source=lib/summary.sh
+source "${LIB_DIR}/summary.sh" || failed_to_load_lib summary.sh
 
 # shellcheck source=lib/init.sh
 source "${LIB_DIR}/init.sh" || failed_to_load_lib init.sh
@@ -57,5 +60,5 @@ source "${LIB_DIR}/paths.sh" || failed_to_load_lib paths.sh
 # shellcheck source=lib/project.sh
 source "${LIB_DIR}/project.sh" || failed_to_load_lib project.sh
 
-# shellcheck source=lib/wizard.sh
-source "${LIB_DIR}/wizard.sh" || failed_to_load_lib wizard.sh
+# shellcheck source=lib/interactive-mode.sh
+source "${LIB_DIR}/interactive-mode.sh" || failed_to_load_lib interactive-mode.sh
