@@ -1,11 +1,8 @@
 #!/usr/bin/env bash
 
-wizard() {
-  local text
-  text="$(echo "${1}" | fmt -w 78)"
-
-  print_wizard_text "${text}" "
-"
+print_wizard_text() {
+  echo -n "${RESTORE}"
+  echo -n "$@"
 }
 
 wait_for_enter() {
@@ -15,12 +12,6 @@ wait_for_enter() {
   echo -en "${UP_ONE_LINE}${ERASE_LINE}"
   echo -en "${UP_ONE_LINE}${ERASE_LINE}"
   echo -en "${UP_ONE_LINE}${ERASE_LINE}"
-}
-
-
-print_wizard_text() {
-  echo -n "${RESTORE}"
-  echo -n "$@"
 }
 
 print_separator() {
@@ -283,8 +274,11 @@ EOF
 }
 
 explain_experiment_dir() {
-  wizard "All of the work we do for this experiment will be stored in
-$(info "${EXP_DIR}")"
+    local text
+    text="$(echo "All of the work we do for this experiment will be stored in $(info "${EXP_DIR}")" | fmt -w 78)"
+
+    print_wizard_text "${text}" "
+  "
 }
 
 explain_collect_git_details() {
