@@ -73,6 +73,7 @@ def expDir = getInputParam('com.gradle.enterprise.build-validation.expDir')
 def expId = getInputParam('com.gradle.enterprise.build-validation.expId')
 def runId = getInputParam('com.gradle.enterprise.build-validation.runId')
 def runNum = getInputParam('com.gradle.enterprise.build-validation.runNum')
+def scriptsVersion = getInputParam('com.gradle.enterprise.build-validation.scriptsVersion')
 
 def atLeastGradle4 = GradleVersion.current() >= GradleVersion.version('4.0')
 
@@ -112,6 +113,8 @@ def addBuildScanCustomData = { def buildScan ->
     buildScan.tag(expId)
 
     addCustomValueAndSearchLink(buildScan, "Experiment run id", runId)
+
+    buildScan.value("Build validation scripts", scriptsVersion)
 }
 
 // do not fail if the CCUD plugin is not applied but surface a warning
