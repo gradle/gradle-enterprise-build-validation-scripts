@@ -59,8 +59,9 @@ invoke_gradle() {
     die "ERROR: The experiment cannot continue because publishing the build scan failed."
   fi
 
-  # defined in build_scan.sh
-  read_build_data_from_current_dir
+  # defined in git.sh
+  read_git_metadata_from_current_repo
+  requested_tasks+=("${tasks}")
 
   if [ -n "${project_dir}" ]; then
     # shellcheck disable=SC2164 # We are just navigating back to the original directory

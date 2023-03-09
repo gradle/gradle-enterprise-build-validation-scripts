@@ -18,8 +18,8 @@ source "${LIB_DIR}/build-scan-dump.sh" || failed_to_load_lib build-scan-dump.sh
 # shellcheck source=lib/build-scan-parse.sh
 source "${LIB_DIR}/build-scan-parse.sh" || failed_to_load_lib build-scan-parse.sh
 
-# shellcheck source=lib/build_scan.sh
-source "${LIB_DIR}/build_scan.sh" || failed_to_load_lib build_scan.sh
+# shellcheck source=lib/build-scan-online.sh
+source "${LIB_DIR}/build-scan-online.sh" || failed_to_load_lib build-scan-online.sh
 
 # shellcheck source=lib/color.sh
 source "${LIB_DIR}/color.sh" || failed_to_load_lib color.sh

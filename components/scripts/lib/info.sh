@@ -109,7 +109,6 @@ print_warnings() {
 }
 
 print_summary() {
-  #defined in build_scan.sh
   detect_warnings_from_build_scans
 
   info "Summary"
@@ -125,6 +124,38 @@ print_summary() {
   if [[ "${build_scan_publishing_mode}" == "on" ]]; then
     print_bl
     print_quick_links
+  fi
+}
+
+detect_warnings_from_build_scans() {
+  local unknown_values=false
+  for (( i=0; i<2; i++ )); do
+    if [ -z "${project_names[i]}" ] ||
+       [ -z "${git_repos[i]}" ] ||
+       [ -z "${git_branches[i]}" ] ||
+       [ -z "${git_commit_ids[i]}" ] ||
+       [ -z "${requested_tasks[i]}" ]; then
+      unknown_values=true
+    fi
+    if [ -z "${build_outcomes[i]}" ]; then
+      warnings+=("Failed to fetch build scan data for the ${ORDINALS[i]} build.")
+    fi
+  done
+
+  local value_mismatch=false
+  if [[ "${project_names[0]}" != "${project_names[1]}" ]] ||
+     [[ "${git_repos[0]}" != "${git_repos[1]}" ]] ||
+     [[ "${git_branches[0]}" != "${git_branches[1]}" ]] ||
+     [[ "${git_commit_ids[0]}" != "${git_commit_ids[1]}" ]] ||
+     [[ "${requested_tasks[0]}" != "${requested_tasks[1]}" ]]; then
+    value_mismatch=true
+  fi
+
+  if [[ "${value_mismatch}" == "true" ]]; then
+    warnings+=("Differences were detected between the two builds. This may skew the outcome of the experiment.")
+  fi
+  if [[ "${unknown_values}" == "true" ]]; then
+    warnings+=("Some of the build properties could not be determined. This makes it uncertain if the experiment has run correctly.")
   fi
 }
 

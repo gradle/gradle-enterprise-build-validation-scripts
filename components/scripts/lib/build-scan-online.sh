@@ -32,13 +32,6 @@ read_build_scan_metadata() {
   fi
 }
 
-read_build_data_from_current_dir() {
-  git_repos+=("$(git_get_remote_url)")
-  git_branches+=("${git_branch:-$(git_get_branch)}")
-  git_commit_ids+=("$(git_get_commit_id)")
-  requested_tasks+=("${tasks}")
-}
-
 fetch_and_read_build_scan_data() {
   local build_cache_metrics_only="$1"
   shift
@@ -68,36 +61,4 @@ fetch_and_read_build_scan_data() {
 
   build_scan_csv="$(invoke_java "$FETCH_BUILD_SCAN_DATA_JAR" "${args[@]}")"
   parse_build_scan_csv "$build_scan_csv" "$build_cache_metrics_only"
-}
-
-detect_warnings_from_build_scans() {
-  local unknown_values=false
-  for (( i=0; i<2; i++ )); do
-    if [ -z "${project_names[i]}" ] ||
-       [ -z "${git_repos[i]}" ] ||
-       [ -z "${git_branches[i]}" ] ||
-       [ -z "${git_commit_ids[i]}" ] ||
-       [ -z "${requested_tasks[i]}" ]; then
-      unknown_values=true
-    fi
-    if [ -z "${build_outcomes[i]}" ]; then
-      warnings+=("Failed to fetch build scan data for the ${ORDINALS[i]} build.")
-    fi
-  done
-
-  local value_mismatch=false
-  if [[ "${project_names[0]}" != "${project_names[1]}" ]] ||
-     [[ "${git_repos[0]}" != "${git_repos[1]}" ]] ||
-     [[ "${git_branches[0]}" != "${git_branches[1]}" ]] ||
-     [[ "${git_commit_ids[0]}" != "${git_commit_ids[1]}" ]] ||
-     [[ "${requested_tasks[0]}" != "${requested_tasks[1]}" ]]; then
-    value_mismatch=true
-  fi
-
-  if [[ "${value_mismatch}" == "true" ]]; then
-    warnings+=("Differences were detected between the two builds. This may skew the outcome of the experiment.")
-  fi
-  if [[ "${unknown_values}" == "true" ]]; then
-    warnings+=("Some of the build properties could not be determined. This makes it uncertain if the experiment has run correctly.")
-  fi
 }

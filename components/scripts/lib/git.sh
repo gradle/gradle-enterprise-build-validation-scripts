@@ -73,3 +73,9 @@ git_checkout_commit() {
     git -c advice.detachedHead=false checkout FETCH_HEAD || die "ERROR: Unable to checkout commit ${git_commit_id}"
   fi
 }
+
+read_git_metadata_from_current_repo() {
+  git_repos+=("$(git_get_remote_url)")
+  git_branches+=("${git_branch:-$(git_get_branch)}")
+  git_commit_ids+=("$(git_get_commit_id)")
+}
