@@ -12,6 +12,7 @@ import java.util.regex.Pattern;
 public class BuildValidationData {
     private static final Pattern REMOTE_BUILD_CACHE_SHARD_PATTERN = Pattern.compile(".*/cache/(.+)$");
 
+    private final int runNum;
     private final String rootProjectName;
     private final String buildScanId;
     private final URL gradleEnterpriseServerUrl;
@@ -26,18 +27,20 @@ public class BuildValidationData {
     private final BigDecimal serializationFactor;
 
     public BuildValidationData(
-            String rootProjectName,
-            String buildScanId,
-            URL gradleEnterpriseServerUrl,
-            String gitUrl,
-            String gitBranch,
-            String gitCommitId,
-            List<String> requestedTasks,
-            String buildOutcome,
-            URL remoteBuildCacheUrl,
-            Map<String, TaskExecutionSummary> tasksByAvoidanceOutcome,
-            Duration buildTime,
-            BigDecimal serializationFactor) {
+        int runNum,
+        String rootProjectName,
+        String buildScanId,
+        URL gradleEnterpriseServerUrl,
+        String gitUrl,
+        String gitBranch,
+        String gitCommitId,
+        List<String> requestedTasks,
+        String buildOutcome,
+        URL remoteBuildCacheUrl,
+        Map<String, TaskExecutionSummary> tasksByAvoidanceOutcome,
+        Duration buildTime,
+        BigDecimal serializationFactor) {
+        this.runNum = runNum;
         this.rootProjectName = rootProjectName;
         this.buildScanId = buildScanId;
         this.gradleEnterpriseServerUrl = gradleEnterpriseServerUrl;
@@ -50,6 +53,10 @@ public class BuildValidationData {
         this.tasksByAvoidanceOutcome = tasksByAvoidanceOutcome;
         this.buildTime = buildTime;
         this.serializationFactor = serializationFactor;
+    }
+
+    public int runNum() {
+        return runNum;
     }
 
     public String getRootProjectName() {
@@ -134,4 +141,5 @@ public class BuildValidationData {
     public BigDecimal getSerializationFactor() {
         return serializationFactor;
     }
+
 }

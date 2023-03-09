@@ -121,7 +121,7 @@ public class GradleEnterpriseApiClient {
         }
     }
 
-    public BuildValidationData fetchBuildValidationData(String buildScanId) {
+    public BuildValidationData fetchBuildValidationData(int runNum, String buildScanId) {
         try {
             Build build = apiClient.getBuild(buildScanId, null);
             if (build.getBuildToolType().equalsIgnoreCase("gradle")) {
@@ -129,6 +129,7 @@ public class GradleEnterpriseApiClient {
                 GradleBuildCachePerformance buildCachePerformance = apiClient.getGradleBuildCachePerformance(buildScanId, null);
 
                 return new BuildValidationData(
+                    runNum,
                     attributes.getRootProjectName(),
                     buildScanId,
                     baseUrl,
@@ -148,6 +149,7 @@ public class GradleEnterpriseApiClient {
                 MavenBuildCachePerformance buildCachePerformance = apiClient.getMavenBuildCachePerformance(buildScanId, null);
 
                 return new BuildValidationData(
+                    runNum,
                     attributes.getTopLevelProjectName(),
                     buildScanId,
                     baseUrl,
