@@ -64,10 +64,6 @@ def getInputParam = { String name ->
     return System.getProperty(name) ?: System.getenv(envVarName)
 }
 
-if (getInputParam("com.gradle.enterprise.build_validation.buildNumber") == "0") {
-    System.exit(100)
-}
-
 def geUrl = getInputParam('com.gradle.enterprise.build_validation.gradle-enterprise.url')
 def geAllowUntrustedServer = Boolean.parseBoolean(getInputParam('com.gradle.enterprise.build_validation.gradle-enterprise.allow-untrusted-server'))
 def gePluginVersion = getInputParam('com.gradle.enterprise.build_validation.gradle-enterprise.plugin.version')
