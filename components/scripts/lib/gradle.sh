@@ -31,9 +31,9 @@ invoke_gradle() {
   fi
 
   args+=(
-    -Pcom.gradle.enterprise.build_validation.experimentDir="${EXP_DIR}"
-    -Pcom.gradle.enterprise.build_validation.expId="${EXP_SCAN_TAG}"
-    -Pcom.gradle.enterprise.build_validation.runId="${RUN_ID}"
+    -Dcom.gradle.enterprise.build_validation.experimentDir="${EXP_DIR}"
+    -Dcom.gradle.enterprise.build_validation.expId="${EXP_SCAN_TAG}"
+    -Dcom.gradle.enterprise.build_validation.runId="${RUN_ID}"
     -Dscan.capture-task-input-files=true
   )
 

@@ -68,6 +68,10 @@ def geUrl = getInputParam('com.gradle.enterprise.build_validation.gradle-enterpr
 def geAllowUntrustedServer = Boolean.parseBoolean(getInputParam('com.gradle.enterprise.build_validation.gradle-enterprise.allow-untrusted-server'))
 def gePluginVersion = getInputParam('com.gradle.enterprise.build_validation.gradle-enterprise.plugin.version')
 def ccudPluginVersion = getInputParam('com.gradle.enterprise.build_validation.ccud.plugin.version')
+
+def expDir = getInputParam('com.gradle.enterprise.build_validation.experimentDir')
+def expId = getInputParam('com.gradle.enterprise.build_validation.expId')
+def runId = getInputParam('com.gradle.enterprise.build_validation.runId')
 def buildNumber = getInputParam("com.gradle.enterprise.build_validation.buildNumber")
 
 def atLeastGradle4 = GradleVersion.current() >= GradleVersion.version('4.0')
@@ -80,7 +84,7 @@ if (ccudPluginVersion && isNotAtLeast(ccudPluginVersion, '1.7')) {
 
 // register build scan listeners to capture build scan URL/id and to track publishing errors
 def registerBuildScanActions = { def buildScan ->
-    def scanFile = new File(experimentDir, 'build-scans.csv')
+    def scanFile = new File(expDir, 'build-scans.csv')
     buildScan.buildScanPublished { publishedBuildScan ->
         def buildScanUri = publishedBuildScan.buildScanUri
         def buildScanId = publishedBuildScan.buildScanId
@@ -89,7 +93,7 @@ def registerBuildScanActions = { def buildScan ->
         scanFile.append("${buildNumber},${baseUrl},${buildScanUri},${buildScanId}\n")
     }
 
-    def errorFile = new File(experimentDir, 'build-scan-publish-error.txt')
+    def errorFile = new File(expDir, 'build-scan-publish-error.txt')
     buildScan.onError { error ->
         errorFile.text = error
     }
@@ -104,14 +108,16 @@ def configureBuildScanPublishing = { def buildScan ->
 
 // add custom data identifying the experiment
 def addBuildScanCustomData = { def buildScan ->
-    def projectProperties = gradle.startParameter.projectProperties
-
-    def expId = projectProperties.get("com.gradle.enterprise.build_validation.expId")
     addCustomValueAndSearchLink(buildScan, "Experiment id", expId)
     buildScan.tag(expId)
 
-    def runId = projectProperties.get("com.gradle.enterprise.build_validation.runId")
     addCustomValueAndSearchLink(buildScan, "Experiment run id", runId)
+}
+
+def logWarningMissingCommonCustomUserDataGradlePlugin = {
+    def warningFile = new File(expDir, 'warnings.txt')
+    warningFile.append("The com.gradle.common-custom-user-data-gradle-plugin plugin is missing from " +
+            "the project (see https://github.com/gradle/common-custom-user-data-gradle-plugin).\n")
 }
 
 // configure build scan behavior and optionally apply the GE / Build Scan / CCUD plugin
@@ -234,18 +240,4 @@ static String appendIfMissing(String str, String suffix) {
 
 static String urlEncode(String str) {
     return URLEncoder.encode(str, StandardCharsets.UTF_8.name())
-}
-
-void logWarningMissingCommonCustomUserDataGradlePlugin() {
-    logWarning("The com.gradle.common-custom-user-data-gradle-plugin plugin is missing from the project (see https://github.com/gradle/common-custom-user-data-gradle-plugin).")
-}
-
-void logWarning(String warning) {
-    def warningFile = new File(experimentDir, "warnings.txt")
-    warningFile.append(warning + "\n")
-}
-
-File getExperimentDir() {
-    def projectProperties = gradle.startParameter.projectProperties
-    new File(projectProperties.get("com.gradle.enterprise.build_validation.experimentDir"))
 }
