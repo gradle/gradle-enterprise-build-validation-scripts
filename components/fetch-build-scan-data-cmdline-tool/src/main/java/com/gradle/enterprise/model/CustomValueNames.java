@@ -12,19 +12,23 @@ public class CustomValueNames {
             "Git repository", "Git branch", "Git commit id"
     );
 
-    public static CustomValueNames loadFromFile(Path customValueMappingFile) throws IOException {
-        if (Files.isRegularFile(customValueMappingFile)) {
-            try (BufferedReader in = Files.newBufferedReader(customValueMappingFile)) {
-                Properties mappingProps = new Properties();
-                mappingProps.load(in);
-                return new CustomValueNames(
+    public static CustomValueNames loadFromFile(Path customValuesMappingFile) {
+        try {
+            if (Files.isRegularFile(customValuesMappingFile)) {
+                try (BufferedReader in = Files.newBufferedReader(customValuesMappingFile)) {
+                    Properties mappingProps = new Properties();
+                    mappingProps.load(in);
+                    return new CustomValueNames(
                         mappingProps.getProperty("git.repository", DEFAULT.getGitRepositoryKey()),
                         mappingProps.getProperty("git.branch", DEFAULT.getGitBranchKey()),
                         mappingProps.getProperty("git.commitId", DEFAULT.getGitCommitIdKey())
-                );
+                    );
+                }
+            } else {
+                return CustomValueNames.DEFAULT;
             }
-        } else {
-            return CustomValueNames.DEFAULT;
+        } catch (IOException e) {
+            throw new RuntimeException("Could not load custom value mapping file: " + customValuesMappingFile, e);
         }
     }
 

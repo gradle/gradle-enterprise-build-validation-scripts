@@ -5,7 +5,7 @@ import picocli.CommandLine;
 import java.io.PrintStream;
 
 public class ConsoleLogger {
-    
+
     private final PrintStream out;
     private final CommandLine.Help.ColorScheme colorScheme;
     private final boolean debugEnabled;
@@ -19,21 +19,12 @@ public class ConsoleLogger {
     }
 
     public void info(String message, Object... args) {
-        info(String.format(message + "%n", args));
+        info(String.format(message, args));
     }
 
     public void info(String message) {
         out.println(message);
         lastStatementIncludedNewline = true;
-    }
-
-    public void infoNoNewline(String message) {
-        out.print(message);
-        lastStatementIncludedNewline = false;
-    }
-
-    public void debug(String message, Object... args) {
-        debug(String.format(message, args));
     }
 
     public void debug(String message) {

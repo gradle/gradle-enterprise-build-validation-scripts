@@ -60,7 +60,8 @@ invoke_gradle() {
   fi
 
   if [ -f "${EXP_DIR}/errors.txt" ]; then
-    die "ERROR: The experiment cannot continue because of a non-recoverable failure while running the build."
+    print_bl
+    die "ERROR: The experiment cannot continue because of a non-recoverable failure while running the build: $(cat "${EXP_DIR}/errors.txt")"
   fi
 
   # defined in git.sh

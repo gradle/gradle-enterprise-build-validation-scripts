@@ -11,6 +11,7 @@ import java.util.stream.Stream;
 
 public enum Fields {
     // The order the enums are defined controls the order the fields are printed in the CSV
+    RUN_NUM("Run Num", d -> toStringSafely(d.runNum())),
     ROOT_PROJECT_NAME("Root Project Name", BuildValidationData::getRootProjectName),
     GE_SERVER("Gradle Enterprise Server", d -> toStringSafely(d.getGradleEnterpriseServerUrl())),
     BUILD_SCAN("Build Scan", d -> toStringSafely(d.getBuildScanUrl())),

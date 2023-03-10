@@ -4,17 +4,15 @@ import com.gradle.enterprise.api.client.FailedRequestException;
 import com.gradle.enterprise.api.client.GradleEnterpriseApiClient;
 import com.gradle.enterprise.model.BuildValidationData;
 import com.gradle.enterprise.model.CustomValueNames;
+import com.gradle.enterprise.model.NumberedBuildScan;
 import com.gradle.enterprise.network.NetworkSettingsConfigurator;
+import org.jetbrains.annotations.NotNull;
 import picocli.CommandLine;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
 import picocli.CommandLine.Parameters;
 
-import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.nio.file.Path;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -39,11 +37,11 @@ public class FetchBuildValidationDataCommand implements Callable<Integer> {
         public static final int OK = 0;
     }
 
-    @Parameters(paramLabel = "BUILD_SCAN", description = "The build scans to fetch.", arity = "1..*")
-    private List<URL> buildScanUrls;
+    @Parameters(paramLabel = "BUILD_SCAN", description = "The build scans to fetch. Each build scan URL is preceded by the run num that produced the build scan.", arity = "1..*")
+    private List<String> runNumsAndBuildScanUrls;
 
-    @Option(names = {"--mapping-file"}, description = "Specifies a mapping file that configures the keys used to fetch important custom values.")
-    private Optional<Path> customValueMappingFile;
+    @Option(names = {"--mapping-file"}, description = "Specifies a mapping file that configures the names used to fetch important custom values.")
+    private Optional<Path> customValuesMappingFile;
 
     @Option(names = {"--network-settings-file"}, description = "Specifies a file that configures HTTP(S) Proxy and SSL settings.")
     private Optional<Path> networkSettingsFile;
@@ -54,51 +52,53 @@ public class FetchBuildValidationDataCommand implements Callable<Integer> {
     @Option(names = {"--brief-logging"}, description = "Only log a short message about fetching build scan data and when it completes.")
     private boolean briefLogging;
 
-    private boolean someScansFailedToFetch;
-
     @Override
-    public Integer call() throws Exception {
+    public Integer call() {
         // Use System.err for logging since we're going to write out the CSV to System.out
         logger = new ConsoleLogger(System.err, colorScheme, debug);
 
         networkSettingsFile.ifPresent(settingsFile -> NetworkSettingsConfigurator.configureNetworkSettings(settingsFile, logger));
 
-        CustomValueNames customValueKeys = loadCustomValueKeys(customValueMappingFile);
+        List<NumberedBuildScan> buildScans = NumberedBuildScan.parse(runNumsAndBuildScanUrls);
+        CustomValueNames customValueKeys = customValuesMappingFile
+            .map(CustomValueNames::loadFromFile)
+            .orElse(CustomValueNames.DEFAULT);
 
-        logStartFetchingBuildScans();
-        List<BuildValidationData> buildValidationData = new ArrayList<>();
-        for (int i = 0; i < buildScanUrls.size(); i++) {
-            BuildValidationData validationData = fetchBuildScanData(i, buildScanUrls.get(i), customValueKeys);
-            buildValidationData.add(validationData);
-        }
-        logFinishedFetchingBuildScans();
+        logStartFetchingAllBuildScanData();
+        List<BuildValidationData> buildValidationData = fetchBuildScanData(buildScans, customValueKeys);
+
+        logFinishedFetchingAllBuildScanData();
         logFetchResults(buildValidationData, customValueKeys);
 
         printHeader();
-        buildValidationData.forEach(this::printRow);
+        printBuildValidationData(buildValidationData);
 
         return ExitCode.OK;
     }
 
-    private BuildValidationData fetchBuildScanData(int index, URL buildScanUrl, CustomValueNames customValueNames) {
-        logStartFetchingBuildScan(index);
-        URL baseUrl = null;
-        String buildScanId = "";
+    @NotNull
+    private List<BuildValidationData> fetchBuildScanData(List<NumberedBuildScan> buildScans, CustomValueNames customValueKeys) {
+        return buildScans.stream()
+            .parallel()
+            .map(buildScan -> fetchBuildScanData(buildScan, customValueKeys))
+            .collect(Collectors.toList());
+    }
+
+    private BuildValidationData fetchBuildScanData(NumberedBuildScan buildScan, CustomValueNames customValueNames) {
+        logStartFetchingBuildScanData(buildScan);
         try {
-            baseUrl = baseUrlFrom(buildScanUrl);
-            buildScanId = buildScanIdFrom(buildScanUrl);
+            GradleEnterpriseApiClient apiClient = new GradleEnterpriseApiClient(buildScan.baseUrl(), customValueNames, logger);
+            BuildValidationData data = apiClient.fetchBuildValidationData(buildScan);
 
-            GradleEnterpriseApiClient apiClient = new GradleEnterpriseApiClient(baseUrl, customValueNames, logger);
-            BuildValidationData data = apiClient.fetchBuildValidationData(buildScanId);
-
-            logFinishedFetchingBuildScan();
+            logFinishedFetchingBuildScanData(buildScan);
             return data;
         } catch (RuntimeException e) {
-            printException(e);
+            logException(e);
             return new BuildValidationData(
+                buildScan.runNum(),
                 "",
-                buildScanId,
-                baseUrl,
+                buildScan.buildScanId(),
+                buildScan.baseUrl(),
                 "",
                 "",
                 "",
@@ -111,8 +111,7 @@ public class FetchBuildValidationDataCommand implements Callable<Integer> {
         }
     }
 
-    private void printException(RuntimeException e) {
-        someScansFailedToFetch = true;
+    private void logException(RuntimeException e) {
         if (logger.isDebugEnabled()) {
             logger.error(e);
             if (e instanceof FailedRequestException) {
@@ -132,103 +131,47 @@ public class FetchBuildValidationDataCommand implements Callable<Integer> {
         }
     }
 
-    private String buildScanIndexToOrdinal(int i) {
-        switch(i + 1) {
-            case 1: return "first";
-            case 2: return "second";
-            case 3: return "third";
-            case 4: return "fourth";
-            case 5: return "fifth";
-            case 6: return "sixth";
-            case 7: return "seventh";
-            case 8: return "eighth";
-            case 9: return "ninth";
-            case 10: return "tenth";
-            default: return String.valueOf(i);
-        }
-    }
-
-    private URL baseUrlFrom(URL buildScanUrl) {
-        try {
-            String port = (buildScanUrl.getPort() != -1) ? ":" + buildScanUrl.getPort() : "";
-            return new URL(buildScanUrl.getProtocol() + "://" + buildScanUrl.getHost() + port);
-        } catch (MalformedURLException e) {
-            // It is highly unlikely this exception will ever be thrown. If it is thrown, then it is likely due to a
-            // programming mistake (._.)
-            throw new BadBuildScanUrlException(buildScanUrl, e);
-        }
-    }
-
-    private String buildScanIdFrom(URL buildScanUrl) {
-        String[] pathSegments = buildScanUrl.getPath().split("/");
-
-        if (pathSegments.length == 0) {
-            throw new BadBuildScanUrlException(buildScanUrl);
-        }
-        return pathSegments[pathSegments.length - 1];
-    }
-
-    private void logStartFetchingBuildScans() {
+    private void logStartFetchingAllBuildScanData() {
         if (briefLogging) {
-            logger.infoNoNewline("Fetching build scan data");
-            if (logger.isDebugEnabled()) {
-                logger.info("");
-            }
+            logger.info("Fetching Build Scan data for all builds");
         }
     }
 
-    private void logFinishedFetchingBuildScans() {
+    private void logFinishedFetchingAllBuildScanData() {
         if (briefLogging) {
-            if (logger.isDebugEnabled() || someScansFailedToFetch) {
-                logger.info("done.");
-            } else {
-                logger.info(", done.");
-            }
+            logger.info("Finished fetching Build Scan data for all builds");
         }
     }
 
-    private void logFinishedFetchingBuildScan() {
+    private void logStartFetchingBuildScanData(NumberedBuildScan buildScan) {
         if (!briefLogging) {
-            if (logger.isDebugEnabled() || someScansFailedToFetch) {
-                logger.info("done.");
-            } else {
-                logger.info(", done.");
-            }
+            logger.info("Fetching Build Scan data for %s build", toOrdinal(buildScan.runNum()));
         }
     }
 
-    private void logStartFetchingBuildScan(int index) {
+    private void logFinishedFetchingBuildScanData(NumberedBuildScan buildScan) {
         if (!briefLogging) {
-            logger.infoNoNewline(fetchingMessageFor(index));
-            if (logger.isDebugEnabled()) {
-                logger.info("");
-            }
+            logger.info("Finished fetching Build Scan data for %s build", toOrdinal(buildScan.runNum()));
         }
-    }
-
-    private String fetchingMessageFor(int index) {
-        if (buildScanUrls.size() <= 10) {
-            return String.format("Fetching build scan data for the %s build", buildScanIndexToOrdinal(index));
-        }
-        return String.format("Fetching build scan data for build %s", index + 1);
     }
 
     private void logFetchResults(List<BuildValidationData> buildValidationData, CustomValueNames customValueKeys) {
         if (!briefLogging) {
-            for (int i = 0; i < buildScanUrls.size(); i++) {
+            buildValidationData.forEach(validationData -> {
                 logger.info("");
-                BuildValidationData validationData = buildValidationData.get(i);
 
-                logFetchResultFor(i, "Git repository", customValueKeys.getGitRepositoryKey(), validationData.isGitUrlFound());
-                logFetchResultFor(i, "Git branch", customValueKeys.getGitBranchKey(), validationData.isGitBranchFound());
-                logFetchResultFor(i, "Git commit id", customValueKeys.getGitCommitIdKey(), validationData.isGitCommitIdFound());
-            }
+                logFetchResultFor(validationData.runNum(), "Git repository", customValueKeys.getGitRepositoryKey(), validationData.isGitUrlFound());
+                logFetchResultFor(validationData.runNum(), "Git branch", customValueKeys.getGitBranchKey(), validationData.isGitBranchFound());
+                logFetchResultFor(validationData.runNum(), "Git commit id", customValueKeys.getGitCommitIdKey(), validationData.isGitCommitIdFound());
+            });
         }
     }
 
-    private void logFetchResultFor(int index, String property, String customValueKey, boolean found) {
-        String ordinal = buildScanIndexToOrdinal(index);
-        logger.info("Looking up %s from custom value with name '%s' from the %s build scan, %s.", property, customValueKey, ordinal, found ? "found": "not found");
+    private void logFetchResultFor(int runNum, String property, String customValueKey, boolean found) {
+        logger.info(
+            "%s %s from custom value with name '%s' for %s build",
+            found ? "Found": "Did not find", property, customValueKey, toOrdinal(runNum)
+        );
     }
 
     public void printHeader() {
@@ -236,16 +179,21 @@ public class FetchBuildValidationDataCommand implements Callable<Integer> {
         System.out.println(String.join(",", labels));
     }
 
-    private void printRow(BuildValidationData buildValidationData) {
+    private void printBuildValidationData(List<BuildValidationData> buildValidationData) {
+        buildValidationData.forEach(this::printBuildValidationData);
+    }
+
+    private void printBuildValidationData(BuildValidationData buildValidationData) {
         List<String> values = Fields.ordered().map(f -> f.value.apply(buildValidationData)).collect(Collectors.toList());
         System.out.println(String.join(",", values));
     }
 
-    private CustomValueNames loadCustomValueKeys(Optional<Path> customValueMappingFile) throws IOException {
-        if (customValueMappingFile.isPresent()) {
-            return CustomValueNames.loadFromFile(customValueMappingFile.get());
-        } else {
-            return CustomValueNames.DEFAULT;
+    private static String toOrdinal(int i) {
+        switch(i + 1) {
+            case 1: return "first";
+            case 2: return "second";
+            case 3: return "third";
+            default: return (i + 1) + "th";
         }
     }
 }

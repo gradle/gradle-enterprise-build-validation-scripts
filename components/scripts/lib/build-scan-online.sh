@@ -7,7 +7,7 @@ readonly FETCH_BUILD_SCAN_DATA_JAR="${LIB_DIR}/export-api-clients/fetch-build-sc
 # Enterprise API.
 process_build_scan_data_online() {
   read_build_scan_metadata
-  fetch_and_read_build_scan_data build_cache_metrics_only "${build_scan_urls[@]}"
+  fetch_and_read_build_scan_data build_cache_metrics_only
 }
 
 read_build_scan_metadata() {
@@ -57,7 +57,10 @@ fetch_and_read_build_scan_data() {
   else
     info "Fetching build scan data"
   fi
-  args+=( "$@" )
+
+  for run_num in "${!build_scan_urls[@]}"; do
+    args+=( "${run_num},${build_scan_urls[run_num]}" )
+  done
 
   build_scan_csv="$(invoke_java "$FETCH_BUILD_SCAN_DATA_JAR" "${args[@]}")"
   parse_build_scan_csv "$build_scan_csv" "$build_cache_metrics_only"
