@@ -58,6 +58,7 @@ strip_color_codes() {
   sed $'s,\x1b\\[[0-9;]*[a-zA-Z],,g'
 }
 
+# Reads and deduplicates the warning messages (only works as long as each message is a single line)
 read_build_warnings() {
   if [[ "${build_outcomes[0]}" == "FAILED" ]]; then
     warnings+=("The first build failed. This may skew the outcome of the experiment.")
