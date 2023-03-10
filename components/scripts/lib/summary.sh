@@ -66,11 +66,15 @@ read_build_warnings() {
     warnings+=("The second build failed. This may skew the outcome of the experiment.")
   fi
 
-  local warnings_file="${EXP_DIR}/warnings.txt"
+  local warnings_file
+  warnings_file="${EXP_DIR}/warnings.txt"
   if [ -f "${warnings_file}" ]; then
+    local warnings_file_content
+    warnings_file_content=$(sort "${warnings_file}" | uniq)
+
     while read -r l; do
       warnings+=("$l")
-    done <"${warnings_file}"
+    done <<< "${warnings_file_content}"
   fi
 }
 
