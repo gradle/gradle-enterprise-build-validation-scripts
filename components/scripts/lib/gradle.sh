@@ -64,7 +64,7 @@ invoke_gradle() {
     die "ERROR: The experiment cannot continue because of a non-recoverable failure while running the build: $(cat "${EXP_DIR}/errors.txt")"
   fi
 
-  if is_build_scan_metadata_missing "$run_num"; then
+  if [[ "${build_scan_publishing_mode}" == "on" ]] && is_build_scan_metadata_missing "$run_num"; then
     print_bl
     die "ERROR: The experiment cannot continue because a Build Scan was not published."
   fi
