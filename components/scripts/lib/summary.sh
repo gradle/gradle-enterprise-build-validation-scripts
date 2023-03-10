@@ -58,6 +58,7 @@ strip_color_codes() {
   sed $'s,\x1b\\[[0-9;]*[a-zA-Z],,g'
 }
 
+# Reads and deduplicates the warning messages (only works as long as each message is a single line)
 read_build_warnings() {
   if [[ "${build_outcomes[0]}" == "FAILED" ]]; then
     warnings+=("The first build failed. This may skew the outcome of the experiment.")
@@ -66,11 +67,15 @@ read_build_warnings() {
     warnings+=("The second build failed. This may skew the outcome of the experiment.")
   fi
 
-  local warnings_file="${EXP_DIR}/warnings.txt"
+  local warnings_file
+  warnings_file="${EXP_DIR}/warnings.txt"
   if [ -f "${warnings_file}" ]; then
+    local warnings_file_content
+    warnings_file_content=$(sort "${warnings_file}" | uniq)
+
     while read -r l; do
       warnings+=("$l")
-    done <"${warnings_file}"
+    done <<< "${warnings_file_content}"
   fi
 }
 
