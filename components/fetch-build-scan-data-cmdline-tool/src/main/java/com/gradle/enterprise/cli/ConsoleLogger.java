@@ -5,7 +5,7 @@ import picocli.CommandLine;
 import java.io.PrintStream;
 
 public class ConsoleLogger {
-    
+
     private final PrintStream out;
     private final CommandLine.Help.ColorScheme colorScheme;
     private final boolean debugEnabled;
@@ -19,7 +19,7 @@ public class ConsoleLogger {
     }
 
     public void info(String message, Object... args) {
-        info(String.format(message + "%n", args));
+        info(String.format(message, args));
     }
 
     public void info(String message) {
