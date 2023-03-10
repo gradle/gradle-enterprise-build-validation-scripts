@@ -89,7 +89,7 @@ public class FetchBuildValidationDataCommand implements Callable<Integer> {
         logStartFetchingBuildScanData(buildScan);
         try {
             GradleEnterpriseApiClient apiClient = new GradleEnterpriseApiClient(buildScan.baseUrl(), customValueNames, logger);
-            BuildValidationData data = apiClient.fetchBuildValidationData(buildScan.runNum(), buildScan.buildScanId());
+            BuildValidationData data = apiClient.fetchBuildValidationData(buildScan);
 
             logFinishedFetchingBuildScanData();
             return data;

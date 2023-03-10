@@ -12,6 +12,7 @@ import com.gradle.enterprise.api.model.MavenBuildCachePerformanceGoalExecutionEn
 import com.gradle.enterprise.cli.ConsoleLogger;
 import com.gradle.enterprise.model.BuildValidationData;
 import com.gradle.enterprise.model.CustomValueNames;
+import com.gradle.enterprise.model.NumberedBuildScan;
 import com.gradle.enterprise.model.TaskExecutionSummary;
 import okhttp3.Credentials;
 import okhttp3.OkHttpClient;
@@ -121,7 +122,9 @@ public class GradleEnterpriseApiClient {
         }
     }
 
-    public BuildValidationData fetchBuildValidationData(int runNum, String buildScanId) {
+    public BuildValidationData fetchBuildValidationData(NumberedBuildScan buildScan) {
+        int runNum = buildScan.runNum();
+        String buildScanId = buildScan.buildScanId();
         try {
             Build build = apiClient.getBuild(buildScanId, null);
             if (build.getBuildToolType().equalsIgnoreCase("gradle")) {
