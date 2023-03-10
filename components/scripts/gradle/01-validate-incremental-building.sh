@@ -167,11 +167,21 @@ fetch_build_cache_metrics() {
 print_performance_characteristics() {
   print_performance_characteristics_header
 
-  print_initial_build_time
-
-  print_build_time_with_instant_savings
+  print_build_time_metrics
 
   print_serialization_factor
+}
+
+# Overrides summary.sh#print_build_time_metrics
+print_build_time_metrics() {
+  local build_time_padding
+  build_time_padding=$(max_length \
+    "$(format_duration "${initial_build_time}")" \
+    "$(format_duration "${instant_build_time}")")
+
+  print_initial_build_time "${build_time_padding}"
+
+  print_build_time_with_instant_savings "${build_time_padding}"
 }
 
 # Overrides summary.sh#print_quick_links
