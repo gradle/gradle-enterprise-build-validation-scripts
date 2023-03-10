@@ -12,7 +12,6 @@ import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
 import picocli.CommandLine.Parameters;
 
-import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Collections;
 import java.util.List;
@@ -42,7 +41,7 @@ public class FetchBuildValidationDataCommand implements Callable<Integer> {
     private List<String> runNumsAndBuildScanUrls;
 
     @Option(names = {"--mapping-file"}, description = "Specifies a mapping file that configures the keys used to fetch important custom values.")
-    private Optional<Path> customValueMappingFile;
+    private Optional<Path> customValuesMappingFile;
 
     @Option(names = {"--network-settings-file"}, description = "Specifies a file that configures HTTP(S) Proxy and SSL settings.")
     private Optional<Path> networkSettingsFile;
@@ -63,8 +62,8 @@ public class FetchBuildValidationDataCommand implements Callable<Integer> {
         networkSettingsFile.ifPresent(settingsFile -> NetworkSettingsConfigurator.configureNetworkSettings(settingsFile, logger));
 
         List<NumberedBuildScan> buildScans = NumberedBuildScan.parse(runNumsAndBuildScanUrls);
-        CustomValueNames customValueKeys = customValueMappingFile
-            .map(FetchBuildValidationDataCommand::loadCustomValueKeys)
+        CustomValueNames customValueKeys = customValuesMappingFile
+            .map(CustomValueNames::loadFromFile)
             .orElse(CustomValueNames.DEFAULT);
 
         logStartFetchingAllBuildScanData();
@@ -203,14 +202,6 @@ public class FetchBuildValidationDataCommand implements Callable<Integer> {
     private void printBuildValidationData(BuildValidationData buildValidationData) {
         List<String> values = Fields.ordered().map(f -> f.value.apply(buildValidationData)).collect(Collectors.toList());
         System.out.println(String.join(",", values));
-    }
-
-    private static CustomValueNames loadCustomValueKeys(Path customValueMappingFile) {
-        try {
-            return CustomValueNames.loadFromFile(customValueMappingFile);
-        } catch (IOException e) {
-            throw new RuntimeException("Could not load custom value mapping file: " + customValueMappingFile, e);
-        }
     }
 
     private static String toOrdinal(int i) {
