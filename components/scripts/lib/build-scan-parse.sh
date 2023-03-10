@@ -29,6 +29,13 @@ executed_not_cacheable_duration=()
 build_time=()
 serialization_factors=()
 
+initial_build_time=""
+instant_savings=""
+instant_savings_build_time=""
+pending_savings=""
+pending_savings_build_time=""
+
+# shellcheck disable=SC2034 # not all scripts use all of the fetched data
 parse_build_scan_csv() {
   # This isn't the most robust way to read a CSV,
   # but we control the CSV so we don't have to worry about various CSV edge cases
@@ -44,7 +51,6 @@ parse_build_scan_csv() {
 
   header_row_read=false
 
-  # shellcheck disable=SC2034 # not all scripts use all of the fetched data
   while IFS=, read -r run_num field_1 field_2 field_3 field_4 field_5 field_6 field_7 field_8 field_9 field_10 field_11 field_12 field_13 field_14 field_15 field_16 field_17 field_18 field_19 field_20 field_21; do
     if [[ "$header_row_read" == "false" ]]; then
       header_row_read=true
@@ -79,8 +85,13 @@ parse_build_scan_csv() {
     # Build time metrics
     build_time[run_num]="${field_20}"
     serialization_factors[run_num]="${field_21}"
+  done <<< "${build_scan_csv}"
 
-    done <<< "${build_scan_csv}"
+  initial_build_time="$(calculate_initial_build_time)"
+  instant_savings="$(calculate_instant_savings)"
+  instant_savings_build_time="$(calculate_instant_savings_build_time)"
+  pending_savings="$(calculate_pending_savings)"
+  pending_savings_build_time="$(calculate_pending_savings_build_time)"
 }
 
 parse_build_scan_url() {
@@ -108,5 +119,43 @@ parse_build_scan_url() {
     build_scan_ids[run_num]="$build_scan_id"
   else
     die "${build_scan_url} is not a parsable URL." "${INVALID_INPUT}"
+  fi
+}
+
+# The _initial_ build time is the build time of the first build.
+calculate_initial_build_time() {
+  if [[ -n "${build_time[0]}" ]]; then
+    echo "${build_time[0]}"
+  fi
+}
+
+# The _instant_ savings is the difference in the wall-clock build time between
+# the first and second build.
+calculate_instant_savings() {
+  if [[ -n "${build_time[0]}" && -n "${build_time[1]}" ]]; then
+    echo "$((build_time[0]-build_time[1]))"
+  fi
+}
+
+# The _instant_ savings build time is the build time of the second build.
+calculate_instant_savings_build_time() {
+  if [[ -n "${build_time[1]}" ]]; then
+    echo "${build_time[1]}"
+  fi
+}
+
+# The _pending_ savings is an estimation of the savings if all cacheable tasks
+# had been avoided.
+calculate_pending_savings() {
+  if [[ -n "${executed_cacheable_duration[1]}" && -n "${serialization_factors[1]}" ]]; then
+    echo "${executed_cacheable_duration[1]}/${serialization_factors[1]}" | bc
+  fi
+}
+
+# The _pending_ savings build time is an estimation of the build time if all
+# cacheable tasks had been avoided.
+calculate_pending_savings_build_time() {
+  if [[ -n "${build_time[1]}" && -n "${pending_savings}" ]]; then
+    echo "$((build_time[1]-pending_savings))"
   fi
 }

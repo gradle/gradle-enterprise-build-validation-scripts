@@ -165,11 +165,7 @@ print_experiment_specific_summary_info() {
 print_performance_characteristics() {
   print_performance_characteristics_header
 
-  print_initial_build_time
-
-  print_instant_build_time_savings
-
-  print_pending_build_time_savings
+  print_build_time_metrics
 
   print_build_caching_leverage_metrics
 
@@ -184,49 +180,55 @@ print_performance_characteristics_header() {
   info "---------------------------"
 }
 
-# The _initial_ build time is the build time of the first build.
+print_build_time_metrics() {
+  local build_time_padding
+  build_time_padding=$(max_length \
+    "$(format_duration "${initial_build_time}")" \
+    "$(format_duration "${instant_savings_build_time}")" \
+    "$(format_duration "${pending_savings_build_time}")")
+
+  print_initial_build_time "${build_time_padding}"
+
+  print_build_time_with_instant_savings "${build_time_padding}"
+
+  print_build_time_with_pending_savings "${build_time_padding}"
+}
+
 print_initial_build_time() {
   local value
-  if [[ -n "${build_time[0]}" ]]; then
-    value="$(format_duration "${build_time[0]}")"
+  if [[ -n "${initial_build_time}" ]]; then
+    printf -v value "%$1s" \
+      "$(format_duration "${initial_build_time}")"
   fi
   summary_row "Initial build time:" "${value}"
 }
 
-# The _instant_ build time savings is the difference in the wall-clock build
-# time between the first and second build.
-print_instant_build_time_savings() {
+print_build_time_with_instant_savings() {
   local value
-  if [[ -n "${build_time[0]}" && -n "${build_time[1]}" ]]; then
-    local instant_build_time_savings=$((build_time[0]-build_time[1]))
-    printf -v value "%s, %s savings" \
-      "$(format_duration "${build_time[1]}")" \
-      "$(format_duration "${instant_build_time_savings}")"
+  if [[ -n "${instant_savings_build_time}" && -n "${instant_savings}" ]]; then
+    printf -v value "%$1s, %s savings" \
+      "$(format_duration "${instant_savings_build_time}")" \
+      "$(format_duration "${instant_savings}")"
   fi
   summary_row "Build time with instant savings:" "${value}"
 }
 
-# The _pending_ build time is an estimation of the build time if all cacheable
-# tasks had been avoided.
-print_pending_build_time_savings() {
+print_build_time_with_pending_savings() {
   local value
-  if [[ -n "${build_time[1]}" && \
-        -n "${executed_cacheable_duration[1]}" && \
-        -n "${serialization_factors[1]}" ]]
-  then
-    local pending_additional_build_time_savings pending_build_time
-    pending_additional_build_time_savings=$(echo "${executed_cacheable_duration[1]}/${serialization_factors[1]}" | bc)
-    pending_build_time=$((build_time[1]-pending_additional_build_time_savings))
-    printf -v value "%s, %s additional savings" \
-      "$(format_duration "${pending_build_time}")" \
-      "$(format_duration "${pending_additional_build_time_savings}")"
+  if [[ -n "${pending_savings_build_time}" && -n "${pending_savings}" ]]; then
+    printf -v value "%$1s, %s additional savings" \
+      "$(format_duration "${pending_savings_build_time}")" \
+      "$(format_duration "${pending_savings}")"
   fi
   summary_row "Build time with pending savings:" "${value}"
 }
 
 print_build_caching_leverage_metrics() {
   local task_count_padding
-  task_count_padding=$(max_length "${avoided_from_cache_num_tasks[1]}" "${executed_cacheable_num_tasks[1]}" "${executed_not_cacheable_num_tasks[1]}")
+  task_count_padding=$(max_length \
+    "${avoided_from_cache_num_tasks[1]}" \
+    "${executed_cacheable_num_tasks[1]}" \
+    "${executed_not_cacheable_num_tasks[1]}")
 
   print_avoided_cacheable_tasks "${task_count_padding}"
 
