@@ -141,7 +141,7 @@ to ge.example.io regardless of what server is configured in the build.
 ## Instrumenting the build with Gradle Enterprise
 
 The scripts that run one or more builds locally can be configured to connect the builds to a given Gradle Enterprise
-instance in case the builds are not already connected to Gradle Enterprise by passing the `-e` or `--enable-gradle-enterprise`
+server in case the builds are not already connected to Gradle Enterprise by passing the `-e` or `--enable-gradle-enterprise`
 command line argument. In the example below, the script will configure the non-instrumented builds to connect to the
 Gradle Enterprise server at ge.example.io.
 
