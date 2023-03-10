@@ -2,10 +2,11 @@ package com.gradle.enterprise.cli;
 
 import com.gradle.enterprise.api.client.FailedRequestException;
 import com.gradle.enterprise.api.client.GradleEnterpriseApiClient;
-import com.gradle.enterprise.model.Build;
+import com.gradle.enterprise.model.NumberedBuildScan;
 import com.gradle.enterprise.model.BuildValidationData;
 import com.gradle.enterprise.model.CustomValueNames;
 import com.gradle.enterprise.network.NetworkSettingsConfigurator;
+import org.jetbrains.annotations.NotNull;
 import picocli.CommandLine;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
@@ -58,45 +59,50 @@ public class FetchBuildValidationDataCommand implements Callable<Integer> {
 
     @Override
     public Integer call() throws Exception {
-        List<Build> builds = buildsFrom(runNumsAndBuildScanUrls);
         // Use System.err for logging since we're going to write out the CSV to System.out
         logger = new ConsoleLogger(System.err, colorScheme, debug);
 
         networkSettingsFile.ifPresent(settingsFile -> NetworkSettingsConfigurator.configureNetworkSettings(settingsFile, logger));
 
+        List<NumberedBuildScan> buildScans = parseBuildScans(runNumsAndBuildScanUrls);
         CustomValueNames customValueKeys = loadCustomValueKeys(customValueMappingFile);
 
         logStartFetchingBuildScans();
-        List<BuildValidationData> buildValidationData = builds.stream()
-            .map(build -> fetchBuildScanData(build.runNum(), build.buildScanUrl(), customValueKeys))
-            .collect(Collectors.toList());
+        List<BuildValidationData> buildValidationData = fetchBuildScanData(buildScans, customValueKeys);
 
         logFinishedFetchingBuildScans();
         logFetchResults(buildValidationData, customValueKeys);
 
         printHeader();
-        buildValidationData.forEach(this::printRow);
+        printBuildValidationData(buildValidationData);
 
         return ExitCode.OK;
     }
 
-    private BuildValidationData fetchBuildScanData(int runNum, URL buildScanUrl, CustomValueNames customValueNames) {
-        logStartFetchingBuildScan(runNum);
+    @NotNull
+    private List<BuildValidationData> fetchBuildScanData(List<NumberedBuildScan> buildScans, CustomValueNames customValueKeys) {
+        return buildScans.stream()
+            .map(buildScan -> fetchBuildScanData(buildScan, customValueKeys))
+            .collect(Collectors.toList());
+    }
+
+    private BuildValidationData fetchBuildScanData(NumberedBuildScan buildScan, CustomValueNames customValueNames) {
+        logStartFetchingBuildScan(buildScan);
         URL baseUrl = null;
         String buildScanId = "";
         try {
-            baseUrl = baseUrlFrom(buildScanUrl);
-            buildScanId = buildScanIdFrom(buildScanUrl);
+            baseUrl = extractBaseUrl(buildScan.buildScanUrl());
+            buildScanId = extractBuildScanId(buildScan.buildScanUrl());
 
             GradleEnterpriseApiClient apiClient = new GradleEnterpriseApiClient(baseUrl, customValueNames, logger);
-            BuildValidationData data = apiClient.fetchBuildValidationData(runNum, buildScanId);
+            BuildValidationData data = apiClient.fetchBuildValidationData(buildScan.runNum(), buildScanId);
 
             logFinishedFetchingBuildScan();
             return data;
         } catch (RuntimeException e) {
             printException(e);
             return new BuildValidationData(
-                runNum,
+                buildScan.runNum(),
                 "",
                 buildScanId,
                 baseUrl,
@@ -133,39 +139,11 @@ public class FetchBuildValidationDataCommand implements Callable<Integer> {
         }
     }
 
-    private String runNumToOrdinal(int i) {
-        switch(i + 1) {
-            case 1: return "first";
-            case 2: return "second";
-            case 3: return "third";
-            case 4: return "fourth";
-            case 5: return "fifth";
-            case 6: return "sixth";
-            case 7: return "seventh";
-            case 8: return "eighth";
-            case 9: return "ninth";
-            case 10: return "tenth";
-            default: return String.valueOf(i);
-        }
+    private static List<NumberedBuildScan> parseBuildScans(List<String> runNumsAndBuildScanUrls) {
+        return runNumsAndBuildScanUrls.stream().map(NumberedBuildScan::parse).collect(Collectors.toList());
     }
 
-    private List<Build> buildsFrom(List<String> runNumsAndBuildScanUrls) {
-        return runNumsAndBuildScanUrls.stream().map(this::buildFrom)
-            .collect(Collectors.toList());
-    }
-
-    private Build buildFrom(String runNumAndBuildScanUrl) {
-        String[] parts = runNumAndBuildScanUrl.split(",");
-        String runNum = parts[0];
-        String buildScanUrl = parts[1];
-        try {
-            return new Build(Integer.parseInt(runNum), new URL(buildScanUrl));
-        } catch (MalformedURLException e) {
-            throw new BadBuildScanUrlException(buildScanUrl, e);
-        }
-    }
-
-    private URL baseUrlFrom(URL buildScanUrl) {
+    private static URL extractBaseUrl(URL buildScanUrl) {
         try {
             String port = (buildScanUrl.getPort() != -1) ? ":" + buildScanUrl.getPort() : "";
             return new URL(buildScanUrl.getProtocol() + "://" + buildScanUrl.getHost() + port);
@@ -176,7 +154,7 @@ public class FetchBuildValidationDataCommand implements Callable<Integer> {
         }
     }
 
-    private String buildScanIdFrom(URL buildScanUrl) {
+    private static String extractBuildScanId(URL buildScanUrl) {
         String[] pathSegments = buildScanUrl.getPath().split("/");
 
         if (pathSegments.length == 0) {
@@ -214,20 +192,13 @@ public class FetchBuildValidationDataCommand implements Callable<Integer> {
         }
     }
 
-    private void logStartFetchingBuildScan(int index) {
+    private void logStartFetchingBuildScan(NumberedBuildScan buildScan) {
         if (!briefLogging) {
-            logger.infoNoNewline(fetchingMessageFor(index));
+            logger.infoNoNewline(String.format("Fetching build scan data for the %s build", toOrdinal(buildScan.runNum())));
             if (logger.isDebugEnabled()) {
                 logger.info("");
             }
         }
-    }
-
-    private String fetchingMessageFor(int runNum) {
-        if (runNumsAndBuildScanUrls.size() <= 10) {
-            return String.format("Fetching build scan data for the %s build", runNumToOrdinal(runNum));
-        }
-        return String.format("Fetching build scan data for build %s", runNum + 1);
     }
 
     private void logFetchResults(List<BuildValidationData> buildValidationData, CustomValueNames customValueKeys) {
@@ -242,8 +213,8 @@ public class FetchBuildValidationDataCommand implements Callable<Integer> {
         }
     }
 
-    private void logFetchResultFor(int index, String property, String customValueKey, boolean found) {
-        String ordinal = runNumToOrdinal(index);
+    private void logFetchResultFor(int runNum, String property, String customValueKey, boolean found) {
+        String ordinal = toOrdinal(runNum);
         logger.info("Looking up %s from custom value with name '%s' from the %s build scan, %s.", property, customValueKey, ordinal, found ? "found": "not found");
     }
 
@@ -252,16 +223,29 @@ public class FetchBuildValidationDataCommand implements Callable<Integer> {
         System.out.println(String.join(",", labels));
     }
 
+    private void printBuildValidationData(List<BuildValidationData> buildValidationData) {
+        buildValidationData.forEach(this::printRow);
+    }
+
     private void printRow(BuildValidationData buildValidationData) {
         List<String> values = Fields.ordered().map(f -> f.value.apply(buildValidationData)).collect(Collectors.toList());
         System.out.println(String.join(",", values));
     }
 
-    private CustomValueNames loadCustomValueKeys(Optional<Path> customValueMappingFile) throws IOException {
+    private static CustomValueNames loadCustomValueKeys(Optional<Path> customValueMappingFile) throws IOException {
         if (customValueMappingFile.isPresent()) {
             return CustomValueNames.loadFromFile(customValueMappingFile.get());
         } else {
             return CustomValueNames.DEFAULT;
+        }
+    }
+
+    private static String toOrdinal(int i) {
+        switch(i + 1) {
+            case 1: return "first";
+            case 2: return "second";
+            case 3: return "third";
+            default: return (i + 1) + "th";
         }
     }
 }
