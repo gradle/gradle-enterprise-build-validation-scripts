@@ -84,6 +84,11 @@ invoke_maven() {
     build_outcomes+=("FAILED")
   fi
 
+  if is_build_scan_metadata_missing "$run_num"; then
+    print_bl
+    die "ERROR: The experiment cannot continue because of a non-recoverable failure while running the build."
+  fi
+
   # defined in git.sh
   read_git_metadata_from_current_repo
   requested_tasks+=("${tasks}")

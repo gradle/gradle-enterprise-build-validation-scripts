@@ -32,6 +32,18 @@ read_build_scan_metadata() {
   fi
 }
 
+is_build_scan_metadata_missing() {
+  if [ ! -f "${BUILD_SCAN_FILE}" ]; then
+    return 0
+  fi
+  while IFS=, read -r run_num field_1 field_2 field_3; do
+    if [[ "$run_num" == "$1"  ]]; then
+      return 1
+    fi
+  done < "${BUILD_SCAN_FILE}"
+  return 0
+}
+
 fetch_and_read_build_scan_data() {
   local build_cache_metrics_only="$1"
   shift
