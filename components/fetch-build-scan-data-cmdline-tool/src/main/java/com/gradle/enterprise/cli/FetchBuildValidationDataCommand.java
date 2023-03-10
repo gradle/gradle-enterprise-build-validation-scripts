@@ -2,9 +2,9 @@ package com.gradle.enterprise.cli;
 
 import com.gradle.enterprise.api.client.FailedRequestException;
 import com.gradle.enterprise.api.client.GradleEnterpriseApiClient;
-import com.gradle.enterprise.model.NumberedBuildScan;
 import com.gradle.enterprise.model.BuildValidationData;
 import com.gradle.enterprise.model.CustomValueNames;
+import com.gradle.enterprise.model.NumberedBuildScan;
 import com.gradle.enterprise.network.NetworkSettingsConfigurator;
 import org.jetbrains.annotations.NotNull;
 import picocli.CommandLine;
@@ -52,8 +52,6 @@ public class FetchBuildValidationDataCommand implements Callable<Integer> {
     @Option(names = {"--brief-logging"}, description = "Only log a short message about fetching build scan data and when it completes.")
     private boolean briefLogging;
 
-    private boolean someScansFailedToFetch;
-
     @Override
     public Integer call() {
         // Use System.err for logging since we're going to write out the CSV to System.out
@@ -81,6 +79,7 @@ public class FetchBuildValidationDataCommand implements Callable<Integer> {
     @NotNull
     private List<BuildValidationData> fetchBuildScanData(List<NumberedBuildScan> buildScans, CustomValueNames customValueKeys) {
         return buildScans.stream()
+            .parallel()
             .map(buildScan -> fetchBuildScanData(buildScan, customValueKeys))
             .collect(Collectors.toList());
     }
@@ -91,7 +90,7 @@ public class FetchBuildValidationDataCommand implements Callable<Integer> {
             GradleEnterpriseApiClient apiClient = new GradleEnterpriseApiClient(buildScan.baseUrl(), customValueNames, logger);
             BuildValidationData data = apiClient.fetchBuildValidationData(buildScan);
 
-            logFinishedFetchingBuildScanData();
+            logFinishedFetchingBuildScanData(buildScan);
             return data;
         } catch (RuntimeException e) {
             logException(e);
@@ -113,7 +112,6 @@ public class FetchBuildValidationDataCommand implements Callable<Integer> {
     }
 
     private void logException(RuntimeException e) {
-        someScansFailedToFetch = true;
         if (logger.isDebugEnabled()) {
             logger.error(e);
             if (e instanceof FailedRequestException) {
@@ -135,39 +133,25 @@ public class FetchBuildValidationDataCommand implements Callable<Integer> {
 
     private void logStartFetchingAllBuildScanData() {
         if (briefLogging) {
-            logger.infoNoNewline("Fetching build scan data for all builds");
-            if (logger.isDebugEnabled()) {
-                logger.info("");
-            }
+            logger.info("Fetching Build Scan data for all builds");
         }
     }
 
     private void logFinishedFetchingAllBuildScanData() {
         if (briefLogging) {
-            if (logger.isDebugEnabled() || someScansFailedToFetch) {
-                logger.info("done.");
-            } else {
-                logger.info(", done.");
-            }
+            logger.info("Finished fetching Build Scan data for all builds");
         }
     }
 
     private void logStartFetchingBuildScanData(NumberedBuildScan buildScan) {
         if (!briefLogging) {
-            logger.infoNoNewline(String.format("Fetching build scan data for the %s build", toOrdinal(buildScan.runNum())));
-            if (logger.isDebugEnabled()) {
-                logger.info("");
-            }
+            logger.info("Fetching Build Scan data for %s build", toOrdinal(buildScan.runNum()));
         }
     }
 
-    private void logFinishedFetchingBuildScanData() {
+    private void logFinishedFetchingBuildScanData(NumberedBuildScan buildScan) {
         if (!briefLogging) {
-            if (logger.isDebugEnabled() || someScansFailedToFetch) {
-                logger.info("done.");
-            } else {
-                logger.info(", done.");
-            }
+            logger.info("Finished fetching Build Scan data for %s build", toOrdinal(buildScan.runNum()));
         }
     }
 
@@ -185,8 +169,8 @@ public class FetchBuildValidationDataCommand implements Callable<Integer> {
 
     private void logFetchResultFor(int runNum, String property, String customValueKey, boolean found) {
         logger.info(
-            "Looking up %s from custom value with name '%s' from the %s build scan, %s.",
-            property, customValueKey, toOrdinal(runNum), found ? "found": "not found"
+            "%s %s from custom value with name '%s' for %s build",
+            found ? "Found": "Did not find", property, customValueKey, toOrdinal(runNum)
         );
     }
 
