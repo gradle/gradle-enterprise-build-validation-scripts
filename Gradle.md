@@ -97,7 +97,7 @@ The scripts return with an exit code that depends on the outcome of running a gi
 
 To get the most out of the experiments and also when building with Gradle Enterprise during daily development, it is highly recommended that you apply the [Common Custom User Data Gradle plugin](https://github.com/gradle/common-custom-user-data-gradle-plugin) to your build. This free, open-source plugin enhances build scans with additional tags, links, and custom values that are considered during the experiments.
 
-You can find a complete example of how to apply the Common Custom User Data Gradle plugin to your build [here](https://github.com/gradle/gradle-enterprise-build-config-samples/tree/main/common-gradle-enterprise-gradle-configuration-groovy/settings.gradle) and [here](https://github.com/gradle/gradle-enterprise-build-config-samples/blob/main/common-gradle-enterprise-gradle-configuration-kotlin/settings.gradle.kts).
+You can find a complete example of how to apply the Common Custom User Data Gradle plugin to your build [here](https://github.com/gradle/gradle-enterprise-build-config-samples/tree/main/common-gradle-enterprise-gradle-configuration-groovy/settings.gradle) for Groovy DSL and [here](https://github.com/gradle/gradle-enterprise-build-config-samples/blob/main/common-gradle-enterprise-gradle-configuration-kotlin/settings.gradle.kts) for Kotlin DSL.
 
 ## Authenticating with Gradle Enterprise
 
