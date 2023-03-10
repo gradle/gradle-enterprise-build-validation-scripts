@@ -26,7 +26,7 @@ executed_not_cacheable_num_tasks=()
 executed_not_cacheable_duration=()
 
 # Build duration metrics
-build_times=()
+build_time=()
 serialization_factors=()
 
 initial_build_time=""
@@ -83,7 +83,7 @@ parse_build_scan_csv() {
     executed_not_cacheable_duration[run_num]="${field_19}"
 
     # Build time metrics
-    build_times[run_num]="${field_20}"
+    build_time[run_num]="${field_20}"
     serialization_factors[run_num]="${field_21}"
   done <<< "${build_scan_csv}"
 
@@ -124,23 +124,23 @@ parse_build_scan_url() {
 
 # The _initial_ build time is the build time of the first build.
 calculate_initial_build_time() {
-  if [[ -n "${build_times[0]}" ]]; then
-    echo "${build_times[0]}"
+  if [[ -n "${build_time[0]}" ]]; then
+    echo "${build_time[0]}"
   fi
 }
 
 # The _instant_ savings is the difference in the wall-clock build time between
 # the first and second build.
 calculate_instant_savings() {
-  if [[ -n "${build_times[0]}" && -n "${build_times[1]}" ]]; then
-    echo "$((build_times[0]-build_times[1]))"
+  if [[ -n "${build_time[0]}" && -n "${build_time[1]}" ]]; then
+    echo "$((build_time[0]-build_time[1]))"
   fi
 }
 
 # The _instant_ build time is the build time of the second build.
 calculate_instant_build_time() {
-  if [[ -n "${build_times[1]}" ]]; then
-    echo "${build_times[1]}"
+  if [[ -n "${build_time[1]}" ]]; then
+    echo "${build_time[1]}"
   fi
 }
 
@@ -155,7 +155,7 @@ calculate_pending_savings() {
 # The _pending_ build time is an estimation of the build time if all cacheable
 # tasks had been avoided.
 calculate_pending_build_time() {
-  if [[ -n "${build_times[1]}" && -n "${pending_savings}" ]]; then
-    echo "$((build_times[1]-pending_savings))"
+  if [[ -n "${build_time[1]}" && -n "${pending_savings}" ]]; then
+    echo "$((build_time[1]-pending_savings))"
   fi
 }
