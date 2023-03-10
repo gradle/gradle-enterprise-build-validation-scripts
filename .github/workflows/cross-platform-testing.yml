@@ -94,4 +94,4 @@ jobs:
       - name: Run Maven Experiment 04
         run: |
           cd gradle-enterprise-maven-build-validation
-          ./04-validate-remote-build-caching-ci-local.sh -1 https://ge.solutions-team.gradle.com/s/sysk4hrdbkja6 -s https://ge.solutions-team.gradle.com -u https://ge.solutions-team.gradle.com/cache/
+          ./04-validate-remote-build-caching-ci-local.sh -1 https://ge.solutions-team.gradle.com/s/6jgkaknikci2c -e -s https://ge.solutions-team.gradle.com
