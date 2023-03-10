@@ -60,6 +60,7 @@ invoke_gradle() {
   fi
 
   if [ -f "${EXP_DIR}/errors.txt" ]; then
+    # Jim: I need your help here to print the content of the file as part of the "die" message
     die "ERROR: The experiment cannot continue because of a non-recoverable failure while running the build."
   fi
 
