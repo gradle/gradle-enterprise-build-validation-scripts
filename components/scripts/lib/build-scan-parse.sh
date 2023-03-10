@@ -31,7 +31,7 @@ serialization_factors=()
 
 initial_build_time=""
 instant_savings=""
-instant_build_time=""
+instant_savings_build_time=""
 pending_savings=""
 pending_build_time=""
 
@@ -89,7 +89,7 @@ parse_build_scan_csv() {
 
   initial_build_time="$(calculate_initial_build_time)"
   instant_savings="$(calculate_instant_savings)"
-  instant_build_time="$(calculate_instant_build_time)"
+  instant_savings_build_time="$(calculate_instant_savings_build_time)"
   pending_savings="$(calculate_pending_savings)"
   pending_build_time="$(calculate_pending_build_time)"
 }
@@ -137,8 +137,8 @@ calculate_instant_savings() {
   fi
 }
 
-# The _instant_ build time is the build time of the second build.
-calculate_instant_build_time() {
+# The _instant_ savings build time is the build time of the second build.
+calculate_instant_savings_build_time() {
   if [[ -n "${build_time[1]}" ]]; then
     echo "${build_time[1]}"
   fi

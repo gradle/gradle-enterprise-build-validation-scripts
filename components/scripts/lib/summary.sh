@@ -184,7 +184,7 @@ print_build_time_metrics() {
   local build_time_padding
   build_time_padding=$(max_length \
     "$(format_duration "${initial_build_time}")" \
-    "$(format_duration "${instant_build_time}")" \
+    "$(format_duration "${instant_savings_build_time}")" \
     "$(format_duration "${pending_build_time}")")
 
   print_initial_build_time "${build_time_padding}"
@@ -205,9 +205,9 @@ print_initial_build_time() {
 
 print_build_time_with_instant_savings() {
   local value
-  if [[ -n "${instant_build_time}" && -n "${instant_savings}" ]]; then
+  if [[ -n "${instant_savings_build_time}" && -n "${instant_savings}" ]]; then
     printf -v value "%$1s, %s savings" \
-      "$(format_duration "${instant_build_time}")" \
+      "$(format_duration "${instant_savings_build_time}")" \
       "$(format_duration "${instant_savings}")"
   fi
   summary_row "Build time with instant savings:" "${value}"

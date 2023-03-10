@@ -177,7 +177,7 @@ print_build_time_metrics() {
   local build_time_padding
   build_time_padding=$(max_length \
     "$(format_duration "${initial_build_time}")" \
-    "$(format_duration "${instant_build_time}")")
+    "$(format_duration "${instant_savings_build_time}")")
 
   print_initial_build_time "${build_time_padding}"
 
