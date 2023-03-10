@@ -225,7 +225,10 @@ print_build_time_with_pending_savings() {
 
 print_build_caching_leverage_metrics() {
   local task_count_padding
-  task_count_padding=$(max_length "${avoided_from_cache_num_tasks[1]}" "${executed_cacheable_num_tasks[1]}" "${executed_not_cacheable_num_tasks[1]}")
+  task_count_padding=$(max_length \
+    "${avoided_from_cache_num_tasks[1]}" \
+    "${executed_cacheable_num_tasks[1]}" \
+    "${executed_not_cacheable_num_tasks[1]}")
 
   print_avoided_cacheable_tasks "${task_count_padding}"
 
