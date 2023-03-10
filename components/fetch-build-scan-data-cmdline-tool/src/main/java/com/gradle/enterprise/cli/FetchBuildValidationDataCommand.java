@@ -37,10 +37,10 @@ public class FetchBuildValidationDataCommand implements Callable<Integer> {
         public static final int OK = 0;
     }
 
-    @Parameters(paramLabel = "BUILD_SCAN", description = "The build scans to fetch. Each build scan URL is preceeded by the run num that produced the build scan.", arity = "1..*")
+    @Parameters(paramLabel = "BUILD_SCAN", description = "The build scans to fetch. Each build scan URL is preceded by the run num that produced the build scan.", arity = "1..*")
     private List<String> runNumsAndBuildScanUrls;
 
-    @Option(names = {"--mapping-file"}, description = "Specifies a mapping file that configures the keys used to fetch important custom values.")
+    @Option(names = {"--mapping-file"}, description = "Specifies a mapping file that configures the names used to fetch important custom values.")
     private Optional<Path> customValuesMappingFile;
 
     @Option(names = {"--network-settings-file"}, description = "Specifies a file that configures HTTP(S) Proxy and SSL settings.")
@@ -55,7 +55,7 @@ public class FetchBuildValidationDataCommand implements Callable<Integer> {
     private boolean someScansFailedToFetch;
 
     @Override
-    public Integer call() throws Exception {
+    public Integer call() {
         // Use System.err for logging since we're going to write out the CSV to System.out
         logger = new ConsoleLogger(System.err, colorScheme, debug);
 
