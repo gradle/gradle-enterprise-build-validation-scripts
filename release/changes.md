@@ -1,9 +1,20 @@
-- [NEW] Include instant build time savings in all experiment summaries
+- [NEW] Include initial build time in all experiment summaries
+- [NEW] Include instant build time and savings in all experiment summaries
+- [NEW] Include pending build time and savings in all experiment summaries
 - [NEW] Include serialization factor in all experiment summaries
-- [NEW] Use renamed query parameters in links to timeline view in all experiment summaries
-- [NEW] Construct more precise query parameters in links to timeline view in all experiment summaries
 - [NEW] Support `-x` command line option for Gradle experiment 1
-- [NEW] Add configuration settings to control the connect and read timeouts when fetching Build Scan data
-- [FIX] Incorrect parsing of additional argument values containing spaces
-- [FIX] Script does not list second build twice when first build fails
-
+- [NEW] Abort experiment fast if build does not successfully publish a Build Scan
+- [NEW] Construct more precise query parameters in links to Timeline view in all experiment summaries
+- [NEW] Construct more precise query parameters in links to Comparison view in all experiment summaries
+- [NEW] Add build validation scripts version as custom value to all builds run by the experiments
+- [NEW] Add configuration settings to control the _connect_ and _read_ timeouts when fetching Build Scan data
+- [NEW] Gradle init script is made more robust and more configurable
+- [NEW] All configuration is passed to Gradle init script via system properties instead of project properties
+- [NEW] Experiment results are evaluated faster by fetching Build Scan data in parallel
+- [NEW] Log output describing progress of the experiments is polished
+- [NEW] Java launch code is modernized
+- [FIX] Additional argument values containing spaces are parsed incorrectly
+- [FIX] Applying build validation scripts changes buildscript classpath ordering of Gradle Enterprise Gradle plugin
+- [FIX] Experiment summaries display second build twice when first build fails
+- [FIX] Gradle build invocation argument `--scan` is shown in console output but not used by the experiments 
+- [FIX] Build validation scripts project cannot be built using Gradle Toolchain and auto-provisioning  
