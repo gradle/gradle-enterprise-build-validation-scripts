@@ -92,6 +92,7 @@ The scripts return with an exit code that depends on the outcome of running a gi
 | 1         | An invalid input was provided while attempting to run the experiment                                   |
 | 2         | One of the builds that is part of the experiment failed                                                |
 | 3         | The build was not fully cacheable for the given task graph and `--fail-if-not-fully-cacheable` was set |
+| 100       | An unclassified, fatal error happend while running the experiment                                      |
 
 ## Applying the Common Custom User Data Gradle plugin
 
