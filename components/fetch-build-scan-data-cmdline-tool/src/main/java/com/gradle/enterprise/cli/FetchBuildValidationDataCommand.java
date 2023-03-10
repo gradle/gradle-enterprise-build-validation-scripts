@@ -13,8 +13,6 @@ import picocli.CommandLine.Option;
 import picocli.CommandLine.Parameters;
 
 import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.nio.file.Path;
 import java.util.Collections;
 import java.util.List;
@@ -64,13 +62,15 @@ public class FetchBuildValidationDataCommand implements Callable<Integer> {
 
         networkSettingsFile.ifPresent(settingsFile -> NetworkSettingsConfigurator.configureNetworkSettings(settingsFile, logger));
 
-        List<NumberedBuildScan> buildScans = parseBuildScans(runNumsAndBuildScanUrls);
-        CustomValueNames customValueKeys = loadCustomValueKeys(customValueMappingFile);
+        List<NumberedBuildScan> buildScans = NumberedBuildScan.parse(runNumsAndBuildScanUrls);
+        CustomValueNames customValueKeys = customValueMappingFile
+            .map(FetchBuildValidationDataCommand::loadCustomValueKeys)
+            .orElse(CustomValueNames.DEFAULT);
 
-        logStartFetchingBuildScans();
+        logStartFetchingAllBuildScanData();
         List<BuildValidationData> buildValidationData = fetchBuildScanData(buildScans, customValueKeys);
 
-        logFinishedFetchingBuildScans();
+        logFinishedFetchingAllBuildScanData();
         logFetchResults(buildValidationData, customValueKeys);
 
         printHeader();
@@ -87,25 +87,20 @@ public class FetchBuildValidationDataCommand implements Callable<Integer> {
     }
 
     private BuildValidationData fetchBuildScanData(NumberedBuildScan buildScan, CustomValueNames customValueNames) {
-        logStartFetchingBuildScan(buildScan);
-        URL baseUrl = null;
-        String buildScanId = "";
+        logStartFetchingBuildScanData(buildScan);
         try {
-            baseUrl = extractBaseUrl(buildScan.buildScanUrl());
-            buildScanId = extractBuildScanId(buildScan.buildScanUrl());
+            GradleEnterpriseApiClient apiClient = new GradleEnterpriseApiClient(buildScan.baseUrl(), customValueNames, logger);
+            BuildValidationData data = apiClient.fetchBuildValidationData(buildScan.runNum(), buildScan.buildScanId());
 
-            GradleEnterpriseApiClient apiClient = new GradleEnterpriseApiClient(baseUrl, customValueNames, logger);
-            BuildValidationData data = apiClient.fetchBuildValidationData(buildScan.runNum(), buildScanId);
-
-            logFinishedFetchingBuildScan();
+            logFinishedFetchingBuildScanData();
             return data;
         } catch (RuntimeException e) {
-            printException(e);
+            logException(e);
             return new BuildValidationData(
                 buildScan.runNum(),
                 "",
-                buildScanId,
-                baseUrl,
+                buildScan.buildScanId(),
+                buildScan.baseUrl(),
                 "",
                 "",
                 "",
@@ -118,7 +113,7 @@ public class FetchBuildValidationDataCommand implements Callable<Integer> {
         }
     }
 
-    private void printException(RuntimeException e) {
+    private void logException(RuntimeException e) {
         someScansFailedToFetch = true;
         if (logger.isDebugEnabled()) {
             logger.error(e);
@@ -139,40 +134,16 @@ public class FetchBuildValidationDataCommand implements Callable<Integer> {
         }
     }
 
-    private static List<NumberedBuildScan> parseBuildScans(List<String> runNumsAndBuildScanUrls) {
-        return runNumsAndBuildScanUrls.stream().map(NumberedBuildScan::parse).collect(Collectors.toList());
-    }
-
-    private static URL extractBaseUrl(URL buildScanUrl) {
-        try {
-            String port = (buildScanUrl.getPort() != -1) ? ":" + buildScanUrl.getPort() : "";
-            return new URL(buildScanUrl.getProtocol() + "://" + buildScanUrl.getHost() + port);
-        } catch (MalformedURLException e) {
-            // It is highly unlikely this exception will ever be thrown. If it is thrown, then it is likely due to a
-            // programming mistake (._.)
-            throw new BadBuildScanUrlException(buildScanUrl, e);
-        }
-    }
-
-    private static String extractBuildScanId(URL buildScanUrl) {
-        String[] pathSegments = buildScanUrl.getPath().split("/");
-
-        if (pathSegments.length == 0) {
-            throw new BadBuildScanUrlException(buildScanUrl);
-        }
-        return pathSegments[pathSegments.length - 1];
-    }
-
-    private void logStartFetchingBuildScans() {
+    private void logStartFetchingAllBuildScanData() {
         if (briefLogging) {
-            logger.infoNoNewline("Fetching build scan data");
+            logger.infoNoNewline("Fetching build scan data for all builds");
             if (logger.isDebugEnabled()) {
                 logger.info("");
             }
         }
     }
 
-    private void logFinishedFetchingBuildScans() {
+    private void logFinishedFetchingAllBuildScanData() {
         if (briefLogging) {
             if (logger.isDebugEnabled() || someScansFailedToFetch) {
                 logger.info("done.");
@@ -182,21 +153,21 @@ public class FetchBuildValidationDataCommand implements Callable<Integer> {
         }
     }
 
-    private void logFinishedFetchingBuildScan() {
-        if (!briefLogging) {
-            if (logger.isDebugEnabled() || someScansFailedToFetch) {
-                logger.info("done.");
-            } else {
-                logger.info(", done.");
-            }
-        }
-    }
-
-    private void logStartFetchingBuildScan(NumberedBuildScan buildScan) {
+    private void logStartFetchingBuildScanData(NumberedBuildScan buildScan) {
         if (!briefLogging) {
             logger.infoNoNewline(String.format("Fetching build scan data for the %s build", toOrdinal(buildScan.runNum())));
             if (logger.isDebugEnabled()) {
                 logger.info("");
+            }
+        }
+    }
+
+    private void logFinishedFetchingBuildScanData() {
+        if (!briefLogging) {
+            if (logger.isDebugEnabled() || someScansFailedToFetch) {
+                logger.info("done.");
+            } else {
+                logger.info(", done.");
             }
         }
     }
@@ -214,8 +185,10 @@ public class FetchBuildValidationDataCommand implements Callable<Integer> {
     }
 
     private void logFetchResultFor(int runNum, String property, String customValueKey, boolean found) {
-        String ordinal = toOrdinal(runNum);
-        logger.info("Looking up %s from custom value with name '%s' from the %s build scan, %s.", property, customValueKey, ordinal, found ? "found": "not found");
+        logger.info(
+            "Looking up %s from custom value with name '%s' from the %s build scan, %s.",
+            property, customValueKey, toOrdinal(runNum), found ? "found": "not found"
+        );
     }
 
     public void printHeader() {
@@ -224,19 +197,19 @@ public class FetchBuildValidationDataCommand implements Callable<Integer> {
     }
 
     private void printBuildValidationData(List<BuildValidationData> buildValidationData) {
-        buildValidationData.forEach(this::printRow);
+        buildValidationData.forEach(this::printBuildValidationData);
     }
 
-    private void printRow(BuildValidationData buildValidationData) {
+    private void printBuildValidationData(BuildValidationData buildValidationData) {
         List<String> values = Fields.ordered().map(f -> f.value.apply(buildValidationData)).collect(Collectors.toList());
         System.out.println(String.join(",", values));
     }
 
-    private static CustomValueNames loadCustomValueKeys(Optional<Path> customValueMappingFile) throws IOException {
-        if (customValueMappingFile.isPresent()) {
-            return CustomValueNames.loadFromFile(customValueMappingFile.get());
-        } else {
-            return CustomValueNames.DEFAULT;
+    private static CustomValueNames loadCustomValueKeys(Path customValueMappingFile) {
+        try {
+            return CustomValueNames.loadFromFile(customValueMappingFile);
+        } catch (IOException e) {
+            throw new RuntimeException("Could not load custom value mapping file: " + customValueMappingFile, e);
         }
     }
 
