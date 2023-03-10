@@ -165,11 +165,7 @@ print_experiment_specific_summary_info() {
 print_performance_characteristics() {
   print_performance_characteristics_header
 
-  print_initial_build_time
-
-  print_build_time_with_instant_savings
-
-  print_build_time_with_pending_savings
+  print_build_time_metrics
 
   print_build_caching_leverage_metrics
 
@@ -184,10 +180,25 @@ print_performance_characteristics_header() {
   info "---------------------------"
 }
 
+print_build_time_metrics() {
+  local build_time_padding
+  build_time_padding=$(max_length \
+    "$(format_duration "${initial_build_time}")" \
+    "$(format_duration "${instant_build_time}")" \
+    "$(format_duration "${pending_build_time}")")
+
+  print_initial_build_time "${build_time_padding}"
+
+  print_build_time_with_instant_savings "${build_time_padding}"
+
+  print_build_time_with_pending_savings "${build_time_padding}"
+}
+
 print_initial_build_time() {
   local value
   if [[ -n "${initial_build_time}" ]]; then
-    value="$(format_duration "${initial_build_time}")"
+    printf -v value "%$1s" \
+      "$(format_duration "${initial_build_time}")"
   fi
   summary_row "Initial build time:" "${value}"
 }
@@ -195,7 +206,7 @@ print_initial_build_time() {
 print_build_time_with_instant_savings() {
   local value
   if [[ -n "${instant_build_time}" && -n "${instant_savings}" ]]; then
-    printf -v value "%s, %s savings" \
+    printf -v value "%$1s, %s savings" \
       "$(format_duration "${instant_build_time}")" \
       "$(format_duration "${instant_savings}")"
   fi
@@ -205,7 +216,7 @@ print_build_time_with_instant_savings() {
 print_build_time_with_pending_savings() {
   local value
   if [[ -n "${pending_build_time}" && -n "${pending_savings}" ]]; then
-    printf -v value "%s, %s additional savings" \
+    printf -v value "%$1s, %s additional savings" \
       "$(format_duration "${pending_build_time}")" \
       "$(format_duration "${pending_savings}")"
   fi
