@@ -97,7 +97,7 @@ parse_build_scan_csv() {
 parse_build_scan_url() {
   # From https://stackoverflow.com/a/63993578/106189
   # See also https://stackoverflow.com/a/45977232/106189
-  readonly URI_REGEX='^(([^:/?#]+):)?(//((([^:/?#]+)@)?([^:/?#]+)(:([0-9]+))?))?((/|$)([^?#]*))(\?([^#]*))?(#(.*))?$'
+  local -r URI_REGEX='^(([^:/?#]+):)?(//((([^:/?#]+)@)?([^:/?#]+)(:([0-9]+))?))?((/|$)([^?#]*))(\?([^#]*))?(#(.*))?$'
   #                    ↑↑            ↑  ↑↑↑            ↑         ↑ ↑            ↑↑    ↑        ↑  ↑        ↑ ↑
   #                    ||            |  |||            |         | |            ||    |        |  |        | |
   #                    |2 scheme     |  ||6 userinfo   7 host    | 9 port       ||    12 rpath |  14 query | 16 fragment
