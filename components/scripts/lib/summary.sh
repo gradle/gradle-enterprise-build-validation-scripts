@@ -305,7 +305,7 @@ print_gradle_quick_links() {
   quick_link_row "Executed cacheable tasks:" "${base_urls[1]}/s/${build_scan_ids[1]}/timeline?cacheability=cacheable,overlapping-outputs,validation-failure&outcome=success,failed&sort=longest" "${base_urls[1]}" "${build_scan_ids[1]}"
   quick_link_row "Executed non-cacheable tasks:" "${base_urls[1]}/s/${build_scan_ids[1]}/timeline?cacheability=any-non-cacheable,not:overlapping-outputs,not:validation-failure&outcome=success,failed&sort=longest" "${base_urls[1]}" "${build_scan_ids[1]}"
   quick_link_row "Build caching statistics:" "${base_urls[1]}/s/${build_scan_ids[1]}/performance/build-cache" "${base_urls[1]}" "${build_scan_ids[1]}"
-  quick_link_row "Task inputs comparison:" "${base_urls[1]}/c/${build_scan_ids[0]}/${build_scan_ids[1]}/task-inputs?cacheability=cacheable" "${base_urls[1]}" "${build_scan_ids[0]}" "${build_scan_ids[1]}"
+  quick_link_row "Task inputs comparison:" "${base_urls[1]}/c/${build_scan_ids[0]}/${build_scan_ids[1]}/task-inputs?cacheability=cacheable,overlapping-outputs,validation-failure" "${base_urls[1]}" "${build_scan_ids[0]}" "${build_scan_ids[1]}"
 }
 
 print_maven_quick_links() {
