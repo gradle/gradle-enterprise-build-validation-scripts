@@ -134,9 +134,6 @@ public class FetchBuildValidationDataCommand implements Callable<Integer> {
     private void logStartFetchingAllBuildScanData() {
         if (briefLogging) {
             logger.info("Fetching Build Scan data for all builds");
-            if (logger.isDebugEnabled()) {
-                logger.info("");
-            }
         }
     }
 
@@ -148,13 +145,13 @@ public class FetchBuildValidationDataCommand implements Callable<Integer> {
 
     private void logStartFetchingBuildScanData(NumberedBuildScan buildScan) {
         if (!briefLogging) {
-            logger.info(String.format("Fetching Build Scan data for %s build", toOrdinal(buildScan.runNum())));
+            logger.info("Fetching Build Scan data for %s build", toOrdinal(buildScan.runNum()));
         }
     }
 
     private void logFinishedFetchingBuildScanData(NumberedBuildScan buildScan) {
         if (!briefLogging) {
-            logger.info(String.format("Finished fetching Build Scan data for %s build", toOrdinal(buildScan.runNum())));
+            logger.info("Finished fetching Build Scan data for %s build", toOrdinal(buildScan.runNum()));
         }
     }
 

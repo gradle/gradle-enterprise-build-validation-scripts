@@ -27,15 +27,6 @@ public class ConsoleLogger {
         lastStatementIncludedNewline = true;
     }
 
-    public void infoNoNewline(String message) {
-        out.print(message);
-        lastStatementIncludedNewline = false;
-    }
-
-    public void debug(String message, Object... args) {
-        debug(String.format(message, args));
-    }
-
     public void debug(String message) {
         if (debugEnabled) {
             out.println(colorScheme.text("@|faint " + message + "|@"));
