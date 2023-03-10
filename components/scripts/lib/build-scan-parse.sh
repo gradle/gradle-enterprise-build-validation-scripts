@@ -33,7 +33,7 @@ initial_build_time=""
 instant_savings=""
 instant_savings_build_time=""
 pending_savings=""
-pending_build_time=""
+pending_savings_build_time=""
 
 # shellcheck disable=SC2034 # not all scripts use all of the fetched data
 parse_build_scan_csv() {
@@ -91,7 +91,7 @@ parse_build_scan_csv() {
   instant_savings="$(calculate_instant_savings)"
   instant_savings_build_time="$(calculate_instant_savings_build_time)"
   pending_savings="$(calculate_pending_savings)"
-  pending_build_time="$(calculate_pending_build_time)"
+  pending_savings_build_time="$(calculate_pending_savings_build_time)"
 }
 
 parse_build_scan_url() {
@@ -152,9 +152,9 @@ calculate_pending_savings() {
   fi
 }
 
-# The _pending_ build time is an estimation of the build time if all cacheable
-# tasks had been avoided.
-calculate_pending_build_time() {
+# The _pending_ savings build time is an estimation of the build time if all
+# cacheable tasks had been avoided.
+calculate_pending_savings_build_time() {
   if [[ -n "${build_time[1]}" && -n "${pending_savings}" ]]; then
     echo "$((build_time[1]-pending_savings))"
   fi
