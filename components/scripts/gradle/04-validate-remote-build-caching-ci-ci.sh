@@ -54,7 +54,6 @@ execute() {
   print_bl
   validate_required_args
 
-  parse_build_scan_urls
   fetch_build_scans
   make_experiment_dir
 
@@ -95,7 +94,6 @@ wizard_execute() {
   explain_command_to_repeat_experiment_after_collecting_parameters
 
   print_bl
-  parse_build_scan_urls
   fetch_build_scans
   make_experiment_dir
 
@@ -114,11 +112,6 @@ validate_required_args() {
   fi
   build_scan_urls+=("${_arg_first_build_ci}")
   build_scan_urls+=("${_arg_second_build_ci}")
-}
-
-parse_build_scan_urls() {
-  parse_build_scan_url "${build_scan_urls[0]}" 0
-  parse_build_scan_url "${build_scan_urls[1]}" 1
 }
 
 fetch_build_scans() {

@@ -59,6 +59,7 @@ parse_build_scan_csv() {
 
     debug "Build Scan $field_4 is for build $run_num"
     project_names[run_num]="$field_1"
+    build_scan_ids[run_num]="$field_4"
 
     if [[ "$build_cache_metrics_only" != "build_cache_metrics_only" ]]; then
       base_urls[run_num]="$field_2"
@@ -92,34 +93,6 @@ parse_build_scan_csv() {
   instant_savings_build_time="$(calculate_instant_savings_build_time)"
   pending_savings="$(calculate_pending_savings)"
   pending_savings_build_time="$(calculate_pending_savings_build_time)"
-}
-
-parse_build_scan_url() {
-  # From https://stackoverflow.com/a/63993578/106189
-  # See also https://stackoverflow.com/a/45977232/106189
-  local -r URI_REGEX='^(([^:/?#]+):)?(//((([^:/?#]+)@)?([^:/?#]+)(:([0-9]+))?))?((/|$)([^?#]*))(\?([^#]*))?(#(.*))?$'
-  #                    ↑↑            ↑  ↑↑↑            ↑         ↑ ↑            ↑↑    ↑        ↑  ↑        ↑ ↑
-  #                    ||            |  |||            |         | |            ||    |        |  |        | |
-  #                    |2 scheme     |  ||6 userinfo   7 host    | 9 port       ||    12 rpath |  14 query | 16 fragment
-  #                    1 scheme:     |  |5 userinfo@             8 :...         ||             13 ?...     15 #...
-  #                                  |  4 authority                             |11 / or end-of-string
-  #                                  3  //...                                   10 path
-
-  local build_scan_url run_num protocol ge_host port build_scan_id
-  build_scan_url="$1"
-  run_num="$2"
-
-  if [[ "${build_scan_url}" =~ $URI_REGEX ]]; then
-    protocol="${BASH_REMATCH[2]}"
-    ge_host="${BASH_REMATCH[7]}"
-    port="${BASH_REMATCH[8]}"
-    build_scan_id="$(basename "${BASH_REMATCH[10]}")"
-
-    base_urls[run_num]="${protocol}://${ge_host}${port}"
-    build_scan_ids[run_num]="$build_scan_id"
-  else
-    die "${build_scan_url} is not a parsable URL." "${INVALID_INPUT}"
-  fi
 }
 
 # The initial_build_time is the build time of the first build.
