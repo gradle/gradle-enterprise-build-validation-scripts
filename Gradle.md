@@ -97,7 +97,7 @@ The scripts return with an exit code that depends on the outcome of running a gi
 
 To get the most out of the experiments and also when building with Gradle Enterprise during daily development, it is highly recommended that you apply the [Common Custom User Data Gradle plugin](https://github.com/gradle/common-custom-user-data-gradle-plugin) to your build. This free, open-source plugin enhances build scans with additional tags, links, and custom values that are considered during the experiments.
 
-You can find a complete example of how to apply the Common Custom User Data Gradle plugin to your build [here](https://github.com/gradle/gradle-enterprise-build-config-samples/blob/main/common-gradle-enterprise-gradle-configuration/settings.gradle).
+You can find a complete example of how to apply the Common Custom User Data Gradle plugin to your build [here](https://github.com/gradle/gradle-enterprise-build-config-samples/tree/main/common-gradle-enterprise-gradle-configuration-groovy/settings.gradle) for Groovy DSL and [here](https://github.com/gradle/gradle-enterprise-build-config-samples/blob/main/common-gradle-enterprise-gradle-configuration-kotlin/settings.gradle.kts) for Kotlin DSL.
 
 ## Authenticating with Gradle Enterprise
 
@@ -111,11 +111,13 @@ By default, the scripts fetching build scan data try to find the access key in t
 
 The scripts that fetch build scan data can be configured to use a HTTP(S) proxy, to use a custom Java trust store, and to disable SSL certificate validation when connecting to Gradle Enterprise. The network settings configuration is automatically picked up by the build validation scripts from a `network.settings` file put in the same location as where the scripts are run. A [configuration file template](components/scripts/network.settings) can be found at the same location as where the scripts are located.
 
-If your Gradle Enteprise can only be reached via a HTTP(S) proxy, edit the `network.settings` file and uncomment and update the lines that start with `http.` and `https.`, using the values required by your HTTP(S) proxy server.
+If your Gradle Enterprise server can only be reached via a HTTP(S) proxy, edit the `network.settings` file and uncomment and update the lines that start with `http.` and `https.`, using the values required by your HTTP(S) proxy server.
 
 If your Gradle Enterprise server is using a certificate signed by an internal Certificate Authority (CA), edit the `network.settings` file and uncomment and update the lines that start with `javax.net.ssl.trustStore`, specifying where your custom trust store is, what type of trust store it is, and the password required to access the trust store.
 
 In the unlikely and insecure case that your Gradle Enterprise server is using a self-signed certificate, edit the `network.settings` file and uncomment and update the lines that start with `ssl`.
+
+If the requests to fetch the build scan data from your Gradle Enterprise server are timing out, edit the `network.settings` file and uncomment and update the lines that end with `timeout`.
 
 ## Configuring custom value lookup names
 
@@ -139,7 +141,7 @@ to ge.example.io regardless of what server is configured in the build.
 ## Instrumenting the build with Gradle Enterprise
 
 The scripts that run one or more builds locally can be configured to connect the builds to a given Gradle Enterprise
-instance in case the builds are not already connected to Gradle Enterprise by passing the `-e` or `--enable-gradle-enterprise`
+server in case the builds are not already connected to Gradle Enterprise by passing the `-e` or `--enable-gradle-enterprise`
 command line argument. In the example below, the script will configure the non-instrumented builds to connect to the
 Gradle Enterprise server at ge.example.io.
 
