@@ -34,6 +34,8 @@ Once the build has finished successfully, you can find two .zip files in the bui
 
 If the build fails with _You need the 'autom4te' utility_, then you will need to install 'autoconf' before you can run the build successfully. For example, on macOS with Homebrew, you can install autoconf with `brew install autoconf`.
 
+If the build fails with _Error while executing shellcheck: docker: Cannot connect to the Docker daemon_, then you will need to install and launch Docker before you can run the build successfully.
+
 ## Learn more
 
 Visit our website to learn more about [Gradle Enterprise][gradle-enterprise].
