@@ -12,7 +12,7 @@ initscript {
 
     def getInputParam = { String name ->
         def envVarName = name.toUpperCase().replace('.', '_').replace('-', '_')
-        return System.getProperty(name) ?: System.getenv(envVarName)
+        return gradle.startParameter.systemPropertiesArgs[name] ?: System.getenv(envVarName)
     }
 
     def pluginRepositoryUrl = getInputParam('com.gradle.enterprise.build-validation.gradle.plugin-repository.url')
@@ -61,7 +61,7 @@ if (!isTopLevelBuild) {
 
 def getInputParam = { String name ->
     def envVarName = name.toUpperCase().replace('.', '_').replace('-', '_')
-    return System.getProperty(name) ?: System.getenv(envVarName)
+    return gradle.startParameter.systemPropertiesArgs[name] ?: System.getenv(envVarName)
 }
 
 def geUrl = getInputParam('com.gradle.enterprise.build-validation.gradle-enterprise.url')
