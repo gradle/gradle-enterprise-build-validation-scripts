@@ -1,0 +1,120 @@
+name: Run Cross-Platform Tests (Build From Source)
+
+on: [ workflow_dispatch ]
+
+jobs:
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Set up JDK 8
+        uses: actions/setup-java@v3
+        with:
+          java-version: '8'
+          distribution: 'adopt'
+      - name: Set up Gradle
+        uses: gradle/gradle-build-action@v2
+      - name: Build with Gradle
+        run: ./gradlew build
+        env:
+          GRADLE_ENTERPRISE_ACCESS_KEY: ${{ secrets.GE_SOLUTIONS_ACCESS_TOKEN }}
+      - name: Upload built script artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: artifacts
+          path: |
+            build/distributions/gradle-enterprise-gradle-build-validation-*.zip
+            build/distributions/gradle-enterprise-maven-build-validation-*.zip
+
+  cross_platform_tests:
+    name: Test
+    runs-on: ${{ matrix.os }}
+    needs: build
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-20.04, ubuntu-22.04, macos-11, macos-12, windows-2019]
+        java-version: [ '8', '11', '17' ]
+        include:
+          - os: ubuntu-20.04
+            shell: bash
+          - os: ubuntu-22.04
+            shell: bash
+          - os: macos-11
+            shell: bash
+          - os: macos-12
+            shell: bash
+          - os: windows-2019
+            shell: wsl-bash
+    defaults:
+      run:
+        shell: ${{ matrix.shell }} {0}
+    env:
+      GRADLE_ENTERPRISE_ACCESS_KEY: ${{ secrets.GE_SOLUTIONS_ACCESS_TOKEN }}
+      WSLENV: GRADLE_ENTERPRISE_ACCESS_KEY
+    steps:
+      - name: Set up WSL
+        if: ${{ runner.os == 'Windows' }}
+        uses: Vampire/setup-wsl@v2
+        with:
+          distribution: Ubuntu-20.04
+          additional-packages: curl unzip wget apt-transport-https gnupg
+      - name: Set up JDK ${{ matrix.java-version }} on WSL
+        if: ${{ runner.os == 'Windows' }}
+        run: |
+          wget -O - https://packages.adoptium.net/artifactory/api/gpg/key/public | sudo apt-key add -
+          echo "deb https://packages.adoptium.net/artifactory/deb $(awk -F= '/^VERSION_CODENAME/{print$2}' /etc/os-release) main" | sudo tee /etc/apt/sources.list.d/adoptium.list
+          sudo apt-get update
+          sudo apt-get install -y temurin-${{ matrix.java-version }}-jdk
+      - name: Set up JDK ${{ matrix.java-version }}
+        if: ${{ runner.os != 'Windows' }}
+        uses: actions/setup-java@v3
+        with:
+          java-version: ${{ matrix.java-version }}
+          distribution: 'temurin'
+      - name: Download built script artifacts
+        uses: actions/download-artifact@v3
+        with:
+          name: artifacts
+      - name: Extract build validation scripts
+        run: |
+          unzip -o gradle-enterprise-gradle-build-validation-*.zip
+          unzip -o gradle-enterprise-maven-build-validation-*.zip
+      - name: Run Gradle Experiment 01
+        run: |
+          cd gradle-enterprise-gradle-build-validation
+          ./01-validate-incremental-building.sh -r https://github.com/etiennestuder/java-ordered-properties -t build -s https://ge.solutions-team.gradle.com
+      - name: Run Gradle Experiment 02
+        run: |
+          cd gradle-enterprise-gradle-build-validation
+          ./02-validate-local-build-caching-same-location.sh -r https://github.com/etiennestuder/java-ordered-properties -t build -s https://ge.solutions-team.gradle.com
+      - name: Run Gradle Experiment 03
+        run: |
+          cd gradle-enterprise-gradle-build-validation
+          ./03-validate-local-build-caching-different-locations.sh -r https://github.com/etiennestuder/java-ordered-properties -t build -s https://ge.solutions-team.gradle.com
+      - name: Run Gradle Experiment 04
+        run: |
+          cd gradle-enterprise-gradle-build-validation
+          ./04-validate-remote-build-caching-ci-ci.sh -1 https://ge.solutions-team.gradle.com/s/p4ghldkcscfwi -2 https://ge.solutions-team.gradle.com/s/jhzljnet32x5m
+      - name: Run Gradle Experiment 05
+        run: |
+          cd gradle-enterprise-gradle-build-validation
+          ./05-validate-remote-build-caching-ci-local.sh -1 https://ge.solutions-team.gradle.com/s/p4ghldkcscfwi
+      - name: Run Maven Experiment 01
+        run: |
+          cd gradle-enterprise-maven-build-validation
+          ./01-validate-local-build-caching-same-location.sh -r https://github.com/gradle/maven-build-scan-quickstart.git -g test -s https://ge.solutions-team.gradle.com
+      - name: Run Maven Experiment 02
+        run: |
+          cd gradle-enterprise-maven-build-validation
+          ./02-validate-local-build-caching-different-locations.sh -r https://github.com/gradle/maven-build-scan-quickstart.git -g test -s https://ge.solutions-team.gradle.com
+      - name: Run Maven Experiment 03
+        run: |
+          cd gradle-enterprise-maven-build-validation
+          ./03-validate-remote-build-caching-ci-ci.sh -1 https://ge.solutions-team.gradle.com/s/sysk4hrdbkja6 -2 https://ge.solutions-team.gradle.com/s/f7yfwfxqzg5us
+      - name: Run Maven Experiment 04
+        run: |
+          cd gradle-enterprise-maven-build-validation
+          ./04-validate-remote-build-caching-ci-local.sh -1 https://ge.solutions-team.gradle.com/s/sysk4hrdbkja6
