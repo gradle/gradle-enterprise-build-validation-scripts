@@ -1,4 +1,4 @@
-name: Run Cross-Platform Tests (Any Branch)
+name: Run Cross-Platform Tests (Build From Source)
 
 on: [ workflow_dispatch ]
 
