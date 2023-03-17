@@ -1,1 +1,1 @@
-- [NEW] TBD
+- [FIX] Experiment fails due to Gradle bug when `-XX:` option is specified via Gradle properties #361
