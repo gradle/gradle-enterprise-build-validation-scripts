@@ -72,7 +72,6 @@ def ccudPluginVersion = getInputParam('com.gradle.enterprise.build-validation.cc
 def expDir = getInputParam('com.gradle.enterprise.build-validation.expDir')
 def expId = getInputParam('com.gradle.enterprise.build-validation.expId')
 def runId = getInputParam('com.gradle.enterprise.build-validation.runId')
-def runNum = getInputParam('com.gradle.enterprise.build-validation.runNum')
 def scriptsVersion = getInputParam('com.gradle.enterprise.build-validation.scriptsVersion')
 
 def atLeastGradle4 = GradleVersion.current() >= GradleVersion.version('4.0')
@@ -87,6 +86,11 @@ if (ccudPluginVersion && isNotAtLeast(ccudPluginVersion, '1.7')) {
 def registerBuildScanActions = { def buildScan ->
     def scanFile = new File(expDir, 'build-scans.csv')
     buildScan.buildScanPublished { publishedBuildScan ->
+        def getInputParamCompatibleWithCC = { String name ->
+            def envVarName = name.toUpperCase().replace('.', '_').replace('-', '_')
+            return System.getProperty(name) ?: System.getenv(envVarName)
+        }
+        def runNum = getInputParamCompatibleWithCC('com.gradle.enterprise.build-validation.runNum')
         def buildScanUri = publishedBuildScan.buildScanUri
         def buildScanId = publishedBuildScan.buildScanId
         def port = (buildScanUri.port != -1) ? ':' + buildScanUri.port : ''
