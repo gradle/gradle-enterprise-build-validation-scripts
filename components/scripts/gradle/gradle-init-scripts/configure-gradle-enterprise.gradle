@@ -10,11 +10,15 @@ initscript {
         return
     }
 
+    // the way this closure reads system properties means they are not tracked as inputs to the configuration cache model,
+    // the same is the case when reading environment variables with Gradle [6.5, 7.3]
     def getInputParam = { String name ->
         def envVarName = name.toUpperCase().replace('.', '_').replace('-', '_')
-        return System.getProperty(name) ?: System.getenv(envVarName)
+        return gradle.startParameter.systemPropertiesArgs[name] ?: System.getenv(envVarName)
     }
 
+    // the following local variables do not change between the build invocations of the same experiment run
+    // thus, reading their values in way that the configuration cache does not track them is acceptable
     def pluginRepositoryUrl = getInputParam('com.gradle.enterprise.build-validation.gradle.plugin-repository.url')
     def gePluginVersion = getInputParam('com.gradle.enterprise.build-validation.gradle-enterprise.plugin.version')
     def ccudPluginVersion = getInputParam('com.gradle.enterprise.build-validation.ccud.plugin.version')
@@ -59,11 +63,15 @@ if (!isTopLevelBuild) {
     return
 }
 
+// the way this closure reads system properties means they are not tracked as inputs to the configuration cache model,
+// the same is the case when reading environment variables with Gradle [6.5, 7.3]
 def getInputParam = { String name ->
     def envVarName = name.toUpperCase().replace('.', '_').replace('-', '_')
-    return System.getProperty(name) ?: System.getenv(envVarName)
+    return gradle.startParameter.systemPropertiesArgs[name] ?: System.getenv(envVarName)
 }
 
+// the following local variables do not change between the build invocations of the same experiment run
+// thus, reading their values in way that the configuration cache does not track them is acceptable
 def geUrl = getInputParam('com.gradle.enterprise.build-validation.gradle-enterprise.url')
 def geAllowUntrustedServer = Boolean.parseBoolean(getInputParam('com.gradle.enterprise.build-validation.gradle-enterprise.allow-untrusted-server'))
 def gePluginVersion = getInputParam('com.gradle.enterprise.build-validation.gradle-enterprise.plugin.version')
@@ -72,7 +80,6 @@ def ccudPluginVersion = getInputParam('com.gradle.enterprise.build-validation.cc
 def expDir = getInputParam('com.gradle.enterprise.build-validation.expDir')
 def expId = getInputParam('com.gradle.enterprise.build-validation.expId')
 def runId = getInputParam('com.gradle.enterprise.build-validation.runId')
-def runNum = getInputParam('com.gradle.enterprise.build-validation.runNum')
 def scriptsVersion = getInputParam('com.gradle.enterprise.build-validation.scriptsVersion')
 
 def atLeastGradle4 = GradleVersion.current() >= GradleVersion.version('4.0')
@@ -87,6 +94,15 @@ if (ccudPluginVersion && isNotAtLeast(ccudPluginVersion, '1.7')) {
 def registerBuildScanActions = { def buildScan ->
     def scanFile = new File(expDir, 'build-scans.csv')
     buildScan.buildScanPublished { publishedBuildScan ->
+        // defer reading the `runNum` system property until execution time since it does not affect
+        // the configuration of the build, and given its value changes between consecutive build invocations
+        // it would always invalidate the configuration cache model from the first build invocation
+        // in the second build invocation
+        def getRunNumInputParam = { String name ->
+            def envVarName = name.toUpperCase().replace('.', '_').replace('-', '_')
+            return System.getProperty(name) ?: System.getenv(envVarName)
+        }
+        def runNum = getRunNumInputParam('com.gradle.enterprise.build-validation.runNum')
         def buildScanUri = publishedBuildScan.buildScanUri
         def buildScanId = publishedBuildScan.buildScanId
         def port = (buildScanUri.port != -1) ? ':' + buildScanUri.port : ''
