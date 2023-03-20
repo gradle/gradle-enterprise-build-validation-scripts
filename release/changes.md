@@ -1,1 +1,2 @@
-- [FIX] Experiment fails due to Gradle bug when `-XX:` option is specified via Gradle properties #361
+- [FIX] Experiments fail due to Gradle bug when `-XX:` option is specified via Gradle properties #361
+- [FIX] Experiments fail in some scenarios when configuration caching is enabled #365
