@@ -3,11 +3,15 @@ if (!isTopLevelBuild) {
     return
 }
 
+// the way this closure reads system properties means they are not tracked as inputs to the configuration cache model,
+// the same is the case when reading environment variables with Gradle [6.5, 7.3]
 def getInputParam = { String name ->
     def envVarName = name.toUpperCase().replace('.', '_').replace('-', '_')
     return gradle.startParameter.systemPropertiesArgs[name] ?: System.getenv(envVarName)
 }
 
+// the following local variable does not change between the build invocations of the same experiment run
+// thus, reading its value in way that the configuration cache does not track it is acceptable
 def remoteBuildCacheUrl = getInputParam('com.gradle.enterprise.build-validation.remoteBuildCacheUrl')
 
 settingsEvaluated { settings ->
