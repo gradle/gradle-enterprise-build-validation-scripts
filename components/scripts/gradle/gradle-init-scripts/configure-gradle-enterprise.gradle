@@ -202,16 +202,16 @@ if (GradleVersion.current() < GradleVersion.version('6.0')) {
                 if (geUrl) buildScan.server = geUrl
                 if (geAllowUntrustedServer) buildScan.allowUntrustedServer = geAllowUntrustedServer
 
-                registerBuildScanActions(buildScan)
-                addBuildScanCustomData(buildScan)
-                configureBuildScanPublishing(buildScan)
-
                 if (!buildScan.server) {
                     logErrorMissingGradleEnterpriseServerURL()
                     throw new IllegalStateException("The Gradle Enterprise server URL is not configured.\n" +
                             "Either configure it directly (see https://docs.gradle.com/enterprise/gradle-plugin/#gradle_5_x_2) in the project,\n" +
                             "or use `--gradle-enterprise-server` when running the build validation script.")
                 }
+
+                registerBuildScanActions(buildScan)
+                addBuildScanCustomData(buildScan)
+                configureBuildScanPublishing(buildScan)
             }
         }
     }
@@ -251,16 +251,16 @@ if (GradleVersion.current() < GradleVersion.version('6.0')) {
             if (geUrl) ext.server = geUrl
             if (geAllowUntrustedServer) ext.allowUntrustedServer = geAllowUntrustedServer
 
-            registerBuildScanActions(ext.buildScan)
-            addBuildScanCustomData(ext.buildScan)
-            configureBuildScanPublishing(ext.buildScan)
-
             if (!ext.server) {
                 logErrorMissingGradleEnterpriseServerURL()
                 throw new IllegalStateException("The Gradle Enterprise server URL is not configured.\n" +
                         "Either configure it directly (see https://docs.gradle.com/enterprise/gradle-plugin/#gradle_6_x_and_later_2) in the project,\n" +
                         "or use `--gradle-enterprise-server` when running the build validation script.")
             }
+
+            registerBuildScanActions(ext.buildScan)
+            addBuildScanCustomData(ext.buildScan)
+            configureBuildScanPublishing(ext.buildScan)
         }
     }
 }
