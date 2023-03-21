@@ -207,7 +207,7 @@ if (GradleVersion.current() < GradleVersion.version('6.0')) {
 
                 if (!buildScan.server) {
                     logErrorMissingGradleEnterpriseServerURL()
-                    throw new IllegalStateException("The Gradle Enterprise server URL has not been configured.")
+                    throw new IllegalStateException("The Gradle Enterprise server URL is not configured.")
                 }
             }
         }
@@ -254,7 +254,7 @@ if (GradleVersion.current() < GradleVersion.version('6.0')) {
 
             if (!ext.server) {
                 logErrorMissingGradleEnterpriseServerURL()
-                throw new IllegalStateException("The Gradle Enterprise server URL has not been configured.")
+                throw new IllegalStateException("The Gradle Enterprise server URL is not configured.")
             }
         }
     }
