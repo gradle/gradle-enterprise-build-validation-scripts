@@ -133,6 +133,12 @@ def addBuildScanCustomData = { def buildScan ->
     buildScan.value("Build validation scripts", scriptsVersion)
 }
 
+// fail if no GE server is configured
+def logErrorMissingGradleEnterpriseServerURL = {
+    def errorFile = new File(expDir, 'errors.txt')
+    errorFile.text = 'The Gradle Enterprise server URL has not been configured in the project or on the command line.'
+}
+
 // fail if the GE / Build Scan plugin is not applied
 def logErrorMissingGradleEnterprisePlugin = { def plugin ->
     def errorFile = new File(expDir, 'errors.txt')
@@ -144,12 +150,6 @@ def logWarningMissingCommonCustomUserDataGradlePlugin = {
     def warningFile = new File(expDir, 'warnings.txt')
     warningFile.append("The com.gradle.common-custom-user-data-gradle-plugin plugin is missing from " +
             "the project (see https://github.com/gradle/common-custom-user-data-gradle-plugin).\n")
-}
-
-// fail if no GE server is configured
-def logErrorMissingGradleEnterpriseServerURL = {
-    def errorFile = new File(expDir, 'errors.txt')
-    errorFile.text = 'The Gradle Enterprise server URL has not been configured in the project or on the command line.'
 }
 
 // configure build scan behavior and optionally apply the GE / Build Scan / CCUD plugin
