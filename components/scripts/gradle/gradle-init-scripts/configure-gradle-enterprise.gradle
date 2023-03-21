@@ -92,7 +92,6 @@ if (ccudPluginVersion && isNotAtLeast(ccudPluginVersion, '1.7')) {
 
 // register build scan listeners to capture build scan URL/id and to track publishing errors
 def registerBuildScanActions = { def buildScan ->
-    def scanFile = new File(expDir, 'build-scans.csv')
     buildScan.buildScanPublished { publishedBuildScan ->
         // defer reading the `runNum` system property until execution time since it does not affect
         // the configuration of the build, and given its value changes between consecutive build invocations
@@ -107,11 +106,13 @@ def registerBuildScanActions = { def buildScan ->
         def buildScanId = publishedBuildScan.buildScanId
         def port = (buildScanUri.port != -1) ? ':' + buildScanUri.port : ''
         def baseUrl = "${buildScanUri.scheme}://${buildScanUri.host}${port}"
+
+        def scanFile = new File(expDir, 'build-scans.csv')
         scanFile.append("${runNum},${baseUrl},${buildScanUri},${buildScanId}\n")
     }
 
-    def errorFile = new File(expDir, 'errors.txt')
     buildScan.onError { error ->
+        def errorFile = new File(expDir, 'errors.txt')
         errorFile.text = 'Build Scan publishing failed.'
     }
 }
