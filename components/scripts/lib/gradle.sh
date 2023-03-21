@@ -23,6 +23,8 @@ invoke_gradle() {
   if [ -n "${ge_server}" ]; then
     args+=("-Dcom.gradle.enterprise.build-validation.gradle-enterprise.url=${ge_server}")
     args+=("-Dcom.gradle.enterprise.build-validation.gradle-enterprise.allow-untrusted-server=false")
+  elif [ "$build_scan_publishing_mode" == "off" ]; then
+    args+=("-Dcom.gradle.enterprise.build-validation.gradle-enterprise.url=https://0.0.0.0")
   fi
 
   if [[ "${build_scan_publishing_mode}" == "off" ]]; then
