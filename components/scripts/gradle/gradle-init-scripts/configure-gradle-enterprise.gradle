@@ -92,7 +92,6 @@ if (ccudPluginVersion && isNotAtLeast(ccudPluginVersion, '1.7')) {
 
 // register build scan listeners to capture build scan URL/id and to track publishing errors
 def registerBuildScanActions = { def buildScan ->
-    def scanFile = new File(expDir, 'build-scans.csv')
     buildScan.buildScanPublished { publishedBuildScan ->
         // defer reading the `runNum` system property until execution time since it does not affect
         // the configuration of the build, and given its value changes between consecutive build invocations
@@ -107,11 +106,13 @@ def registerBuildScanActions = { def buildScan ->
         def buildScanId = publishedBuildScan.buildScanId
         def port = (buildScanUri.port != -1) ? ':' + buildScanUri.port : ''
         def baseUrl = "${buildScanUri.scheme}://${buildScanUri.host}${port}"
+
+        def scanFile = new File(expDir, 'build-scans.csv')
         scanFile.append("${runNum},${baseUrl},${buildScanUri},${buildScanId}\n")
     }
 
-    def errorFile = new File(expDir, 'errors.txt')
     buildScan.onError { error ->
+        def errorFile = new File(expDir, 'errors.txt')
         errorFile.text = 'Build Scan publishing failed.'
     }
 }
@@ -133,10 +134,16 @@ def addBuildScanCustomData = { def buildScan ->
     buildScan.value("Build validation scripts", scriptsVersion)
 }
 
-// fail if the GE / Build Scan plugin is not applied
-def logErrorMissingGradleEnterprisePlugin = {
+// fail if no GE server is configured
+def logErrorMissingGradleEnterpriseServerURL = {
     def errorFile = new File(expDir, 'errors.txt')
-    errorFile.text = 'The com.gradle.enterprise plugin is missing from the project.'
+    errorFile.text = 'The Gradle Enterprise server URL has not been configured in the project or on the command line.'
+}
+
+// fail if the GE / Build Scan plugin is not applied
+def logErrorMissingGradleEnterprisePlugin = { def plugin ->
+    def errorFile = new File(expDir, 'errors.txt')
+    errorFile.text = "The $plugin plugin is missing from the project."
 }
 
 // do not fail if the CCUD plugin is not applied but surface a warning
@@ -167,7 +174,7 @@ if (GradleVersion.current() < GradleVersion.version('6.0')) {
                 }
             } else {
                 if (!scanPluginComponent) {
-                    logErrorMissingGradleEnterprisePlugin()
+                    logErrorMissingGradleEnterprisePlugin('com.gradle.build-scan')
                     throw new IllegalStateException("The com.gradle.build-scan plugin is missing from the project.\n" +
                             "Either apply it directly (see https://docs.gradle.com/enterprise/gradle-plugin/#gradle_5_x) to the project,\n" +
                             "or use `--enable-gradle-enterprise` when running the build validation script.")
@@ -195,6 +202,13 @@ if (GradleVersion.current() < GradleVersion.version('6.0')) {
                 if (geUrl) buildScan.server = geUrl
                 if (geAllowUntrustedServer) buildScan.allowUntrustedServer = geAllowUntrustedServer
 
+                if (!buildScan.server) {
+                    logErrorMissingGradleEnterpriseServerURL()
+                    throw new IllegalStateException("The Gradle Enterprise server URL is not configured.\n" +
+                            "Either configure it directly (see https://docs.gradle.com/enterprise/gradle-plugin/#gradle_5_x_2) in the project,\n" +
+                            "or use `--gradle-enterprise-server` when running the build validation script.")
+                }
+
                 registerBuildScanActions(buildScan)
                 addBuildScanCustomData(buildScan)
                 configureBuildScanPublishing(buildScan)
@@ -215,7 +229,7 @@ if (GradleVersion.current() < GradleVersion.version('6.0')) {
             }
         } else {
             if (!settings.pluginManager.hasPlugin(GRADLE_ENTERPRISE_PLUGIN_ID)) {
-                logErrorMissingGradleEnterprisePlugin()
+                logErrorMissingGradleEnterprisePlugin('com.gradle.enterprise')
                 throw new IllegalStateException("The com.gradle.enterprise plugin is missing from the project.\n" +
                         "Either apply it directly (see https://docs.gradle.com/enterprise/gradle-plugin/#gradle_6_x_and_later),\n" +
                         "or use `--enable-gradle-enterprise` when running the build validation script.")
@@ -236,6 +250,13 @@ if (GradleVersion.current() < GradleVersion.version('6.0')) {
         extensionsWithPublicType(settings, GRADLE_ENTERPRISE_EXTENSION_CLASS).collect { settings[it.name] }.each { ext ->
             if (geUrl) ext.server = geUrl
             if (geAllowUntrustedServer) ext.allowUntrustedServer = geAllowUntrustedServer
+
+            if (!ext.server) {
+                logErrorMissingGradleEnterpriseServerURL()
+                throw new IllegalStateException("The Gradle Enterprise server URL is not configured.\n" +
+                        "Either configure it directly (see https://docs.gradle.com/enterprise/gradle-plugin/#gradle_6_x_and_later_2) in the project,\n" +
+                        "or use `--gradle-enterprise-server` when running the build validation script.")
+            }
 
             registerBuildScanActions(ext.buildScan)
             addBuildScanCustomData(ext.buildScan)
