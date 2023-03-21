@@ -134,9 +134,9 @@ def addBuildScanCustomData = { def buildScan ->
 }
 
 // fail if the GE / Build Scan plugin is not applied
-def logErrorMissingGradleEnterprisePlugin = {
+def logErrorMissingGradleEnterprisePlugin = { def plugin ->
     def errorFile = new File(expDir, 'errors.txt')
-    errorFile.text = 'The com.gradle.enterprise plugin is missing from the project.'
+    errorFile.text = "The $plugin plugin is missing from the project."
 }
 
 // do not fail if the CCUD plugin is not applied but surface a warning
@@ -173,7 +173,7 @@ if (GradleVersion.current() < GradleVersion.version('6.0')) {
                 }
             } else {
                 if (!scanPluginComponent) {
-                    logErrorMissingGradleEnterprisePlugin()
+                    logErrorMissingGradleEnterprisePlugin('com.gradle.build-scan')
                     throw new IllegalStateException("The com.gradle.build-scan plugin is missing from the project.\n" +
                             "Either apply it directly (see https://docs.gradle.com/enterprise/gradle-plugin/#gradle_5_x) to the project,\n" +
                             "or use `--enable-gradle-enterprise` when running the build validation script.")
@@ -226,7 +226,7 @@ if (GradleVersion.current() < GradleVersion.version('6.0')) {
             }
         } else {
             if (!settings.pluginManager.hasPlugin(GRADLE_ENTERPRISE_PLUGIN_ID)) {
-                logErrorMissingGradleEnterprisePlugin()
+                logErrorMissingGradleEnterprisePlugin('com.gradle.enterprise')
                 throw new IllegalStateException("The com.gradle.enterprise plugin is missing from the project.\n" +
                         "Either apply it directly (see https://docs.gradle.com/enterprise/gradle-plugin/#gradle_6_x_and_later),\n" +
                         "or use `--enable-gradle-enterprise` when running the build validation script.")
