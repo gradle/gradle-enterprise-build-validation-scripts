@@ -146,6 +146,12 @@ def logWarningMissingCommonCustomUserDataGradlePlugin = {
             "the project (see https://github.com/gradle/common-custom-user-data-gradle-plugin).\n")
 }
 
+// fail if no GE server is configured
+def logErrorMissingGradleEnterpriseServerURL = {
+    def errorFile = new File(expDir, 'errors.txt')
+    errorFile.text = 'The Gradle Enterprise server URL has not been configured in the project or on the command line.'
+}
+
 // configure build scan behavior and optionally apply the GE / Build Scan / CCUD plugin
 if (GradleVersion.current() < GradleVersion.version('6.0')) {
     //noinspection GroovyAssignabilityCheck
@@ -198,6 +204,11 @@ if (GradleVersion.current() < GradleVersion.version('6.0')) {
                 registerBuildScanActions(buildScan)
                 addBuildScanCustomData(buildScan)
                 configureBuildScanPublishing(buildScan)
+
+                if (!buildScan.server) {
+                    logErrorMissingGradleEnterpriseServerURL()
+                    throw new IllegalStateException("The Gradle Enterprise server URL has not been configured.")
+                }
             }
         }
     }
@@ -240,6 +251,11 @@ if (GradleVersion.current() < GradleVersion.version('6.0')) {
             registerBuildScanActions(ext.buildScan)
             addBuildScanCustomData(ext.buildScan)
             configureBuildScanPublishing(ext.buildScan)
+
+            if (!ext.server) {
+                logErrorMissingGradleEnterpriseServerURL()
+                throw new IllegalStateException("The Gradle Enterprise server URL has not been configured.")
+            }
         }
     }
 }
