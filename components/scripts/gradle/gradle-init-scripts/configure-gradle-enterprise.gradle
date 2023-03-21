@@ -208,7 +208,9 @@ if (GradleVersion.current() < GradleVersion.version('6.0')) {
 
                 if (!buildScan.server) {
                     logErrorMissingGradleEnterpriseServerURL()
-                    throw new IllegalStateException("The Gradle Enterprise server URL is not configured.")
+                    throw new IllegalStateException("The Gradle Enterprise server URL is not configured.\n" +
+                            "Either configure it directly (see https://docs.gradle.com/enterprise/gradle-plugin/#gradle_5_x_2) in the project,\n" +
+                            "or use `--gradle-enterprise-server` when running the build validation script.")
                 }
             }
         }
@@ -255,7 +257,9 @@ if (GradleVersion.current() < GradleVersion.version('6.0')) {
 
             if (!ext.server) {
                 logErrorMissingGradleEnterpriseServerURL()
-                throw new IllegalStateException("The Gradle Enterprise server URL is not configured.")
+                throw new IllegalStateException("The Gradle Enterprise server URL is not configured.\n" +
+                        "Either configure it directly (see https://docs.gradle.com/enterprise/gradle-plugin/#gradle_6_x_and_later_2) in the project,\n" +
+                        "or use `--gradle-enterprise-server` when running the build validation script.")
             }
         }
     }
