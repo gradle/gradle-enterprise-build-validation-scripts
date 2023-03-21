@@ -45,7 +45,9 @@ read_build_scan_dumps() {
   )
 
   echo "Extracting Build Scan data for all builds"
-  build_scan_csv="$(invoke_java "$BUILD_SCAN_SUPPORT_TOOL_JAR" "${args[@]}")"
+  if ! build_scan_csv="$(invoke_java "$BUILD_SCAN_SUPPORT_TOOL_JAR" "${args[@]}")"; then
+    die
+  fi
   parse_build_scan_csv "$build_scan_csv" "build_cache_metrics_only"
   echo "Finished extracting Build Scan data for all builds"
 }
