@@ -34,9 +34,18 @@ find_build_scan_dump() {
 }
 
 read_build_scan_dumps() {
-  local build_scan_csv
+  local build_scan_csv args
+  args=()
+
+  args+=(
+      "extract"
+      "--license-file" "${SCRIPT_DIR}/gradle-enterprise.license"
+      "1,${build_scan_dumps[1]}"
+      "0,${build_scan_dumps[0]}"
+  )
+
   echo -n "Extracting build scan data"
-  build_scan_csv="$(invoke_java "$BUILD_SCAN_SUPPORT_TOOL_JAR" extract "0,${build_scan_dumps[0]}"  "1,${build_scan_dumps[1]}")"
+  build_scan_csv="$(invoke_java "$BUILD_SCAN_SUPPORT_TOOL_JAR" "${args[@]}")"
   parse_build_scan_csv "$build_scan_csv" "build_cache_metrics_only"
   echo ", done."
 }
