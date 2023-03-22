@@ -98,18 +98,18 @@ public class AuthenticationConfigurator {
 
         String[] entries = value.split(";");
         for(String entry: entries) {
-            if(entry == null) throw malformedEnvironmentVariable();
+            if(entry == null) throw new MalformedEnvironmentVariableException();
 
             String[] parts = entry.split("=", 2);
-            if (parts.length < 2) throw malformedEnvironmentVariable();
+            if (parts.length < 2) throw new MalformedEnvironmentVariableException();
 
             String joinedServers = parts[0].trim();
             String accessKey = parts[1].trim();
 
-            if(joinedServers.isEmpty() || Strings.isNullOrEmpty(accessKey)) throw malformedEnvironmentVariable();
+            if(joinedServers.isEmpty() || Strings.isNullOrEmpty(accessKey)) throw new MalformedEnvironmentVariableException();
             for(String server: joinedServers.split(",")) {
                 server = server.trim();
-                if (server.isEmpty()) throw malformedEnvironmentVariable();
+                if (server.isEmpty()) throw new MalformedEnvironmentVariableException();
                 accessKeys.put(server, accessKey);
             }
         }
@@ -117,7 +117,9 @@ public class AuthenticationConfigurator {
         return accessKeys;
     }
 
-    private static ApiClientException malformedEnvironmentVariable() {
-        return new ApiClientException(String.format("Environment variable %s is malformed (expected format: 'server-host=access-key' or 'server-host1=access-key1;server-host2=access-key2')", EnvVars.ACCESS_KEY));
+    public static class MalformedEnvironmentVariableException extends ApiClientException {
+        public MalformedEnvironmentVariableException() {
+            super(String.format("Environment variable %s is malformed (expected format: 'server-host=access-key' or 'server-host1=access-key1;server-host2=access-key2')", EnvVars.ACCESS_KEY));
+        }
     }
 }
