@@ -20,7 +20,7 @@ public class FailedRequestException extends FetchToolException {
      * @param e the exception that was thrown while attempting to fetch the Build Scan
      */
     public FailedRequestException(BuildScanUrl buildScanUrl, ApiException e) {
-        super(buildMessage(buildScanUrl, e.getCode()));
+        super(buildMessage(buildScanUrl, e.getCode()), e);
         this.httpStatusCode = e.getCode();
         this.responseBody = e.getResponseBody();
     }

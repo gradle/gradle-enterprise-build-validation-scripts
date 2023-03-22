@@ -15,7 +15,7 @@ public class NetworkSettingsConfigurator {
         try {
             configureBasedOnProperties(networkSettingsFile, logger);
         } catch (IOException e) {
-            throw new FailedToLoadNetworkSettingsException(networkSettingsFile);
+            throw new FailedToLoadNetworkSettingsException(networkSettingsFile, e);
         }
     }
 
@@ -57,8 +57,8 @@ public class NetworkSettingsConfigurator {
     }
 
     public static class FailedToLoadNetworkSettingsException extends FetchToolException {
-        public FailedToLoadNetworkSettingsException(Path networkSettingsFile) {
-            super(String.format("Failed to load network settings from %s:", networkSettingsFile.toAbsolutePath()));
+        public FailedToLoadNetworkSettingsException(Path networkSettingsFile, Throwable e) {
+            super(String.format("Failed to load network settings from %s:", networkSettingsFile.toAbsolutePath()), e);
         }
     }
 }
