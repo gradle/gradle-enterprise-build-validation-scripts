@@ -167,7 +167,7 @@ public class GradleEnterpriseApiClient {
                     serializationFactorFrom(buildCachePerformance)
                 );
             }
-            throw new UnknownBuildAgentException(baseUrl, buildScanId, build.getBuildToolType());
+            throw ApiClientException.unknownBuildAgent(baseUrl, buildScanId, build.getBuildToolType());
         } catch (ApiException e) {
             switch(e.getCode()) {
                 case StatusCodes.NOT_FOUND:
