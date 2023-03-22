@@ -8,15 +8,16 @@ import java.net.URL;
 /**
  * A value object representing a Gradle Enterprise Build Scan URL.
  *
- * <p>This class provides a convenient way to create a Gradle Enterprise Build Scan URL, given the server's base URL and
- * a Build Scan ID.
+ * <p>This class provides a convenient way to create a Gradle Enterprise Build
+ * Scan URL, given the server's base URL and a Build Scan ID.
  */
 public class BuildScanUrl {
 
     private final URL url;
 
     /**
-     * Constructs a new {@code BuildScanUrl} instance from the specified {@link URL}.
+     * Constructs a new {@code BuildScanUrl} instance from the specified
+     * {@link URL}.
      *
      * @param url the URL of the Build Scan
      */
@@ -25,9 +26,10 @@ public class BuildScanUrl {
     }
 
     /**
-     * Creates a new {@code BuildScanUrl} instance from the specified Gradle Enterprise server URL and Build Scan ID.
+     * Creates a new {@code BuildScanUrl} instance from the specified Gradle
+     * Enterprise server URL and Build Scan ID.
      *
-     * @param gradleEnterpriseServerUrl the base URL of the Gradle Enterprise server
+     * @param gradleEnterpriseServerUrl the Gradle Enterprise server base URL
      * @param buildScanId the ID of the Build Scan
      * @return a new {@code BuildScanUrl} instance
      * @throws FetchToolException if the resulting URL is malformed

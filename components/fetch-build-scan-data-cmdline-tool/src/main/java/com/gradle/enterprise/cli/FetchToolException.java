@@ -6,7 +6,8 @@ package com.gradle.enterprise.cli;
 public class FetchToolException extends RuntimeException {
 
     /**
-     * Constructs a new {@code FetchToolException} with the specified detail message.
+     * Constructs a new {@code FetchToolException} with the specified detail
+     * message.
      *
      * @param message the detail message
      */
@@ -15,7 +16,8 @@ public class FetchToolException extends RuntimeException {
     }
 
     /**
-     * Constructs a new {@code FetchToolException} with the specified detail message and cause.
+     * Constructs a new {@code FetchToolException} with the specified detail
+     * message and cause.
      *
      * @param message the detail message
      * @param cause the cause
