@@ -14,7 +14,7 @@ public class NetworkSettingsConfigurator {
         try {
             configureBasedOnProperties(networkSettingsFile, logger);
         } catch (IOException e) {
-            throw new FailedToLoadNetworkSettingsException(networkSettingsFile, e);
+            throw new RuntimeException(String.format("Failed to load network settings from %s.", networkSettingsFile.toAbsolutePath()), e);
         }
     }
 
