@@ -26,13 +26,13 @@ public class FailedRequestException extends ApiClientException {
         return responseBody;
     }
 
-    public static FailedRequestException authenticationFailed(
-            URL gradleEnterpriseServer,
-            String buildScanId,
-            int httpStatusCode,
-            String responseBody,
-            Throwable cause
-    ) {
+    public static FailedRequestException authenticationFailed(URL gradleEnterpriseServer, String buildScanId, int httpStatusCode, String responseBody, Throwable cause) {
+        final String message = String.format("Failed to authenticate while attempting to fetch build scan %s.",
+                buildScanUrl(gradleEnterpriseServer, buildScanId));
+        return new FailedRequestException(message, httpStatusCode, responseBody, cause);
+    }
+
+    public static FailedRequestException buildScanNotFound(URL gradleEnterpriseServer, String buildScanId, int httpStatusCode, String responseBody, Throwable cause) {
         final String message = String.format("Failed to authenticate while attempting to fetch build scan %s.",
                 buildScanUrl(gradleEnterpriseServer, buildScanId));
         return new FailedRequestException(message, httpStatusCode, responseBody, cause);

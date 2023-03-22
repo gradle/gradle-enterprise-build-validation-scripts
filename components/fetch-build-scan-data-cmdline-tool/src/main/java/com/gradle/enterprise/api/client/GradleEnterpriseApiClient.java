@@ -171,7 +171,7 @@ public class GradleEnterpriseApiClient {
         } catch (ApiException e) {
             switch(e.getCode()) {
                 case StatusCodes.NOT_FOUND:
-                    throw new BuildScanNotFoundException(baseUrl, buildScanId, e.getCode(), e.getResponseBody(), e);
+                    throw FailedRequestException.buildScanNotFound(baseUrl, buildScanId, e.getCode(), e.getResponseBody(), e);
                 case StatusCodes.UNAUTHORIZED:
                     throw FailedRequestException.authenticationFailed(baseUrl, buildScanId, e.getCode(), e.getResponseBody(), e);
                 case 0:
