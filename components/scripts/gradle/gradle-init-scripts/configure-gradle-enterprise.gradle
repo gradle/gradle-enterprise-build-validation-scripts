@@ -171,13 +171,6 @@ if (GradleVersion.current() < GradleVersion.version('6.0')) {
                     pluginManager.apply(initscript.classLoader.loadClass(BUILD_SCAN_PLUGIN_CLASS))
                     if (geUrl) buildScan.server = geUrl
                     if (geAllowUntrustedServer) buildScan.allowUntrustedServer = geAllowUntrustedServer
-
-                    if (!buildScan.server) {
-                        logErrorMissingGradleEnterpriseServerURL()
-                        throw new IllegalStateException("The Gradle Enterprise server URL is not configured.\n" +
-                                "Either configure it directly (see https://docs.gradle.com/enterprise/gradle-plugin/#gradle_5_x_2) in the project,\n" +
-                                "or use `--gradle-enterprise-server` when running the build validation script.")
-                    }
                 }
             } else {
                 if (!scanPluginComponent) {
@@ -206,6 +199,15 @@ if (GradleVersion.current() < GradleVersion.version('6.0')) {
 
         pluginManager.withPlugin(BUILD_SCAN_PLUGIN_ID) {
             afterEvaluate {
+                // abort in afterEvaluate since any exceptions thrown in afterResolve are caught and not propagated,
+                // which means the build would try to publish a build scan to scans.gradle.com
+                if (!buildScan.server) {
+                    logErrorMissingGradleEnterpriseServerURL()
+                    throw new IllegalStateException("The Gradle Enterprise server URL is not configured.\n" +
+                            "Either configure it directly (see https://docs.gradle.com/enterprise/gradle-plugin/#gradle_5_x_2) in the project,\n" +
+                            "or use `--gradle-enterprise-server` when running the build validation script.")
+                }
+
                 registerBuildScanActions(buildScan)
                 addBuildScanCustomData(buildScan)
                 configureBuildScanPublishing(buildScan)
@@ -223,6 +225,8 @@ if (GradleVersion.current() < GradleVersion.version('6.0')) {
                     if (geUrl) ext.server = geUrl
                     if (geAllowUntrustedServer) ext.allowUntrustedServer = geAllowUntrustedServer
 
+                    // abort immediately to avoid that the CCUD plugin tries to register a buildFinished listener
+                    // even though, by then, GE has already marked the build as finished (causes warning in the console)
                     if (!ext.server) {
                         logErrorMissingGradleEnterpriseServerURL()
                         throw new IllegalStateException("The Gradle Enterprise server URL is not configured.\n" +
