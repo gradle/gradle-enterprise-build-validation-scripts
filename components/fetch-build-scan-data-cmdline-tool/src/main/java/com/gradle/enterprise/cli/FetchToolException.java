@@ -1,7 +1,7 @@
 package com.gradle.enterprise.cli;
 
 /**
- * Exception thrown when any error occurs while fetching a Build Scan.
+ * Exception thrown when an error occurs while fetching a Build Scan.
  */
 public class FetchToolException extends RuntimeException {
 
