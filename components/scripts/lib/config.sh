@@ -87,10 +87,6 @@ validate_required_config() {
       _PRINT_HELP=yes die "ERROR: Missing required argument: --tasks" "${INVALID_INPUT}"
     fi
   fi
-
-  if [[ "${enable_ge}" == "on" && -z "${ge_server}" && "${build_scan_publishing_mode}" == "on" ]]; then
-    _PRINT_HELP=yes die "ERROR: --gradle-enterprise-server is required when using --enable-gradle-enterprise." "${INVALID_INPUT}"
-  fi
 }
 
 prompt_for_setting() {
