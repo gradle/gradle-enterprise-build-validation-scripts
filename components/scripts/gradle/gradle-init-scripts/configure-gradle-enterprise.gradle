@@ -81,6 +81,7 @@ def expDir = getInputParam('com.gradle.enterprise.build-validation.expDir')
 def expId = getInputParam('com.gradle.enterprise.build-validation.expId')
 def runId = getInputParam('com.gradle.enterprise.build-validation.runId')
 def scriptsVersion = getInputParam('com.gradle.enterprise.build-validation.scriptsVersion')
+def omitServerUrlValidation = Boolean.parseBoolean(getInputParam('com.gradle.enterprise.build-validation.omitServerUrlValidation'))
 
 def atLeastGradle4 = GradleVersion.current() >= GradleVersion.version('4.0')
 
@@ -202,7 +203,7 @@ if (GradleVersion.current() < GradleVersion.version('6.0')) {
                 if (geUrl) buildScan.server = geUrl
                 if (geAllowUntrustedServer) buildScan.allowUntrustedServer = geAllowUntrustedServer
 
-                if (!buildScan.server) {
+                if (!buildScan.server && !omitServerUrlValidation) {
                     logErrorMissingGradleEnterpriseServerURL()
                     throw new IllegalStateException("The Gradle Enterprise server URL is not configured.\n" +
                             "Either configure it directly (see https://docs.gradle.com/enterprise/gradle-plugin/#gradle_5_x_2) in the project,\n" +
@@ -251,7 +252,7 @@ if (GradleVersion.current() < GradleVersion.version('6.0')) {
             if (geUrl) ext.server = geUrl
             if (geAllowUntrustedServer) ext.allowUntrustedServer = geAllowUntrustedServer
 
-            if (!ext.server) {
+            if (!ext.server && !omitServerUrlValidation) {
                 logErrorMissingGradleEnterpriseServerURL()
                 throw new IllegalStateException("The Gradle Enterprise server URL is not configured.\n" +
                         "Either configure it directly (see https://docs.gradle.com/enterprise/gradle-plugin/#gradle_6_x_and_later_2) in the project,\n" +
