@@ -8,10 +8,6 @@ public class FailedRequestException extends ApiClientException {
 
     private final String responseBody;
 
-    public FailedRequestException(String message, int httpStatusCode, String responseBody) {
-        this(message, httpStatusCode, responseBody, null);
-    }
-
     public FailedRequestException(String message, int httpStatusCode, String responseBody, Throwable cause) {
         super(message, cause);
         this.httpStatusCode = httpStatusCode;
