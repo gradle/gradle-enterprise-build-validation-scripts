@@ -177,7 +177,7 @@ public class GradleEnterpriseApiClient {
                 case 0:
                     throw ApiClientException.connectionFailed(baseUrl, buildScanId, e);
                 default:
-                    throw new UnexpectedResponseException(baseUrl, buildScanId, e.getCode(), e.getResponseBody(), e);
+                    throw FailedRequestException.unexpectedResponse(baseUrl, buildScanId, e.getCode(), e.getResponseBody(), e);
             }
         }
     }

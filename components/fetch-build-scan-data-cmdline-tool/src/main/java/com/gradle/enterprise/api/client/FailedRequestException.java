@@ -37,4 +37,9 @@ public class FailedRequestException extends ApiClientException {
                 buildScanUrl(gradleEnterpriseServer, buildScanId));
         return new FailedRequestException(message, httpStatusCode, responseBody, cause);
     }
+
+    public static FailedRequestException unexpectedResponse(URL gradleEnterpriseServer, String buildScanId, int httpStatusCode, String responseBody, Throwable cause) {
+        final String message = String.format("Encountered an unexpected response while fetching build scan %s.", buildScanUrl(gradleEnterpriseServer, buildScanId));
+        return new FailedRequestException(message, httpStatusCode, responseBody, cause);
+    }
 }
