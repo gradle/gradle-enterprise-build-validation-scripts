@@ -50,10 +50,10 @@ public class FailedRequestException extends FetchToolException {
 
     private static String buildMessage(BuildScanUrl buildScanUrl, int code) {
         switch (code) {
-            case StatusCodes.NOT_FOUND:
+            case 404:
                 return String.format("Build scan %s was not found.%nVerify the build scan exists and you have been" +
                         "granted the permission 'Access build data via the Export API'.", buildScanUrl);
-            case StatusCodes.UNAUTHORIZED:
+            case 401:
                 return String.format("Failed to authenticate while attempting to fetch build scan %s.", buildScanUrl);
             case 0:
                 return String.format("Unable to connect to server in order to fetch build scan %s.", buildScanUrl);
