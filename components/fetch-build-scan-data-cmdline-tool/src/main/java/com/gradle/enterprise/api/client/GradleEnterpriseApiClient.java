@@ -173,7 +173,7 @@ public class GradleEnterpriseApiClient {
                 case StatusCodes.NOT_FOUND:
                     throw new BuildScanNotFoundException(baseUrl, buildScanId, e.getCode(), e.getResponseBody(), e);
                 case StatusCodes.UNAUTHORIZED:
-                    throw new AuthenticationFailedException(baseUrl, buildScanId, e.getCode(), e.getResponseBody(), e);
+                    throw FailedRequestException.authenticationFailed(baseUrl, buildScanId, e.getCode(), e.getResponseBody(), e);
                 case 0:
                     throw new ConnectionFailedException(baseUrl, buildScanId, e);
                 default:

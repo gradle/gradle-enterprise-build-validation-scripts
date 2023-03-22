@@ -1,5 +1,7 @@
 package com.gradle.enterprise.api.client;
 
+import java.net.URL;
+
 public class FailedRequestException extends ApiClientException {
 
     private final int httpStatusCode;
@@ -22,5 +24,17 @@ public class FailedRequestException extends ApiClientException {
 
     public String getResponseBody() {
         return responseBody;
+    }
+
+    public static FailedRequestException authenticationFailed(
+            URL gradleEnterpriseServer,
+            String buildScanId,
+            int httpStatusCode,
+            String responseBody,
+            Throwable cause
+    ) {
+        final String message = String.format("Failed to authenticate while attempting to fetch build scan %s.",
+                buildScanUrl(gradleEnterpriseServer, buildScanId));
+        return new FailedRequestException(message, httpStatusCode, responseBody, cause);
     }
 }
