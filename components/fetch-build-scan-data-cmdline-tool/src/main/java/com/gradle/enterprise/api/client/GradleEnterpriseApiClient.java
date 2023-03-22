@@ -175,7 +175,7 @@ public class GradleEnterpriseApiClient {
                 case StatusCodes.UNAUTHORIZED:
                     throw FailedRequestException.authenticationFailed(baseUrl, buildScanId, e.getCode(), e.getResponseBody(), e);
                 case 0:
-                    throw new ConnectionFailedException(baseUrl, buildScanId, e);
+                    throw ApiClientException.connectionFailed(baseUrl, buildScanId, e);
                 default:
                     throw new UnexpectedResponseException(baseUrl, buildScanId, e.getCode(), e.getResponseBody(), e);
             }

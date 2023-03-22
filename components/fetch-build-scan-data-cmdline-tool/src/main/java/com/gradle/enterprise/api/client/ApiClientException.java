@@ -30,4 +30,9 @@ public class ApiClientException extends RuntimeException {
             throw new RuntimeException(e.getMessage(), e);
         }
     }
+
+    public static ApiClientException connectionFailed(URL gradleEnterpriseServer, String buildScanId, Throwable cause) {
+        final String message = String.format("Unable to connect to %s in order to fetch build scan %s: %s", gradleEnterpriseServer, buildScanId, cause.getMessage());
+        return new ApiClientException(message, cause);
+    }
 }
