@@ -183,12 +183,6 @@ validate_build_config() {
   if [ -z "${git_commit_id}" ]; then
       _PRINT_HELP=yes die "ERROR: The Git commit id was not found in the build scan. Please specify --git-commit-id and try again." "${INVALID_INPUT}"
   fi
-
-  if [[ "${enable_ge}" == "on" ]]; then
-    if [ -z "${ge_server}" ]; then
-      _PRINT_HELP=yes die "ERROR: --gradle-enterprise-server is required when using --enable-gradle-enterprise." "${INVALID_INPUT}"
-    fi
-  fi
 }
 
 execute_build() {
