@@ -81,6 +81,7 @@ def expDir = getInputParam('com.gradle.enterprise.build-validation.expDir')
 def expId = getInputParam('com.gradle.enterprise.build-validation.expId')
 def runId = getInputParam('com.gradle.enterprise.build-validation.runId')
 def scriptsVersion = getInputParam('com.gradle.enterprise.build-validation.scriptsVersion')
+def omitServerUrlValidation = Boolean.parseBoolean(getInputParam('com.gradle.enterprise.build-validation.omitServerUrlValidation'))
 
 def atLeastGradle4 = GradleVersion.current() >= GradleVersion.version('4.0')
 
@@ -201,7 +202,7 @@ if (GradleVersion.current() < GradleVersion.version('6.0')) {
             afterEvaluate {
                 // abort in afterEvaluate since any exceptions thrown in afterResolve are caught and not propagated,
                 // which means the build would try to publish a build scan to scans.gradle.com
-                if (!buildScan.server) {
+                if (!buildScan.server && !omitServerUrlValidation) {
                     logErrorMissingGradleEnterpriseServerURL()
                     throw new IllegalStateException("The Gradle Enterprise server URL is not configured.\n" +
                             "Either configure it directly (see https://docs.gradle.com/enterprise/gradle-plugin/#gradle_5_x_2) in the project,\n" +
@@ -227,7 +228,7 @@ if (GradleVersion.current() < GradleVersion.version('6.0')) {
 
                     // abort immediately to avoid that the CCUD plugin tries to register a buildFinished listener
                     // even though, by then, GE has already marked the build as finished (causes warning in the console)
-                    if (!ext.server) {
+                    if (!ext.server && !omitServerUrlValidation) {
                         logErrorMissingGradleEnterpriseServerURL()
                         throw new IllegalStateException("The Gradle Enterprise server URL is not configured.\n" +
                                 "Either configure it directly (see https://docs.gradle.com/enterprise/gradle-plugin/#gradle_6_x_and_later_2) in the project,\n" +
@@ -273,7 +274,7 @@ static boolean isNotAtLeast(String versionUnderTest, String referenceVersion) {
 
 static void addCustomValueAndSearchLink(buildScan, String label, String value) {
     buildScan.value(label, value)
-    if (buildScan.metaClass.respondsTo(buildScan, 'getServer')) { // required for Gradle 4.x / build-scan-plugin 1.16
+    if (buildScan.metaClass.respondsTo(buildScan, 'getServer') && buildScan.server) { // required for Gradle 4.x / build-scan-plugin 1.16
         String server = buildScan.server
         String searchParams = "search.names=" + urlEncode(label) + "&search.values=" + urlEncode(value)
         String url = appendIfMissing(server, "/") + "scans?" + searchParams + "#selection.buildScanB=" + urlEncode("{SCAN_ID}")

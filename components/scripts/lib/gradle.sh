@@ -26,6 +26,7 @@ invoke_gradle() {
   fi
 
   if [[ "${build_scan_publishing_mode}" == "off" ]]; then
+    args+=("-Dcom.gradle.enterprise.build-validation.omitServerUrlValidation=true")
     args+=("-Dscan.dump")
   fi
 
