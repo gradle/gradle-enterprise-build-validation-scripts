@@ -1,15 +1,17 @@
 package com.gradle.enterprise.api.client;
 
+import com.gradle.enterprise.cli.FetchToolException;
+
 import java.util.Optional;
 
-public class FailedRequestException extends ApiClientException {
+public class FailedRequestException extends FetchToolException {
 
     private final int httpStatusCode;
 
     private final String responseBody;
 
     public FailedRequestException(BuildScanUrl buildScanUrl, ApiException e) {
-        super(buildMessage(buildScanUrl, e.getCode()), e);
+        super(buildMessage(buildScanUrl, e.getCode()));
         this.httpStatusCode = e.getCode();
         this.responseBody = e.getResponseBody();
     }

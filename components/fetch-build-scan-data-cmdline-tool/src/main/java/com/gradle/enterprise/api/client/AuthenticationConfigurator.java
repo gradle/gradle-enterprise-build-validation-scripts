@@ -1,6 +1,7 @@
 package com.gradle.enterprise.api.client;
 
 import com.google.common.base.Strings;
+import com.gradle.enterprise.cli.FetchToolException;
 import com.gradle.enterprise.cli.ConsoleLogger;
 
 import java.io.BufferedReader;
@@ -117,7 +118,7 @@ public class AuthenticationConfigurator {
         return accessKeys;
     }
 
-    public static class MalformedEnvironmentVariableException extends ApiClientException {
+    public static class MalformedEnvironmentVariableException extends FetchToolException {
         public MalformedEnvironmentVariableException() {
             super(String.format("Environment variable %s is malformed (expected format: 'server-host=access-key' or 'server-host1=access-key1;server-host2=access-key2')", EnvVars.ACCESS_KEY));
         }
