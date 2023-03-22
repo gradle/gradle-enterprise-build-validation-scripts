@@ -1,6 +1,5 @@
 package com.gradle.enterprise.api.client;
 
-import java.net.URL;
 import java.util.Optional;
 
 public class FailedRequestException extends ApiClientException {
@@ -9,8 +8,8 @@ public class FailedRequestException extends ApiClientException {
 
     private final String responseBody;
 
-    public static FailedRequestException fromApiException(URL baseUrl, String buildScanId, ApiException e) {
-        final String message = buildMessage(baseUrl, buildScanId, e.getCode());
+    public static FailedRequestException fromApiException(BuildScanUrl buildScanUrl, ApiException e) {
+        final String message = buildMessage(buildScanUrl, e.getCode());
         return new FailedRequestException(message, e.getCode(), e.getResponseBody(), e);
     }
 
@@ -28,8 +27,7 @@ public class FailedRequestException extends ApiClientException {
         return Optional.ofNullable(responseBody);
     }
 
-    private static String buildMessage(URL baseUrl, String buildScanId, int code) {
-        final URL buildScanUrl = buildScanUrl(baseUrl, buildScanId);
+    private static String buildMessage(BuildScanUrl buildScanUrl, int code) {
         switch (code) {
             case StatusCodes.NOT_FOUND:
                 return String.format("Build scan %s was not found.%nVerify the build scan exists and you have been" +
