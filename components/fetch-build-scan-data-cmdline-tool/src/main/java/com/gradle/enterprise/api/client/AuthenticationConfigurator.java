@@ -98,28 +98,22 @@ public class AuthenticationConfigurator {
 
         String[] entries = value.split(";");
         for(String entry: entries) {
-            if(entry == null) throw new MalformedEnvironmentVariableException();
+            if(entry == null) throw ApiClientException.malformedEnvironmentVariable();
 
             String[] parts = entry.split("=", 2);
-            if (parts.length < 2) throw new MalformedEnvironmentVariableException();
+            if (parts.length < 2) throw ApiClientException.malformedEnvironmentVariable();
 
             String joinedServers = parts[0].trim();
             String accessKey = parts[1].trim();
 
-            if(joinedServers.isEmpty() || Strings.isNullOrEmpty(accessKey)) throw new MalformedEnvironmentVariableException();
+            if(joinedServers.isEmpty() || Strings.isNullOrEmpty(accessKey)) throw ApiClientException.malformedEnvironmentVariable();
             for(String server: joinedServers.split(",")) {
                 server = server.trim();
-                if (server.isEmpty()) throw new MalformedEnvironmentVariableException();
+                if (server.isEmpty()) throw ApiClientException.malformedEnvironmentVariable();
                 accessKeys.put(server, accessKey);
             }
         }
 
         return accessKeys;
-    }
-
-    public static class MalformedEnvironmentVariableException extends ApiClientException {
-        public MalformedEnvironmentVariableException() {
-            super("Environment variable " + EnvVars.ACCESS_KEY + " is malformed (expected format: 'server-host=access-key' or 'server-host1=access-key1;server-host2=access-key2')");
-        }
     }
 }
