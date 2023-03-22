@@ -32,7 +32,7 @@ public class ApiClientException extends RuntimeException {
     }
 
     public static ApiClientException malformedEnvironmentVariable() {
-        final String message = "Environment variable " + AuthenticationConfigurator.EnvVars.ACCESS_KEY + " is malformed (expected format: 'server-host=access-key' or 'server-host1=access-key1;server-host2=access-key2')";
+        final String message = String.format("Environment variable %s is malformed (expected format: 'server-host=access-key' or 'server-host1=access-key1;server-host2=access-key2')", AuthenticationConfigurator.EnvVars.ACCESS_KEY);
         return new ApiClientException(message);
     }
 }
