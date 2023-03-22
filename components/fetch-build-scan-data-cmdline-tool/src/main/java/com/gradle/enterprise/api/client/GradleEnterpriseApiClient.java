@@ -169,16 +169,7 @@ public class GradleEnterpriseApiClient {
             }
             throw ApiClientException.unknownBuildAgent(baseUrl, buildScanId, build.getBuildToolType());
         } catch (ApiException e) {
-            switch(e.getCode()) {
-                case StatusCodes.NOT_FOUND:
-                    throw FailedRequestException.buildScanNotFound(baseUrl, buildScanId, e.getCode(), e.getResponseBody(), e);
-                case StatusCodes.UNAUTHORIZED:
-                    throw FailedRequestException.authenticationFailed(baseUrl, buildScanId, e.getCode(), e.getResponseBody(), e);
-                case 0:
-                    throw ApiClientException.connectionFailed(baseUrl, buildScanId, e);
-                default:
-                    throw FailedRequestException.unexpectedResponse(baseUrl, buildScanId, e.getCode(), e.getResponseBody(), e);
-            }
+            throw FailedRequestException.fromApiException(baseUrl, buildScanId, e);
         }
     }
 
