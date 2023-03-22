@@ -8,15 +8,10 @@ public class FailedRequestException extends ApiClientException {
 
     private final String responseBody;
 
-    public static FailedRequestException fromApiException(BuildScanUrl buildScanUrl, ApiException e) {
-        final String message = buildMessage(buildScanUrl, e.getCode());
-        return new FailedRequestException(message, e.getCode(), e.getResponseBody(), e);
-    }
-
-    private FailedRequestException(String message, int httpStatusCode, String responseBody, Throwable cause) {
-        super(message, cause);
-        this.httpStatusCode = httpStatusCode;
-        this.responseBody = responseBody;
+    public FailedRequestException(BuildScanUrl buildScanUrl, ApiException e) {
+        super(buildMessage(buildScanUrl, e.getCode()), e);
+        this.httpStatusCode = e.getCode();
+        this.responseBody = e.getResponseBody();
     }
 
     public int httpStatusCode() {
