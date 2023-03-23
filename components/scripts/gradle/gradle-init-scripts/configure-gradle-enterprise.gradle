@@ -200,6 +200,9 @@ if (GradleVersion.current() < GradleVersion.version('6.0')) {
 
         pluginManager.withPlugin(BUILD_SCAN_PLUGIN_ID) {
             afterEvaluate {
+                if (geUrl) buildScan.server = geUrl
+                if (geAllowUntrustedServer) buildScan.allowUntrustedServer = geAllowUntrustedServer
+
                 // abort in afterEvaluate since any exceptions thrown in afterResolve are caught and not propagated,
                 // which means the build would try to publish a build scan to scans.gradle.com
                 if (!buildScan.server && !omitServerUrlValidation) {
@@ -257,6 +260,9 @@ if (GradleVersion.current() < GradleVersion.version('6.0')) {
         }
 
         extensionsWithPublicType(settings, GRADLE_ENTERPRISE_EXTENSION_CLASS).collect { settings[it.name] }.each { ext ->
+            if (geUrl) ext.server = geUrl
+            if (geAllowUntrustedServer) ext.allowUntrustedServer = geAllowUntrustedServer
+
             registerBuildScanActions(ext.buildScan)
             addBuildScanCustomData(ext.buildScan)
             configureBuildScanPublishing(ext.buildScan)
