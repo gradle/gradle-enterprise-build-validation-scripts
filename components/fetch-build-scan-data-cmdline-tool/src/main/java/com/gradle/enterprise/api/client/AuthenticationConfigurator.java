@@ -119,7 +119,7 @@ public class AuthenticationConfigurator {
 
     public static class MalformedEnvironmentVariableException extends ApiClientException {
         public MalformedEnvironmentVariableException() {
-            super(String.format("Environment variable %s is malformed (expected format: 'server-host=access-key' or 'server-host1=access-key1;server-host2=access-key2')", EnvVars.ACCESS_KEY));
+            super("Environment variable " + EnvVars.ACCESS_KEY + " is malformed (expected format: 'server-host=access-key' or 'server-host1=access-key1;server-host2=access-key2')");
         }
     }
 }
