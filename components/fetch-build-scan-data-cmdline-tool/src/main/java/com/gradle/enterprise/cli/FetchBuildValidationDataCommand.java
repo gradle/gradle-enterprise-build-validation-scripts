@@ -124,11 +124,11 @@ public class FetchBuildValidationDataCommand implements Callable<Integer> {
 
     private void printFailedRequest(FailedRequestException e) {
         logger.error("Response status code: " + e.httpStatusCode());
-        if (e.getResponseBody().isPresent()) {
+        e.getResponseBody().ifPresent(responseBody -> {
             logger.error("Response body:");
-            logger.error(e.getResponseBody().get());
+            logger.error(responseBody);
             logger.error("--------------------------");
-        }
+        });
     }
 
     private void logStartFetchingAllBuildScanData() {
