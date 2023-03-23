@@ -1,7 +1,5 @@
 package com.gradle.enterprise.api.client;
 
-import com.gradle.enterprise.cli.FetchToolException;
-
 import java.net.MalformedURLException;
 import java.net.URL;
 
@@ -32,13 +30,13 @@ public class BuildScanUrl {
      * @param gradleEnterpriseServerUrl the Gradle Enterprise server base URL
      * @param buildScanId the ID of the Build Scan
      * @return a new {@code BuildScanUrl} instance
-     * @throws FetchToolException if the resulting URL is malformed
+     * @throws RuntimeException if the resulting URL is malformed
      */
     public static BuildScanUrl from(URL gradleEnterpriseServerUrl, String buildScanId) {
         try {
             return new BuildScanUrl(new URL(gradleEnterpriseServerUrl, "/s/" + buildScanId));
         } catch (MalformedURLException e) {
-            throw new FetchToolException(e.getMessage(), e);
+            throw new RuntimeException(e.getMessage(), e);
         }
     }
 

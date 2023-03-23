@@ -1,13 +1,11 @@
 package com.gradle.enterprise.api.client;
 
-import com.gradle.enterprise.cli.FetchToolException;
-
 import java.util.Optional;
 
 /**
  * Exception thrown when a request to the Gradle Enterprise API fails.
  */
-public class FailedRequestException extends FetchToolException {
+public class FailedRequestException extends ApiClientException {
 
     private final int httpStatusCode;
 

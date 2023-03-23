@@ -1,7 +1,6 @@
 package com.gradle.enterprise.network;
 
 import com.gradle.enterprise.cli.ConsoleLogger;
-import com.gradle.enterprise.cli.FetchToolException;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -56,7 +55,7 @@ public class NetworkSettingsConfigurator {
         }
     }
 
-    public static class FailedToLoadNetworkSettingsException extends FetchToolException {
+    public static class FailedToLoadNetworkSettingsException extends RuntimeException {
         public FailedToLoadNetworkSettingsException(Path networkSettingsFile, Throwable e) {
             super(String.format("Failed to load network settings from %s:", networkSettingsFile.toAbsolutePath()), e);
         }
