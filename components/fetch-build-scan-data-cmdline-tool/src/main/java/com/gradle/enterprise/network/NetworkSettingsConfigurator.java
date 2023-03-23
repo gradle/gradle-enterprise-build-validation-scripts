@@ -57,7 +57,7 @@ public class NetworkSettingsConfigurator {
 
     public static class FailedToLoadNetworkSettingsException extends RuntimeException {
         public FailedToLoadNetworkSettingsException(Path networkSettingsFile, Throwable e) {
-            super(String.format("Failed to load network settings from %s:", networkSettingsFile.toAbsolutePath()), e);
+            super(String.format("Failed to load network settings from %s.", networkSettingsFile.toAbsolutePath()), e);
         }
     }
 }
