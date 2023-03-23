@@ -1,6 +1,8 @@
 import org.gradle.util.GradleVersion
 import java.nio.charset.StandardCharsets
 
+import static java.lang.Boolean.parseBoolean
+
 // note that there is no mechanism to share code between the initscript{} block and the main script, so some logic is duplicated
 
 // conditionally apply the GE / Build Scan plugin to the classpath so it can be applied to the build further down in this script
@@ -73,7 +75,7 @@ def getInputParam = { String name ->
 // the following local variables do not change between the build invocations of the same experiment run
 // thus, reading their values in way that the configuration cache does not track them is acceptable
 def geUrl = getInputParam('com.gradle.enterprise.build-validation.gradle-enterprise.url')
-def geAllowUntrustedServer = Boolean.parseBoolean(getInputParam('com.gradle.enterprise.build-validation.gradle-enterprise.allow-untrusted-server'))
+def geAllowUntrustedServer = getInputParam('com.gradle.enterprise.build-validation.gradle-enterprise.allow-untrusted-server')
 def gePluginVersion = getInputParam('com.gradle.enterprise.build-validation.gradle-enterprise.plugin.version')
 def ccudPluginVersion = getInputParam('com.gradle.enterprise.build-validation.ccud.plugin.version')
 
@@ -81,7 +83,7 @@ def expDir = getInputParam('com.gradle.enterprise.build-validation.expDir')
 def expId = getInputParam('com.gradle.enterprise.build-validation.expId')
 def runId = getInputParam('com.gradle.enterprise.build-validation.runId')
 def scriptsVersion = getInputParam('com.gradle.enterprise.build-validation.scriptsVersion')
-def omitServerUrlValidation = Boolean.parseBoolean(getInputParam('com.gradle.enterprise.build-validation.omitServerUrlValidation'))
+def omitServerUrlValidation = parseBoolean(getInputParam('com.gradle.enterprise.build-validation.omitServerUrlValidation'))
 
 def atLeastGradle4 = GradleVersion.current() >= GradleVersion.version('4.0')
 
@@ -171,7 +173,7 @@ if (GradleVersion.current() < GradleVersion.version('6.0')) {
                     logger.quiet("Connection to Gradle Enterprise: $geUrl, allowUntrustedServer: $geAllowUntrustedServer")
                     pluginManager.apply(initscript.classLoader.loadClass(BUILD_SCAN_PLUGIN_CLASS))
                     if (geUrl) buildScan.server = geUrl
-                    if (geAllowUntrustedServer) buildScan.allowUntrustedServer = geAllowUntrustedServer
+                    if (geAllowUntrustedServer) buildScan.allowUntrustedServer = parseBoolean(geAllowUntrustedServer)
                 }
             } else {
                 if (!scanPluginComponent) {
@@ -201,7 +203,7 @@ if (GradleVersion.current() < GradleVersion.version('6.0')) {
         pluginManager.withPlugin(BUILD_SCAN_PLUGIN_ID) {
             afterEvaluate {
                 if (geUrl) buildScan.server = geUrl
-                if (geAllowUntrustedServer) buildScan.allowUntrustedServer = geAllowUntrustedServer
+                if (geAllowUntrustedServer) buildScan.allowUntrustedServer = parseBoolean(geAllowUntrustedServer)
 
                 if (!buildScan.server && !omitServerUrlValidation) {
                     logErrorMissingGradleEnterpriseServerURL()
@@ -211,8 +213,8 @@ if (GradleVersion.current() < GradleVersion.version('6.0')) {
                 }
 
                 registerBuildScanActions(buildScan)
-                addBuildScanCustomData(buildScan)
                 configureBuildScanPublishing(buildScan)
+                addBuildScanCustomData(buildScan)
             }
         }
     }
@@ -225,7 +227,7 @@ if (GradleVersion.current() < GradleVersion.version('6.0')) {
                 settings.pluginManager.apply(initscript.classLoader.loadClass(GRADLE_ENTERPRISE_PLUGIN_CLASS))
                 extensionsWithPublicType(settings, GRADLE_ENTERPRISE_EXTENSION_CLASS).collect { settings[it.name] }.each { ext ->
                     if (geUrl) ext.server = geUrl
-                    if (geAllowUntrustedServer) ext.allowUntrustedServer = geAllowUntrustedServer
+                    if (geAllowUntrustedServer) ext.allowUntrustedServer = parseBoolean(geAllowUntrustedServer)
                 }
             }
         } else {
@@ -250,7 +252,7 @@ if (GradleVersion.current() < GradleVersion.version('6.0')) {
 
         extensionsWithPublicType(settings, GRADLE_ENTERPRISE_EXTENSION_CLASS).collect { settings[it.name] }.each { ext ->
             if (geUrl) ext.server = geUrl
-            if (geAllowUntrustedServer) ext.allowUntrustedServer = geAllowUntrustedServer
+            if (geAllowUntrustedServer) ext.allowUntrustedServer = parseBoolean(geAllowUntrustedServer)
 
             if (!ext.server && !omitServerUrlValidation) {
                 logErrorMissingGradleEnterpriseServerURL()
@@ -260,8 +262,8 @@ if (GradleVersion.current() < GradleVersion.version('6.0')) {
             }
 
             registerBuildScanActions(ext.buildScan)
-            addBuildScanCustomData(ext.buildScan)
             configureBuildScanPublishing(ext.buildScan)
+            addBuildScanCustomData(ext.buildScan)
         }
     }
 }

@@ -46,9 +46,13 @@ invoke_maven() {
     done
   fi
 
-  if [ "$build_scan_publishing_mode" == "on" ]; then
-    args+=("-Dscan")
-  else
+  if [ -n "${ge_server}" ]; then
+    args+=("-Dgradle.enterprise.url=${ge_server}")
+    args+=("-Dgradle.enterprise.allowUntrustedServer=false")
+  fi
+
+  if [[ "${build_scan_publishing_mode}" == "off" ]]; then
+    args+=("-Dcom.gradle.enterprise.build-validation.omitServerUrlValidation=true")
     args+=("-Dscan.dump")
   fi
 
@@ -62,10 +66,6 @@ invoke_maven() {
     -Dgradle.scan.captureGoalInputFiles=true
   )
 
-  if [ -n "${ge_server}" ]; then
-    args+=("-Dgradle.enterprise.url=${ge_server}")
-  fi
-
   # https://stackoverflow.com/a/31485948
   while IFS= read -r -d ''; do
     local extra_arg="$REPLY"
@@ -76,8 +76,11 @@ invoke_maven() {
 
   args+=("$@")
 
+  rm -f "${EXP_DIR}/errors.txt"
+
   debug "Current directory: $(pwd)"
   debug "${mvn}" "${args[@]}"
+
   if ${mvn} "${args[@]}"; then
     build_outcomes+=("SUCCESSFUL")
   else
@@ -87,12 +90,12 @@ invoke_maven() {
   if [ -f "${EXP_DIR}/errors.txt" ]; then
       print_bl
       die "ERROR: Experiment aborted due to a non-recoverable failure: $(cat "${EXP_DIR}/errors.txt")"
-    fi
+  fi
 
-    if [[ "${build_scan_publishing_mode}" == "on" ]] && is_build_scan_metadata_missing "$run_num"; then
+  if [[ "${build_scan_publishing_mode}" == "on" ]] && is_build_scan_metadata_missing "$run_num"; then
       print_bl
       die "ERROR: Experiment aborted due to a non-recoverable failure: No Build Scan was published."
-    fi
+  fi
 
   # defined in git.sh
   read_git_metadata_from_current_repo
