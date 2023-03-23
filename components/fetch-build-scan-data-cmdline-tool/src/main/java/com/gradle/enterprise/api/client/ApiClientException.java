@@ -1,6 +1,6 @@
 package com.gradle.enterprise.api.client;
 
-public abstract class ApiClientException extends RuntimeException {
+public class ApiClientException extends RuntimeException {
 
     public ApiClientException(String message) {
         super(message);
