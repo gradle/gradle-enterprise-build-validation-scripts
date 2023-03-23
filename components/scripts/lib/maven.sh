@@ -19,7 +19,7 @@ invoke_maven() {
   local original_dir
   if [ -n "${project_dir}" ]; then
     original_dir="$(pwd)"
-    cd "${project_dir}" > /dev/null 2>&1 || die "ERROR: The subdirectory ${project_dir} (set with --project-dir) does not exist in ${project_name}." "${INVALID_INPUT}"
+    cd "${project_dir}" > /dev/null 2>&1 || die "ERROR: Subdirectory ${project_dir} (set with --project-dir) does not exist in ${project_name}" "${INVALID_INPUT}"
   fi
 
   mvn=$(find_maven_executable)
@@ -84,10 +84,15 @@ invoke_maven() {
     build_outcomes+=("FAILED")
   fi
 
-  if [[ "${build_scan_publishing_mode}" == "on" ]] && is_build_scan_metadata_missing "$run_num"; then
-    print_bl
-    die "ERROR: The experiment cannot continue because a Build Scan was not published."
-  fi
+  if [ -f "${EXP_DIR}/errors.txt" ]; then
+      print_bl
+      die "ERROR: Experiment aborted due to a non-recoverable failure: $(cat "${EXP_DIR}/errors.txt")"
+    fi
+
+    if [[ "${build_scan_publishing_mode}" == "on" ]] && is_build_scan_metadata_missing "$run_num"; then
+      print_bl
+      die "ERROR: Experiment aborted due to a non-recoverable failure: No Build Scan was published."
+    fi
 
   # defined in git.sh
   read_git_metadata_from_current_repo

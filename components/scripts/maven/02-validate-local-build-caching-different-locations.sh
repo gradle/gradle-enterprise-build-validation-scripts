@@ -22,7 +22,7 @@ readonly LIB_DIR="${SCRIPT_DIR}/lib"
 
 # Include and parse the command line arguments
 # shellcheck source=lib/02-cli-parser.sh
-source "${LIB_DIR}/${EXP_NO}-cli-parser.sh" || { echo -e "\033[00;31m\033[1mERROR: Couldn't find '${LIB_DIR}/${EXP_NO}-cli-parser.sh' parsing library.\033[0m"; exit 100; }
+source "${LIB_DIR}/${EXP_NO}-cli-parser.sh" || { echo -e "\033[00;31m\033[1mERROR: Couldn't find '${LIB_DIR}/${EXP_NO}-cli-parser.sh'\033[0m"; exit 100; }
 # shellcheck source=lib/libs.sh
 source "${LIB_DIR}/libs.sh" || { echo -e "\033[00;31m\033[1mERROR: Couldn't find '${LIB_DIR}/libs.sh'\033[0m"; exit 100; }
 

@@ -29,7 +29,7 @@ git_clone_project() {
    debug git clone ${git_options} ${branch} "${git_repo}" "${clone_dir}"
 
    # shellcheck disable=SC2086  # we want $git_options and $branch to expand into multiple arguments
-   git clone ${git_options} ${branch} "${git_repo}" "${clone_dir}" || die "ERROR: Unable to clone from ${git_repo}."
+   git clone ${git_options} ${branch} "${git_repo}" "${clone_dir}" || die "ERROR: Unable to clone git repository ${git_repo}"
    cd "${clone_dir}" || die "Unable to access git repository directory ${clone_dir}."
 }
 
@@ -58,7 +58,7 @@ git_checkout_commit() {
   mkdir -p "${clone_dir}"
   cd "${clone_dir}" || die "ERROR: Unable to access git repository directory ${clone_dir}"
   git init > /dev/null || die "ERROR: Unable to initialize git"
-  git remote add origin "${git_repo}" || die "ERROR: Unable to fetch from ${git_repo}"
+  git remote add origin "${git_repo}" || die "ERROR: Unable to fetch from git repository ${git_repo}"
 
   if [[ "${#git_commit_id}" -lt 40 ]]; then
     # We have a short commit SHA. Unfortunately, we need the full commit history to fetch by a short SHA

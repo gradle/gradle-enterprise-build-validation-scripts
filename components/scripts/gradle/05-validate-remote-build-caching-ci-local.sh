@@ -23,7 +23,7 @@ readonly INIT_SCRIPTS_DIR="${LIB_DIR}/gradle-init-scripts"
 
 # Include and parse the command line arguments
 # shellcheck source=lib/05-cli-parser.sh
-source "${LIB_DIR}/${EXP_NO}-cli-parser.sh" || { echo -e "\033[00;31m\033[1mERROR: Couldn't find '${LIB_DIR}/${EXP_NO}-cli-parser.sh' parsing library.\033[0m"; exit 100; }
+source "${LIB_DIR}/${EXP_NO}-cli-parser.sh" || { echo -e "\033[00;31m\033[1mERROR: Couldn't find '${LIB_DIR}/${EXP_NO}-cli-parser.sh'\033[0m"; exit 100; }
 # shellcheck source=lib/libs.sh
 source "${LIB_DIR}/libs.sh" || { echo -e "\033[00;31m\033[1mERROR: Couldn't find '${LIB_DIR}/libs.sh'\033[0m"; exit 100; }
 
@@ -177,15 +177,15 @@ read_build_params_from_build_scan_data() {
 
 validate_build_config() {
   if [ -z "${git_repo}" ]; then
-    _PRINT_HELP=yes die "ERROR: The Git repository URL was not found in the build scan. Please specify --git-repo and try again." "${INVALID_INPUT}"
+    _PRINT_HELP=yes die "ERROR: Git repository URL was not found in the build scan. Specify missing argument: --git-repo" "${INVALID_INPUT}"
   fi
 
   if [ -z "${tasks}" ]; then
-    _PRINT_HELP=yes die "ERROR: The Gradle tasks were not found in the build scan. Please specify --tasks and try again." "${INVALID_INPUT}"
+    _PRINT_HELP=yes die "ERROR: Gradle tasks were not found in the build scan. Specify missing argument: --tasks" "${INVALID_INPUT}"
   fi
 
   if [ -z "${git_commit_id}" ]; then
-    _PRINT_HELP=yes die "ERROR: The Git commit id was not found in the build scan. Please specify --git-commit-id and try again." "${INVALID_INPUT}"
+    _PRINT_HELP=yes die "ERROR: Git commit id was not found in the build scan. Specify missing argument: --git-commit-id" "${INVALID_INPUT}"
   fi
 
   if [[ "${enable_ge}" == "on" && -z "${ge_server}" ]]; then
