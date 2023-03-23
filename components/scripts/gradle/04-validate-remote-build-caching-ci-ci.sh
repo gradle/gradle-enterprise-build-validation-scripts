@@ -107,9 +107,11 @@ validate_required_args() {
   if [ -z "${_arg_first_build_ci}" ]; then
     _PRINT_HELP=yes die "ERROR: Missing required argument: --first-build-ci" "${INVALID_INPUT}"
   fi
+
   if [ -z "${_arg_second_build_ci}" ]; then
     _PRINT_HELP=yes die "ERROR: Missing required argument: --second-build-ci" "${INVALID_INPUT}"
   fi
+
   build_scan_urls+=("${_arg_first_build_ci}")
   build_scan_urls+=("${_arg_second_build_ci}")
 }
