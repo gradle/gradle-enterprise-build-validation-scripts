@@ -1,3 +1,1 @@
-- [FIX] Experiments may end up publishing to scans.gradle.com if insufficient options are provided
-- [FIX] Using `-e` without `-s` in interactive mode gives poor error message
-- [FIX] Error messages are inconsistent
+- [NEW] TBD
