@@ -52,9 +52,6 @@ main() {
 }
 
 execute() {
-  print_bl
-  validate_required_args
-
   fetch_build_params_from_build_scan
   validate_build_config
 
@@ -73,9 +70,6 @@ execute() {
 }
 
 wizard_execute() {
-  print_bl
-  validate_required_args
-
   print_introduction
 
   print_bl

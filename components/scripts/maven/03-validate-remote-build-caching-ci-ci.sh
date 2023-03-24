@@ -49,9 +49,6 @@ main() {
 }
 
 execute() {
-  print_bl
-  validate_required_args
-
   fetch_build_scans
   make_experiment_dir
 
@@ -60,7 +57,6 @@ execute() {
 }
 
 wizard_execute() {
-  print_bl
   print_introduction
 
   print_bl
@@ -103,16 +99,18 @@ wizard_execute() {
 
 # Overrides config.sh#validate_required_args
 validate_required_args() {
-  if [ -z "${_arg_first_build_ci}" ]; then
-    _PRINT_HELP=yes die "ERROR: Missing required argument: --first-build-ci" "${INVALID_INPUT}"
-  fi
+  if [ "${interactive_mode}" == "off" ]; then
+    if [ -z "${_arg_first_build_ci}" ]; then
+      _PRINT_HELP=yes die "ERROR: Missing required argument: --first-build-ci" "${INVALID_INPUT}"
+    fi
 
-  if [ -z "${_arg_second_build_ci}" ]; then
-    _PRINT_HELP=yes die "ERROR: Missing required argument: --second-build-ci" "${INVALID_INPUT}"
-  fi
+    if [ -z "${_arg_second_build_ci}" ]; then
+      _PRINT_HELP=yes die "ERROR: Missing required argument: --second-build-ci" "${INVALID_INPUT}"
+    fi
 
-  build_scan_urls+=("${_arg_first_build_ci}")
-  build_scan_urls+=("${_arg_second_build_ci}")
+    build_scan_urls+=("${_arg_first_build_ci}")
+    build_scan_urls+=("${_arg_second_build_ci}")
+  fi
 }
 
 fetch_build_scans() {

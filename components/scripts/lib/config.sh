@@ -73,8 +73,13 @@ process_arguments() {
   if [ -n "${_arg_debug+x}" ]; then
     debug_mode="${_arg_debug}"
   fi
+
+  validate_required_args
 }
 
+# This function performs common validation relevant for most experiments.
+# Some experiments may have a different set of required arguments, in which case
+# this function should be overridden for that experiment.
 validate_required_args() {
   # In non-interactive mode, these arguments are required.
   # In interactive mode, the user will be prompted to enter any missing config.
