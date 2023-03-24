@@ -1,14 +1,14 @@
 #!/usr/bin/env bash
 
-process_arguments() {
+process_args() {
   parse_commandline "$@"
-  map_common_script_arguments
-  map_additional_script_arguments
+  map_common_script_args
+  map_additional_script_args
   print_bl
   validate_required_args
 }
 
-map_common_script_arguments() {
+map_common_script_args() {
   if [ -n "${_arg_git_repo+x}" ]; then
     git_repo="${_arg_git_repo}"
     project_name="$(basename -s .git "${git_repo}")"
@@ -78,7 +78,7 @@ map_common_script_arguments() {
 
 # Some experiments may require additional arguments, in which case this function
 # should be overridden for that experiment.
-map_additional_script_arguments() {
+map_additional_script_args() {
   true
 }
 

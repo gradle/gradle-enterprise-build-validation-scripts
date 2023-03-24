@@ -380,5 +380,5 @@ EOF
 }
 
 
-process_arguments "$@"
+process_args "$@"
 main

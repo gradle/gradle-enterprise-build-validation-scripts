@@ -318,5 +318,5 @@ EOF
   print_interactive_text "${text}"
 }
 
-process_arguments "$@"
+process_args "$@"
 main

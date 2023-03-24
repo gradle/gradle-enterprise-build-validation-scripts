@@ -341,5 +341,5 @@ EOF
   echo -n "${text}"
 }
 
-process_arguments "$@"
+process_args "$@"
 main

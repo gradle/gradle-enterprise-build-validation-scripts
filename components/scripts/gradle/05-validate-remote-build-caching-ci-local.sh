@@ -133,7 +133,7 @@ wizard_execute() {
   explain_and_print_summary
 }
 
-map_additional_script_arguments() {
+map_additional_script_args() {
   ci_build_scan_url="${_arg_first_build_ci}"
   remote_build_cache_url="${_arg_remote_build_cache_url}"
   mapping_file="${_arg_mapping_file}"
@@ -512,5 +512,5 @@ EOF
   print_interactive_text "${text}"
 }
 
-process_arguments "$@"
+process_args "$@"
 main
