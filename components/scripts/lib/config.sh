@@ -74,6 +74,7 @@ process_arguments() {
     debug_mode="${_arg_debug}"
   fi
 
+  print_bl
   validate_required_args
 }
 
