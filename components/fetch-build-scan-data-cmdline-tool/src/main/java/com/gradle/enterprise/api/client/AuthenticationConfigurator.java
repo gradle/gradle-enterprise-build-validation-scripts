@@ -20,7 +20,7 @@ public class AuthenticationConfigurator {
         public static final String GRADLE_USER_HOME = "GRADLE_USER_HOME";
     }
 
-    private static final String MALFORMED_ENVIRONMENT_VARIABLE_MESSAGE = "Environment variable " + EnvVars.ACCESS_KEY
+    private static final String MALFORMED_ENVIRONMENT_VARIABLE_ERROR = "Environment variable " + EnvVars.ACCESS_KEY
             + " is malformed (expected format: 'server-host=access-key' or 'server-host1=access-key1;server-host2=access-key2')";
 
     public static void configureAuth(URL url, ApiClient client, ConsoleLogger logger) {
@@ -101,18 +101,18 @@ public class AuthenticationConfigurator {
 
         String[] entries = value.split(";");
         for(String entry: entries) {
-            if(entry == null) throw new RuntimeException(MALFORMED_ENVIRONMENT_VARIABLE_MESSAGE);
+            if(entry == null) throw new RuntimeException(MALFORMED_ENVIRONMENT_VARIABLE_ERROR);
 
             String[] parts = entry.split("=", 2);
-            if (parts.length < 2) throw new RuntimeException(MALFORMED_ENVIRONMENT_VARIABLE_MESSAGE);
+            if (parts.length < 2) throw new RuntimeException(MALFORMED_ENVIRONMENT_VARIABLE_ERROR);
 
             String joinedServers = parts[0].trim();
             String accessKey = parts[1].trim();
 
-            if(joinedServers.isEmpty() || Strings.isNullOrEmpty(accessKey)) throw new RuntimeException(MALFORMED_ENVIRONMENT_VARIABLE_MESSAGE);
+            if(joinedServers.isEmpty() || Strings.isNullOrEmpty(accessKey)) throw new RuntimeException(MALFORMED_ENVIRONMENT_VARIABLE_ERROR);
             for(String server: joinedServers.split(",")) {
                 server = server.trim();
-                if (server.isEmpty()) throw new RuntimeException(MALFORMED_ENVIRONMENT_VARIABLE_MESSAGE);
+                if (server.isEmpty()) throw new RuntimeException(MALFORMED_ENVIRONMENT_VARIABLE_ERROR);
                 accessKeys.put(server, accessKey);
             }
         }
