@@ -74,8 +74,16 @@ process_arguments() {
     debug_mode="${_arg_debug}"
   fi
 
+  process_additional_script_arguments
+
   print_bl
   validate_required_args
+}
+
+# Some experiments may require additional arguments to be processed, in which
+# case this function should be overridden for that experiment.
+process_additional_script_arguments() {
+  true
 }
 
 # This function performs common validation relevant for most experiments.
