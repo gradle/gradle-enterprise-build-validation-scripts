@@ -54,7 +54,7 @@ main() {
 
 execute() {
   print_bl
-  validate_required_config
+  validate_required_args
 
   make_experiment_dir
   git_checkout_project "build_${project_name}"
@@ -76,7 +76,7 @@ execute() {
 
 wizard_execute() {
   print_bl
-  validate_required_config
+  validate_required_args
 
   print_introduction
 

@@ -101,6 +101,7 @@ wizard_execute() {
   explain_and_print_summary
 }
 
+# Overrides config.sh#validate_required_args
 validate_required_args() {
   if [ -z "${_arg_first_build_ci}" ]; then
     _PRINT_HELP=yes die "ERROR: Missing required argument: --first-build-ci" "${INVALID_INPUT}"

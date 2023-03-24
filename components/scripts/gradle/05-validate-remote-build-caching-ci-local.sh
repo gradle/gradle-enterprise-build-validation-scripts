@@ -145,6 +145,7 @@ process_script_arguments() {
   mapping_file="${_arg_mapping_file}"
 }
 
+# Overrides config.sh#validate_required_args
 validate_required_args() {
   if [ "${interactive_mode}" == "off" ]; then
     if [ -z "${ci_build_scan_url}" ]; then

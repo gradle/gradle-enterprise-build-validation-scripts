@@ -53,7 +53,7 @@ main() {
 
 execute() {
   print_bl
-  validate_required_config
+  validate_required_args
 
   make_experiment_dir
   make_local_cache_dir
@@ -76,7 +76,7 @@ execute() {
 
 wizard_execute() {
   print_bl
-  validate_required_config
+  validate_required_args
 
   print_introduction
 

@@ -75,9 +75,9 @@ process_arguments() {
   fi
 }
 
-validate_required_config() {
-  # In non-interactive mode, these properties are required.
-  # In interactive mode, the user will be prompted to enter any missing details.
+validate_required_args() {
+  # In non-interactive mode, these arguments are required.
+  # In interactive mode, the user will be prompted to enter any missing config.
   if [ "${interactive_mode}" == "off" ]; then
     if [ -z "${git_repo}" ]; then
       _PRINT_HELP=yes die "ERROR: Missing required argument: --git-repo" "${INVALID_INPUT}"
