@@ -53,9 +53,6 @@ main() {
 }
 
 execute() {
-  print_bl
-  validate_required_config
-
   make_experiment_dir
   make_local_cache_dir
   git_checkout_project "first-build_${project_name}"
@@ -77,7 +74,6 @@ execute() {
 }
 
 wizard_execute() {
-  print_bl
   print_introduction
 
   if [[ "${build_scan_publishing_mode}" == "on" ]]; then
@@ -384,5 +380,5 @@ EOF
 }
 
 
-process_arguments "$@"
+process_args "$@"
 main
