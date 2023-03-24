@@ -76,6 +76,8 @@ execute() {
 
 wizard_execute() {
   print_bl
+  validate_required_config
+
   print_introduction
 
   if [[ "${build_scan_publishing_mode}" == "on" ]]; then

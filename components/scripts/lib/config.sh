@@ -76,15 +76,19 @@ process_arguments() {
 }
 
 validate_required_config() {
-  if [ -z "${git_repo}" ]; then
-    _PRINT_HELP=yes die "ERROR: Missing required argument: --git-repo" "${INVALID_INPUT}"
-  fi
+  # In non-interactive mode, these properties are required.
+  # In interactive mode, the user will be prompted to enter any missing details.
+  if [ "${interactive_mode}" == "off" ]; then
+    if [ -z "${git_repo}" ]; then
+      _PRINT_HELP=yes die "ERROR: Missing required argument: --git-repo" "${INVALID_INPUT}"
+    fi
 
-  if [ -z "${tasks}" ]; then
-    if [[ "${BUILD_TOOL}" == "Maven" ]]; then
-      _PRINT_HELP=yes die "ERROR: Missing required argument: --goals" "${INVALID_INPUT}"
-    else
-      _PRINT_HELP=yes die "ERROR: Missing required argument: --tasks" "${INVALID_INPUT}"
+    if [ -z "${tasks}" ]; then
+      if [[ "${BUILD_TOOL}" == "Maven" ]]; then
+        _PRINT_HELP=yes die "ERROR: Missing required argument: --goals" "${INVALID_INPUT}"
+      else
+        _PRINT_HELP=yes die "ERROR: Missing required argument: --tasks" "${INVALID_INPUT}"
+      fi
     fi
   fi
 
