@@ -3,7 +3,7 @@ package com.gradle.enterprise.api.client;
 import java.net.URL;
 import java.util.Optional;
 
-public class FailedRequestException extends ApiClientException {
+public class FailedRequestException extends RuntimeException {
 
     private final int httpStatusCode;
 
