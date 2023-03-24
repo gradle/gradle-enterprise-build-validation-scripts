@@ -75,6 +75,8 @@ execute() {
 
 wizard_execute() {
   print_bl
+  validate_required_args
+
   print_introduction
 
   print_bl
@@ -144,8 +146,14 @@ process_script_arguments() {
 }
 
 validate_required_args() {
-  if [ -z "${ci_build_scan_url}" ]; then
-    _PRINT_HELP=yes die "ERROR: Missing required argument: --first-build-ci" "${INVALID_INPUT}"
+  if [ "${interactive_mode}" == "off" ]; then
+    if [ -z "${ci_build_scan_url}" ]; then
+      _PRINT_HELP=yes die "ERROR: Missing required argument: --first-build-ci" "${INVALID_INPUT}"
+    fi
+  fi
+
+  if [[ "${enable_ge}" == "on" && -z "${ge_server}" ]]; then
+    _PRINT_HELP=yes die "ERROR: Missing required argument when enabling Gradle Enterprise on a project not already connected: --gradle-enterprise-server" "${INVALID_INPUT}"
   fi
 }
 
@@ -186,10 +194,6 @@ validate_build_config() {
 
   if [ -z "${git_commit_id}" ]; then
     _PRINT_HELP=yes die "ERROR: Git commit id was not found in the build scan. Specify missing argument: --git-commit-id" "${INVALID_INPUT}"
-  fi
-
-  if [[ "${enable_ge}" == "on" && -z "${ge_server}" ]]; then
-    _PRINT_HELP=yes die "ERROR: Missing required argument when enabling Gradle Enterprise on a project not already connected: --gradle-enterprise-server" "${INVALID_INPUT}"
   fi
 }
 
