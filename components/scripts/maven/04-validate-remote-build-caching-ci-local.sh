@@ -131,7 +131,7 @@ wizard_execute() {
   explain_and_print_summary
 }
 
-process_additional_script_arguments() {
+map_additional_script_arguments() {
   ci_build_scan_url="${_arg_first_build_ci}"
   remote_build_cache_url="${_arg_remote_build_cache_url}"
   mapping_file="${_arg_mapping_file}"
@@ -146,7 +146,7 @@ validate_required_args() {
   fi
 
   if [[ "${enable_ge}" == "on" && -z "${ge_server}" ]]; then
-      _PRINT_HELP=yes die "ERROR: Missing required argument when enabling Gradle Enterprise on a project not already connected: --gradle-enterprise-server" "${INVALID_INPUT}"
+    _PRINT_HELP=yes die "ERROR: Missing required argument when enabling Gradle Enterprise on a project not already connected: --gradle-enterprise-server" "${INVALID_INPUT}"
   fi
 }
 

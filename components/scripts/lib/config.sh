@@ -1,9 +1,14 @@
 #!/usr/bin/env bash
 
-# shellcheck disable=SC2034 # not all of the variables set in this function are used by all scripts
 process_arguments() {
   parse_commandline "$@"
+  map_common_script_arguments
+  map_additional_script_arguments
+  print_bl
+  validate_required_args
+}
 
+map_common_script_arguments() {
   if [ -n "${_arg_git_repo+x}" ]; then
     git_repo="${_arg_git_repo}"
     project_name="$(basename -s .git "${git_repo}")"
@@ -25,13 +30,11 @@ process_arguments() {
     project_dir="${_arg_project_dir}"
   fi
 
-  # shellcheck disable=SC2154
   if [ -n "${_arg_tasks+x}" ]; then
     tasks="${_arg_tasks}"
     remove_clean_from_tasks
   fi
 
-  # shellcheck disable=SC2154
   if [ -n "${_arg_goals+x}" ]; then
     tasks="${_arg_goals}"
     remove_clean_from_tasks
@@ -41,7 +44,6 @@ process_arguments() {
     extra_args="${_arg_args}"
   fi
 
-  #shellcheck disable=SC2154
   if [ -n "${_arg_mapping_file+x}" ]; then
     mapping_file="${_arg_mapping_file}"
   fi
@@ -50,7 +52,6 @@ process_arguments() {
     ge_server="${_arg_gradle_enterprise_server}"
   fi
 
-  #shellcheck disable=SC2154
   if [ -n "${_arg_enable_gradle_enterprise+x}" ]; then
     enable_ge="${_arg_enable_gradle_enterprise}"
   fi
@@ -73,16 +74,11 @@ process_arguments() {
   if [ -n "${_arg_debug+x}" ]; then
     debug_mode="${_arg_debug}"
   fi
-
-  process_additional_script_arguments
-
-  print_bl
-  validate_required_args
 }
 
-# Some experiments may require additional arguments to be processed, in which
-# case this function should be overridden for that experiment.
-process_additional_script_arguments() {
+# Some experiments may require additional arguments, in which case this function
+# should be overridden for that experiment.
+map_additional_script_arguments() {
   true
 }
 
