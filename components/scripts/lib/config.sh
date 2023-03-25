@@ -4,6 +4,7 @@ process_args() {
   parse_commandline "$@"
   map_common_script_args
   map_additional_script_args
+
   print_bl
   validate_required_args
 }
@@ -79,7 +80,7 @@ map_common_script_args() {
 # Some experiments may require additional arguments, in which case this function
 # should be overridden for that experiment.
 map_additional_script_args() {
-  true
+  true # why true?
 }
 
 # This function performs common validation relevant for most experiments.
