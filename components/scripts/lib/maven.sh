@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-readonly CAPTURE_BUILD_SCAN_URL_JAR="${LIB_DIR}/maven-libs/capture-build-scan-url-maven-extension-${SCRIPT_VERSION}.jar"
+readonly CONFIGURE_GRADLE_ENTERPRISE_JAR="${LIB_DIR}/maven-libs/configure-gradle-enterprise-maven-extension-${SCRIPT_VERSION}.jar"
 
 find_maven_executable() {
   if [ -f "./mvnw" ]; then
@@ -28,14 +28,14 @@ invoke_maven() {
   fi
 
   local extension_classpath
-  extension_classpath="${CAPTURE_BUILD_SCAN_URL_JAR}"
+  extension_classpath="${CONFIGURE_GRADLE_ENTERPRISE_JAR}"
 
   if [ "$enable_ge" == "on" ]; then
     # Reset the extension classpath and add all of the jars in the lib/maven dir
     # The lib/maven dir includes:
     #  - the Gradle Enterprise Maven extension
     #  - the Common Custom User Data Maven extension
-    #  - the capture-publish-build-scan Maven extension
+    #  - the configure-gradle-enterprise Maven extension
     extension_classpath=""
     for jar in "${LIB_DIR}"/maven-libs/*; do
       if [ "${extension_classpath}" == "" ]; then
