@@ -80,7 +80,7 @@ map_common_script_args() {
 # Some experiments may require additional arguments, in which case this function
 # should be overridden for that experiment.
 map_additional_script_args() {
-  true # why true?
+  true
 }
 
 # This function performs common validation relevant for most experiments.
