@@ -282,8 +282,10 @@ print_executed_non_cacheable_tasks() {
 
 print_serialization_factor() {
   local value
-  if [[ -n "${serialization_factors[0]}" ]]; then
-    value="$(to_two_decimal_places "${serialization_factors[0]}")x"
+  if [[ -n "${serialization_factors[0]}" && -n "${serialization_factors[1]}" ]]; then
+    printf -v value "%sx first build, %sx second build" \
+      "$(to_two_decimal_places "${serialization_factors[0]}")" \
+      "$(to_two_decimal_places "${serialization_factors[1]}")"
   fi
   summary_row "Serialization factor:" "${value}"
 }
