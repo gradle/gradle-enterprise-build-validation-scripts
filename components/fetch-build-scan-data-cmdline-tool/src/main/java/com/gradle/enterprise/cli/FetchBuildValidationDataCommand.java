@@ -70,7 +70,7 @@ public class FetchBuildValidationDataCommand implements Callable<Integer> {
         logFinishedFetchingAllBuildScanData();
         logFetchResults(buildValidationData, customValueKeys);
 
-        printHeader();
+        printBuildValidationHeader();
         printBuildValidationData(buildValidationData);
 
         return ExitCode.OK;
@@ -174,8 +174,8 @@ public class FetchBuildValidationDataCommand implements Callable<Integer> {
         );
     }
 
-    public void printHeader() {
-        List<String> labels = Fields.ordered().map(f -> f.label).collect(Collectors.toList());
+    public void printBuildValidationHeader() {
+        List<String> labels = BuildValidationFields.ordered().map(f -> f.label).collect(Collectors.toList());
         System.out.println(String.join(",", labels));
     }
 
@@ -184,7 +184,7 @@ public class FetchBuildValidationDataCommand implements Callable<Integer> {
     }
 
     private void printBuildValidationData(BuildValidationData buildValidationData) {
-        List<String> values = Fields.ordered().map(f -> f.value.apply(buildValidationData)).collect(Collectors.toList());
+        List<String> values = BuildValidationFields.ordered().map(f -> f.value.apply(buildValidationData)).collect(Collectors.toList());
         System.out.println(String.join(",", values));
     }
 

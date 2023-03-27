@@ -9,7 +9,7 @@ import java.util.Arrays;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
-public enum Fields {
+public enum BuildValidationFields {
     // The order the enums are defined controls the order the fields are printed in the CSV
     RUN_NUM("Run Num", d -> toStringSafely(d.runNum())),
     ROOT_PROJECT_NAME("Root Project Name", BuildValidationData::getRootProjectName),
@@ -40,13 +40,13 @@ public enum Fields {
     public final String label;
     public final Function<BuildValidationData, String> value;
 
-    Fields(String label, Function<BuildValidationData, String> value) {
+    BuildValidationFields(String label, Function<BuildValidationData, String> value) {
         this.label = label;
         this.value = value;
     }
 
-    public static Stream<Fields> ordered() {
-        return Arrays.stream(Fields.values());
+    public static Stream<BuildValidationFields> ordered() {
+        return Arrays.stream(BuildValidationFields.values());
     }
 
     private static String toStringSafely(Object object) {
