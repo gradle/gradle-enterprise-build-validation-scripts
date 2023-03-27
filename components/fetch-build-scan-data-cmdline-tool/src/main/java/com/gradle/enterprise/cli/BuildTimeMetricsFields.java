@@ -2,7 +2,9 @@ package com.gradle.enterprise.cli;
 
 import com.gradle.enterprise.model.BuildValidationData;
 
+import java.util.Arrays;
 import java.util.function.Function;
+import java.util.stream.Stream;
 
 public enum BuildTimeMetricsFields {
     // The order the enums are defined controls the order the fields are printed in the CSV
@@ -19,5 +21,9 @@ public enum BuildTimeMetricsFields {
     BuildTimeMetricsFields(String label, Function<BuildValidationData, String> value) {
         this.label = label;
         this.value = value;
+    }
+
+    public static Stream<BuildTimeMetricsFields> ordered() {
+        return Arrays.stream(BuildTimeMetricsFields.values());
     }
 }

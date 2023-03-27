@@ -40,23 +40,17 @@ parse_build_scan_csv() {
   # This isn't the most robust way to read a CSV,
   # but we control the CSV so we don't have to worry about various CSV edge cases
 
-  local header_row_read run_num
-  local build_scan_csv="$1"
+  local header_row_read run_num build_scan_csv
   local build_cache_metrics_only="$2"
+
+  build_scan_csv="$(echo "$1" | tail -n 3 | head -n 2)"
 
   debug "Raw build scan data"
   debug "---------------------------"
   debug "${build_scan_csv}"
   debug ""
 
-  header_row_read=false
-
   while IFS=, read -r run_num field_1 field_2 field_3 field_4 field_5 field_6 field_7 field_8 field_9 field_10 field_11 field_12 field_13 field_14 field_15 field_16 field_17 field_18 field_19 field_20 field_21; do
-    if [[ "$header_row_read" == "false" ]]; then
-      header_row_read=true
-      continue;
-    fi
-
     debug "Build Scan $field_4 is for build $run_num"
     project_names[run_num]="$field_1"
     build_scan_ids[run_num]="$field_4"

@@ -73,6 +73,8 @@ public class FetchBuildValidationDataCommand implements Callable<Integer> {
         printBuildValidationHeader();
         printBuildValidationData(buildValidationData);
 
+        printBuildTimeMetricsHeader();
+
         return ExitCode.OK;
     }
 
@@ -186,6 +188,11 @@ public class FetchBuildValidationDataCommand implements Callable<Integer> {
     private void printBuildValidationData(BuildValidationData buildValidationData) {
         List<String> values = BuildValidationFields.ordered().map(f -> f.value.apply(buildValidationData)).collect(Collectors.toList());
         System.out.println(String.join(",", values));
+    }
+
+    private void printBuildTimeMetricsHeader() {
+        List<String> labels = BuildTimeMetricsFields.ordered().map(f -> f.label).collect(Collectors.toList());
+        System.out.println(String.join(",", labels));
     }
 
     private static String toOrdinal(int i) {
