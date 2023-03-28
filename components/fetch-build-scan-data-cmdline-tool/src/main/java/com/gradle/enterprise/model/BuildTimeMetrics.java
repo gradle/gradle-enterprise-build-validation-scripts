@@ -25,25 +25,20 @@ public class BuildTimeMetrics {
     }
 
     public static BuildTimeMetrics from(BuildValidationData firstBuild, BuildValidationData secondBuild) {
-        return from(
-                firstBuild.getBuildTime(),
-                secondBuild.getBuildTime(),
-                secondBuild.getExecutedCacheableSummary(),
-                secondBuild.getSerializationFactor());
-    }
+        final Duration buildTimeFirstBuild = firstBuild.getBuildTime();
+        final Duration buildTimeSecondBuild = secondBuild.getBuildTime();
+        final TaskExecutionSummary executedCacheableTaskSummarySecondBuild = secondBuild.getExecutedCacheableSummary();
+        final BigDecimal serializationFactorSecondBuild = secondBuild.getSerializationFactor();
 
-    private static BuildTimeMetrics from(
-            Duration firstBuildTime,
-            Duration secondBuildTime,
-            TaskExecutionSummary secondBuildExecutedCacheableSummary,
-            BigDecimal secondBuildSerializationFactor) {
-        if (firstBuildTime == null || secondBuildTime == null || secondBuildExecutedCacheableSummary == null || secondBuildSerializationFactor == null) {
+        if (buildTimeFirstBuild == null || buildTimeSecondBuild == null || executedCacheableTaskSummarySecondBuild == null || serializationFactorSecondBuild == null) {
             return null;
         }
-        final Duration instantSavings = firstBuildTime.minus(secondBuildTime);
-        final Duration pendingSavings = calculatePendingSavings(secondBuildExecutedCacheableSummary, secondBuildSerializationFactor);
-        final Duration pendingSavingsBuildTime = firstBuildTime.minus(pendingSavings);
-        return new BuildTimeMetrics(firstBuildTime, instantSavings, secondBuildTime, pendingSavings, pendingSavingsBuildTime);
+
+        final Duration instantSavings = buildTimeFirstBuild.minus(buildTimeSecondBuild);
+        final Duration pendingSavings = calculatePendingSavings(executedCacheableTaskSummarySecondBuild, serializationFactorSecondBuild);
+        final Duration pendingSavingsBuildTime = buildTimeFirstBuild.minus(pendingSavings);
+
+        return new BuildTimeMetrics(buildTimeFirstBuild, instantSavings, buildTimeSecondBuild, pendingSavings, pendingSavingsBuildTime);
     }
 
     /**
