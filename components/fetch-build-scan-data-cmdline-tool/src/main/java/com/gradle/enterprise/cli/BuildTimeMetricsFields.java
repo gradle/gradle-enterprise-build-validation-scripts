@@ -10,11 +10,11 @@ import java.util.stream.Stream;
 
 public enum BuildTimeMetricsFields {
     // The order the enums are defined controls the order the fields are printed in the CSV
-    INITIAL_BUILD_TIME("Initial Build Time", d -> formatDuration(d.getInitialBuildTime())),
-    INSTANT_SAVINGS("Instant Savings", d -> formatDuration(d.getInstantSavings())),
-    INSTANT_SAVINGS_BUILD_TIME("Instant Savings Build Time", d -> formatDuration(d.getInstantSavingsBuildTime())),
-    PENDING_SAVINGS("Pending Savings", d -> formatDuration(d.getPendingSavings())),
-    PENDING_SAVINGS_BUILD_TIME("Pending Savings Build Time", d -> formatDuration(d.getPendingSavingsBuildTime())),
+    INITIAL_BUILD_TIME("Initial Build Time", d -> formatDuration(d.initialBuildTime)),
+    INSTANT_SAVINGS("Instant Savings", d -> formatDuration(d.instantSavings)),
+    INSTANT_SAVINGS_BUILD_TIME("Instant Savings Build Time", d -> formatDuration(d.instantSavingsBuildTime)),
+    PENDING_SAVINGS("Pending Savings", d -> formatDuration(d.pendingSavings)),
+    PENDING_SAVINGS_BUILD_TIME("Pending Savings Build Time", d -> formatDuration(d.pendingSavingsBuildTime)),
     ;
 
     public final String label;
