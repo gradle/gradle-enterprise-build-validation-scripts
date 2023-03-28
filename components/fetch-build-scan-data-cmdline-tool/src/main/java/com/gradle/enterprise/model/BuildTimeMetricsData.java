@@ -25,7 +25,11 @@ public class BuildTimeMetricsData {
     }
 
     public static BuildTimeMetricsData from(BuildValidationData firstBuild, BuildValidationData secondBuild) {
-        return from(firstBuild.getBuildTime(), secondBuild.getBuildTime(), secondBuild.getExecutedCacheableSummary(), secondBuild.getSerializationFactor());
+        return from(
+                firstBuild.getBuildTime(),
+                secondBuild.getBuildTime(),
+                secondBuild.getExecutedCacheableSummary(),
+                secondBuild.getSerializationFactor());
     }
 
     private static BuildTimeMetricsData from(
