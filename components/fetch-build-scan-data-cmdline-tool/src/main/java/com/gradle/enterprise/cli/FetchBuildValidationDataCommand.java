@@ -174,7 +174,7 @@ public class FetchBuildValidationDataCommand implements Callable<Integer> {
         );
     }
 
-    private void printResults(List<BuildValidationData> buildValidationData) {
+    private static void printResults(List<BuildValidationData> buildValidationData) {
         printBuildScanDataHeader();
         printBuildScanData(buildValidationData);
 
@@ -184,26 +184,26 @@ public class FetchBuildValidationDataCommand implements Callable<Integer> {
         }
     }
 
-    public void printBuildScanDataHeader() {
+    public static void printBuildScanDataHeader() {
         List<String> labels = BuildScanDataFields.ordered().map(f -> f.label).collect(Collectors.toList());
         System.out.println(String.join(",", labels));
     }
 
-    private void printBuildScanData(List<BuildValidationData> buildValidationData) {
-        buildValidationData.forEach(this::printBuildScanData);
+    private static void printBuildScanData(List<BuildValidationData> buildValidationData) {
+        buildValidationData.forEach(FetchBuildValidationDataCommand::printBuildScanData);
     }
 
-    private void printBuildScanData(BuildValidationData buildValidationData) {
+    private static void printBuildScanData(BuildValidationData buildValidationData) {
         List<String> values = BuildScanDataFields.ordered().map(f -> f.value.apply(buildValidationData)).collect(Collectors.toList());
         System.out.println(String.join(",", values));
     }
 
-    private void printBuildTimeMetricsHeader() {
+    private static void printBuildTimeMetricsHeader() {
         List<String> labels = BuildTimeMetricsFields.ordered().map(f -> f.label).collect(Collectors.toList());
         System.out.println(String.join(",", labels));
     }
 
-    private void printBuildTimeMetrics(List<BuildValidationData> buildValidationData) {
+    private static void printBuildTimeMetrics(List<BuildValidationData> buildValidationData) {
         final BuildTimeMetrics buildTimeData = BuildTimeMetrics.from(buildValidationData.get(0), buildValidationData.get(1));
         List<String> values;
         if (buildTimeData == null) {
