@@ -71,13 +71,7 @@ public class FetchBuildValidationDataCommand implements Callable<Integer> {
         logFinishedFetchingAllBuildScanData();
         logFetchResults(buildValidationData, customValueKeys);
 
-        printBuildScanDataHeader();
-        printBuildScanData(buildValidationData);
-
-        if (buildScans.size() == 2) {
-            printBuildTimeMetricsHeader();
-            printBuildTimeMetrics(buildValidationData);
-        }
+        printResults(buildValidationData);
 
         return ExitCode.OK;
     }
@@ -178,6 +172,16 @@ public class FetchBuildValidationDataCommand implements Callable<Integer> {
             "%s %s from custom value with name '%s' for %s build",
             found ? "Found": "Did not find", property, customValueKey, toOrdinal(runNum)
         );
+    }
+
+    private void printResults(List<BuildValidationData> buildValidationData) {
+        printBuildScanDataHeader();
+        printBuildScanData(buildValidationData);
+
+        if (buildValidationData.size() == 2) {
+            printBuildTimeMetricsHeader();
+            printBuildTimeMetrics(buildValidationData);
+        }
     }
 
     public void printBuildScanDataHeader() {
