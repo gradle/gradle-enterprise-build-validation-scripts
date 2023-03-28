@@ -1,5 +1,6 @@
 package com.gradle.enterprise.model;
 
+import java.math.BigDecimal;
 import java.time.Duration;
 
 public class BuildTimeMetricsData {
@@ -23,18 +24,22 @@ public class BuildTimeMetricsData {
         this.pendingSavingsBuildTime = pendingSavingsBuildTime;
     }
 
-    public static BuildTimeMetricsData from(BuildValidationData first, BuildValidationData second) {
-        final Duration initialBuildTime = first.getBuildTime();
-        final Duration instantSavings = first.getBuildTime().minus(second.getBuildTime());
-        final Duration instantSavingsBuildTime = second.getBuildTime();
-        final Duration pendingSavings = calculatePendingSavings(second);
-        final Duration pendingSavingsBuildTime = first.getBuildTime().minus(pendingSavings);
-        return new BuildTimeMetricsData(
-                initialBuildTime,
-                instantSavings,
-                instantSavingsBuildTime,
-                pendingSavings,
-                pendingSavingsBuildTime);
+    public static BuildTimeMetricsData from(BuildValidationData firstBuild, BuildValidationData secondBuild) {
+        return from(firstBuild.getBuildTime(), secondBuild.getBuildTime(), secondBuild.getExecutedCacheableSummary(), secondBuild.getSerializationFactor());
+    }
+
+    private static BuildTimeMetricsData from(
+            Duration firstBuildTime,
+            Duration secondBuildTime,
+            TaskExecutionSummary secondBuildExecutedCacheableSummary,
+            BigDecimal secondBuildSerializationFactor) {
+        if (firstBuildTime == null || secondBuildTime == null || secondBuildExecutedCacheableSummary == null || secondBuildSerializationFactor == null) {
+            return null;
+        }
+        final Duration instantSavings = firstBuildTime.minus(secondBuildTime);
+        final Duration pendingSavings = calculatePendingSavings(secondBuildExecutedCacheableSummary, secondBuildSerializationFactor);
+        final Duration pendingSavingsBuildTime = firstBuildTime.minus(pendingSavings);
+        return new BuildTimeMetricsData(firstBuildTime, instantSavings, secondBuildTime, pendingSavings, pendingSavingsBuildTime);
     }
 
     /**
@@ -74,8 +79,10 @@ public class BuildTimeMetricsData {
         return pendingSavingsBuildTime;
     }
 
-    private static Duration calculatePendingSavings(BuildValidationData data) {
-        final long executedCacheableDuration = data.getTasksByAvoidanceOutcome().get("executed_cacheable").totalDuration().toMillis();
-        return Duration.ofMillis((long) (executedCacheableDuration / data.getSerializationFactor().doubleValue()));
+    private static Duration calculatePendingSavings(
+            TaskExecutionSummary secondBuildExecutedCacheableSummary,
+            BigDecimal secondBuildSerializationFactor) {
+        final long executedCacheableDuration = secondBuildExecutedCacheableSummary.totalDuration().toMillis();
+        return Duration.ofMillis((long) (executedCacheableDuration / secondBuildSerializationFactor.doubleValue()));
     }
 }

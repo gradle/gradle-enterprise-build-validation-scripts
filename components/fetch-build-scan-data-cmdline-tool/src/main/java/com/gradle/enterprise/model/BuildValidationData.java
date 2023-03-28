@@ -134,6 +134,10 @@ public class BuildValidationData {
         return tasksByAvoidanceOutcome;
     }
 
+    public TaskExecutionSummary getExecutedCacheableSummary() {
+        return tasksByAvoidanceOutcome.get("executed_cacheable");
+    }
+
     public Duration getBuildTime() {
         return buildTime;
     }

@@ -1,29 +1,48 @@
 package com.gradle.enterprise.cli;
 
-import com.gradle.enterprise.model.BuildValidationData;
+import com.gradle.enterprise.model.BuildTimeMetricsData;
 
+import java.time.Duration;
 import java.util.Arrays;
+import java.util.Locale;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
 public enum BuildTimeMetricsFields {
     // The order the enums are defined controls the order the fields are printed in the CSV
-    INITIAL_BUILD_TIME("Initial Build Time", d -> ""),
-    INSTANT_SAVINGS("Instant Savings", d -> ""),
-    INSTANT_SAVINGS_BUILD_TIME("Instant Savings Build Time", d -> ""),
-    PENDING_SAVINGS("Pending Savings", d -> ""),
-    PENDING_SAVINGS_BUILD_TIME("Pending Savings Build Time", d -> ""),
+    INITIAL_BUILD_TIME("Initial Build Time", d -> formatDuration(d.getInitialBuildTime())),
+    INSTANT_SAVINGS("Instant Savings", d -> formatDuration(d.getInstantSavings())),
+    INSTANT_SAVINGS_BUILD_TIME("Instant Savings Build Time", d -> formatDuration(d.getInstantSavingsBuildTime())),
+    PENDING_SAVINGS("Pending Savings", d -> formatDuration(d.getPendingSavings())),
+    PENDING_SAVINGS_BUILD_TIME("Pending Savings Build Time", d -> formatDuration(d.getPendingSavingsBuildTime())),
     ;
 
     public final String label;
-    public final Function<BuildValidationData, String> value;
+    public final Function<BuildTimeMetricsData, String> value;
 
-    BuildTimeMetricsFields(String label, Function<BuildValidationData, String> value) {
+    BuildTimeMetricsFields(String label, Function<BuildTimeMetricsData, String> value) {
         this.label = label;
         this.value = value;
     }
 
     public static Stream<BuildTimeMetricsFields> ordered() {
         return Arrays.stream(BuildTimeMetricsFields.values());
+    }
+
+    private static String formatDuration(Duration duration) {
+        long hours = duration.toHours();
+        long minutes = duration.minusHours(hours).toMinutes();
+        double seconds = duration.minusHours(hours).minusMinutes(minutes).toMillis() / 1000d;
+
+        StringBuilder s = new StringBuilder();
+        if (hours != 0) {
+            s.append(hours).append("h ");
+        }
+        if (minutes != 0) {
+            s.append(minutes).append("m ");
+        }
+        s.append(String.format(Locale.ROOT, "%.3fs", seconds));
+
+        return s.toString().trim();
     }
 }

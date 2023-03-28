@@ -2,6 +2,7 @@ package com.gradle.enterprise.cli;
 
 import com.gradle.enterprise.api.client.FailedRequestException;
 import com.gradle.enterprise.api.client.GradleEnterpriseApiClient;
+import com.gradle.enterprise.model.BuildTimeMetricsData;
 import com.gradle.enterprise.model.BuildValidationData;
 import com.gradle.enterprise.model.CustomValueNames;
 import com.gradle.enterprise.model.NumberedBuildScan;
@@ -74,6 +75,7 @@ public class FetchBuildValidationDataCommand implements Callable<Integer> {
         printBuildValidationData(buildValidationData);
 
         printBuildTimeMetricsHeader();
+        printBuildTimeMetricsData(buildValidationData);
 
         return ExitCode.OK;
     }
@@ -193,6 +195,12 @@ public class FetchBuildValidationDataCommand implements Callable<Integer> {
     private void printBuildTimeMetricsHeader() {
         List<String> labels = BuildTimeMetricsFields.ordered().map(f -> f.label).collect(Collectors.toList());
         System.out.println(String.join(",", labels));
+    }
+
+    private void printBuildTimeMetricsData(List<BuildValidationData> buildValidationData) {
+        final BuildTimeMetricsData buildTimeData = BuildTimeMetricsData.from(buildValidationData.get(0), buildValidationData.get(1));
+        List<String> values = BuildTimeMetricsFields.ordered().map(f -> f.value.apply(buildTimeData)).collect(Collectors.toList());
+        System.out.println(String.join(",", values));
     }
 
     private static String toOrdinal(int i) {
