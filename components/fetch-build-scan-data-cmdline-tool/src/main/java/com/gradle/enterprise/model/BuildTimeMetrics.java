@@ -1,6 +1,5 @@
 package com.gradle.enterprise.model;
 
-import java.math.BigDecimal;
 import java.time.Duration;
 
 public class BuildTimeMetrics {
@@ -25,26 +24,24 @@ public class BuildTimeMetrics {
     }
 
     public static BuildTimeMetrics from(BuildValidationData firstBuild, BuildValidationData secondBuild) {
-        final Duration buildTimeFirstBuild = firstBuild.getBuildTime();
-        final Duration buildTimeSecondBuild = secondBuild.getBuildTime();
-        final TaskExecutionSummary executedCacheableTaskSummarySecondBuild = secondBuild.getExecutedCacheableSummary();
-        final BigDecimal serializationFactorSecondBuild = secondBuild.getSerializationFactor();
-
-        if (buildTimeFirstBuild == null || buildTimeSecondBuild == null || executedCacheableTaskSummarySecondBuild == null || serializationFactorSecondBuild == null) {
+        if (firstBuild.getBuildTime() == null ||
+                secondBuild.getBuildTime() == null ||
+                secondBuild.getExecutedCacheableSummary() == null ||
+                secondBuild.getSerializationFactor() == null) {
             return null;
         }
 
-        final Duration instantSavings = buildTimeFirstBuild.minus(buildTimeSecondBuild);
-        final Duration pendingSavings = calculatePendingSavings(executedCacheableTaskSummarySecondBuild, serializationFactorSecondBuild);
-        final Duration pendingSavingsBuildTime = buildTimeFirstBuild.minus(pendingSavings);
+        final Duration instantSavings = firstBuild.getBuildTime().minus(secondBuild.getBuildTime());
+        final Duration pendingSavings =
+                Duration.ofMillis((long) (secondBuild.getExecutedCacheableSummary().totalDuration().toMillis()
+                        / secondBuild.getSerializationFactor().doubleValue()));
+        final Duration pendingSavingsBuildTime = firstBuild.getBuildTime().minus(pendingSavings);
 
-        return new BuildTimeMetrics(buildTimeFirstBuild, instantSavings, buildTimeSecondBuild, pendingSavings, pendingSavingsBuildTime);
-    }
-
-    private static Duration calculatePendingSavings(
-            TaskExecutionSummary secondBuildExecutedCacheableSummary,
-            BigDecimal secondBuildSerializationFactor) {
-        final long executedCacheableDuration = secondBuildExecutedCacheableSummary.totalDuration().toMillis();
-        return Duration.ofMillis((long) (executedCacheableDuration / secondBuildSerializationFactor.doubleValue()));
+        return new BuildTimeMetrics(
+                firstBuild.getBuildTime(),
+                instantSavings,
+                secondBuild.getBuildTime(),
+                pendingSavings,
+                pendingSavingsBuildTime);
     }
 }
