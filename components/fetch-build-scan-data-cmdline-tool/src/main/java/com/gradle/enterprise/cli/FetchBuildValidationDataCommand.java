@@ -74,8 +74,10 @@ public class FetchBuildValidationDataCommand implements Callable<Integer> {
         printBuildScanDataHeader();
         printBuildScanData(buildValidationData);
 
-        printBuildTimeMetricsHeader();
-        printBuildTimeMetrics(buildValidationData);
+        if (buildScans.size() == 2) {
+            printBuildTimeMetricsHeader();
+            printBuildTimeMetrics(buildValidationData);
+        }
 
         return ExitCode.OK;
     }
