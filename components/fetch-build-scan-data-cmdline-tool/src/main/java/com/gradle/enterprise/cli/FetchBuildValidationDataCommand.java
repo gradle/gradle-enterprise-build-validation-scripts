@@ -199,7 +199,12 @@ public class FetchBuildValidationDataCommand implements Callable<Integer> {
 
     private void printBuildTimeMetricsData(List<BuildValidationData> buildValidationData) {
         final BuildTimeMetrics buildTimeData = BuildTimeMetrics.from(buildValidationData.get(0), buildValidationData.get(1));
-        List<String> values = BuildTimeMetricsFields.ordered().map(f -> f.value.apply(buildTimeData)).collect(Collectors.toList());
+        List<String> values;
+        if (buildTimeData == null) {
+            values = BuildTimeMetricsFields.ordered().map(f -> "").collect(Collectors.toList());
+        } else {
+            values = BuildTimeMetricsFields.ordered().map(f -> f.value.apply(buildTimeData)).collect(Collectors.toList());
+        }
         System.out.println(String.join(",", values));
     }
 
