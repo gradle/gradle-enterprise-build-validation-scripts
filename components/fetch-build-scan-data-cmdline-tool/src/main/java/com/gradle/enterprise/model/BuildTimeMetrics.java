@@ -3,7 +3,7 @@ package com.gradle.enterprise.model;
 import java.math.BigDecimal;
 import java.time.Duration;
 
-public class BuildTimeMetricsData {
+public class BuildTimeMetrics {
 
     private final Duration initialBuildTime;
     private final Duration instantSavings;
@@ -11,7 +11,7 @@ public class BuildTimeMetricsData {
     private final Duration pendingSavings;
     private final Duration pendingSavingsBuildTime;
 
-    private BuildTimeMetricsData(
+    private BuildTimeMetrics(
             Duration initialBuildTime,
             Duration instantSavings,
             Duration instantSavingsBuildTime,
@@ -24,7 +24,7 @@ public class BuildTimeMetricsData {
         this.pendingSavingsBuildTime = pendingSavingsBuildTime;
     }
 
-    public static BuildTimeMetricsData from(BuildValidationData firstBuild, BuildValidationData secondBuild) {
+    public static BuildTimeMetrics from(BuildValidationData firstBuild, BuildValidationData secondBuild) {
         return from(
                 firstBuild.getBuildTime(),
                 secondBuild.getBuildTime(),
@@ -32,7 +32,7 @@ public class BuildTimeMetricsData {
                 secondBuild.getSerializationFactor());
     }
 
-    private static BuildTimeMetricsData from(
+    private static BuildTimeMetrics from(
             Duration firstBuildTime,
             Duration secondBuildTime,
             TaskExecutionSummary secondBuildExecutedCacheableSummary,
@@ -43,7 +43,7 @@ public class BuildTimeMetricsData {
         final Duration instantSavings = firstBuildTime.minus(secondBuildTime);
         final Duration pendingSavings = calculatePendingSavings(secondBuildExecutedCacheableSummary, secondBuildSerializationFactor);
         final Duration pendingSavingsBuildTime = firstBuildTime.minus(pendingSavings);
-        return new BuildTimeMetricsData(firstBuildTime, instantSavings, secondBuildTime, pendingSavings, pendingSavingsBuildTime);
+        return new BuildTimeMetrics(firstBuildTime, instantSavings, secondBuildTime, pendingSavings, pendingSavingsBuildTime);
     }
 
     /**

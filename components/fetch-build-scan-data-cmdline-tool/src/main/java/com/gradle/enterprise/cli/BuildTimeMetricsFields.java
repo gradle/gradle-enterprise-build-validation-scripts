@@ -1,6 +1,6 @@
 package com.gradle.enterprise.cli;
 
-import com.gradle.enterprise.model.BuildTimeMetricsData;
+import com.gradle.enterprise.model.BuildTimeMetrics;
 
 import java.time.Duration;
 import java.util.Arrays;
@@ -18,9 +18,9 @@ public enum BuildTimeMetricsFields {
     ;
 
     public final String label;
-    public final Function<BuildTimeMetricsData, String> value;
+    public final Function<BuildTimeMetrics, String> value;
 
-    BuildTimeMetricsFields(String label, Function<BuildTimeMetricsData, String> value) {
+    BuildTimeMetricsFields(String label, Function<BuildTimeMetrics, String> value) {
         this.label = label;
         this.value = value;
     }
