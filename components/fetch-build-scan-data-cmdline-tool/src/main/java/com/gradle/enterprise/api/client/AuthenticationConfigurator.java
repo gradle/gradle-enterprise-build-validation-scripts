@@ -20,6 +20,9 @@ public class AuthenticationConfigurator {
         public static final String GRADLE_USER_HOME = "GRADLE_USER_HOME";
     }
 
+    private static final String MALFORMED_ENVIRONMENT_VARIABLE_ERROR = "Environment variable " + EnvVars.ACCESS_KEY
+            + " is malformed (expected format: 'server-host=access-key' or 'server-host1=access-key1;server-host2=access-key2')";
+
     public static void configureAuth(URL url, ApiClient client, ConsoleLogger logger) {
         String username = System.getenv(EnvVars.USERNAME);
         String password = System.getenv(EnvVars.PASSWORD);
@@ -98,28 +101,22 @@ public class AuthenticationConfigurator {
 
         String[] entries = value.split(";");
         for(String entry: entries) {
-            if(entry == null) throw new MalformedEnvironmentVariableException();
+            if(entry == null) throw new RuntimeException(MALFORMED_ENVIRONMENT_VARIABLE_ERROR);
 
             String[] parts = entry.split("=", 2);
-            if (parts.length < 2) throw new MalformedEnvironmentVariableException();
+            if (parts.length < 2) throw new RuntimeException(MALFORMED_ENVIRONMENT_VARIABLE_ERROR);
 
             String joinedServers = parts[0].trim();
             String accessKey = parts[1].trim();
 
-            if(joinedServers.isEmpty() || Strings.isNullOrEmpty(accessKey)) throw new MalformedEnvironmentVariableException();
+            if(joinedServers.isEmpty() || Strings.isNullOrEmpty(accessKey)) throw new RuntimeException(MALFORMED_ENVIRONMENT_VARIABLE_ERROR);
             for(String server: joinedServers.split(",")) {
                 server = server.trim();
-                if (server.isEmpty()) throw new MalformedEnvironmentVariableException();
+                if (server.isEmpty()) throw new RuntimeException(MALFORMED_ENVIRONMENT_VARIABLE_ERROR);
                 accessKeys.put(server, accessKey);
             }
         }
 
         return accessKeys;
-    }
-
-    public static class MalformedEnvironmentVariableException extends ApiClientException {
-        public MalformedEnvironmentVariableException() {
-            super("Environment variable " + EnvVars.ACCESS_KEY + " is malformed (expected format: 'server-host=access-key' or 'server-host1=access-key1;server-host2=access-key2')");
-        }
     }
 }

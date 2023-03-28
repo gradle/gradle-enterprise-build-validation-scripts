@@ -1,9 +1,15 @@
 #!/usr/bin/env bash
 
-# shellcheck disable=SC2034 # not all of the variables set in this function are used by all scripts
-process_arguments() {
+process_args() {
   parse_commandline "$@"
+  map_common_script_args
+  map_additional_script_args
 
+  print_bl
+  validate_required_args
+}
+
+map_common_script_args() {
   if [ -n "${_arg_git_repo+x}" ]; then
     git_repo="${_arg_git_repo}"
     project_name="$(basename -s .git "${git_repo}")"
@@ -25,13 +31,11 @@ process_arguments() {
     project_dir="${_arg_project_dir}"
   fi
 
-  # shellcheck disable=SC2154
   if [ -n "${_arg_tasks+x}" ]; then
     tasks="${_arg_tasks}"
     remove_clean_from_tasks
   fi
 
-  # shellcheck disable=SC2154
   if [ -n "${_arg_goals+x}" ]; then
     tasks="${_arg_goals}"
     remove_clean_from_tasks
@@ -41,7 +45,6 @@ process_arguments() {
     extra_args="${_arg_args}"
   fi
 
-  #shellcheck disable=SC2154
   if [ -n "${_arg_mapping_file+x}" ]; then
     mapping_file="${_arg_mapping_file}"
   fi
@@ -50,7 +53,6 @@ process_arguments() {
     ge_server="${_arg_gradle_enterprise_server}"
   fi
 
-  #shellcheck disable=SC2154
   if [ -n "${_arg_enable_gradle_enterprise+x}" ]; then
     enable_ge="${_arg_enable_gradle_enterprise}"
   fi
@@ -75,21 +77,34 @@ process_arguments() {
   fi
 }
 
-validate_required_config() {
-  if [ -z "${git_repo}" ]; then
-    _PRINT_HELP=yes die "ERROR: Missing required argument: --git-repo" "${INVALID_INPUT}"
-  fi
+# Some experiments may require additional arguments, in which case this function
+# should be overridden for that experiment.
+map_additional_script_args() {
+  true
+}
 
-  if [ -z "${tasks}" ]; then
-    if [[ "${BUILD_TOOL}" == "Maven" ]]; then
-      _PRINT_HELP=yes die "ERROR: Missing required argument: --goals" "${INVALID_INPUT}"
-    else
-      _PRINT_HELP=yes die "ERROR: Missing required argument: --tasks" "${INVALID_INPUT}"
+# This function performs common validation relevant for most experiments.
+# Some experiments may have a different set of required arguments, in which case
+# this function should be overridden for that experiment.
+validate_required_args() {
+  # In non-interactive mode, these arguments are required.
+  # In interactive mode, the user will be prompted to enter any missing config.
+  if [ "${interactive_mode}" == "off" ]; then
+    if [ -z "${git_repo}" ]; then
+      _PRINT_HELP=yes die "ERROR: Missing required argument: --git-repo" "${INVALID_INPUT}"
+    fi
+
+    if [ -z "${tasks}" ]; then
+      if [[ "${BUILD_TOOL}" == "Maven" ]]; then
+        _PRINT_HELP=yes die "ERROR: Missing required argument: --goals" "${INVALID_INPUT}"
+      else
+        _PRINT_HELP=yes die "ERROR: Missing required argument: --tasks" "${INVALID_INPUT}"
+      fi
     fi
   fi
 
   if [[ "${enable_ge}" == "on" && -z "${ge_server}" && "${build_scan_publishing_mode}" == "on" ]]; then
-    _PRINT_HELP=yes die "ERROR: --gradle-enterprise-server is required when using --enable-gradle-enterprise." "${INVALID_INPUT}"
+    _PRINT_HELP=yes die "ERROR: Missing required argument when enabling Gradle Enterprise on a project not already connected: --gradle-enterprise-server" "${INVALID_INPUT}"
   fi
 }
 

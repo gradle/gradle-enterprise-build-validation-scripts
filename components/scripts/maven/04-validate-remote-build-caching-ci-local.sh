@@ -22,7 +22,7 @@ readonly LIB_DIR="${SCRIPT_DIR}/lib"
 
 # Include and parse the command line arguments
 # shellcheck source=lib/04-cli-parser.sh
-source "${LIB_DIR}/${EXP_NO}-cli-parser.sh" || { echo -e "\033[00;31m\033[1mERROR: Couldn't find '${LIB_DIR}/${EXP_NO}-cli-parser.sh' parsing library.\033[0m"; exit 100; }
+source "${LIB_DIR}/${EXP_NO}-cli-parser.sh" || { echo -e "\033[00;31m\033[1mERROR: Couldn't find '${LIB_DIR}/${EXP_NO}-cli-parser.sh'\033[0m"; exit 100; }
 # shellcheck source=lib/libs.sh
 source "${LIB_DIR}/libs.sh" || { echo -e "\033[00;31m\033[1mERROR: Couldn't find '${LIB_DIR}/libs.sh'\033[0m"; exit 100; }
 
@@ -41,7 +41,6 @@ remote_build_cache_url=''
 mapping_file=''
 
 main() {
-  process_script_arguments
   if [ "${interactive_mode}" == "on" ]; then
     wizard_execute
   else
@@ -52,8 +51,6 @@ main() {
 }
 
 execute() {
-  print_bl
-  validate_required_args
   fetch_build_params_from_build_scan
   validate_build_config
 
@@ -72,7 +69,6 @@ execute() {
 }
 
 wizard_execute() {
-  print_bl
   print_introduction
 
   print_bl
@@ -135,15 +131,22 @@ wizard_execute() {
   explain_and_print_summary
 }
 
-process_script_arguments() {
+map_additional_script_args() {
   ci_build_scan_url="${_arg_first_build_ci}"
   remote_build_cache_url="${_arg_remote_build_cache_url}"
   mapping_file="${_arg_mapping_file}"
 }
 
+# Overrides config.sh#validate_required_args
 validate_required_args() {
-  if [ -z "${ci_build_scan_url}" ]; then
-    _PRINT_HELP=yes die "ERROR: Missing required argument: --first-build-ci" "${INVALID_INPUT}"
+  if [ "${interactive_mode}" == "off" ]; then
+    if [ -z "${ci_build_scan_url}" ]; then
+      _PRINT_HELP=yes die "ERROR: Missing required argument: --first-build-ci" "${INVALID_INPUT}"
+    fi
+  fi
+
+  if [[ "${enable_ge}" == "on" && -z "${ge_server}" ]]; then
+    _PRINT_HELP=yes die "ERROR: Missing required argument when enabling Gradle Enterprise on a project not already connected: --gradle-enterprise-server" "${INVALID_INPUT}"
   fi
 }
 
@@ -175,19 +178,15 @@ read_build_params_from_build_scan_data() {
 
 validate_build_config() {
   if [ -z "${git_repo}" ]; then
-    _PRINT_HELP=yes die "ERROR: The Git repository URL was not found in the build scan. Please specify --git-repo and try again." "${INVALID_INPUT}"
-  fi
-  if [ -z "${tasks}" ]; then
-      _PRINT_HELP=yes die "ERROR: The Maven goals were not found in the build scan. Please specify --goals and try again." "${INVALID_INPUT}"
-  fi
-  if [ -z "${git_commit_id}" ]; then
-      _PRINT_HELP=yes die "ERROR: The Git commit id was not found in the build scan. Please specify --git-commit-id and try again." "${INVALID_INPUT}"
+    _PRINT_HELP=yes die "ERROR: Git repository URL was not found in the build scan. Specify missing argument: --git-repo" "${INVALID_INPUT}"
   fi
 
-  if [[ "${enable_ge}" == "on" ]]; then
-    if [ -z "${ge_server}" ]; then
-      _PRINT_HELP=yes die "ERROR: --gradle-enterprise-server is required when using --enable-gradle-enterprise." "${INVALID_INPUT}"
-    fi
+  if [ -z "${tasks}" ]; then
+    _PRINT_HELP=yes die "ERROR: Maven goals were not found in the build scan. Specify missing argument: --goals" "${INVALID_INPUT}"
+  fi
+
+  if [ -z "${git_commit_id}" ]; then
+    _PRINT_HELP=yes die "ERROR: Git commit id was not found in the build scan. Specify missing argument: --git-commit-id" "${INVALID_INPUT}"
   fi
 }
 
@@ -520,5 +519,5 @@ EOF
   print_interactive_text "${text}"
 }
 
-process_arguments "$@"
+process_args "$@"
 main

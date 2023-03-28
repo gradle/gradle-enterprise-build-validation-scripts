@@ -1,7 +1,7 @@
 import com.gradle.enterprise.gradleplugin.internal.extension.BuildScanExtensionWithHiddenFeatures
 
 plugins {
-    id("com.gradle.enterprise") version "3.12.5"
+    id("com.gradle.enterprise") version "3.12.6"
     id("com.gradle.common-custom-user-data-gradle-plugin") version "1.10"
 }
 
@@ -34,8 +34,8 @@ buildCache {
 
 rootProject.name = "build-validation-scripts"
 
-include("components/capture-build-scan-url-maven-extension")
+include("components/configure-gradle-enterprise-maven-extension")
 include("components/fetch-build-scan-data-cmdline-tool")
 
-project(":components/capture-build-scan-url-maven-extension").name = "capture-build-scan-url-maven-extension"
+project(":components/configure-gradle-enterprise-maven-extension").name = "configure-gradle-enterprise-maven-extension"
 project(":components/fetch-build-scan-data-cmdline-tool").name = "fetch-build-scan-data-cmdline-tool"

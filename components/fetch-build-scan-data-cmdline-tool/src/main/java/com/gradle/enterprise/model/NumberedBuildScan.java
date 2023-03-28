@@ -50,6 +50,14 @@ public class NumberedBuildScan {
         return buildScanId;
     }
 
+    public URL url() {
+        try {
+            return new URL(baseUrl, "/s/" + buildScanId);
+        } catch (MalformedURLException e) {
+            throw new RuntimeException(e.getMessage(), e);
+        }
+    }
+
     private static URL extractBaseUrl(URL buildScanUrl) {
         String port = (buildScanUrl.getPort() != -1) ? ":" + buildScanUrl.getPort() : "";
         return toURL(buildScanUrl.getProtocol() + "://" + buildScanUrl.getHost() + port);
@@ -70,5 +78,4 @@ public class NumberedBuildScan {
             throw new IllegalArgumentException("Invalid Build Scan URL: " + url, e);
         }
     }
-
 }

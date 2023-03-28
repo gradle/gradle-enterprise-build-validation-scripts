@@ -23,7 +23,7 @@ readonly INIT_SCRIPTS_DIR="${LIB_DIR}/gradle-init-scripts"
 
 # Include and parse the command line arguments
 # shellcheck source=lib/02-cli-parser.sh
-source "${LIB_DIR}/${EXP_NO}-cli-parser.sh" || { echo -e "\033[00;31m\033[1mERROR: Couldn't find '${LIB_DIR}/${EXP_NO}-cli-parser.sh' parsing library.\033[0m"; exit 100; }
+source "${LIB_DIR}/${EXP_NO}-cli-parser.sh" || { echo -e "\033[00;31m\033[1mERROR: Couldn't find '${LIB_DIR}/${EXP_NO}-cli-parser.sh'\033[0m"; exit 100; }
 # shellcheck source=lib/libs.sh
 source "${LIB_DIR}/libs.sh" || { echo -e "\033[00;31m\033[1mERROR: Couldn't find '${LIB_DIR}/libs.sh'\033[0m"; exit 100; }
 
@@ -53,9 +53,6 @@ main() {
 }
 
 execute() {
-  print_bl
-  validate_required_config
-
   make_experiment_dir
   make_local_cache_dir
   git_checkout_project "build_${project_name}"
@@ -76,7 +73,6 @@ execute() {
 }
 
 wizard_execute() {
-  print_bl
   print_introduction
 
   if [[ "${build_scan_publishing_mode}" == "on" ]]; then
@@ -345,5 +341,5 @@ EOF
   echo -n "${text}"
 }
 
-process_arguments "$@"
+process_args "$@"
 main

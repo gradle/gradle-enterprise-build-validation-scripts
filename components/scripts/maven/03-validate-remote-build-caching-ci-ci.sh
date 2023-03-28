@@ -22,7 +22,7 @@ readonly LIB_DIR="${SCRIPT_DIR}/lib"
 
 # Include and parse the command line arguments
 # shellcheck source=lib/03-cli-parser.sh
-source "${LIB_DIR}/${EXP_NO}-cli-parser.sh" || { echo -e "\033[00;31m\033[1mERROR: Couldn't find '${LIB_DIR}/${EXP_NO}-cli-parser.sh' parsing library.\033[0m"; exit 100; }
+source "${LIB_DIR}/${EXP_NO}-cli-parser.sh" || { echo -e "\033[00;31m\033[1mERROR: Couldn't find '${LIB_DIR}/${EXP_NO}-cli-parser.sh'\033[0m"; exit 100; }
 # shellcheck source=lib/libs.sh
 # shellcheck disable=SC2154 # the libs include scripts that reference CLI arguments that this script does not create
 source "${LIB_DIR}/libs.sh" || { echo -e "\033[00;31m\033[1mERROR: Couldn't find '${LIB_DIR}/libs.sh'\033[0m"; exit 100; }
@@ -49,9 +49,6 @@ main() {
 }
 
 execute() {
-  print_bl
-  validate_required_args
-
   fetch_build_scans
   make_experiment_dir
 
@@ -60,7 +57,6 @@ execute() {
 }
 
 wizard_execute() {
-  print_bl
   print_introduction
 
   print_bl
@@ -101,15 +97,20 @@ wizard_execute() {
   explain_and_print_summary
 }
 
+# Overrides config.sh#validate_required_args
 validate_required_args() {
-  if [ -z "${_arg_first_build_ci}" ]; then
-    _PRINT_HELP=yes die "ERROR: Missing required argument: --first-build-ci" "${INVALID_INPUT}"
+  if [ "${interactive_mode}" == "off" ]; then
+    if [ -z "${_arg_first_build_ci}" ]; then
+      _PRINT_HELP=yes die "ERROR: Missing required argument: --first-build-ci" "${INVALID_INPUT}"
+    fi
+
+    if [ -z "${_arg_second_build_ci}" ]; then
+      _PRINT_HELP=yes die "ERROR: Missing required argument: --second-build-ci" "${INVALID_INPUT}"
+    fi
+
+    build_scan_urls+=("${_arg_first_build_ci}")
+    build_scan_urls+=("${_arg_second_build_ci}")
   fi
-  if [ -z "${_arg_second_build_ci}" ]; then
-    _PRINT_HELP=yes die "ERROR: Missing required argument: --second-build-ci" "${INVALID_INPUT}"
-  fi
-  build_scan_urls+=("${_arg_first_build_ci}")
-  build_scan_urls+=("${_arg_second_build_ci}")
 }
 
 fetch_build_scans() {
@@ -315,5 +316,5 @@ EOF
   print_interactive_text "${text}"
 }
 
-process_arguments "$@"
+process_args "$@"
 main

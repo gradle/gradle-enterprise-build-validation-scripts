@@ -9,14 +9,14 @@ invoke_gradle() {
   local original_dir
   if [ -n "${project_dir}" ]; then
     original_dir="$(pwd)"
-    cd "${project_dir}" > /dev/null 2>&1 || die "ERROR: The subdirectory ${project_dir} (set with --project-dir) does not exist in ${project_name}." "${INVALID_INPUT}"
+    cd "${project_dir}" > /dev/null 2>&1 || die "ERROR: Subdirectory ${project_dir} (set with --project-dir) does not exist in ${project_name}" "${INVALID_INPUT}"
   fi
 
   args+=(--init-script "${INIT_SCRIPTS_DIR}/configure-gradle-enterprise.gradle")
 
   if [ "$enable_ge" == "on" ]; then
     args+=("-Dcom.gradle.enterprise.build-validation.gradle.plugin-repository.url=https://plugins.gradle.org/m2")
-    args+=("-Dcom.gradle.enterprise.build-validation.gradle-enterprise.plugin.version=3.12.5")
+    args+=("-Dcom.gradle.enterprise.build-validation.gradle-enterprise.plugin.version=3.12.6")
     args+=("-Dcom.gradle.enterprise.build-validation.ccud.plugin.version=1.10")
   fi
 
@@ -26,6 +26,7 @@ invoke_gradle() {
   fi
 
   if [[ "${build_scan_publishing_mode}" == "off" ]]; then
+    args+=("-Dcom.gradle.enterprise.build-validation.omitServerUrlValidation=true")
     args+=("-Dscan.dump")
   fi
 
@@ -61,12 +62,12 @@ invoke_gradle() {
 
   if [ -f "${EXP_DIR}/errors.txt" ]; then
     print_bl
-    die "ERROR: The experiment cannot continue because of a non-recoverable failure while running the build: $(cat "${EXP_DIR}/errors.txt")"
+    die "ERROR: Experiment aborted due to a non-recoverable failure: $(cat "${EXP_DIR}/errors.txt")"
   fi
 
   if [[ "${build_scan_publishing_mode}" == "on" ]] && is_build_scan_metadata_missing "$run_num"; then
     print_bl
-    die "ERROR: The experiment cannot continue because a Build Scan was not published."
+    die "ERROR: Experiment aborted due to a non-recoverable failure: No Build Scan was published."
   fi
 
   # defined in git.sh
