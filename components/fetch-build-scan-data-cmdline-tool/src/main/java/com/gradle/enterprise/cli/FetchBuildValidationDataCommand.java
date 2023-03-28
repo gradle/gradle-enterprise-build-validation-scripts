@@ -71,11 +71,11 @@ public class FetchBuildValidationDataCommand implements Callable<Integer> {
         logFinishedFetchingAllBuildScanData();
         logFetchResults(buildValidationData, customValueKeys);
 
-        printBuildValidationHeader();
-        printBuildValidationData(buildValidationData);
+        printBuildScanDataHeader();
+        printBuildScanData(buildValidationData);
 
         printBuildTimeMetricsHeader();
-        printBuildTimeMetricsData(buildValidationData);
+        printBuildTimeMetrics(buildValidationData);
 
         return ExitCode.OK;
     }
@@ -178,17 +178,17 @@ public class FetchBuildValidationDataCommand implements Callable<Integer> {
         );
     }
 
-    public void printBuildValidationHeader() {
-        List<String> labels = BuildValidationDataFields.ordered().map(f -> f.label).collect(Collectors.toList());
+    public void printBuildScanDataHeader() {
+        List<String> labels = BuildScanDataFields.ordered().map(f -> f.label).collect(Collectors.toList());
         System.out.println(String.join(",", labels));
     }
 
-    private void printBuildValidationData(List<BuildValidationData> buildValidationData) {
-        buildValidationData.forEach(this::printBuildValidationData);
+    private void printBuildScanData(List<BuildValidationData> buildValidationData) {
+        buildValidationData.forEach(this::printBuildScanData);
     }
 
-    private void printBuildValidationData(BuildValidationData buildValidationData) {
-        List<String> values = BuildValidationDataFields.ordered().map(f -> f.value.apply(buildValidationData)).collect(Collectors.toList());
+    private void printBuildScanData(BuildValidationData buildValidationData) {
+        List<String> values = BuildScanDataFields.ordered().map(f -> f.value.apply(buildValidationData)).collect(Collectors.toList());
         System.out.println(String.join(",", values));
     }
 
@@ -197,7 +197,7 @@ public class FetchBuildValidationDataCommand implements Callable<Integer> {
         System.out.println(String.join(",", labels));
     }
 
-    private void printBuildTimeMetricsData(List<BuildValidationData> buildValidationData) {
+    private void printBuildTimeMetrics(List<BuildValidationData> buildValidationData) {
         final BuildTimeMetrics buildTimeData = BuildTimeMetrics.from(buildValidationData.get(0), buildValidationData.get(1));
         List<String> values;
         if (buildTimeData == null) {
