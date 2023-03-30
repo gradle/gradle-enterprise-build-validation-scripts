@@ -116,7 +116,7 @@ validate_required_args() {
 }
 
 fetch_build_scans() {
-  fetch_and_read_build_scan_data all_data "${build_scan_urls[@]}"
+  fetch_and_read_build_scans all_data "${build_scan_urls[@]}"
 }
 
 # Overrides summary.sh#print_experiment_specific_summary_info

@@ -7,7 +7,7 @@ readonly FETCH_BUILD_SCAN_DATA_JAR="${LIB_DIR}/export-api-clients/fetch-build-sc
 # Enterprise API.
 process_build_scan_data_online() {
   read_build_scan_metadata
-  fetch_and_read_build_scan_data build_cache_metrics_only
+  fetch_and_read_build_scans build_cache_metrics_only "${build_scan_urls[@]}"
 }
 
 read_build_scan_metadata() {
@@ -44,17 +44,53 @@ is_build_scan_metadata_missing() {
   return 0
 }
 
-fetch_and_read_build_scan_data() {
+fetch_and_read_single_build_scan() {
+  local build_scan_url="$1"
+
+  local build_scan_data
+  build_scan_data="$(fetch_build_scan_data brief_logging "${build_scan_url}")"
+
+  debug "Raw build scan data"
+  debug "---------------------------"
+  debug "${build_scan_data}"
+  debug ""
+
+  parse_single_build_scan "${build_scan_data}"
+}
+
+fetch_and_read_build_scans() {
   local build_cache_metrics_only="$1"
   shift
+  local build_scan_urls=("$@")
 
-  local args=()
+  local brief_logging
+  if [[ "$build_cache_metrics_only" != "build_cache_metrics_only" ]]; then
+    brief_logging="brief_logging"
+    info "Fetching build scan data"
+  fi
+
+  local build_scan_data
+  build_scan_data="$(fetch_build_scan_data "${brief_logging}" "${build_scan_urls[@]}")"
+
+  debug "Raw build scan data"
+  debug "---------------------------"
+  debug "${build_scan_data}"
+  debug ""
+
+  parse_multi_build_scan "${build_cache_metrics_only}" "${build_scan_data}"
+}
+
+# Note: Callers of this function require stdout to be clean. No logging can be
+#       done inside this function.
+fetch_build_scan_data() {
+  local brief_logging="$1"
+  shift
+  local build_scan_urls=("$@")
 
   if [[ "${debug_mode}" == "on" ]]; then
     args+=("--debug")
   fi
 
-  #shellcheck disable=SC2154 #not all scripts set this value...which is fine, we're checking for it before using it
   if [ -n "${mapping_file}" ]; then
     args+=("--mapping-file" "${mapping_file}")
   fi
@@ -63,17 +99,13 @@ fetch_and_read_build_scan_data() {
     args+=("--network-settings-file" "${SCRIPT_DIR}/network.settings")
   fi
 
-  if [[ "$build_cache_metrics_only" == "build_cache_metrics_only" ]]; then
+  if [[ "${brief_logging}" == "brief_logging" ]]; then
     args+=("--brief-logging")
-    debug "Only using the task metrics found in the build scan data"
-  else
-    info "Fetching build scan data"
   fi
 
   for run_num in "${!build_scan_urls[@]}"; do
     args+=( "${run_num},${build_scan_urls[run_num]}" )
   done
 
-  build_scan_csv="$(invoke_java "$FETCH_BUILD_SCAN_DATA_JAR" "${args[@]}")"
-  parse_build_scan_csv "$build_scan_csv" "$build_cache_metrics_only"
+  invoke_java "${FETCH_BUILD_SCAN_DATA_JAR}" "${args[@]}"
 }

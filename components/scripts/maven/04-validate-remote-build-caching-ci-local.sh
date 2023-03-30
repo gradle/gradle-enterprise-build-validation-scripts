@@ -152,7 +152,7 @@ validate_required_args() {
 
 fetch_build_params_from_build_scan() {
   build_scan_urls+=( "${ci_build_scan_url}" )
-  fetch_and_read_build_scan_data all_data "${ci_build_scan_url}"
+  fetch_and_read_single_build_scan "${ci_build_scan_url}"
   read_build_params_from_build_scan_data
 }
 
