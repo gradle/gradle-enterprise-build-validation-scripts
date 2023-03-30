@@ -1,1 +1,2 @@
-- Performance characteristics includes the serialization factors of both builds
+- [NEW] Performance characteristics includes the serialization factors of both builds
+- [FIX] Negative values for build time savings render incorrectly
