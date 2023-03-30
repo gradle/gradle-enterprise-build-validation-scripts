@@ -7,7 +7,7 @@ readonly FETCH_BUILD_SCAN_DATA_JAR="${LIB_DIR}/export-api-clients/fetch-build-sc
 # Enterprise API.
 process_build_scan_data_online() {
   read_build_scan_metadata
-  fetch_and_read_build_scans build_cache_metrics_only "${build_scan_urls[@]}"
+  fetch_build_scans_and_build_time_metrics build_cache_metrics_only "${build_scan_urls[@]}"
 }
 
 read_build_scan_metadata() {
@@ -44,7 +44,7 @@ is_build_scan_metadata_missing() {
   return 0
 }
 
-fetch_and_read_single_build_scan() {
+fetch_single_build_scan() {
   local build_scan_url="$1"
 
   local build_scan_data
@@ -58,7 +58,7 @@ fetch_and_read_single_build_scan() {
   parse_single_build_scan "${build_scan_data}"
 }
 
-fetch_and_read_build_scans() {
+fetch_build_scans_and_build_time_metrics() {
   local build_cache_metrics_only="$1"
   shift
   local build_scan_urls=("$@")
@@ -77,7 +77,7 @@ fetch_and_read_build_scans() {
   debug "${build_scan_data}"
   debug ""
 
-  parse_build_scans "${build_cache_metrics_only}" "${build_scan_data}"
+  parse_build_scans_and_build_time_metrics "${build_cache_metrics_only}" "${build_scan_data}"
 }
 
 # Note: Callers of this function require stdout to be clean. No logging can be

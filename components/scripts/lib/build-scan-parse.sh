@@ -42,7 +42,7 @@ parse_single_build_scan() {
   parse_build_scan_row all_data "${build_scan_rows[1]}"
 }
 
-parse_build_scans() {
+parse_build_scans_and_build_time_metrics() {
   local build_cache_metrics_only="$1"
   local build_scan_data="$2"
 
