@@ -50,11 +50,6 @@ fetch_single_build_scan() {
   local build_scan_data
   build_scan_data="$(fetch_build_scan_data brief_logging "${build_scan_url}")"
 
-  debug "Raw build scan data"
-  debug "---------------------------"
-  debug "${build_scan_data}"
-  debug ""
-
   parse_single_build_scan "${build_scan_data}"
 }
 
@@ -71,11 +66,6 @@ fetch_build_scans_and_build_time_metrics() {
 
   local build_scan_data
   build_scan_data="$(fetch_build_scan_data "${brief_logging}" "${build_scan_urls[@]}")"
-
-  debug "Raw build scan data"
-  debug "---------------------------"
-  debug "${build_scan_data}"
-  debug ""
 
   parse_build_scans_and_build_time_metrics "${build_cache_metrics_only}" "${build_scan_data}"
 }

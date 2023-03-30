@@ -36,6 +36,8 @@ serialization_factors=()
 parse_single_build_scan() {
   local build_scan_data="$1"
 
+  debug_build_scan_data "$build_scan_data"
+
   local build_scan_rows
   IFS=$'\n' read -rd '' -a build_scan_rows <<< "$build_scan_data"
 
@@ -46,6 +48,8 @@ parse_build_scans_and_build_time_metrics() {
   local build_cache_metrics_only="$1"
   local build_scan_data="$2"
 
+  debug_build_scan_data "$build_scan_data"
+
   local build_scan_rows
   IFS=$'\n' read -rd '' -a build_scan_rows <<< "$build_scan_data"
 
@@ -53,6 +57,15 @@ parse_build_scans_and_build_time_metrics() {
   parse_build_scan_row "${build_cache_metrics_only}" "${build_scan_rows[2]}"
 
   parse_build_time_metrics "${build_scan_rows[4]}"
+}
+
+debug_build_scan_data() {
+  local build_scan_data="$1"
+
+  debug "Raw build scan data"
+  debug "---------------------------"
+  debug "${build_scan_data}"
+  debug ""
 }
 
 # shellcheck disable=SC2034 # not all scripts use all of the fetched data
