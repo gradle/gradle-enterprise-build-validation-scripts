@@ -122,7 +122,7 @@ public class GradleEnterpriseApiClient {
         }
     }
 
-    public BuildScanData fetchBuildValidationData(NumberedBuildScan buildScan) {
+    public BuildScanData fetchBuildScanData(NumberedBuildScan buildScan) {
         int runNum = buildScan.runNum();
         String buildScanId = buildScan.buildScanId();
         try {

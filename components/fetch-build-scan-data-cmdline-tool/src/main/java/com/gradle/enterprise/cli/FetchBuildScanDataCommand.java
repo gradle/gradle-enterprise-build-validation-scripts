@@ -88,7 +88,7 @@ public class FetchBuildScanDataCommand implements Callable<Integer> {
         logStartFetchingBuildScanData(buildScan);
         try {
             GradleEnterpriseApiClient apiClient = new GradleEnterpriseApiClient(buildScan.baseUrl(), customValueNames, logger);
-            BuildScanData data = apiClient.fetchBuildValidationData(buildScan);
+            BuildScanData data = apiClient.fetchBuildScanData(buildScan);
 
             logFinishedFetchingBuildScanData(buildScan);
             return data;
