@@ -35,8 +35,10 @@ find_build_scan_dump() {
 
 read_build_scan_dumps() {
   local build_scan_data
+
   echo -n "Extracting build scan data"
   build_scan_data="$(invoke_java "$BUILD_SCAN_SUPPORT_TOOL_JAR" extract "0,${build_scan_dumps[0]}"  "1,${build_scan_dumps[1]}")"
-  parse_build_scan_data "build_cache_metrics_only" "$build_scan_data"
   echo ", done."
+
+  parse_build_scans_and_build_time_metrics "build_cache_metrics_only" "$build_scan_data"
 }
