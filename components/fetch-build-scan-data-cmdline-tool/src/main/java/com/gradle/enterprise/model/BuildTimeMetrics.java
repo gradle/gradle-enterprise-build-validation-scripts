@@ -23,7 +23,7 @@ public class BuildTimeMetrics {
         this.pendingSavingsBuildTime = pendingSavingsBuildTime;
     }
 
-    public static BuildTimeMetrics from(BuildValidationData firstBuild, BuildValidationData secondBuild) {
+    public static BuildTimeMetrics from(BuildScanData firstBuild, BuildScanData secondBuild) {
         if (firstBuild.getBuildTime() == null ||
                 secondBuild.getBuildTime() == null ||
                 secondBuild.getExecutedCacheableSummary() == null ||

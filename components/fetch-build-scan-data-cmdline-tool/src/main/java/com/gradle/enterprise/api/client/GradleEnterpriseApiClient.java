@@ -10,7 +10,7 @@ import com.gradle.enterprise.api.model.MavenAttributes;
 import com.gradle.enterprise.api.model.MavenBuildCachePerformance;
 import com.gradle.enterprise.api.model.MavenBuildCachePerformanceGoalExecutionEntry;
 import com.gradle.enterprise.cli.ConsoleLogger;
-import com.gradle.enterprise.model.BuildValidationData;
+import com.gradle.enterprise.model.BuildScanData;
 import com.gradle.enterprise.model.CustomValueNames;
 import com.gradle.enterprise.model.NumberedBuildScan;
 import com.gradle.enterprise.model.TaskExecutionSummary;
@@ -122,7 +122,7 @@ public class GradleEnterpriseApiClient {
         }
     }
 
-    public BuildValidationData fetchBuildValidationData(NumberedBuildScan buildScan) {
+    public BuildScanData fetchBuildValidationData(NumberedBuildScan buildScan) {
         int runNum = buildScan.runNum();
         String buildScanId = buildScan.buildScanId();
         try {
@@ -131,7 +131,7 @@ public class GradleEnterpriseApiClient {
                 GradleAttributes attributes = apiClient.getGradleAttributes(buildScanId, null);
                 GradleBuildCachePerformance buildCachePerformance = apiClient.getGradleBuildCachePerformance(buildScanId, null);
 
-                return new BuildValidationData(
+                return new BuildScanData(
                     runNum,
                     attributes.getRootProjectName(),
                     buildScanId,
@@ -151,7 +151,7 @@ public class GradleEnterpriseApiClient {
                 MavenAttributes attributes = apiClient.getMavenAttributes(buildScanId, null);
                 MavenBuildCachePerformance buildCachePerformance = apiClient.getMavenBuildCachePerformance(buildScanId, null);
 
-                return new BuildValidationData(
+                return new BuildScanData(
                     runNum,
                     attributes.getTopLevelProjectName(),
                     buildScanId,
