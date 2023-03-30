@@ -35,7 +35,7 @@ public class BuildTimeMetrics {
         final Duration pendingSavings =
                 Duration.ofMillis((long) (secondBuild.getExecutedCacheableSummary().totalDuration().toMillis()
                         / secondBuild.getSerializationFactor().doubleValue()));
-        final Duration pendingSavingsBuildTime = firstBuild.getBuildTime().minus(pendingSavings);
+        final Duration pendingSavingsBuildTime = secondBuild.getBuildTime().minus(pendingSavings);
 
         return new BuildTimeMetrics(
                 firstBuild.getBuildTime(),
