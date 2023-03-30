@@ -39,7 +39,7 @@ parse_single_build_scan() {
   local build_scan_rows
   IFS=$'\n' read -rd '' -a build_scan_rows <<< "$build_scan_data"
 
-  parse_build_scan_row all_data build_scan_rows[1]
+  parse_build_scan_row all_data "${build_scan_rows[1]}"
 }
 
 parse_build_scans() {
