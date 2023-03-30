@@ -2,7 +2,8 @@ package com.gradle.enterprise.cli;
 
 import com.gradle.enterprise.api.client.FailedRequestException;
 import com.gradle.enterprise.api.client.GradleEnterpriseApiClient;
-import com.gradle.enterprise.model.BuildValidationData;
+import com.gradle.enterprise.model.BuildTimeMetrics;
+import com.gradle.enterprise.model.BuildScanData;
 import com.gradle.enterprise.model.CustomValueNames;
 import com.gradle.enterprise.model.NumberedBuildScan;
 import com.gradle.enterprise.network.NetworkSettingsConfigurator;
@@ -24,12 +25,12 @@ import java.util.stream.Collectors;
     mixinStandardHelpOptions = true,
     description = "Fetches data relevant to build validation from the given build scans."
 )
-public class FetchBuildValidationDataCommand implements Callable<Integer> {
+public class FetchBuildScanDataCommand implements Callable<Integer> {
 
     private final CommandLine.Help.ColorScheme colorScheme;
     private ConsoleLogger logger;
 
-    public FetchBuildValidationDataCommand(CommandLine.Help.ColorScheme colorScheme) {
+    public FetchBuildScanDataCommand(CommandLine.Help.ColorScheme colorScheme) {
         this.colorScheme = colorScheme;
     }
 
@@ -65,36 +66,35 @@ public class FetchBuildValidationDataCommand implements Callable<Integer> {
             .orElse(CustomValueNames.DEFAULT);
 
         logStartFetchingAllBuildScanData();
-        List<BuildValidationData> buildValidationData = fetchBuildScanData(buildScans, customValueKeys);
+        List<BuildScanData> buildScanData = fetchBuildScanData(buildScans, customValueKeys);
 
         logFinishedFetchingAllBuildScanData();
-        logFetchResults(buildValidationData, customValueKeys);
+        logFetchResults(buildScanData, customValueKeys);
 
-        printHeader();
-        printBuildValidationData(buildValidationData);
+        printResults(buildScanData);
 
         return ExitCode.OK;
     }
 
     @NotNull
-    private List<BuildValidationData> fetchBuildScanData(List<NumberedBuildScan> buildScans, CustomValueNames customValueKeys) {
+    private List<BuildScanData> fetchBuildScanData(List<NumberedBuildScan> buildScans, CustomValueNames customValueKeys) {
         return buildScans.stream()
             .parallel()
             .map(buildScan -> fetchBuildScanData(buildScan, customValueKeys))
             .collect(Collectors.toList());
     }
 
-    private BuildValidationData fetchBuildScanData(NumberedBuildScan buildScan, CustomValueNames customValueNames) {
+    private BuildScanData fetchBuildScanData(NumberedBuildScan buildScan, CustomValueNames customValueNames) {
         logStartFetchingBuildScanData(buildScan);
         try {
             GradleEnterpriseApiClient apiClient = new GradleEnterpriseApiClient(buildScan.baseUrl(), customValueNames, logger);
-            BuildValidationData data = apiClient.fetchBuildValidationData(buildScan);
+            BuildScanData data = apiClient.fetchBuildScanData(buildScan);
 
             logFinishedFetchingBuildScanData(buildScan);
             return data;
         } catch (RuntimeException e) {
             logException(e);
-            return new BuildValidationData(
+            return new BuildScanData(
                 buildScan.runNum(),
                 "",
                 buildScan.buildScanId(),
@@ -155,9 +155,9 @@ public class FetchBuildValidationDataCommand implements Callable<Integer> {
         }
     }
 
-    private void logFetchResults(List<BuildValidationData> buildValidationData, CustomValueNames customValueKeys) {
+    private void logFetchResults(List<BuildScanData> buildScanData, CustomValueNames customValueKeys) {
         if (!briefLogging) {
-            buildValidationData.forEach(validationData -> {
+            buildScanData.forEach(validationData -> {
                 logger.info("");
 
                 logFetchResultFor(validationData.runNum(), "Git repository", customValueKeys.getGitRepositoryKey(), validationData.isGitUrlFound());
@@ -174,17 +174,43 @@ public class FetchBuildValidationDataCommand implements Callable<Integer> {
         );
     }
 
-    public void printHeader() {
-        List<String> labels = Fields.ordered().map(f -> f.label).collect(Collectors.toList());
+    private static void printResults(List<BuildScanData> buildScanData) {
+        printBuildScanDataHeader();
+        printBuildScanData(buildScanData);
+
+        if (buildScanData.size() == 2) {
+            printBuildTimeMetricsHeader();
+            printBuildTimeMetrics(buildScanData);
+        }
+    }
+
+    public static void printBuildScanDataHeader() {
+        List<String> labels = BuildScanDataFields.ordered().map(f -> f.label).collect(Collectors.toList());
         System.out.println(String.join(",", labels));
     }
 
-    private void printBuildValidationData(List<BuildValidationData> buildValidationData) {
-        buildValidationData.forEach(this::printBuildValidationData);
+    private static void printBuildScanData(List<BuildScanData> buildScanData) {
+        buildScanData.forEach(FetchBuildScanDataCommand::printBuildScanData);
     }
 
-    private void printBuildValidationData(BuildValidationData buildValidationData) {
-        List<String> values = Fields.ordered().map(f -> f.value.apply(buildValidationData)).collect(Collectors.toList());
+    private static void printBuildScanData(BuildScanData buildScanData) {
+        List<String> values = BuildScanDataFields.ordered().map(f -> f.value.apply(buildScanData)).collect(Collectors.toList());
+        System.out.println(String.join(",", values));
+    }
+
+    private static void printBuildTimeMetricsHeader() {
+        List<String> labels = BuildTimeMetricsFields.ordered().map(f -> f.label).collect(Collectors.toList());
+        System.out.println(String.join(",", labels));
+    }
+
+    private static void printBuildTimeMetrics(List<BuildScanData> buildScanData) {
+        final BuildTimeMetrics buildTimeData = BuildTimeMetrics.from(buildScanData.get(0), buildScanData.get(1));
+        List<String> values;
+        if (buildTimeData == null) {
+            values = BuildTimeMetricsFields.ordered().map(f -> "").collect(Collectors.toList());
+        } else {
+            values = BuildTimeMetricsFields.ordered().map(f -> f.value.apply(buildTimeData)).collect(Collectors.toList());
+        }
         System.out.println(String.join(",", values));
     }
 

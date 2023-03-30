@@ -10,9 +10,7 @@ git_branches=()
 git_commit_ids=()
 requested_tasks=()
 build_outcomes=()
-# shellcheck disable=SC2034 # not all scripts use this data
 remote_build_cache_urls=()
-# shellcheck disable=SC2034 # not all scripts use this data
 remote_build_cache_shards=()
 
 # Build caching performance metrics
@@ -25,38 +23,46 @@ executed_cacheable_duration=()
 executed_not_cacheable_num_tasks=()
 executed_not_cacheable_duration=()
 
-# Build duration metrics
-build_time=()
-serialization_factors=()
-
+# Build time metrics
 initial_build_time=""
 instant_savings=""
 instant_savings_build_time=""
 pending_savings=""
 pending_savings_build_time=""
 
+# Other build metrics
+serialization_factors=()
+
+parse_single_build_scan() {
+  local build_scan_data="$1"
+
+  local build_scan_rows
+  IFS=$'\n' read -rd '' -a build_scan_rows <<< "$build_scan_data"
+
+  parse_build_scan_row all_data "${build_scan_rows[1]}"
+}
+
+parse_build_scans_and_build_time_metrics() {
+  local build_cache_metrics_only="$1"
+  local build_scan_data="$2"
+
+  local build_scan_rows
+  IFS=$'\n' read -rd '' -a build_scan_rows <<< "$build_scan_data"
+
+  parse_build_scan_row "${build_cache_metrics_only}" "${build_scan_rows[1]}"
+  parse_build_scan_row "${build_cache_metrics_only}" "${build_scan_rows[2]}"
+
+  parse_build_time_metrics "${build_scan_rows[4]}"
+}
+
 # shellcheck disable=SC2034 # not all scripts use all of the fetched data
-parse_build_scan_csv() {
-  # This isn't the most robust way to read a CSV,
-  # but we control the CSV so we don't have to worry about various CSV edge cases
+parse_build_scan_row() {
+  local build_cache_metrics_only="$1"
+  local build_scan_row="$2"
 
-  local header_row_read run_num
-  local build_scan_csv="$1"
-  local build_cache_metrics_only="$2"
-
-  debug "Raw build scan data"
-  debug "---------------------------"
-  debug "${build_scan_csv}"
-  debug ""
-
-  header_row_read=false
+  local run_num
 
   while IFS=, read -r run_num field_1 field_2 field_3 field_4 field_5 field_6 field_7 field_8 field_9 field_10 field_11 field_12 field_13 field_14 field_15 field_16 field_17 field_18 field_19 field_20 field_21; do
-    if [[ "$header_row_read" == "false" ]]; then
-      header_row_read=true
-      continue;
-    fi
-
     debug "Build Scan $field_4 is for build $run_num"
     project_names[run_num]="$field_1"
     build_scan_ids[run_num]="$field_4"
@@ -83,52 +89,20 @@ parse_build_scan_csv() {
     executed_not_cacheable_num_tasks[run_num]="${field_18}"
     executed_not_cacheable_duration[run_num]="${field_19}"
 
-    # Build time metrics
-    build_time[run_num]="${field_20}"
+    # Other build metrics
     serialization_factors[run_num]="${field_21}"
-  done <<< "${build_scan_csv}"
-
-  initial_build_time="$(calculate_initial_build_time)"
-  instant_savings="$(calculate_instant_savings)"
-  instant_savings_build_time="$(calculate_instant_savings_build_time)"
-  pending_savings="$(calculate_pending_savings)"
-  pending_savings_build_time="$(calculate_pending_savings_build_time)"
+  done <<< "${build_scan_row}"
 }
 
-# The initial_build_time is the build time of the first build.
-calculate_initial_build_time() {
-  if [[ -n "${build_time[0]}" ]]; then
-    echo "${build_time[0]}"
-  fi
-}
+# shellcheck disable=SC2034 # not all scripts use all of the fetched data
+parse_build_time_metrics() {
+  local build_time_metrics_row="$1"
 
-# The instant_savings is the difference in the wall-clock build time between
-# the first and second build.
-calculate_instant_savings() {
-  if [[ -n "${build_time[0]}" && -n "${build_time[1]}" ]]; then
-    echo "$((build_time[0]-build_time[1]))"
-  fi
-}
-
-# The instant_savings_build_time is the build time of the second build.
-calculate_instant_savings_build_time() {
-  if [[ -n "${build_time[1]}" ]]; then
-    echo "${build_time[1]}"
-  fi
-}
-
-# The pending_savings is an estimation of the savings if all cacheable tasks had
-# been avoided.
-calculate_pending_savings() {
-  if [[ -n "${executed_cacheable_duration[1]}" && -n "${serialization_factors[1]}" ]]; then
-    echo "${executed_cacheable_duration[1]}/${serialization_factors[1]}" | bc
-  fi
-}
-
-# The pending_savings_build_time is an estimation of the build time if all
-# cacheable tasks had been avoided.
-calculate_pending_savings_build_time() {
-  if [[ -n "${build_time[1]}" && -n "${pending_savings}" ]]; then
-    echo "$((build_time[1]-pending_savings))"
-  fi
+  while IFS=, read -r field_1 field_2 field_3 field_4 field_5; do
+    initial_build_time="$field_1"
+    instant_savings="$field_2"
+    instant_savings_build_time="$field_3"
+    pending_savings="$field_4"
+    pending_savings_build_time="$field_5"
+  done <<< "${build_time_metrics_row}"
 }
