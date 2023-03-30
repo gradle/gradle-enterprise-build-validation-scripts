@@ -34,20 +34,20 @@ pending_savings_build_time=""
 serialization_factors=()
 
 parse_single_build_scan() {
-  local build_scan_csv="$1"
+  local build_scan_data="$1"
 
   local build_scan_rows
-  IFS=$'\n' read -rd '' -a build_scan_rows <<< "$build_scan_csv"
+  IFS=$'\n' read -rd '' -a build_scan_rows <<< "$build_scan_data"
 
   parse_build_scan_row all_data build_scan_rows[1]
 }
 
-parse_multi_build_scan() {
+parse_build_scans() {
   local build_cache_metrics_only="$1"
-  local build_scan_csv="$2"
+  local build_scan_data="$2"
 
   local build_scan_rows
-  IFS=$'\n' read -rd '' -a build_scan_rows <<< "$build_scan_csv"
+  IFS=$'\n' read -rd '' -a build_scan_rows <<< "$build_scan_data"
 
   parse_build_scan_row "${build_cache_metrics_only}" "${build_scan_rows[1]}"
   parse_build_scan_row "${build_cache_metrics_only}" "${build_scan_rows[2]}"

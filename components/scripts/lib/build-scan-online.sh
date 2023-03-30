@@ -77,7 +77,7 @@ fetch_and_read_build_scans() {
   debug "${build_scan_data}"
   debug ""
 
-  parse_multi_build_scan "${build_cache_metrics_only}" "${build_scan_data}"
+  parse_build_scans "${build_cache_metrics_only}" "${build_scan_data}"
 }
 
 # Note: Callers of this function require stdout to be clean. No logging can be
