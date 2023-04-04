@@ -43,7 +43,7 @@ parse_single_build_scan() {
   # Parses build scan data to an array by line
   IFS=$'\n' read -rd '' -a build_scan_rows <<< "$build_scan_data"
 
-  parse_build_scan_row all_data "${build_scan_rows[1]}"
+  parse_build_scan_row 'all_data' "${build_scan_rows[1]}"
 }
 
 parse_build_scans_and_build_time_metrics() {
@@ -84,7 +84,7 @@ parse_build_scan_row() {
     project_names[run_num]="$field_1"
     build_scan_ids[run_num]="$field_4"
 
-    if [[ "$build_cache_metrics_only" != "build_cache_metrics_only" ]]; then
+    if [[ "$build_cache_metrics_only" != 'build_cache_metrics_only' ]]; then
       base_urls[run_num]="$field_2"
       build_scan_urls[run_num]="$field_3"
       git_repos[run_num]="$field_5"
