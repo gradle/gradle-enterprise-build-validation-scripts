@@ -2,11 +2,11 @@ package com.gradle.enterprise.cli;
 
 import com.gradle.enterprise.model.BuildTimeMetrics;
 
-import java.time.Duration;
 import java.util.Arrays;
-import java.util.Locale;
 import java.util.function.Function;
 import java.util.stream.Stream;
+
+import static com.gradle.enterprise.cli.FormattingUtils.formatDuration;
 
 public enum BuildTimeMetricsFields {
     // The order the enums are defined controls the order the fields are printed in the CSV
@@ -27,22 +27,5 @@ public enum BuildTimeMetricsFields {
 
     public static Stream<BuildTimeMetricsFields> ordered() {
         return Arrays.stream(BuildTimeMetricsFields.values());
-    }
-
-    private static String formatDuration(Duration duration) {
-        long hours = duration.toHours();
-        long minutes = duration.minusHours(hours).toMinutes();
-        double seconds = duration.minusHours(hours).minusMinutes(minutes).toMillis() / 1000d;
-
-        StringBuilder s = new StringBuilder();
-        if (hours != 0) {
-            s.append(hours).append("h ");
-        }
-        if (minutes != 0) {
-            s.append(minutes).append("m ");
-        }
-        s.append(String.format(Locale.ROOT, "%.3fs", seconds));
-
-        return s.toString().trim();
     }
 }
