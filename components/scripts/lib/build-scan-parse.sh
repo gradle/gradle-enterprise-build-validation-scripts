@@ -39,6 +39,8 @@ parse_single_build_scan() {
   debug_build_scan_data "$build_scan_data"
 
   local build_scan_rows
+
+  # Parses build scan data to an array by line
   IFS=$'\n' read -rd '' -a build_scan_rows <<< "$build_scan_data"
 
   parse_build_scan_row all_data "${build_scan_rows[1]}"
@@ -51,6 +53,8 @@ parse_build_scans_and_build_time_metrics() {
   debug_build_scan_data "$build_scan_data"
 
   local build_scan_rows
+
+  # Parses build scan data to an array by line
   IFS=$'\n' read -rd '' -a build_scan_rows <<< "$build_scan_data"
 
   parse_build_scan_row "${build_cache_metrics_only}" "${build_scan_rows[1]}"
