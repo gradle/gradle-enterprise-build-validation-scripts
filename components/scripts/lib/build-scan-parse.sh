@@ -115,11 +115,6 @@ parse_build_scan_row() {
 parse_build_time_metrics() {
   local build_time_metrics_row="$1"
 
-  while IFS=, read -r field_1 field_2 field_3 field_4 field_5; do
-    initial_build_time="$field_1"
-    instant_savings="$field_2"
-    instant_savings_build_time="$field_3"
-    pending_savings="$field_4"
-    pending_savings_build_time="$field_5"
-  done <<< "${build_time_metrics_row}"
+  # Parses each build time metric to the corresponding global variable
+  IFS=, read -r initial_build_time instant_savings instant_savings_build_time pending_savings pending_savings_build_time <<< "${build_time_metrics_row}"
 }
