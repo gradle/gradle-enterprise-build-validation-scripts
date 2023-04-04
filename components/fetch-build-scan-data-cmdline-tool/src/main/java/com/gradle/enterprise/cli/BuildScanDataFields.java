@@ -77,6 +77,6 @@ public enum BuildScanDataFields {
     }
 
     private static String formatDuration(Duration duration) {
-        return duration == null ? NO_VALUE : String.valueOf(duration.toMillis());
+        return duration == null ? NO_VALUE : FormattingUtils.formatDuration(duration);
     }
 }
