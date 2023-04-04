@@ -9,11 +9,14 @@ final class FormattingUtils {
     }
 
     static String formatDuration(Duration duration) {
-        long hours = duration.toHours();
-        long minutes = duration.minusHours(hours).toMinutes();
-        double seconds = duration.minusHours(hours).minusMinutes(minutes).toMillis() / 1000d;
+        long hours = duration.abs().toHours();
+        long minutes = duration.abs().toMinutes() % 60;
+        double seconds = (duration.abs().toMillis() % 60_000) / 1000d;
 
         StringBuilder s = new StringBuilder();
+        if (duration.isNegative()) {
+            s.append('-');
+        }
         if (hours != 0) {
             s.append(hours).append("h ");
         }
