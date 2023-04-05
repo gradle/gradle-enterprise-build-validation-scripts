@@ -6,7 +6,7 @@ import java.util.Arrays;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
-import static com.gradle.enterprise.cli.Formatting.format;
+import static com.gradle.enterprise.cli.DurationFormat.format;
 
 public enum BuildTimeMetricsFields {
     // The order the enums are defined controls the order the fields are printed in the CSV

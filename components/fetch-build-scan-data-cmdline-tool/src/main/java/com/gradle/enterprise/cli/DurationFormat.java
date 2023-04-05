@@ -3,7 +3,7 @@ package com.gradle.enterprise.cli;
 import java.time.Duration;
 import java.util.Locale;
 
-final class Formatting {
+final class DurationFormat {
 
     static String format(Duration duration) {
         long hours = duration.abs().toHours();
@@ -24,6 +24,6 @@ final class Formatting {
         return s.toString().trim();
     }
 
-    private Formatting() {
+    private DurationFormat() {
     }
 }
