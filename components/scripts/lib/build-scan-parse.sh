@@ -39,9 +39,11 @@ parse_single_build_scan() {
   debug_build_scan_data "$build_scan_data"
 
   local build_scan_rows
+
+  # Parses build scan data to an array by line
   IFS=$'\n' read -rd '' -a build_scan_rows <<< "$build_scan_data"
 
-  parse_build_scan_row all_data "${build_scan_rows[1]}"
+  parse_build_scan_row 'all_data' "${build_scan_rows[1]}"
 }
 
 parse_build_scans_and_build_time_metrics() {
@@ -51,6 +53,8 @@ parse_build_scans_and_build_time_metrics() {
   debug_build_scan_data "$build_scan_data"
 
   local build_scan_rows
+
+  # Parses build scan data to an array by line
   IFS=$'\n' read -rd '' -a build_scan_rows <<< "$build_scan_data"
 
   parse_build_scan_row "${build_cache_metrics_only}" "${build_scan_rows[1]}"
@@ -80,7 +84,7 @@ parse_build_scan_row() {
     project_names[run_num]="$field_1"
     build_scan_ids[run_num]="$field_4"
 
-    if [[ "$build_cache_metrics_only" != "build_cache_metrics_only" ]]; then
+    if [[ "$build_cache_metrics_only" != 'build_cache_metrics_only' ]]; then
       base_urls[run_num]="$field_2"
       build_scan_urls[run_num]="$field_3"
       git_repos[run_num]="$field_5"
@@ -111,11 +115,6 @@ parse_build_scan_row() {
 parse_build_time_metrics() {
   local build_time_metrics_row="$1"
 
-  while IFS=, read -r field_1 field_2 field_3 field_4 field_5; do
-    initial_build_time="$field_1"
-    instant_savings="$field_2"
-    instant_savings_build_time="$field_3"
-    pending_savings="$field_4"
-    pending_savings_build_time="$field_5"
-  done <<< "${build_time_metrics_row}"
+  # Parses each build time metric to the corresponding global variable
+  IFS=, read -r initial_build_time instant_savings instant_savings_build_time pending_savings pending_savings_build_time <<< "${build_time_metrics_row}"
 }

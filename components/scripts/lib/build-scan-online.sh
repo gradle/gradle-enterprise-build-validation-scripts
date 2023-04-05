@@ -7,7 +7,7 @@ readonly FETCH_BUILD_SCAN_DATA_JAR="${LIB_DIR}/export-api-clients/fetch-build-sc
 # Enterprise API.
 process_build_scan_data_online() {
   read_build_scan_metadata
-  fetch_build_scans_and_build_time_metrics build_cache_metrics_only "${build_scan_urls[@]}"
+  fetch_build_scans_and_build_time_metrics 'build_cache_metrics_only' "${build_scan_urls[@]}"
 }
 
 read_build_scan_metadata() {
@@ -59,7 +59,7 @@ fetch_build_scans_and_build_time_metrics() {
   local build_scan_urls=("$@")
 
   local brief_logging
-  if [[ "$build_cache_metrics_only" != "build_cache_metrics_only" ]]; then
+  if [[ "$build_cache_metrics_only" != 'build_cache_metrics_only' ]]; then
     brief_logging="brief_logging"
     info "Fetching build scan data"
   fi

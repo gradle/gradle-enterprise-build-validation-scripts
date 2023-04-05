@@ -40,5 +40,5 @@ read_build_scan_dumps() {
   build_scan_data="$(invoke_java "$BUILD_SCAN_SUPPORT_TOOL_JAR" extract "0,${build_scan_dumps[0]}"  "1,${build_scan_dumps[1]}")"
   echo ", done."
 
-  parse_build_scans_and_build_time_metrics "build_cache_metrics_only" "$build_scan_data"
+  parse_build_scans_and_build_time_metrics 'build_cache_metrics_only' "$build_scan_data"
 }
