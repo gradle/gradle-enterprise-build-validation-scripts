@@ -21,7 +21,6 @@ final class Formatting {
             s.append(minutes).append("m ");
         }
         s.append(String.format(Locale.ROOT, "%.3fs", seconds));
-
         return s.toString().trim();
     }
 
