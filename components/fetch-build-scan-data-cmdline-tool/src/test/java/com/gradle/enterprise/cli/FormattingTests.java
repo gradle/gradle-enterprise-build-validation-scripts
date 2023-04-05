@@ -7,7 +7,7 @@ import java.time.Duration;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class FormattingUtilsTests {
+public class FormattingTests {
 
     @Test
     void durationsAreFormattedCorrectly() {
@@ -33,6 +33,6 @@ public class FormattingUtilsTests {
     }
 
     private static void assertDurationFormatting(String expected, Long millis) {
-        assertEquals(expected, FormattingUtils.formatDuration(Duration.ofMillis(millis)));
+        assertEquals(expected, Formatting.formatDuration(Duration.ofMillis(millis)));
     }
 }

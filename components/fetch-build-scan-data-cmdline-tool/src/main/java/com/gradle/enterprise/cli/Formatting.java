@@ -3,9 +3,9 @@ package com.gradle.enterprise.cli;
 import java.time.Duration;
 import java.util.Locale;
 
-final class FormattingUtils {
+final class Formatting {
 
-    private FormattingUtils() {
+    private Formatting() {
     }
 
     static String formatDuration(Duration duration) {
