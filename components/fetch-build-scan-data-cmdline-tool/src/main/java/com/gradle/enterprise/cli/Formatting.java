@@ -5,9 +5,6 @@ import java.util.Locale;
 
 final class Formatting {
 
-    private Formatting() {
-    }
-
     static String formatDuration(Duration duration) {
         long hours = duration.abs().toHours();
         long minutes = duration.abs().toMinutes() % 60;
@@ -26,5 +23,8 @@ final class Formatting {
         s.append(String.format(Locale.ROOT, "%.3fs", seconds));
 
         return s.toString().trim();
+    }
+
+    private Formatting() {
     }
 }
