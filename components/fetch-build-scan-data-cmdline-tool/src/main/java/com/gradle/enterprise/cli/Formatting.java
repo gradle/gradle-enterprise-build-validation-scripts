@@ -5,7 +5,7 @@ import java.util.Locale;
 
 final class Formatting {
 
-    static String formatDuration(Duration duration) {
+    static String format(Duration duration) {
         long hours = duration.abs().toHours();
         long minutes = duration.abs().toMinutes() % 60;
         double seconds = (duration.abs().toMillis() % 60_000) / 1000d;

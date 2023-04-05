@@ -33,6 +33,6 @@ public class FormattingTests {
     }
 
     private static void assertDurationFormatting(String expected, Long millis) {
-        assertEquals(expected, Formatting.formatDuration(Duration.ofMillis(millis)));
+        assertEquals(expected, Formatting.format(Duration.ofMillis(millis)));
     }
 }

@@ -6,15 +6,15 @@ import java.util.Arrays;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
-import static com.gradle.enterprise.cli.Formatting.formatDuration;
+import static com.gradle.enterprise.cli.Formatting.format;
 
 public enum BuildTimeMetricsFields {
     // The order the enums are defined controls the order the fields are printed in the CSV
-    INITIAL_BUILD_TIME("Initial Build Time", d -> formatDuration(d.initialBuildTime)),
-    INSTANT_SAVINGS("Instant Savings", d -> formatDuration(d.instantSavings)),
-    INSTANT_SAVINGS_BUILD_TIME("Instant Savings Build Time", d -> formatDuration(d.instantSavingsBuildTime)),
-    PENDING_SAVINGS("Pending Savings", d -> formatDuration(d.pendingSavings)),
-    PENDING_SAVINGS_BUILD_TIME("Pending Savings Build Time", d -> formatDuration(d.pendingSavingsBuildTime)),
+    INITIAL_BUILD_TIME("Initial Build Time", d -> format(d.initialBuildTime)),
+    INSTANT_SAVINGS("Instant Savings", d -> format(d.instantSavings)),
+    INSTANT_SAVINGS_BUILD_TIME("Instant Savings Build Time", d -> format(d.instantSavingsBuildTime)),
+    PENDING_SAVINGS("Pending Savings", d -> format(d.pendingSavings)),
+    PENDING_SAVINGS_BUILD_TIME("Pending Savings Build Time", d -> format(d.pendingSavingsBuildTime)),
     ;
 
     public final String label;
