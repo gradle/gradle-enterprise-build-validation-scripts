@@ -1,9 +1,9 @@
 @file:Suppress("UnstableApiUsage")
 
 plugins {
-    java
-    `jvm-test-suite`
-    application
+    id("application")
+    id("java")
+    id("jvm-test-suite")
     id("com.github.johnrengelman.shadow") version "8.1.1"
     id("org.openapi.generator") version "6.5.0"
 }
