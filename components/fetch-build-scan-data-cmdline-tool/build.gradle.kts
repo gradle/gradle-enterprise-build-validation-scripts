@@ -1,5 +1,8 @@
+@file:Suppress("UnstableApiUsage")
+
 plugins {
     java
+    `jvm-test-suite`
     application
     id("com.github.johnrengelman.shadow") version "8.1.1"
     id("org.openapi.generator") version "6.5.0"
@@ -32,6 +35,10 @@ java {
         languageVersion.set(JavaLanguageVersion.of(8))
         vendor.set(JvmVendorSpec.AZUL)
     }
+}
+
+val test by testing.suites.getting(JvmTestSuite::class) {
+    useJUnitJupiter()
 }
 
 openApiGenerate {
