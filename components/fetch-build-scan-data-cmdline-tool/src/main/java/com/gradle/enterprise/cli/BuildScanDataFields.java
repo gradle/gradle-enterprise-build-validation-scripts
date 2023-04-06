@@ -9,6 +9,8 @@ import java.util.Arrays;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
+import static com.gradle.enterprise.cli.DurationFormat.format;
+
 public enum BuildScanDataFields {
     // The order the enums are defined controls the order the fields are printed in the CSV
     RUN_NUM("Run Num", d -> toStringSafely(d.runNum())),
@@ -77,6 +79,6 @@ public enum BuildScanDataFields {
     }
 
     private static String formatDuration(Duration duration) {
-        return duration == null ? NO_VALUE : DurationFormat.format(duration);
+        return duration == null ? NO_VALUE : format(duration);
     }
 }
