@@ -4,6 +4,7 @@ import com.gradle.enterprise.model.BuildScanData;
 import com.gradle.enterprise.model.TaskExecutionSummary;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.Duration;
 import java.util.Arrays;
 import java.util.function.Function;
@@ -34,7 +35,7 @@ public enum BuildScanDataFields {
     EXECUTED_NOT_CACHEABLE("Executed not cacheable", d -> totalTasks(d, "executed_not_cacheable")),
     EXECUTED_NOT_CACHEABLE_DURATION("Executed not cacheable duration", d -> totalDuration(d, "executed_not_cacheable")),
     BUILD_TIME("Build time", d -> formatDuration(d.getBuildTime())),
-    SERIALIZATION_FACTOR("Serialization factor", d -> toStringSafely(d.getSerializationFactor())),
+    SERIALIZATION_FACTOR("Serialization factor", d -> formatSerializationFactor(d.getSerializationFactor())),
     ;
 
     private static final String NO_VALUE = "";
@@ -53,10 +54,6 @@ public enum BuildScanDataFields {
 
     private static String toStringSafely(Object object) {
         return object == null ? NO_VALUE : object.toString();
-    }
-
-    private static String toStringSafely(BigDecimal value) {
-        return value == null ? NO_VALUE : value.toPlainString();
     }
 
     private static String totalTasks(BuildScanData data, String avoidanceOutcome) {
@@ -80,5 +77,9 @@ public enum BuildScanDataFields {
 
     private static String formatDuration(Duration duration) {
         return duration == null ? NO_VALUE : format(duration);
+    }
+
+    private static String formatSerializationFactor(BigDecimal serializationFactor) {
+        return serializationFactor == null ? NO_VALUE : serializationFactor.setScale(2, RoundingMode.HALF_UP).doubleValue() + "x";
     }
 }
