@@ -4,7 +4,9 @@ import com.gradle.enterprise.model.BuildScanData;
 import com.gradle.enterprise.model.BuildTimeMetrics;
 
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
+import static java.util.stream.Collectors.joining;
 
 final class BuildInsightsPrinter {
 
@@ -19,8 +21,7 @@ final class BuildInsightsPrinter {
     }
 
     private static void printBuildScanDataHeader() {
-        List<String> labels = BuildScanDataFields.ordered().map(f -> f.label).collect(Collectors.toList());
-        System.out.println(String.join(",", labels));
+        printRow(BuildScanDataFields.ordered().map(f -> f.label));
     }
 
     private static void printBuildScanData(List<BuildScanData> buildScanData) {
@@ -28,24 +29,24 @@ final class BuildInsightsPrinter {
     }
 
     private static void printBuildScanData(BuildScanData buildScanData) {
-        List<String> values = BuildScanDataFields.ordered().map(f -> f.value.apply(buildScanData)).collect(Collectors.toList());
-        System.out.println(String.join(",", values));
+        printRow(BuildScanDataFields.ordered().map(f -> f.value.apply(buildScanData)));
     }
 
     private static void printBuildTimeMetricsHeader() {
-        List<String> labels = BuildTimeMetricsFields.ordered().map(f -> f.label).collect(Collectors.toList());
-        System.out.println(String.join(",", labels));
+        printRow(BuildTimeMetricsFields.ordered().map(f -> f.label));
     }
 
     private static void printBuildTimeMetrics(List<BuildScanData> buildScanData) {
         final BuildTimeMetrics buildTimeData = BuildTimeMetrics.from(buildScanData.get(0), buildScanData.get(1));
-        List<String> values;
         if (buildTimeData == null) {
-            values = BuildTimeMetricsFields.ordered().map(f -> "").collect(Collectors.toList());
+            printRow(BuildTimeMetricsFields.ordered().map(f -> ""));
         } else {
-            values = BuildTimeMetricsFields.ordered().map(f -> f.value.apply(buildTimeData)).collect(Collectors.toList());
+            printRow(BuildTimeMetricsFields.ordered().map(f -> f.value.apply(buildTimeData)));
         }
-        System.out.println(String.join(",", values));
+    }
+
+    private static void printRow(Stream<String> values) {
+        System.out.println(values.collect(joining(",")));
     }
 
     private BuildInsightsPrinter() {
