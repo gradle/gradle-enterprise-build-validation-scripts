@@ -8,9 +8,6 @@ import java.util.stream.Collectors;
 
 final class BuildInsightsPrinter {
 
-    private BuildInsightsPrinter() {
-    }
-
     static void printInsights(List<BuildScanData> buildScanData) {
         printBuildScanDataHeader();
         printBuildScanData(buildScanData);
@@ -49,5 +46,8 @@ final class BuildInsightsPrinter {
             values = BuildTimeMetricsFields.ordered().map(f -> f.value.apply(buildTimeData)).collect(Collectors.toList());
         }
         System.out.println(String.join(",", values));
+    }
+
+    private BuildInsightsPrinter() {
     }
 }
