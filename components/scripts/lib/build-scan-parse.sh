@@ -43,12 +43,11 @@ parse_single_build_scan() {
   # Parses build scan data to an array by line
   IFS=$'\n' read -rd '' -a build_scan_rows <<< "$build_scan_data"
 
-  parse_build_scan_row 'all_data' "${build_scan_rows[1]}"
+  parse_build_scan_row "${build_scan_rows[1]}"
 }
 
 parse_build_scans_and_build_time_metrics() {
-  local build_cache_metrics_only="$1"
-  local build_scan_data="$2"
+  local build_scan_data="$1"
 
   debug_build_scan_data "$build_scan_data"
 
@@ -57,8 +56,8 @@ parse_build_scans_and_build_time_metrics() {
   # Parses build scan data to an array by line
   IFS=$'\n' read -rd '' -a build_scan_rows <<< "$build_scan_data"
 
-  parse_build_scan_row "${build_cache_metrics_only}" "${build_scan_rows[1]}"
-  parse_build_scan_row "${build_cache_metrics_only}" "${build_scan_rows[2]}"
+  parse_build_scan_row "${build_scan_rows[1]}"
+  parse_build_scan_row "${build_scan_rows[2]}"
 
   parse_build_time_metrics "${build_scan_rows[4]}"
 }
@@ -74,27 +73,47 @@ debug_build_scan_data() {
 
 # shellcheck disable=SC2034 # not all scripts use all of the fetched data
 parse_build_scan_row() {
-  local build_cache_metrics_only="$1"
-  local build_scan_row="$2"
+  local build_scan_row="$1"
 
   local run_num
 
   while IFS=, read -r run_num field_1 field_2 field_3 field_4 field_5 field_6 field_7 field_8 field_9 field_10 field_11 field_12 field_13 field_14 field_15 field_16 field_17 field_18 field_19 field_20 field_21; do
     debug "Build Scan $field_4 is for build $run_num"
-    project_names[run_num]="$field_1"
-    build_scan_ids[run_num]="$field_4"
 
-    if [[ "$build_cache_metrics_only" != 'build_cache_metrics_only' ]]; then
-      base_urls[run_num]="$field_2"
-      build_scan_urls[run_num]="$field_3"
-      git_repos[run_num]="$field_5"
-      git_branches[run_num]="$field_6"
-      git_commit_ids[run_num]="$field_7"
-      requested_tasks[run_num]="$(remove_clean_task "${field_8}")"
-      build_outcomes[run_num]="$field_9"
-      remote_build_cache_urls[run_num]="${field_10}"
-      remote_build_cache_shards[run_num]="${field_11}"
+    project_names[run_num]="${field_1}"
+
+    if [ -z "${base_urls[run_num]}" ]; then
+      base_urls[run_num]="${field_2}"
     fi
+
+    if [ -z "${build_scan_urls[run_num]}" ]; then
+      build_scan_urls[run_num]="${field_3}"
+    fi
+
+    build_scan_ids[run_num]="${field_4}"
+
+    if [ -z "${git_repos[run_num]}" ]; then
+      git_repos[run_num]="${field_5}"
+    fi
+
+    if [ -z "${git_branches[run_num]}" ]; then
+      git_branches[run_num]="${field_6}"
+    fi
+
+    if [ -z "${git_commit_ids[run_num]}" ]; then
+      git_commit_ids[run_num]="${field_7}"
+    fi
+
+    if [ -z "${requested_tasks[run_num]}" ]; then
+      requested_tasks[run_num]="$(remove_clean_task "${field_8}")"
+    fi
+
+    if [ -z "${build_outcomes[run_num]}" ]; then
+      build_outcomes[run_num]="${field_9}"
+    fi
+
+    remote_build_cache_urls[run_num]="${field_10}"
+    remote_build_cache_shards[run_num]="${field_11}"
 
     # Build caching performance metrics
     avoided_up_to_date_num_tasks[run_num]="${field_12}"

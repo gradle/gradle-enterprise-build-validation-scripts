@@ -7,7 +7,7 @@ readonly FETCH_BUILD_SCAN_DATA_JAR="${LIB_DIR}/export-api-clients/fetch-build-sc
 # Enterprise API.
 process_build_scan_data_online() {
   read_build_scan_metadata
-  fetch_build_scans_and_build_time_metrics 'build_cache_metrics_only' "${build_scan_urls[@]}"
+  fetch_build_scans_and_build_time_metrics 'brief_logging' "${build_scan_urls[@]}"
 }
 
 read_build_scan_metadata() {
@@ -53,28 +53,27 @@ fetch_single_build_scan() {
   parse_single_build_scan "${build_scan_data}"
 }
 
+# The value of logging_level should be either 'brief_logging' or
+# 'verbose_logging'
 fetch_build_scans_and_build_time_metrics() {
-  local build_cache_metrics_only="$1"
+  local logging_level="$1"
   shift
   local build_scan_urls=("$@")
 
-  local brief_logging
-  if [[ "${build_cache_metrics_only}" == 'build_cache_metrics_only' ]]; then
-    brief_logging="brief_logging"
-  else
+  if [[ "${logging_level}" != 'brief_logging' ]]; then
     info "Fetching build scan data"
   fi
 
   local build_scan_data
-  build_scan_data="$(fetch_build_scan_data "${brief_logging}" "${build_scan_urls[@]}")"
+  build_scan_data="$(fetch_build_scan_data "${logging_level}" "${build_scan_urls[@]}")"
 
-  parse_build_scans_and_build_time_metrics "${build_cache_metrics_only}" "${build_scan_data}"
+  parse_build_scans_and_build_time_metrics "${build_scan_data}"
 }
 
 # Note: Callers of this function require stdout to be clean. No logging can be
 #       done inside this function.
 fetch_build_scan_data() {
-  local brief_logging="$1"
+  local logging_level="$1"
   shift
   local build_scan_urls=("$@")
 
@@ -90,7 +89,7 @@ fetch_build_scan_data() {
     args+=("--network-settings-file" "${SCRIPT_DIR}/network.settings")
   fi
 
-  if [[ "${brief_logging}" == "brief_logging" ]]; then
+  if [[ "${logging_level}" == "brief_logging" ]]; then
     args+=("--brief-logging")
   fi
 
