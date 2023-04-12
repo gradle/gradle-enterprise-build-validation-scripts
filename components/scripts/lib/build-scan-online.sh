@@ -60,7 +60,7 @@ fetch_build_scans_and_build_time_metrics() {
   shift
   local build_scan_urls=("$@")
 
-  if [[ "${logging_level}" != 'brief_logging' ]]; then
+  if [[ "${logging_level}" == 'verbose_logging' ]]; then
     info "Fetching build scan data"
   fi
 
