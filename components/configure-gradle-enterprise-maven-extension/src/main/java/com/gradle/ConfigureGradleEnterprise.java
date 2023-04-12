@@ -23,10 +23,12 @@ public class ConfigureGradleEnterprise implements GradleEnterpriseListener {
 
     private static final String EXPERIMENT_DIR = System.getProperty("com.gradle.enterprise.build-validation.expDir");
 
+    private final RootProjectExtractor rootProjectExtractor;
     private final Logger logger;
 
     @Inject
-    public ConfigureGradleEnterprise(Logger logger) {
+    public ConfigureGradleEnterprise(RootProjectExtractor rootProjectExtractor, Logger logger) {
+        this.rootProjectExtractor = rootProjectExtractor;
         this.logger = logger;
     }
 
@@ -46,11 +48,13 @@ public class ConfigureGradleEnterprise implements GradleEnterpriseListener {
             buildScan.setAllowUntrustedServer(Boolean.parseBoolean(geAllowUntrustedServer));
         }
 
-        registerBuildScanActions(buildScan);
+        String rootProjectName = rootProjectExtractor.extractRootProject(session).getName();
+
+        registerBuildScanActions(buildScan, rootProjectName);
         configureBuildScanPublishing(buildScan);
     }
 
-    private static void registerBuildScanActions(BuildScanApi buildScan) {
+    private static void registerBuildScanActions(BuildScanApi buildScan, String rootProjectName) {
         buildScan.buildFinished(buildResult -> {
             // communicate via error file that no GE server is set
             boolean omitServerUrlValidation = parseBoolean(System.getProperty("com.gradle.enterprise.build-validation.omitServerUrlValidation"));
@@ -81,7 +85,7 @@ public class ConfigureGradleEnterprise implements GradleEnterpriseListener {
             String baseUrl = String.format("%s://%s%s", buildScanUri.getScheme(), buildScanUri.getHost(), port);
 
             File scanFile = new File(EXPERIMENT_DIR, "build-scans.csv");
-            append(scanFile, String.format("%s,%s,%s,%s\n", runNum, baseUrl, buildScanUri, buildScanId));
+            append(scanFile, String.format("%s,%s,%s,%s,%s\n", runNum, rootProjectName, baseUrl, buildScanUri, buildScanId));
         });
     }
 
