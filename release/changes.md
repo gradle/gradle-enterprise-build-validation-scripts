@@ -1,1 +1,1 @@
-- [NEW] TBD
+- [FIX] Logging level when fetching Build Scan data from Gradle Enterprise is incorrect 
