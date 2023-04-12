@@ -1,1 +1,2 @@
 - [FIX] Logging level when fetching Build Scan data from Gradle Enterprise is incorrect 
+- [FIX] Experiments accepting Build Scan URLs incorrectly parse Build Scan ID when path contains extra parts

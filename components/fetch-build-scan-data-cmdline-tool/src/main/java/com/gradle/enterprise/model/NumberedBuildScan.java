@@ -65,10 +65,10 @@ public class NumberedBuildScan {
 
     private static String extractBuildScanId(URL buildScanUrl) {
         String[] pathSegments = buildScanUrl.getPath().split("/");
-        if (pathSegments.length == 0) {
+        if (pathSegments.length <= 2 || !pathSegments[1].equals("s")) {
             throw new IllegalArgumentException("Invalid Build Scan URL: " + buildScanUrl);
         }
-        return pathSegments[pathSegments.length - 1];
+        return pathSegments[2];
     }
 
     private static URL toURL(String url) {
