@@ -48,7 +48,7 @@ fetch_single_build_scan() {
   local build_scan_url="$1"
 
   local build_scan_data
-  build_scan_data="$(fetch_build_scan_data verbose_logging "${build_scan_url}")"
+  build_scan_data="$(fetch_build_scan_data 'verbose_logging' "${build_scan_url}")"
 
   parse_single_build_scan "${build_scan_data}"
 }
