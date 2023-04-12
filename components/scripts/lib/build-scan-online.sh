@@ -48,7 +48,7 @@ fetch_single_build_scan() {
   local build_scan_url="$1"
 
   local build_scan_data
-  build_scan_data="$(fetch_build_scan_data brief_logging "${build_scan_url}")"
+  build_scan_data="$(fetch_build_scan_data 'verbose_logging' "${build_scan_url}")"
 
   parse_single_build_scan "${build_scan_data}"
 }
@@ -59,8 +59,9 @@ fetch_build_scans_and_build_time_metrics() {
   local build_scan_urls=("$@")
 
   local brief_logging
-  if [[ "$build_cache_metrics_only" != 'build_cache_metrics_only' ]]; then
+  if [[ "${build_cache_metrics_only}" == 'build_cache_metrics_only' ]]; then
     brief_logging="brief_logging"
+  else
     info "Fetching build scan data"
   fi
 
