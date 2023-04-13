@@ -100,6 +100,10 @@ parse_build_scan_row() {
       build_scan_urls[run_num]="${field_3}"
     fi
 
+    if [ -z "${build_scan_ids[run_num]}" ]; then
+      build_scan_ids[run_num]="${field_4}"
+    fi
+
     if [ -z "${git_repos[run_num]}" ]; then
       git_repos[run_num]="${field_5}"
     fi
@@ -123,7 +127,6 @@ parse_build_scan_row() {
     # The below fields are always set by Build Scan data regardless of their
     # previous value and are always safe to override.
 
-    build_scan_ids[run_num]="${field_4}"
     remote_build_cache_urls[run_num]="${field_10}"
     remote_build_cache_shards[run_num]="${field_11}"
 
