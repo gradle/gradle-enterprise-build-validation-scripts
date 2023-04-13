@@ -1,6 +1,5 @@
 package com.gradle;
 
-import org.apache.maven.execution.ExecutionEvent;
 import org.apache.maven.execution.MavenExecutionRequest;
 import org.apache.maven.execution.MavenSession;
 import org.apache.maven.model.building.ModelProcessor;
@@ -16,6 +15,7 @@ import java.util.*;
 import static java.util.Collections.emptyList;
 
 public class RootProjectExtractor {
+
     private final ProjectBuilder projectBuilder;
     private final ModelProcessor modelProcessor;
     private final Logger logger;
@@ -25,10 +25,6 @@ public class RootProjectExtractor {
         this.projectBuilder = projectBuilder;
         this.modelProcessor = modelProcessor;
         this.logger = logger;
-    }
-
-    public MavenProject extractRootProject(ExecutionEvent event) {
-        return extractRootProject(event.getSession());
     }
 
     public MavenProject extractRootProject(MavenSession session) {
@@ -44,11 +40,11 @@ public class RootProjectExtractor {
             try {
                 return projectBuilder.build(workspaceDirectoryPom, session.getProjectBuildingRequest()).getProject();
             } catch (ProjectBuildingException e) {
-                logger.error("Exception locating the top level project", e);
+                logger.error("Error locating the top level project", e);
             }
         }
 
-        // We didn't successfully identify the root project, so just return the first project.
+        // return the first project if the top level project was not identified successfully
         return allProjects.get(0);
     }
 
@@ -61,13 +57,10 @@ public class RootProjectExtractor {
         }
     }
 
-    /**
-     * Older Maven versions under-reported the list of discovered projects.
-     * This method discovers all their submodules. For newer Maven versions it is a no-op.
-     */
     private List<MavenProject> discoverAllProjects(Collection<MavenProject> sessionProjects) {
         Set<MavenProject> allProjects = new LinkedHashSet<>(sessionProjects);
         sessionProjects.stream().flatMap(p -> Optional.ofNullable(p.getCollectedProjects()).orElse(emptyList()).stream()).forEach(allProjects::add);
         return new ArrayList<MavenProject>(allProjects);
     }
+
 }
