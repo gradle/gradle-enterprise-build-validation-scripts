@@ -80,7 +80,17 @@ parse_build_scan_row() {
   while IFS=, read -r run_num field_1 field_2 field_3 field_4 field_5 field_6 field_7 field_8 field_9 field_10 field_11 field_12 field_13 field_14 field_15 field_16 field_17 field_18 field_19 field_20 field_21; do
     debug "Build Scan $field_4 is for build $run_num"
 
-    project_names[run_num]="${field_1}"
+    # The project_name should be overridden by Build Scan data if it is
+    # available. This is so that the project names displayed in the summary are
+    # consistent with what is shown in the Build Scan.
+
+    if [ -n "${field_1}" ]; then
+      project_names[run_num]="${field_1}"
+    fi
+
+    # If the following fields are already valued, then they should not be
+    # overridden by Build Scan data. For locally executed builds, this data is
+    # determined by the scripts as a result of execution.
 
     if [ -z "${base_urls[run_num]}" ]; then
       base_urls[run_num]="${field_2}"
@@ -89,8 +99,6 @@ parse_build_scan_row() {
     if [ -z "${build_scan_urls[run_num]}" ]; then
       build_scan_urls[run_num]="${field_3}"
     fi
-
-    build_scan_ids[run_num]="${field_4}"
 
     if [ -z "${git_repos[run_num]}" ]; then
       git_repos[run_num]="${field_5}"
@@ -112,6 +120,10 @@ parse_build_scan_row() {
       build_outcomes[run_num]="${field_9}"
     fi
 
+    # The below fields are always set by Build Scan data regardless of their
+    # previous value and are always safe to override.
+
+    build_scan_ids[run_num]="${field_4}"
     remote_build_cache_urls[run_num]="${field_10}"
     remote_build_cache_shards[run_num]="${field_11}"
 
