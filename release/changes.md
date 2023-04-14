@@ -1,1 +1,1 @@
-- [NEW] TBD
+- [FIX] Gradle Enterprise Maven Extension version downgraded to 1.16.6
