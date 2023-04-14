@@ -1,3 +1,1 @@
-- [FIX] Logging level when fetching Build Scan data from Gradle Enterprise is incorrect 
-- [FIX] Experiments accepting Build Scan URLs incorrectly parse Build Scan ID when path contains extra parts
-- [FIX] Summary shows project name as unknown when access to Gradle Enterprise API is not configured
+- [NEW] TBD
