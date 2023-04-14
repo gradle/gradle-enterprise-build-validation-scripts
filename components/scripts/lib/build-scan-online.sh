@@ -24,10 +24,14 @@ read_build_scan_metadata() {
       debug ""
     fi
 
-    while IFS=, read -r run_num field_1 field_2 field_3; do
-       base_urls[$run_num]="$field_1"
-       build_scan_urls[$run_num]="$field_2"
-       build_scan_ids[$run_num]="$field_3"
+    local run_num project_name base_url build_scan_url build_scan_id
+
+    # shellcheck disable=SC2034
+    while IFS=, read -r run_num project_name base_url build_scan_url build_scan_id; do
+       project_names[$run_num]="${project_name}"
+       base_urls[$run_num]="${base_url}"
+       build_scan_urls[$run_num]="${build_scan_url}"
+       build_scan_ids[$run_num]="${build_scan_id}"
     done <<< "${build_scan_metadata}"
   fi
 }

@@ -94,7 +94,7 @@ if (ccudPluginVersion && isNotAtLeast(ccudPluginVersion, '1.7')) {
 }
 
 // register build scan listeners to capture build scan URL/id and to track publishing errors
-def registerBuildScanActions = { def buildScan ->
+def registerBuildScanActions = { def buildScan, def rootProjectName ->
     buildScan.buildScanPublished { publishedBuildScan ->
         // defer reading the `runNum` system property until execution time since it does not affect
         // the configuration of the build, and given its value changes between consecutive build invocations
@@ -111,7 +111,7 @@ def registerBuildScanActions = { def buildScan ->
         def baseUrl = "${buildScanUri.scheme}://${buildScanUri.host}${port}"
 
         def scanFile = new File(expDir, 'build-scans.csv')
-        scanFile.append("${runNum},${baseUrl},${buildScanUri},${buildScanId}\n")
+        scanFile.append("${runNum},${rootProjectName},${baseUrl},${buildScanUri},${buildScanId}\n")
     }
 
     buildScan.onError { error ->
@@ -212,7 +212,7 @@ if (GradleVersion.current() < GradleVersion.version('6.0')) {
                             "or use `--gradle-enterprise-server` when running the build validation script.")
                 }
 
-                registerBuildScanActions(buildScan)
+                registerBuildScanActions(buildScan, rootProject.name)
                 configureBuildScanPublishing(buildScan)
                 addBuildScanCustomData(buildScan)
             }
@@ -261,7 +261,7 @@ if (GradleVersion.current() < GradleVersion.version('6.0')) {
                         "or use `--gradle-enterprise-server` when running the build validation script.")
             }
 
-            registerBuildScanActions(ext.buildScan)
+            registerBuildScanActions(ext.buildScan, settings.rootProject.name)
             configureBuildScanPublishing(ext.buildScan)
             addBuildScanCustomData(ext.buildScan)
         }

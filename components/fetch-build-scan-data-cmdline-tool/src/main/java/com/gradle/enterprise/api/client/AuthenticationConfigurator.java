@@ -53,7 +53,7 @@ public class AuthenticationConfigurator {
 
             return Optional.ofNullable(accessKeysByHost.getProperty(url.getHost()));
         } catch (IOException e) {
-            logger.debug("Error whole trying to read access keys: " + e.getMessage() + ". Will try fetching build scan data without authentication.");
+            logger.debug("Error while trying to read access keys: " + e.getMessage() + ". Will try fetching build scan data without authentication.");
             logger.debug(e);
             return Optional.empty();
         }
