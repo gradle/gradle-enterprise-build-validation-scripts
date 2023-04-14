@@ -1,1 +1,1 @@
-- [FIX] Gradle Enterprise Maven Extension version downgraded to 1.16.6
+- [FIX] Scripts inject Gradle Enterprise Maven extension 1.17 which requires just released GE 2023.1
