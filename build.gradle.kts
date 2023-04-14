@@ -29,11 +29,9 @@ repositories {
     mavenCentral()
 }
 
-val releaseVersion = releaseVersion()
-val releaseNotes = releaseNotes()
-
+val appVersion = layout.projectDirectory.file("release/version.txt").asFile.readText().trim()
 allprojects {
-    version = releaseVersion
+    version = appVersion
 }
 
 val argbash by configurations.creating
@@ -95,10 +93,8 @@ val copyGradleScripts by tasks.registering(Copy::class) {
     group = "build"
     description = "Copies the Gradle source and generated scripts to output directory."
 
-    // local variable required for configuration cache compatibility
-    // https://docs.gradle.org/current/userguide/configuration_cache.html#config_cache:not_yet_implemented:accessing_top_level_at_execution
-    val releaseVersion = releaseVersion
-    inputs.property("project.version", releaseVersion)
+    val projectVersion = appVersion // local variable required for configuration cache compatibility
+    inputs.property("project.version", projectVersion)
 
     from(layout.projectDirectory.file("LICENSE"))
     from(layout.projectDirectory.dir("release").file("version.txt"))
@@ -106,7 +102,7 @@ val copyGradleScripts by tasks.registering(Copy::class) {
 
     from(layout.projectDirectory.dir("components/scripts/gradle")) {
         exclude("gradle-init-scripts")
-        filter { line: String -> line.replace("<HEAD>", releaseVersion.get()) }
+        filter { line: String -> line.replace("<HEAD>", projectVersion) }
     }
     from(layout.projectDirectory.dir("components/scripts/gradle")) {
         include("gradle-init-scripts/**")
@@ -118,7 +114,7 @@ val copyGradleScripts by tasks.registering(Copy::class) {
         include("network.settings")
         include("lib/**")
         exclude("lib/cli-parsers")
-        filter { line: String -> line.replace("<HEAD>", releaseVersion.get()) }
+        filter { line: String -> line.replace("<HEAD>", projectVersion) }
     }
     from(generateBashCliParsers.map { it.outputDir.file("lib/cli-parsers/gradle") }) {
         into("lib/")
@@ -133,17 +129,15 @@ val copyMavenScripts by tasks.registering(Copy::class) {
     group = "build"
     description = "Copies the Maven source and generated scripts to output directory."
 
-    // local variable required for configuration cache compatibility
-    // https://docs.gradle.org/current/userguide/configuration_cache.html#config_cache:not_yet_implemented:accessing_top_level_at_execution
-    val releaseVersion = releaseVersion
-    inputs.property("project.version", releaseVersion)
+    val projectVersion = appVersion // local variable required for configuration cache compatibility
+    inputs.property("project.version", projectVersion)
 
     from(layout.projectDirectory.file("LICENSE"))
     from(layout.projectDirectory.dir("release").file("version.txt"))
     rename("version.txt", "VERSION")
 
     from(layout.projectDirectory.dir("components/scripts/maven")) {
-        filter { line: String -> line.replace("<HEAD>", releaseVersion.get()) }
+        filter { line: String -> line.replace("<HEAD>", projectVersion) }
     }
     from(layout.projectDirectory.dir("components/scripts/")) {
         include("README.md")
@@ -151,7 +145,7 @@ val copyMavenScripts by tasks.registering(Copy::class) {
         include("network.settings")
         include("lib/**")
         exclude("lib/cli-parsers")
-        filter { line: String -> line.replace("<HEAD>", releaseVersion.get()) }
+        filter { line: String -> line.replace("<HEAD>", projectVersion) }
     }
     from(generateBashCliParsers.map { it.outputDir.file("lib/cli-parsers/maven") }) {
         into("lib/")
@@ -175,7 +169,7 @@ val assembleGradleScripts by tasks.registering(Zip::class) {
     group = "build"
     description = "Packages the Gradle experiment scripts in a zip archive."
     archiveBaseName.set("gradle-enterprise-gradle-build-validation")
-    archiveFileName.set("${archiveBaseName.get()}-${distributionVersion().get()}.zip")
+    archiveFileName.set("${archiveBaseName.get()}-${distributionVersion()}.zip")
     from(copyGradleScripts)
     into(archiveBaseName.get())
 }
@@ -184,7 +178,7 @@ val assembleMavenScripts by tasks.registering(Zip::class) {
     group = "build"
     description = "Packages the Maven experiment scripts in a zip archive."
     archiveBaseName.set("gradle-enterprise-maven-build-validation")
-    archiveFileName.set("${archiveBaseName.get()}-${distributionVersion().get()}.zip")
+    archiveFileName.set("${archiveBaseName.get()}-${distributionVersion()}.zip")
     from(copyMavenScripts)
     into(archiveBaseName.get())
 }
@@ -259,7 +253,7 @@ githubRelease {
     prerelease.set(isDevelopmentRelease)
     overwrite.set(isDevelopmentRelease)
     generateReleaseNotes.set(false)
-    body.set(releaseNotes)
+    body.set(layout.projectDirectory.file("release/changes.md").asFile.readText().trim())
     releaseAssets(assembleGradleScripts, assembleMavenScripts, generateChecksums.map { it.outputs.files.asFileTree })
 }
 
@@ -278,24 +272,26 @@ tasks.withType(Sign::class).configureEach {
     notCompatibleWithConfigurationCache("$name task does not support configuration caching")
 }
 
-fun gitHubReleaseName(): Provider<String> {
-    return releaseVersion.map { if (isDevelopmentRelease) "Development release" else it }
+fun gitHubReleaseName(): String {
+    if (isDevelopmentRelease) {
+        return "Development Build"
+    } else {
+        return version.toString()
+    }
 }
 
-fun gitReleaseTag(): Provider<String> {
-    return releaseVersion.map { if (isDevelopmentRelease) "development-latest" else "v$it" }
+fun gitReleaseTag(): String {
+    if (isDevelopmentRelease) {
+        return "development-latest"
+    } else {
+        return "v${version}"
+    }
 }
 
-fun distributionVersion(): Provider<String> {
-    return releaseVersion.map { if (isDevelopmentRelease) "dev" else it }
-}
-
-fun releaseVersion(): Provider<String> {
-    val versionFile = layout.projectDirectory.file("release/version.txt")
-    return providers.fileContents(versionFile).asText.map { it.trim() }
-}
-
-fun releaseNotes(): Provider<String> {
-    val releaseNotesFile = layout.projectDirectory.file("release/changes.md")
-    return providers.fileContents(releaseNotesFile).asText.map { it.trim() }
+fun distributionVersion(): String {
+    if (isDevelopmentRelease) {
+        return "dev"
+    } else {
+        return version.toString()
+    }
 }
