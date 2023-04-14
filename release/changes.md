@@ -1,1 +1,1 @@
-- [FIX] Scripts inject Gradle Enterprise Maven extension 1.17 which requires just released GE 2023.1
+- [NEW] TBD
