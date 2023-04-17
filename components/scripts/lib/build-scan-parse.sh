@@ -77,7 +77,7 @@ parse_build_scan_row() {
 
   local run_num
 
-  while IFS=, read -r run_num field_1 field_2 field_3 field_4 field_5 field_6 field_7 field_8 field_9 field_10 field_11 field_12 field_13 field_14 field_15 field_16 field_17 field_18 field_19 field_20 field_21; do
+  while IFS=, read -r run_num field_1 field_2 field_3 field_4 field_5 field_6 field_7 field_8 field_9 field_10 field_11 field_12 field_13 field_14 field_15 field_16 field_17 field_18 field_19 field_20; do
     debug "Build Scan $field_4 is for build $run_num"
 
     # The project_name should be overridden by Build Scan data if it is
@@ -141,7 +141,7 @@ parse_build_scan_row() {
     executed_not_cacheable_duration[run_num]="${field_19}"
 
     # Other build metrics
-    serialization_factors[run_num]="${field_21}"
+    serialization_factors[run_num]="${field_20}"
   done <<< "${build_scan_row}"
 }
 
