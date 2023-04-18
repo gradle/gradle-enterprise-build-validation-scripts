@@ -161,6 +161,18 @@ The summary looks typically like in the screenshot below.
 
 ![image](https://user-images.githubusercontent.com/231070/146644509-7b071436-3d04-46ee-a327-ea16ecfe9c76.png)
 
+### Performance characteristics
+
+| Characteristic                  | Description |
+|---------------------------------|-------------|
+| Initial build time              |             |
+| Build time with instant savings |             |
+| Build time with pending savings |             |
+| Avoided cacheable tasks         |             |
+| Executed cacheable tasks        |             |
+| Executed non-cacheable tasks    |             |
+| Serialization factor            |             |
+
 ## Investigating file resources on the local file system
 
 For the scripts that run one or more builds locally, the file resources that are used and produced by the builds can be investigated on the local file system. This is helpful when trying to understand cache misses due to changes in file inputs of the executed tasks. All intermediate and final output produced while running a given script is stored under `.data/<script_name>/<timestamp>-<run_id>`.

@@ -181,8 +181,17 @@ print_performance_characteristics() {
 
 print_performance_characteristics_header() {
   print_bl
-  info "Performance Characteristics"
+  info "Performance Characteristics ($(analyzing_the_results_link))"
   info "---------------------------"
+}
+
+# TODO update these links
+analyzing_the_results_link() {
+  if [[ "${BUILD_TOOL}" == "Maven" ]]; then
+    echo "https://github.com/gradle/gradle-enterprise-build-validation-scripts/blob/erichaagdev/performance-characteristics-explained/Maven.md#performance-characteristics"
+  else
+    echo "https://github.com/gradle/gradle-enterprise-build-validation-scripts/blob/erichaagdev/performance-characteristics-explained/Gradle.md#performance-characteristics"
+  fi
 }
 
 print_build_time_metrics() {
