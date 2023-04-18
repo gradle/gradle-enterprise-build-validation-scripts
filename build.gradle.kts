@@ -274,10 +274,6 @@ tasks.githubRelease {
     dependsOn(createReleaseTag)
 }
 
-tasks.withType(Sign::class).configureEach {
-    notCompatibleWithConfigurationCache("$name task does not support configuration caching")
-}
-
 fun gitHubReleaseName(): Provider<String> {
     return releaseVersion.map { if (isDevelopmentRelease) "Development release" else it }
 }
