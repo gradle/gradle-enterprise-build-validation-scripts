@@ -40,8 +40,8 @@ read_build_scan_dumps() {
   args+=(
       "extract"
       "--license-file" "${SCRIPT_DIR}/gradle-enterprise.license"
-      "1,${build_scan_dumps[1]}"
       "0,${build_scan_dumps[0]}"
+      "1,${build_scan_dumps[1]}"
   )
 
   echo "Extracting Build Scan data for all builds"
