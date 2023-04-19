@@ -1,8 +1,11 @@
+@file:Suppress("UnstableApiUsage")
+
 plugins {
-    java
-    application
+    id("application")
+    id("java")
+    id("jvm-test-suite")
     id("com.github.johnrengelman.shadow") version "8.1.1"
-    id("org.openapi.generator") version "6.4.0"
+    id("org.openapi.generator") version "6.5.0"
 }
 
 description = "Application to fetch build scan data using the Gradle Enterprise Export API"
@@ -23,8 +26,8 @@ dependencies {
     implementation("javax.ws.rs:javax.ws.rs-api:2.1.1")
 
     implementation("com.google.guava:guava:31.1-jre")
-    implementation("info.picocli:picocli:4.7.1")
-    annotationProcessor("info.picocli:picocli-codegen:4.7.1")
+    implementation("info.picocli:picocli:4.7.3")
+    annotationProcessor("info.picocli:picocli-codegen:4.7.3")
 }
 
 java {
@@ -32,6 +35,10 @@ java {
         languageVersion.set(JavaLanguageVersion.of(8))
         vendor.set(JvmVendorSpec.AZUL)
     }
+}
+
+val test by testing.suites.getting(JvmTestSuite::class) {
+    useJUnitJupiter()
 }
 
 openApiGenerate {

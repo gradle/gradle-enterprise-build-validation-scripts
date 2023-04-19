@@ -34,7 +34,7 @@ find_build_scan_dump() {
 }
 
 read_build_scan_dumps() {
-  local build_scan_csv args
+  local build_scan_data args
   args=()
 
   args+=(
@@ -45,9 +45,10 @@ read_build_scan_dumps() {
   )
 
   echo "Extracting Build Scan data for all builds"
-  if ! build_scan_csv="$(invoke_java "$BUILD_SCAN_SUPPORT_TOOL_JAR" "${args[@]}")"; then
+  if ! build_scan_data="$(invoke_java "$BUILD_SCAN_SUPPORT_TOOL_JAR" "${args[@]}")"; then
     exit "$UNEXPECTED_ERROR"
   fi
-  parse_build_scan_csv "$build_scan_csv" "build_cache_metrics_only"
   echo "Finished extracting Build Scan data for all builds"
+
+  parse_build_scans_and_build_time_metrics "$build_scan_data"
 }

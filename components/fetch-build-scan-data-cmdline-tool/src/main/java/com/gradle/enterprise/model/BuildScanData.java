@@ -9,7 +9,7 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class BuildValidationData {
+public class BuildScanData {
     private static final Pattern REMOTE_BUILD_CACHE_SHARD_PATTERN = Pattern.compile(".*/cache/(.+)$");
 
     private final int runNum;
@@ -26,7 +26,7 @@ public class BuildValidationData {
     private final Duration buildTime;
     private final BigDecimal serializationFactor;
 
-    public BuildValidationData(
+    public BuildScanData(
         int runNum,
         String rootProjectName,
         String buildScanId,
@@ -132,6 +132,10 @@ public class BuildValidationData {
 
     public Map<String, TaskExecutionSummary> getTasksByAvoidanceOutcome() {
         return tasksByAvoidanceOutcome;
+    }
+
+    public TaskExecutionSummary getExecutedCacheableSummary() {
+        return tasksByAvoidanceOutcome.get("executed_cacheable");
     }
 
     public Duration getBuildTime() {

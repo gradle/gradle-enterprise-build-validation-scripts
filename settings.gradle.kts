@@ -1,8 +1,9 @@
 import com.gradle.enterprise.gradleplugin.internal.extension.BuildScanExtensionWithHiddenFeatures
 
 plugins {
-    id("com.gradle.enterprise") version "3.12.6"
+    id("com.gradle.enterprise") version "3.13"
     id("com.gradle.common-custom-user-data-gradle-plugin") version "1.10"
+    id("org.gradle.toolchains.foojay-resolver-convention") version "0.4.0"
 }
 
 val isCI = System.getenv("GITHUB_ACTIONS") != null
