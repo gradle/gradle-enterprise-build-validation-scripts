@@ -266,7 +266,7 @@ githubRelease {
 val createReleaseTag by tasks.registering(CreateGitTag::class) {
     // Ensure tag is created only after a successful build
     mustRunAfter("build")
-    tagName.set(gitReleaseTag())
+    tagName.set(githubRelease.tagName.map { it.toString() })
     overwriteExisting.set(isDevelopmentRelease)
 }
 
