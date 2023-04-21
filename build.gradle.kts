@@ -11,7 +11,7 @@ plugins {
     id("org.gradle.wrapper-upgrade") version "0.11.1"
 }
 
-group = "org.gradle"
+group = "com.gradle"
 
 repositories {
     exclusiveContent {
