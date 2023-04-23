@@ -6,7 +6,7 @@ build_scan_dumps=()
 
 verify_build_scan_support_tool_exists() {
   if [ ! -f "$BUILD_SCAN_SUPPORT_TOOL_JAR" ]; then
-    die "ERROR: Missing required file when publication of Build Scan data is disabled: build-scan-support-tool.jar" "${INVALID_INPUT}"
+    die "ERROR: Missing required file build-scan-support-tool.jar in the root folder of the build validation scripts" "${INVALID_INPUT}"
   fi
 }
 
