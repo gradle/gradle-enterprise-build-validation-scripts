@@ -163,15 +163,43 @@ The summary looks typically like in the screenshot below.
 
 ### Performance characteristics
 
-| Characteristic                  | Description |
-|---------------------------------|-------------|
-| Initial build time              |             |
-| Build time with instant savings |             |
-| Build time with pending savings |             |
-| Avoided cacheable tasks         |             |
-| Executed cacheable tasks        |             |
-| Executed non-cacheable tasks    |             |
-| Serialization factor            |             |
+<details>
+  <summary>Click to see more details about each of the calculated performance characteristics.</summary>
+
+#### Initial build time
+
+The elapsed time of the first build without any build performance acceleration measures explicitly applied by the experiment.
+
+#### Build time with instant savings
+
+The elapsed time of the second build with build performance acceleration measures explicitly applied by the experiment. The experienced build performance acceleration typically comes from the incremental build feature (experiment 1) or build caching (experiments 2 to 5).
+
+Achieving the build time with instant savings does not require any changes to the tasks of the build.
+
+#### Build time with pending savings
+The projected elapsed build time of the second build with build performance acceleration measures explicitly applied by the experiment. The projection assumes that all cacheability issues of the executed cacheable tasks get resolved, and it takes into account the degree of parallelization in task execution.
+
+Achieving the build time with pending savings requires changes to the executed cacheable tasks of the build.
+
+#### Avoided cacheable tasks
+
+The estimated reduction in serial execution time of the tasks of the second build due to reusing the task outputs from the first build. The avoidance savings are calculated as the difference between the time required to reuse the task outputs and the time it took to create the task outputs originally.
+
+#### Executed cacheable tasks
+
+The serial execution time of the tasks executed in the second build that Gradle considered cacheable. These tasks stored their outputs in the build cache during the first build but were unable to reuse the outputs during the second build.
+
+These executed cacheable tasks can usually be fixed such that their outputs are reused in the second build of the experiment.
+
+####  Executed non-cacheable tasks
+The serial execution time of the tasks executed in the second build that Gradle considered non-cacheable. These tasks did not store their outputs in the build cache during the first build and did not try to reuse the outputs during the second build.
+
+These executed non-cacheable tasks can oftentimes be made cacheable through the proper declaration of their inputs and outputs such that their outputs can be stored during the first build of the experiment and reused in the second build of the experiment.
+
+#### Serialization factor
+An indicator for the degree of parallelization in task execution. The higher the number, the higher the parallelization of the executed tasks. The serialization factor allows approximately converting serial execution time to elapsed time, aka wall-clock time.
+
+</details>
 
 ## Investigating file resources on the local file system
 
