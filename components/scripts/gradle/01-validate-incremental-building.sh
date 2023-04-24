@@ -40,7 +40,7 @@ interactive_mode=''
 
 main() {
   if [[ "$build_scan_publishing_mode" == "off" ]]; then
-    verify_build_scan_support_tool_exists
+    verify_offline_mode_required_files_exist
   fi
 
   if [ "${interactive_mode}" == "on" ]; then
