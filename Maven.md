@@ -157,7 +157,7 @@ they bring you right to where it is revealed how well your build avoids unnecess
 
 The summary looks typically like in the screenshot below.
 
-![image](https://user-images.githubusercontent.com/231070/146644224-698f6dbe-fa1c-4632-8051-0e512226f577.png)
+![image](https://user-images.githubusercontent.com/5797900/234092899-a8847daf-7999-4de5-a1e4-d728db7ef085.png)
 
 ### Performance characteristics
 
