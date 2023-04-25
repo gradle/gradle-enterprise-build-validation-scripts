@@ -1,12 +1,16 @@
 #!/usr/bin/env bash
 
 readonly BUILD_SCAN_SUPPORT_TOOL_JAR="${SCRIPT_DIR}/build-scan-support-tool.jar"
+readonly GRADLE_ENTERPRISE_LICENSE="${SCRIPT_DIR}/gradle-enterprise.license"
 
 build_scan_dumps=()
 
-verify_build_scan_support_tool_exists() {
+verify_offline_mode_required_files_exist() {
   if [ ! -f "$BUILD_SCAN_SUPPORT_TOOL_JAR" ]; then
-    die "ERROR: Missing required file when publication of Build Scan data is disabled: build-scan-support-tool.jar" "${INVALID_INPUT}"
+    die "ERROR: Missing required file build-scan-support-tool.jar in the root folder of the build validation scripts" "${INVALID_INPUT}"
+  fi
+  if [ ! -f "$GRADLE_ENTERPRISE_LICENSE" ]; then
+    die "ERROR: Missing required file gradle-enterprise.license in the root folder of the build validation scripts" "${INVALID_INPUT}"
   fi
 }
 
@@ -34,11 +38,21 @@ find_build_scan_dump() {
 }
 
 read_build_scan_dumps() {
-  local build_scan_data
+  local build_scan_data args
+  args=()
 
-  echo -n "Extracting build scan data"
-  build_scan_data="$(invoke_java "$BUILD_SCAN_SUPPORT_TOOL_JAR" extract "0,${build_scan_dumps[0]}"  "1,${build_scan_dumps[1]}")"
-  echo ", done."
+  args+=(
+      "extract"
+      "--license-file" "${SCRIPT_DIR}/gradle-enterprise.license"
+      "0,${build_scan_dumps[0]}"
+      "1,${build_scan_dumps[1]}"
+  )
+
+  echo "Extracting Build Scan data for all builds"
+  if ! build_scan_data="$(invoke_java "$BUILD_SCAN_SUPPORT_TOOL_JAR" "${args[@]}")"; then
+    exit "$UNEXPECTED_ERROR"
+  fi
+  echo "Finished extracting Build Scan data for all builds"
 
   parse_build_scans_and_build_time_metrics "$build_scan_data"
 }
