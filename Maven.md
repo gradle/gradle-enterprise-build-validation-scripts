@@ -90,7 +90,7 @@ The scripts return with an exit code that depends on the outcome of running a gi
 | 1         | An invalid input was provided while attempting to run the experiment                                   |
 | 2         | One of the builds that is part of the experiment failed                                                |
 | 3         | The build was not fully cacheable for the given task graph and `--fail-if-not-fully-cacheable` was set |
-| 100       | An unclassified, fatal error happend while running the experiment                                      |
+| 100       | An unclassified, fatal error happened while running the experiment                                     |
 
 ## Applying the Common Custom User Data Maven extension
 
@@ -157,7 +157,50 @@ they bring you right to where it is revealed how well your build avoids unnecess
 
 The summary looks typically like in the screenshot below.
 
-![image](https://user-images.githubusercontent.com/231070/146644224-698f6dbe-fa1c-4632-8051-0e512226f577.png)
+![image](https://user-images.githubusercontent.com/5797900/234092899-a8847daf-7999-4de5-a1e4-d728db7ef085.png)
+
+### Performance characteristics
+
+<details>
+  <summary>Click to see more details about each of the calculated performance characteristics.</summary>
+
+#### Initial build time
+
+The elapsed time of the first build without any build performance acceleration measures explicitly applied by the experiment.
+
+#### Build time with instant savings
+
+The elapsed time of the second build with build performance acceleration measures explicitly applied by the experiment. The experienced build performance acceleration typically comes from build caching (experiments 1 to 4).
+
+Achieving the build time with instant savings does not require any changes to the goals of the build.
+
+#### Build time with pending savings
+
+The projected elapsed build time of the second build with build performance acceleration measures explicitly applied by the experiment. The projection assumes that all cacheability issues of the executed cacheable goals get resolved, and it takes into account the degree of parallelization in project execution.
+
+Achieving the build time with pending savings requires changes to the executed cacheable goals of the build.
+
+#### Avoided cacheable goals
+
+The estimated reduction in serial execution time of the goals of the second build due to reusing the goals outputs from the first build. The avoidance savings are calculated as the difference between the time required to reuse the goals outputs and the time it took to create the goals outputs originally.
+
+#### Executed cacheable goals
+
+The serial execution time of the goals executed in the second build that Gradle Enterprise considered cacheable. These goals stored their outputs in the build cache during the first build but were unable to reuse the outputs during the second build.
+
+These executed cacheable goals can usually be fixed such that their outputs are reused in the second build of the experiment.
+
+####  Executed non-cacheable goals
+
+The serial execution time of the goals executed in the second build that Gradle Enterprise considered non-cacheable. These goals did not store their outputs in the build cache during the first build and did not try to reuse the outputs during the second build.
+
+These executed non-cacheable goals can oftentimes be made cacheable through the proper declaration of their inputs and outputs such that their outputs can be stored during the first build of the experiment and reused in the second build of the experiment.
+
+#### Serialization factor
+
+An indicator for the degree of parallelization in project execution. The higher the number, the higher the parallelization of the executed projects. The serialization factor allows approximately converting serial execution time to elapsed time, aka wall-clock time.
+
+</details>
 
 ## Investigating file resources on the local file system
 
