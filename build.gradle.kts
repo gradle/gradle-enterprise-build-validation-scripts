@@ -1,3 +1,5 @@
+@file:Suppress("HasPlatformType")
+
 import com.felipefzdz.gradle.shellcheck.Shellcheck
 import org.gradle.crypto.checksum.Checksum
 
@@ -8,6 +10,8 @@ plugins {
     id("org.gradle.crypto.checksum") version "1.4.0"
     id("org.gradle.wrapper-upgrade") version "0.11.1"
 }
+
+group = "com.gradle"
 
 repositories {
     exclusiveContent {
@@ -171,6 +175,23 @@ tasks.register<Task>("copyScripts") {
     dependsOn(copyGradleScripts, copyMavenScripts)
 }
 
+val consumableGradleScripts by configurations.creating {
+    isCanBeConsumed = true
+    isCanBeResolved = false
+    attributes.attribute(Usage.USAGE_ATTRIBUTE, objects.named("gradle-build-validation-scripts"))
+}
+
+val consumableMavenScripts by configurations.creating {
+    isCanBeConsumed = true
+    isCanBeResolved = false
+    attributes.attribute(Usage.USAGE_ATTRIBUTE, objects.named("maven-build-validation-scripts"))
+}
+
+artifacts {
+    add(consumableGradleScripts.name, copyGradleScripts)
+    add(consumableMavenScripts.name, copyMavenScripts)
+}
+
 val assembleGradleScripts by tasks.registering(Zip::class) {
     group = "build"
     description = "Packages the Gradle experiment scripts in a zip archive."
@@ -266,7 +287,7 @@ githubRelease {
 val createReleaseTag by tasks.registering(CreateGitTag::class) {
     // Ensure tag is created only after a successful build
     mustRunAfter("build")
-    tagName.set(gitReleaseTag())
+    tagName.set(githubRelease.tagName.map { it.toString() })
     overwriteExisting.set(isDevelopmentRelease)
 }
 

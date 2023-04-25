@@ -15,7 +15,7 @@ repositories {
 }
 
 dependencies {
-    implementation(platform("com.squareup.okhttp3:okhttp-bom:4.10.0"))
+    implementation(platform("com.squareup.okhttp3:okhttp-bom:4.11.0"))
     implementation("com.squareup.okhttp3:okhttp")
     implementation("com.squareup.okhttp3:okhttp-tls")
     implementation("com.squareup.okhttp3:logging-interceptor")
@@ -26,8 +26,8 @@ dependencies {
     implementation("javax.ws.rs:javax.ws.rs-api:2.1.1")
 
     implementation("com.google.guava:guava:31.1-jre")
-    implementation("info.picocli:picocli:4.7.2")
-    annotationProcessor("info.picocli:picocli-codegen:4.7.2")
+    implementation("info.picocli:picocli:4.7.3")
+    annotationProcessor("info.picocli:picocli-codegen:4.7.3")
 }
 
 java {
