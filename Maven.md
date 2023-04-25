@@ -175,6 +175,7 @@ The elapsed time of the second build with build performance acceleration measure
 Achieving the build time with instant savings does not require any changes to the goals of the build.
 
 #### Build time with pending savings
+
 The projected elapsed build time of the second build with build performance acceleration measures explicitly applied by the experiment. The projection assumes that all cacheability issues of the executed cacheable goals get resolved, and it takes into account the degree of parallelization in project execution.
 
 Achieving the build time with pending savings requires changes to the executed cacheable goals of the build.
@@ -185,16 +186,18 @@ The estimated reduction in serial execution time of the goals of the second buil
 
 #### Executed cacheable goals
 
-The serial execution time of the goals executed in the second build that Gradle considered cacheable. These goals stored their outputs in the build cache during the first build but were unable to reuse the outputs during the second build.
+The serial execution time of the goals executed in the second build that Gradle Enterprise considered cacheable. These goals stored their outputs in the build cache during the first build but were unable to reuse the outputs during the second build.
 
 These executed cacheable goals can usually be fixed such that their outputs are reused in the second build of the experiment.
 
 ####  Executed non-cacheable goals
-The serial execution time of the goals executed in the second build that Gradle considered non-cacheable. These goals did not store their outputs in the build cache during the first build and did not try to reuse the outputs during the second build.
+
+The serial execution time of the goals executed in the second build that Gradle Enterprise considered non-cacheable. These goals did not store their outputs in the build cache during the first build and did not try to reuse the outputs during the second build.
 
 These executed non-cacheable goals can oftentimes be made cacheable through the proper declaration of their inputs and outputs such that their outputs can be stored during the first build of the experiment and reused in the second build of the experiment.
 
 #### Serialization factor
+
 An indicator for the degree of parallelization in project execution. The higher the number, the higher the parallelization of the executed projects. The serialization factor allows approximately converting serial execution time to elapsed time, aka wall-clock time.
 
 </details>

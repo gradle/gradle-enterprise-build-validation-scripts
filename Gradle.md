@@ -177,6 +177,7 @@ The elapsed time of the second build with build performance acceleration measure
 Achieving the build time with instant savings does not require any changes to the tasks of the build.
 
 #### Build time with pending savings
+
 The projected elapsed build time of the second build with build performance acceleration measures explicitly applied by the experiment. The projection assumes that all cacheability issues of the executed cacheable tasks get resolved, and it takes into account the degree of parallelization in task execution.
 
 Achieving the build time with pending savings requires changes to the executed cacheable tasks of the build.
@@ -192,11 +193,13 @@ The serial execution time of the tasks executed in the second build that Gradle 
 These executed cacheable tasks can usually be fixed such that their outputs are reused in the second build of the experiment.
 
 ####  Executed non-cacheable tasks
+
 The serial execution time of the tasks executed in the second build that Gradle considered non-cacheable. These tasks did not store their outputs in the build cache during the first build and did not try to reuse the outputs during the second build.
 
 These executed non-cacheable tasks can oftentimes be made cacheable through the proper declaration of their inputs and outputs such that their outputs can be stored during the first build of the experiment and reused in the second build of the experiment.
 
 #### Serialization factor
+
 An indicator for the degree of parallelization in task execution. The higher the number, the higher the parallelization of the executed tasks. The serialization factor allows approximately converting serial execution time to elapsed time, aka wall-clock time.
 
 </details>
