@@ -177,20 +177,14 @@ print_performance_characteristics() {
   print_serialization_factor
 
   print_executed_cacheable_tasks_warning
+
+  print_performance_characteristics_footer
 }
 
 print_performance_characteristics_header() {
   print_bl
-  info "Performance Characteristics ($(performance_characteristics_link))"
+  info "Performance Characteristics"
   info "---------------------------"
-}
-
-performance_characteristics_link() {
-  if [[ "${BUILD_TOOL}" == "Maven" ]]; then
-    echo "https://github.com/gradle/gradle-enterprise-build-validation-scripts/blob/main/Maven.md#performance-characteristics"
-  else
-    echo "https://github.com/gradle/gradle-enterprise-build-validation-scripts/blob/main/Gradle.md#performance-characteristics"
-  fi
 }
 
 print_build_time_metrics() {
@@ -295,6 +289,19 @@ print_executed_cacheable_tasks_warning() {
   if (( executed_cacheable_num_tasks[1] > 0)); then
     print_bl
     warn "Not all cacheable ${BUILD_TOOL_TASK}s' outputs were taken from the build cache in the second build. This reduces the savings in ${BUILD_TOOL_TASK} execution time."
+  fi
+}
+
+print_performance_characteristics_footer() {
+  print_bl
+  info "See $(performance_characteristics_link) for details."
+}
+
+performance_characteristics_link() {
+  if [[ "${BUILD_TOOL}" == "Maven" ]]; then
+    echo "https://gradle.com/bvs/main/Maven.md#performance-characteristics"
+  else
+    echo "https://gradle.com/bvs/main/Gradle.md#performance-characteristics"
   fi
 }
 
