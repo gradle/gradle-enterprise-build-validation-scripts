@@ -166,6 +166,8 @@ print_performance_characteristics() {
   print_build_time_metrics
 
   print_serialization_factor
+
+  print_performance_characteristics_footer
 }
 
 # Overrides summary.sh#print_build_time_metrics
