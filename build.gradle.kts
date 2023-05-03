@@ -33,6 +33,7 @@ repositories {
     mavenCentral()
 }
 
+val isDevelopmentRelease = !hasProperty("finalRelease")
 val releaseVersion = releaseVersion()
 val releaseNotes = releaseNotes()
 
@@ -267,8 +268,6 @@ val generateChecksums by tasks.registering(Checksum::class) {
     outputDirectory.set(layout.buildDirectory.dir("distributions/checksums").get().asFile)
     checksumAlgorithm.set(Checksum.Algorithm.SHA512)
 }
-
-val isDevelopmentRelease = !hasProperty("finalRelease")
 
 githubRelease {
     token((findProperty("github.access.token") ?: System.getenv("GITHUB_ACCESS_TOKEN") ?: "").toString())
