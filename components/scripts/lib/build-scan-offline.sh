@@ -1,16 +1,16 @@
 #!/usr/bin/env bash
 
-readonly BUILD_SCAN_SUPPORT_TOOL_JAR="${SCRIPT_DIR}/build-scan-support-tool.jar"
 readonly GRADLE_ENTERPRISE_LICENSE="${SCRIPT_DIR}/gradle-enterprise.license"
+readonly READ_BUILD_SCAN_DATA_JAR="${LIB_DIR}/build-scan-clients/read-build-scan-data-cmdline-tool-${SCRIPT_VERSION}-all.jar"
 
 build_scan_dumps=()
 
 verify_offline_mode_required_files_exist() {
-  if [ ! -f "$BUILD_SCAN_SUPPORT_TOOL_JAR" ]; then
-    die "ERROR: Missing required file build-scan-support-tool.jar in the root folder of the build validation scripts" "${INVALID_INPUT}"
-  fi
   if [ ! -f "$GRADLE_ENTERPRISE_LICENSE" ]; then
     die "ERROR: Missing required file gradle-enterprise.license in the root folder of the build validation scripts" "${INVALID_INPUT}"
+  fi
+  if [ ! -f "$READ_BUILD_SCAN_DATA_JAR" ]; then
+    die "ERROR: Missing required file to read the build scan data" "${INVALID_INPUT}"
   fi
 }
 
@@ -49,7 +49,7 @@ read_build_scan_dumps() {
   )
 
   echo "Extracting Build Scan data for all builds"
-  if ! build_scan_data="$(invoke_java "$BUILD_SCAN_SUPPORT_TOOL_JAR" "${args[@]}")"; then
+  if ! build_scan_data="$(invoke_java "$READ_BUILD_SCAN_DATA_JAR" "${args[@]}")"; then
     exit "$UNEXPECTED_ERROR"
   fi
   echo "Finished extracting Build Scan data for all builds"
