@@ -27,13 +27,13 @@ public class FailedRequestException extends RuntimeException {
         switch (code) {
             case 404:
                 return String.format("Build scan %s was not found.%nVerify the build scan exists and you have been " +
-                        "granted the permission 'Access build data via the Export API'.", buildScanUrl);
+                        "granted the permission 'Access build data via the API'.", buildScanUrl);
             case 401:
-                return String.format("Failed to authenticate while attempting to fetch build scan %s.", buildScanUrl);
+                return String.format("Failed to authenticate while attempting to fetch build scan %s", buildScanUrl);
             case 0:
-                return String.format("Unable to connect to server in order to fetch build scan %s.", buildScanUrl);
+                return String.format("Unable to connect to server to fetch build scan %s", buildScanUrl);
             default:
-                return String.format("Encountered an unexpected response while fetching build scan %s.", buildScanUrl);
+                return String.format("Encountered an unexpected response while fetching build scan %s", buildScanUrl);
         }
     }
 }
