@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
-readonly BUILD_SCAN_SUPPORT_TOOL_JAR="${SCRIPT_DIR}/build-scan-support-tool.jar"
 readonly GRADLE_ENTERPRISE_LICENSE="${SCRIPT_DIR}/gradle-enterprise.license"
+readonly BUILD_SCAN_SUPPORT_TOOL_JAR="${LIB_DIR}/build-scan-clients/read-build-scan-data-cmdline-tool-${SCRIPT_VERSION}-all.jar"
 
 build_scan_dumps=()
 
@@ -10,7 +10,7 @@ verify_offline_mode_required_files_exist() {
     die "ERROR: Missing required file gradle-enterprise.license in the root folder of the build validation scripts" "${INVALID_INPUT}"
   fi
   if [ ! -f "$BUILD_SCAN_SUPPORT_TOOL_JAR" ]; then
-    die "ERROR: Missing required file build-scan-support-tool.jar in the root folder of the build validation scripts" "${INVALID_INPUT}"
+    die "ERROR: Missing required file to read the build scan data" "${INVALID_INPUT}"
   fi
 }
 
