@@ -67,7 +67,7 @@ invoke_gradle() {
 
   if [[ "${build_scan_publishing_mode}" == "on" ]] && is_build_scan_metadata_missing "$run_num"; then
     print_bl
-    die "ERROR: Experiment aborted due to a non-recoverable failure: No Build Scan was published."
+    die "ERROR: Experiment aborted due to a non-recoverable failure: No Build Scan was published"
   fi
 
   # defined in git.sh
