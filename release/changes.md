@@ -1,2 +1,1 @@
-- [NEW] Explanations of the performance characteristics are available and linked from the experiment summary
-- [NEW] Infrastructure to run local experiments without publishing build scans is put in place
+- [NEW] TBD
