@@ -174,7 +174,7 @@ val assembleGradleScripts by tasks.registering(Zip::class) {
     group = "build"
     description = "Packages the Gradle experiment scripts in a zip archive."
     archiveBaseName.set("gradle-enterprise-gradle-build-validation")
-    archiveFileName.set("${archiveBaseName.get()}-${distributionVersion().get()}.zip")
+    archiveFileName.set(archiveBaseName.flatMap { a -> distributionVersion().map { v -> "$a-$v.zip" } })
     from(copyGradleScripts)
     into(archiveBaseName.get())
 }
@@ -183,7 +183,7 @@ val assembleMavenScripts by tasks.registering(Zip::class) {
     group = "build"
     description = "Packages the Maven experiment scripts in a zip archive."
     archiveBaseName.set("gradle-enterprise-maven-build-validation")
-    archiveFileName.set("${archiveBaseName.get()}-${distributionVersion().get()}.zip")
+    archiveFileName.set(archiveBaseName.flatMap { a -> distributionVersion().map { v -> "$a-$v.zip" } })
     from(copyMavenScripts)
     into(archiveBaseName.get())
 }
