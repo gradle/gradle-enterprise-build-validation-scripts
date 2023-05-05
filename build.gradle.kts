@@ -188,11 +188,6 @@ val consumableMavenScripts by configurations.creating {
     attributes.attribute(Usage.USAGE_ATTRIBUTE, objects.named("maven-build-validation-scripts"))
 }
 
-artifacts {
-    add(consumableGradleScripts.name, copyGradleScripts)
-    add(consumableMavenScripts.name, copyMavenScripts)
-}
-
 val assembleGradleScripts by tasks.registering(Zip::class) {
     group = "build"
     description = "Packages the Gradle experiment scripts in a zip archive."
@@ -209,6 +204,11 @@ val assembleMavenScripts by tasks.registering(Zip::class) {
     archiveFileName.set("${archiveBaseName.get()}-${distributionVersion().get()}.zip")
     from(copyMavenScripts)
     into(archiveBaseName.get())
+}
+
+artifacts {
+    add(consumableGradleScripts.name, assembleGradleScripts)
+    add(consumableMavenScripts.name, assembleMavenScripts)
 }
 
 tasks.assemble {
