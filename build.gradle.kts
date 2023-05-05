@@ -36,7 +36,6 @@ repositories {
 val isDevelopmentRelease = !hasProperty("finalRelease")
 val releaseVersion = releaseVersion()
 val releaseNotes = releaseNotes()
-
 val distributionVersion = distributionVersion()
 
 allprojects {
