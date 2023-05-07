@@ -150,7 +150,7 @@ Gradle Enterprise server at ge.example.io.
 ./02-validate-local-build-caching-same-location.sh -i -e -s https://ge.example.io
 ```
 
-## Running the experiments withoug publishing build scans
+## Running the experiments without publishing build scans
 
 The scripts that run all builds locally can be configured to not publish any build scans and instead extract the required data
 right during the build to surface the state of work avoidance by passing the `-x` or `--disable-build-scan-publishing` command 
