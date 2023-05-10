@@ -37,6 +37,12 @@ rootProject.name = "build-validation-scripts"
 
 include("components/configure-gradle-enterprise-maven-extension")
 include("components/fetch-build-scan-data-cmdline-tool")
+include("components/build-scan-data-loader-api")
+include("components/build-scan-data-loader-online")
+include("components/build-scan-data-loader-offline")
 
 project(":components/configure-gradle-enterprise-maven-extension").name = "configure-gradle-enterprise-maven-extension"
 project(":components/fetch-build-scan-data-cmdline-tool").name = "fetch-build-scan-data-cmdline-tool"
+project(":components/build-scan-data-loader-api").name = "build-scan-data-loader-api"
+project(":components/build-scan-data-loader-online").name = "build-scan-data-loader-online"
+project(":components/build-scan-data-loader-offline").name = "build-scan-data-loader-offline"
