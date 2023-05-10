@@ -15,6 +15,8 @@ repositories {
 }
 
 dependencies {
+    implementation(project(":build-scan-data-loader-api"))
+
     implementation(platform("com.squareup.okhttp3:okhttp-bom:4.11.0"))
     implementation("com.squareup.okhttp3:okhttp")
     implementation("com.squareup.okhttp3:okhttp-tls")
@@ -25,6 +27,7 @@ dependencies {
     implementation("javax.ws.rs:jsr311-api:1.1.1")
     implementation("javax.ws.rs:javax.ws.rs-api:2.1.1")
 
+    implementation("javax.annotation:javax.annotation-api:1.3.2")
     implementation("com.google.guava:guava:31.1-jre")
     implementation("info.picocli:picocli:4.7.3")
     annotationProcessor("info.picocli:picocli-codegen:4.7.3")
@@ -51,13 +54,13 @@ openApiGenerate {
     invokerPackage.set("com.gradle.enterprise.api.client")
     // see https://github.com/OpenAPITools/openapi-generator/blob/master/docs/generators/java.md for a description of each configuration option
     configOptions.set(mapOf(
-        "library" to "okhttp-gson",
-        "dateLibrary" to "java8",
-        "hideGenerationTimestamp" to "true",
-        "openApiNullable" to "false",
-        "useBeanValidation" to "false",
-        "disallowAdditionalPropertiesIfNotPresent" to "false",
-        "sourceFolder" to ""  // makes IDEs like IntelliJ more reliably interpret the class packages.
+            "library" to "okhttp-gson",
+            "dateLibrary" to "java8",
+            "hideGenerationTimestamp" to "true",
+            "openApiNullable" to "false",
+            "useBeanValidation" to "false",
+            "disallowAdditionalPropertiesIfNotPresent" to "false",
+            "sourceFolder" to ""  // makes IDEs like IntelliJ more reliably interpret the class packages.
     ))
 }
 

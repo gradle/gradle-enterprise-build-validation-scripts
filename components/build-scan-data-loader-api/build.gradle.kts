@@ -19,7 +19,7 @@ dependencies {
     implementation("javax.ws.rs:jsr311-api:1.1.1")
     implementation("javax.ws.rs:javax.ws.rs-api:2.1.1")
 
-    implementation("com.google.guava:guava:31.1-jre")
+    implementation("com.google.guava:guava:31.1-jre") // todo use implementation("javax.annotation:javax.annotation-api:1.3.2")
 }
 
 java {
