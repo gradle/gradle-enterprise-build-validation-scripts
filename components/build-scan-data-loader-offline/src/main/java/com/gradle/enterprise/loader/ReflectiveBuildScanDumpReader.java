@@ -11,7 +11,7 @@ import java.lang.reflect.Method;
 import java.nio.file.FileSystems;
 import java.nio.file.Path;
 
-public final class ReflectiveBuildScanDumpReader {
+final class ReflectiveBuildScanDumpReader {
 
     private final Object buildScanDumpReader;
 
@@ -19,15 +19,14 @@ public final class ReflectiveBuildScanDumpReader {
         this.buildScanDumpReader = buildScanDumpReader;
     }
 
-    @SuppressWarnings("WeakerAccess")
-    public static ReflectiveBuildScanDumpReader newInstance(Path licenseFile) {
+    static ReflectiveBuildScanDumpReader newInstance(Path licenseFile) {
         try {
             Class<?> buildScanDumpExtractorClass = Class.forName("com.gradle.enterprise.scans.supporttools.scandump.BuildScanDumpReader");
             Method newInstance = buildScanDumpExtractorClass.getMethod("newInstance", Path.class);
             Object instance = newInstance.invoke(null, licenseFile);
             return new ReflectiveBuildScanDumpReader(instance);
         } catch (ClassNotFoundException e) {
-            throw new IllegalStateException("Unable to find the Build Scan dump extractor.", e);
+            throw new IllegalStateException("Unable to find the Build Scan dump extractor", e);
         } catch (InvocationTargetException e) {
             // We know that the real BuildScanDumpExtractor can only throw runtime exceptions (no checked exceptions are declared)
             throw (RuntimeException) e.getCause();
@@ -36,26 +35,25 @@ public final class ReflectiveBuildScanDumpReader {
         }
     }
 
-    @SuppressWarnings({"WeakerAccess", "unused"})
-    public Pair<GradleAttributes, GradleBuildCachePerformance> readGradleBuildScanDump(Path scanDump) {
+    Pair<GradleAttributes, GradleBuildCachePerformance> readGradleBuildScanDump(Path scanDump) {
         try {
             Method extractGradleBuildScanDump = buildScanDumpReader.getClass().getMethod("readGradleBuildScanDump", Path.class);
             Object gradleBuild = extractGradleBuildScanDump.invoke(buildScanDumpReader, scanDump);
 
             GradleAttributes attributes = (GradleAttributes) gradleBuild.getClass().getField("attributes").get(gradleBuild);
-            GradleBuildCachePerformance  buildCachePerformance = (GradleBuildCachePerformance) gradleBuild.getClass().getField("buildCachePerformance").get(gradleBuild);
+            GradleBuildCachePerformance buildCachePerformance = (GradleBuildCachePerformance) gradleBuild.getClass().getField("buildCachePerformance").get(gradleBuild);
 
             return new Pair<>(attributes, buildCachePerformance);
         } catch (InvocationTargetException e) {
             // We know that the real BuildScanDumpExtractor can only throw runtime exceptions (no checked exceptions are declared)
             throw (RuntimeException) e.getCause();
-        } catch (NoSuchMethodException | IllegalAccessException | NoSuchFieldException e) {
+        } catch (NoSuchMethodException | NoSuchFieldException | IllegalAccessException e) {
             throw new RuntimeException("Unable to read Build Scan dump: " + e.getMessage(), e);
         }
     }
 
     @SuppressWarnings({"WeakerAccess", "unused"})
-    public Pair<MavenAttributes, MavenBuildCachePerformance> readMavenBuildScanDump(Path scanDump) {
+    Pair<MavenAttributes, MavenBuildCachePerformance> readMavenBuildScanDump(Path scanDump) {
         try {
             Method extractMavenBuildScanDump = buildScanDumpReader.getClass().getMethod("readMavenBuildScanDump", Path.class);
             Object mavenBuild = extractMavenBuildScanDump.invoke(buildScanDumpReader, scanDump);
@@ -67,7 +65,7 @@ public final class ReflectiveBuildScanDumpReader {
         } catch (InvocationTargetException e) {
             // We know that the real BuildScanDumpExtractor can only throw runtime exceptions (no checked exceptions are declared)
             throw (RuntimeException) e.getCause();
-        } catch (NoSuchMethodException | IllegalAccessException | NoSuchFieldException e) {
+        } catch (NoSuchMethodException | NoSuchFieldException | IllegalAccessException e) {
             throw new RuntimeException("Unable to read Build Scan dump: " + e.getMessage(), e);
         }
     }
