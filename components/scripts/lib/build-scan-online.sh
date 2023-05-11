@@ -101,5 +101,5 @@ fetch_build_scan_data() {
     args+=( "${run_num},${build_scan_urls[run_num]}" )
   done
 
-  invoke_java "${FETCH_BUILD_SCAN_DATA_JAR}" "${args[@]}"
+  JAVA_HOME="${CLIENT_JAVA_HOME}" invoke_java "${FETCH_BUILD_SCAN_DATA_JAR}" "${args[@]}"
 }
