@@ -37,15 +37,11 @@ final class ReflectiveBuildScanDumpReader {
         }
     }
 
-    @SuppressWarnings("WeakerAccess")
     BuildToolType readBuildToolType(Path scanDump) {
         try {
-            Class<?> buildToolTypeScanDumpReaderClass = Class.forName("com.gradle.enterprise.scans.supporttools.scandump.BuildScanDumpReader");
-            Method readBuildToolType = buildToolTypeScanDumpReaderClass.getMethod("readBuildToolType", Path.class);
+            Method readBuildToolType = buildScanDumpReader.getClass().getMethod("readBuildToolType", Path.class);
             String buildToolType = (String) readBuildToolType.invoke(null, scanDump);
             return BuildToolType.valueOf(buildToolType);
-        } catch (ClassNotFoundException e) {
-            throw new IllegalStateException("Unable to find the Build Scan dump extractor.", e);
         } catch (InvocationTargetException e) {
             // We know that the real BuildScanDumpExtractor can only throw runtime exceptions (no checked exceptions are declared)
             throw (RuntimeException) e.getCause();
