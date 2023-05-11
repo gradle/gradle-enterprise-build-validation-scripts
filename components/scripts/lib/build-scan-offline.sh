@@ -49,7 +49,7 @@ read_build_scan_dumps() {
   )
 
   echo "Extracting Build Scan data for all builds"
-  if ! build_scan_data="$(invoke_java "$READ_BUILD_SCAN_DATA_JAR" "${args[@]}")"; then
+  if ! build_scan_data="$(JAVA_HOME="${CLIENT_JAVA_HOME}" invoke_java "$READ_BUILD_SCAN_DATA_JAR" "${args[@]}")"; then
     exit "$UNEXPECTED_ERROR"
   fi
   echo "Finished extracting Build Scan data for all builds"

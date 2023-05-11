@@ -56,6 +56,7 @@ public class FetchBuildScanDataCommand implements Callable<Integer> {
     public Integer call() {
         // Use System.err for logging since we're going to write out the CSV to System.out
         logger = new ConsoleLogger(System.err, colorScheme, debug);
+        logger.debug("Using JVM at " + System.getProperty("java.home"));
 
         networkSettingsFile.ifPresent(settingsFile -> NetworkSettingsConfigurator.configureNetworkSettings(settingsFile, logger));
 
