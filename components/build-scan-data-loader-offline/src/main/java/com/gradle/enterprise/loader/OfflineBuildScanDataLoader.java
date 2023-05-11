@@ -23,7 +23,7 @@ public final class OfflineBuildScanDataLoader implements BuildScanDataLoader {
 
     @Override
     public BuildToolType determineBuildToolType(URI resource) {
-        return BuildToolType.GRADLE;
+        return reader.readBuildToolType(Paths.get(resource));
     }
 
     @Override

@@ -11,6 +11,8 @@ import java.lang.reflect.Method;
 import java.nio.file.FileSystems;
 import java.nio.file.Path;
 
+import static com.gradle.enterprise.loader.BuildScanDataLoader.*;
+
 final class ReflectiveBuildScanDumpReader {
 
     private final Object buildScanDumpReader;
@@ -27,6 +29,23 @@ final class ReflectiveBuildScanDumpReader {
             return new ReflectiveBuildScanDumpReader(instance);
         } catch (ClassNotFoundException e) {
             throw new IllegalStateException("Unable to find the Build Scan dump extractor", e);
+        } catch (InvocationTargetException e) {
+            // We know that the real BuildScanDumpExtractor can only throw runtime exceptions (no checked exceptions are declared)
+            throw (RuntimeException) e.getCause();
+        } catch (NoSuchMethodException | IllegalAccessException e) {
+            throw new RuntimeException("Unable to read Build Scan dumps: " + e.getMessage(), e);
+        }
+    }
+
+    @SuppressWarnings("WeakerAccess")
+    BuildToolType readBuildToolType(Path scanDump) {
+        try {
+            Class<?> buildToolTypeScanDumpReaderClass = Class.forName("com.gradle.enterprise.scans.supporttools.scandump.BuildScanDumpReader");
+            Method readBuildToolType = buildToolTypeScanDumpReaderClass.getMethod("readBuildToolType", Path.class);
+            String buildToolType = (String) readBuildToolType.invoke(null, scanDump);
+            return BuildToolType.valueOf(buildToolType);
+        } catch (ClassNotFoundException e) {
+            throw new IllegalStateException("Unable to find the Build Scan dump extractor.", e);
         } catch (InvocationTargetException e) {
             // We know that the real BuildScanDumpExtractor can only throw runtime exceptions (no checked exceptions are declared)
             throw (RuntimeException) e.getCause();
