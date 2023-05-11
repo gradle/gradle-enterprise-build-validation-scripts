@@ -1,0 +1,7 @@
+build/generated/gradle_enterprise_api/*
+build/generated/gradle_enterprise_api/.github/*
+build/generated/gradle_enterprise_api/api/*
+build/generated/gradle_enterprise_api/docs/*
+build/generated/gradle_enterprise_api/gradle/**/*
+build/generated/gradle_enterprise_api/src/main/AndroidManifest.xml
+build/generated/gradle_enterprise_api/src/test/**/*
