@@ -1,1 +1,1 @@
-- [NEW] TBD
+- [NEW] Use `CLIENT_JAVA_HOME	 environment variable to control the JVM used to run the Build Scan clients
