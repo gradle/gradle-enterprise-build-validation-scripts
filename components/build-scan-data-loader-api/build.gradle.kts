@@ -11,9 +11,30 @@ val apiSpecificationFile = objects.property(File::class).value(resources.text.fr
 
 repositories {
     mavenCentral()
+
+    exclusiveContent {
+        forRepository {
+            ivy {
+                url = uri("https://docs.gradle.com/")
+                patternLayout {
+                    artifact("[organisation]/api-manual/ref/[artifact]-[revision]-api.[ext]")
+                }
+                metadataSources {
+                    artifact()
+                }
+            }
+        }
+        filter {
+            includeModule("enterprise", "gradle-enterprise")
+        }
+    }
 }
 
+val openApiSpec by configurations.creating
+
 dependencies {
+    openApiSpec("enterprise:gradle-enterprise:$gradleEnterpriseVersion@yaml")
+
     implementation(platform("com.squareup.okhttp3:okhttp-bom:4.11.0"))
     implementation("com.squareup.okhttp3:okhttp")
 
@@ -33,7 +54,7 @@ java {
 
 openApiGenerate {
     generatorName.set("java")
-    inputSpec.set(apiSpecificationFile)
+    inputSpec.set(providers.provider { openApiSpec.singleFile.absolutePath })
     outputDir.set("$buildDir/generated/gradle_enterprise_api")
     ignoreFileOverride.set("$projectDir/.openapi-generator-ignore")
     modelPackage.set("com.gradle.enterprise.api.model")
