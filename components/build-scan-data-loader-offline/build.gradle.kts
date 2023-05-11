@@ -2,10 +2,6 @@ plugins {
     id("java-library")
 }
 
-repositories {
-    mavenCentral()
-}
-
 dependencies {
     api(project(":build-scan-data-loader-api"))
     "runtimeOnly"(files("build-scan-dump-reader.jar"))
