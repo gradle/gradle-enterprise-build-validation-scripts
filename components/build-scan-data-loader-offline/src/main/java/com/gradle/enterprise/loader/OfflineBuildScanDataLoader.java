@@ -9,7 +9,8 @@ import java.net.URI;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-public class OfflineBuildScanDataLoader implements BuildScanDataLoader {
+public final class OfflineBuildScanDataLoader implements BuildScanDataLoader {
+
     private final ReflectiveBuildScanDumpReader reader;
 
     private OfflineBuildScanDataLoader(ReflectiveBuildScanDumpReader reader) {

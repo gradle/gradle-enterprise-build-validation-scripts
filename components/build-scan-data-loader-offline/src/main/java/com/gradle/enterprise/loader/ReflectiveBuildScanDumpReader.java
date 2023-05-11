@@ -11,7 +11,7 @@ import java.lang.reflect.Method;
 import java.nio.file.FileSystems;
 import java.nio.file.Path;
 
-public class ReflectiveBuildScanDumpReader {
+public final class ReflectiveBuildScanDumpReader {
 
     private final Object buildScanDumpReader;
 
@@ -78,4 +78,5 @@ public class ReflectiveBuildScanDumpReader {
         Pair<GradleAttributes, GradleBuildCachePerformance> result = extractor.readGradleBuildScanDump(FileSystems.getDefault().getPath("/Users/jhurne/Projects/road-tests/build-validation/gradle-enterprise-gradle-build-validation/.data/02-validate-local-build-caching-same-location/20230511T111441-645cb201/second-build_ge-solutions/sample-projects/gradle/8.x/no-ge/build-scan-8.0.2-3.12.6-1683796487697-104c8ac5-cf01-4eb6-8b2d-f447d4803249.scan"));
         System.out.println("Successfully fetched build scan dump data: " + result);
     }
+
 }

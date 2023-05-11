@@ -7,7 +7,7 @@ import com.gradle.enterprise.api.model.MavenBuildCachePerformance;
 
 import java.net.URI;
 
-public class OnlineBuildScanDataLoader implements BuildScanDataLoader {
+public final class OnlineBuildScanDataLoader implements BuildScanDataLoader {
 
     @Override
     public Pair<GradleAttributes, GradleBuildCachePerformance> loadDataForGradle(URI resource) {
