@@ -1,0 +1,200 @@
+[
+  {
+    "name": "com.gradle.enterprise.api.model.ApiProblem",
+    "allDeclaredConstructors" : true,
+    "allDeclaredMethods": true,
+    "allDeclaredFields": true
+  },
+  {
+    "name": "com.gradle.enterprise.api.model.Build",
+    "allDeclaredConstructors" : true,
+    "allDeclaredMethods": true,
+    "allDeclaredFields": true
+  },
+  {
+    "name": "com.gradle.enterprise.api.model.BuildAttributesEnvironment",
+    "allDeclaredConstructors" : true,
+    "allDeclaredMethods": true,
+    "allDeclaredFields": true
+  },
+  {
+    "name": "com.gradle.enterprise.api.model.BuildAttributesLink",
+    "allDeclaredConstructors" : true,
+    "allDeclaredMethods": true,
+    "allDeclaredFields": true
+  },
+  {
+    "name": "com.gradle.enterprise.api.model.BuildAttributesValue",
+    "allDeclaredConstructors" : true,
+    "allDeclaredMethods": true,
+    "allDeclaredFields": true
+  },
+  {
+    "name": "com.gradle.enterprise.api.model.BuildQuery",
+    "allDeclaredConstructors" : true,
+    "allDeclaredMethods": true,
+    "allDeclaredFields": true
+  },
+  {
+    "name": "com.gradle.enterprise.api.model.GradleAttributes",
+    "allDeclaredConstructors" : true,
+    "allDeclaredMethods": true,
+    "allDeclaredFields": true
+  },
+  {
+    "name": "com.gradle.enterprise.api.model.GradleBuildCachePerformance",
+    "allDeclaredConstructors" : true,
+    "allDeclaredMethods": true,
+    "allDeclaredFields": true
+  },
+  {
+    "name": "com.gradle.enterprise.api.model.GradleBuildCachePerformanceAvoidanceSavingsSummary",
+    "allDeclaredConstructors" : true,
+    "allDeclaredMethods": true,
+    "allDeclaredFields": true
+  },
+  {
+    "name": "com.gradle.enterprise.api.model.GradleBuildCachePerformanceBuildCacheLocalInfo",
+    "allDeclaredConstructors" : true,
+    "allDeclaredMethods": true,
+    "allDeclaredFields": true
+  },
+  {
+    "name": "com.gradle.enterprise.api.model.GradleBuildCachePerformanceBuildCacheOverhead",
+    "allDeclaredConstructors" : true,
+    "allDeclaredMethods": true,
+    "allDeclaredFields": true
+  },
+  {
+    "name": "com.gradle.enterprise.api.model.GradleBuildCachePerformanceBuildCacheRemoteInfo",
+    "allDeclaredConstructors" : true,
+    "allDeclaredMethods": true,
+    "allDeclaredFields": true
+  },
+  {
+    "name": "com.gradle.enterprise.api.model.GradleBuildCachePerformanceBuildCaches",
+    "allDeclaredConstructors" : true,
+    "allDeclaredMethods": true,
+    "allDeclaredFields": true
+  },
+  {
+    "name": "com.gradle.enterprise.api.model.GradleBuildCachePerformanceTaskExecutionEntry",
+    "allDeclaredConstructors" : true,
+    "allDeclaredMethods": true,
+    "allDeclaredFields": true
+  },
+  {
+    "name": "com.gradle.enterprise.api.model.GradleBuildCachePerformanceTaskExecutionEntry$AvoidanceOutcomeEnum$Adapter",
+    "allDeclaredConstructors" : true,
+    "allDeclaredMethods": true,
+    "allDeclaredFields": true
+  },
+  {
+    "name": "com.gradle.enterprise.api.model.GradleBuildCachePerformanceTaskExecutionEntry$NonCacheabilityCategoryEnum$Adapter",
+    "allDeclaredConstructors" : true,
+    "allDeclaredMethods": true,
+    "allDeclaredFields": true
+  },
+  {
+    "name": "com.gradle.enterprise.api.model.GradleBuildCachePerformanceTaskFingerprintingSummary",
+    "allDeclaredConstructors" : true,
+    "allDeclaredMethods": true,
+    "allDeclaredFields": true
+  },
+  {
+    "name": "com.gradle.enterprise.api.model.GradleBuildOptions",
+    "allDeclaredConstructors" : true,
+    "allDeclaredMethods": true,
+    "allDeclaredFields": true
+  },
+  {
+    "name": "com.gradle.enterprise.api.model.GradleGradleEnterpriseSettings",
+    "allDeclaredConstructors" : true,
+    "allDeclaredMethods": true,
+    "allDeclaredFields": true
+  },
+  {
+    "name": "com.gradle.enterprise.api.model.KeySecretPair",
+    "allDeclaredConstructors" : true,
+    "allDeclaredMethods": true,
+    "allDeclaredFields": true
+  },
+  {
+    "name": "com.gradle.enterprise.api.model.MavenAttributes",
+    "allDeclaredConstructors" : true,
+    "allDeclaredMethods": true,
+    "allDeclaredFields": true
+  },
+  {
+    "name": "com.gradle.enterprise.api.model.MavenBuildCachePerformance",
+    "allDeclaredConstructors" : true,
+    "allDeclaredMethods": true,
+    "allDeclaredFields": true
+  },
+  {
+    "name": "com.gradle.enterprise.api.model.MavenBuildCachePerformanceAvoidanceSavingsSummary",
+    "allDeclaredConstructors" : true,
+    "allDeclaredMethods": true,
+    "allDeclaredFields": true
+  },
+  {
+    "name": "com.gradle.enterprise.api.model.MavenBuildCachePerformanceBuildCacheLocalInfo",
+    "allDeclaredConstructors" : true,
+    "allDeclaredMethods": true,
+    "allDeclaredFields": true
+  },
+  {
+    "name": "com.gradle.enterprise.api.model.MavenBuildCachePerformanceBuildCacheOverhead",
+    "allDeclaredConstructors" : true,
+    "allDeclaredMethods": true,
+    "allDeclaredFields": true
+  },
+  {
+    "name": "com.gradle.enterprise.api.model.MavenBuildCachePerformanceBuildCacheRemoteInfo",
+    "allDeclaredConstructors" : true,
+    "allDeclaredMethods": true,
+    "allDeclaredFields": true
+  },
+  {
+    "name": "com.gradle.enterprise.api.model.MavenBuildCachePerformanceBuildCaches",
+    "allDeclaredConstructors" : true,
+    "allDeclaredMethods": true,
+    "allDeclaredFields": true
+  },
+  {
+    "name": "com.gradle.enterprise.api.model.MavenBuildCachePerformanceGoalExecutionEntry",
+    "allDeclaredConstructors" : true,
+    "allDeclaredMethods": true,
+    "allDeclaredFields": true
+  },
+  {
+    "name": "com.gradle.enterprise.api.model.MavenBuildCachePerformanceGoalFingerprintingSummary",
+    "allDeclaredConstructors" : true,
+    "allDeclaredMethods": true,
+    "allDeclaredFields": true
+  },
+  {
+    "name": "com.gradle.enterprise.api.model.MavenBuildOptions",
+    "allDeclaredConstructors" : true,
+    "allDeclaredMethods": true,
+    "allDeclaredFields": true
+  },
+  {
+    "name": "com.gradle.enterprise.api.model.MavenGradleEnterpriseSettings",
+    "allDeclaredConstructors" : true,
+    "allDeclaredMethods": true,
+    "allDeclaredFields": true
+  },
+  {
+    "name": "com.gradle.enterprise.api.model.NodeConfiguration",
+    "allDeclaredConstructors" : true,
+    "allDeclaredMethods": true,
+    "allDeclaredFields": true
+  },
+  {
+    "name": "com.gradle.enterprise.api.model.ReplicationConfiguration",
+    "allDeclaredConstructors" : true,
+    "allDeclaredMethods": true,
+    "allDeclaredFields": true
+  }
+]

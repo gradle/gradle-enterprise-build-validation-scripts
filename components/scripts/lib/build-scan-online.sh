@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-readonly FETCH_BUILD_SCAN_DATA_JAR="${LIB_DIR}/build-scan-clients/fetch-build-scan-data-cmdline-tool-${SCRIPT_VERSION}-all.jar"
+readonly FETCH_BUILD_SCAN_DATA_EXE="${LIB_DIR}/build-scan-clients/fetch-build-scan-data-cmdline-tool"
 
 # This is a helper function for the common pattern of reading Build Scan metadata
 # from the build-scans.csv file, then retrieving build metrics using the Gradle
@@ -101,5 +101,5 @@ fetch_build_scan_data() {
     args+=( "${run_num},${build_scan_urls[run_num]}" )
   done
 
-  invoke_java "${FETCH_BUILD_SCAN_DATA_JAR}" "${args[@]}"
+  "${FETCH_BUILD_SCAN_DATA_EXE}" "${args[@]}"
 }
