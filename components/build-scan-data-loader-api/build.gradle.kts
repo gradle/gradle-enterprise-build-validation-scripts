@@ -1,7 +1,13 @@
+@file:Suppress("HasPlatformType")
+
 plugins {
     id("java-library")
     id("org.openapi.generator") version "6.6.0"
 }
+
+val gradleEnterpriseVersion = "2022.4"
+val apiUrl = "https://docs.gradle.com/enterprise/api-manual/ref/gradle-enterprise-$gradleEnterpriseVersion-api.yaml"
+val apiSpecificationFile = objects.property(File::class).value(resources.text.fromUri(apiUrl).asFile()).map { file -> file.absolutePath }
 
 repositories {
     mavenCentral()
@@ -31,7 +37,7 @@ java {
 
 openApiGenerate {
     generatorName.set("java")
-    inputSpec.set("$projectDir/src/main/openapi/openapi.yaml")
+    inputSpec.set(apiSpecificationFile)
     outputDir.set("$buildDir/generated/gradle_enterprise_api")
     ignoreFileOverride.set("$projectDir/.openapi-generator-ignore")
     modelPackage.set("com.gradle.enterprise.api.model")
