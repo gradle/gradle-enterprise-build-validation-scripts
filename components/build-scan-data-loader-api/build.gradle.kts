@@ -6,8 +6,6 @@ plugins {
 }
 
 val gradleEnterpriseVersion = "2022.4"
-val apiUrl = "https://docs.gradle.com/enterprise/api-manual/ref/gradle-enterprise-$gradleEnterpriseVersion-api.yaml"
-val apiSpecificationFile = objects.property(File::class).value(resources.text.fromUri(apiUrl).asFile()).map { file -> file.absolutePath }
 
 repositories {
     mavenCentral()
