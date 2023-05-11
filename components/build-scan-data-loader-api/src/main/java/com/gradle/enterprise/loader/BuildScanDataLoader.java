@@ -5,11 +5,13 @@ import com.gradle.enterprise.api.model.GradleBuildCachePerformance;
 import com.gradle.enterprise.api.model.MavenAttributes;
 import com.gradle.enterprise.api.model.MavenBuildCachePerformance;
 
+import java.net.URI;
+
 public interface BuildScanDataLoader {
 
-    Pair<GradleAttributes, GradleBuildCachePerformance> loadDataForGradle();
+    Pair<GradleAttributes, GradleBuildCachePerformance> loadDataForGradle(URI resource);
 
-    Pair<MavenAttributes, MavenBuildCachePerformance> loadDataForMaven();
+    Pair<MavenAttributes, MavenBuildCachePerformance> loadDataForMaven(URI resource);
 
     final class Pair<S, T> {
 

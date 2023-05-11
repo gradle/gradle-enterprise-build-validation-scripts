@@ -5,16 +5,29 @@ import com.gradle.enterprise.api.model.GradleBuildCachePerformance;
 import com.gradle.enterprise.api.model.MavenAttributes;
 import com.gradle.enterprise.api.model.MavenBuildCachePerformance;
 
-public class OfflineBuildScanDataLoader implements BuildScanDataLoader {
+import java.net.URI;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
-    @Override
-    public Pair<GradleAttributes, GradleBuildCachePerformance> loadDataForGradle() {
-        return null;
+public class OfflineBuildScanDataLoader implements BuildScanDataLoader {
+    private final ReflectiveBuildScanDumpReader reader;
+
+    private OfflineBuildScanDataLoader(ReflectiveBuildScanDumpReader reader) {
+        this.reader = reader;
+    }
+
+    public static OfflineBuildScanDataLoader newInstance(Path licenseFile) {
+        return new OfflineBuildScanDataLoader(ReflectiveBuildScanDumpReader.newInstance(licenseFile));
     }
 
     @Override
-    public Pair<MavenAttributes, MavenBuildCachePerformance> loadDataForMaven() {
-        return null;
+    public Pair<GradleAttributes, GradleBuildCachePerformance> loadDataForGradle(URI resource) {
+        return reader.readGradleBuildScanDump(Paths.get(resource));
+    }
+
+    @Override
+    public Pair<MavenAttributes, MavenBuildCachePerformance> loadDataForMaven(URI resource) {
+        return reader.readMavenBuildScanDump(Paths.get(resource));
     }
 
 }
