@@ -1,4 +1,4 @@
-- [NEW] Use `CLIENT_JAVA_HOME`	 environment variable to control the JVM used to run the Build Scan clients
+- [NEW] Use `CLIENT_JAVA_HOME` environment variable to control the JVM used to run the Build Scan clients
 - [NEW] Drops support for Gradle Enterprise versions older than 2023.1 when using `-e` command line option
 - [FIX] Informs the Gradle Enterprise Gradle plugin that it is being applied externally when using `-e` command line option
 - [FIX] API requests do not allow time for build scans to become available
