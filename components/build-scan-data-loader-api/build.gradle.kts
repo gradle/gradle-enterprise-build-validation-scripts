@@ -16,12 +16,8 @@ repositories {
 dependencies {
     implementation(platform("com.squareup.okhttp3:okhttp-bom:4.11.0"))
     implementation("com.squareup.okhttp3:okhttp")
-    implementation("com.squareup.okhttp3:okhttp-tls")
-    implementation("com.squareup.okhttp3:logging-interceptor")
 
-    implementation("io.swagger:swagger-annotations:1.6.10")
     implementation("io.gsonfire:gson-fire:1.8.5")
-    implementation("javax.ws.rs:jsr311-api:1.1.1")
     implementation("javax.ws.rs:javax.ws.rs-api:2.1.1")
 
     implementation("javax.annotation:javax.annotation-api:1.3.2")
@@ -57,10 +53,19 @@ openApiGenerate {
     ))
 }
 
+val filterOpenApiGeneratedClasses by tasks.registering(Copy::class) {
+    from(tasks.openApiGenerate) {
+        include("com/gradle/enterprise/api/client/JSON.java")
+        include("com/gradle/enterprise/api/client/ApiException.java")
+        include("com/gradle/enterprise/api/model/**/*")
+    }
+    into(layout.buildDirectory.dir("generated-filtered"))
+}
+
 sourceSets {
     main {
         java {
-            srcDir(tasks.openApiGenerate)
+            srcDir(filterOpenApiGeneratedClasses)
         }
     }
 }
