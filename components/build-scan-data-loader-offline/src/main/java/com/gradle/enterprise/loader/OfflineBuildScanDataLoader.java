@@ -22,6 +22,11 @@ public final class OfflineBuildScanDataLoader implements BuildScanDataLoader {
     }
 
     @Override
+    public BuildToolType determineBuildToolType(URI resource) {
+        return BuildToolType.GRADLE;
+    }
+
+    @Override
     public Pair<GradleAttributes, GradleBuildCachePerformance> loadDataForGradle(URI resource) {
         return reader.readGradleBuildScanDump(Paths.get(resource));
     }

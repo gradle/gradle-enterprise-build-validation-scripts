@@ -9,9 +9,13 @@ import java.net.URI;
 
 public interface BuildScanDataLoader {
 
+    BuildToolType determineBuildToolType(URI resource);
+
     Pair<GradleAttributes, GradleBuildCachePerformance> loadDataForGradle(URI resource);
 
     Pair<MavenAttributes, MavenBuildCachePerformance> loadDataForMaven(URI resource);
+
+    enum BuildToolType {GRADLE, MAVEN}
 
     final class Pair<S, T> {
 

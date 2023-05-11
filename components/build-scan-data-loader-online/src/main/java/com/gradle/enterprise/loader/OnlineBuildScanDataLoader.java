@@ -10,6 +10,11 @@ import java.net.URI;
 public final class OnlineBuildScanDataLoader implements BuildScanDataLoader {
 
     @Override
+    public BuildToolType determineBuildToolType(URI resource) {
+        return BuildToolType.GRADLE;
+    }
+
+    @Override
     public Pair<GradleAttributes, GradleBuildCachePerformance> loadDataForGradle(URI resource) {
         return null;
     }
