@@ -37,10 +37,8 @@ dependencies {
 
     implementation(platform("com.squareup.okhttp3:okhttp-bom:4.11.0"))
     implementation("com.squareup.okhttp3:okhttp")
-
     implementation("io.gsonfire:gson-fire:1.8.5")
     implementation("javax.ws.rs:javax.ws.rs-api:2.1.1")
-
     implementation("javax.annotation:javax.annotation-api:1.3.2")
     implementation("com.google.code.findbugs:jsr305:3.0.2")
 }
