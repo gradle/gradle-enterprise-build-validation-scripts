@@ -9,7 +9,7 @@ import com.gradle.enterprise.api.model.GradleBuildCachePerformanceTaskExecutionE
 import com.gradle.enterprise.api.model.MavenAttributes;
 import com.gradle.enterprise.api.model.MavenBuildCachePerformance;
 import com.gradle.enterprise.api.model.MavenBuildCachePerformanceGoalExecutionEntry;
-import com.gradle.enterprise.cli.ConsoleLogger;
+import com.gradle.enterprise.loader.Logger;
 import com.gradle.enterprise.model.BuildScanData;
 import com.gradle.enterprise.model.CustomValueNames;
 import com.gradle.enterprise.model.NumberedBuildScan;
@@ -43,9 +43,9 @@ public class GradleEnterpriseApiClient {
 
     private final CustomValueNames customValueNames;
 
-    private final ConsoleLogger logger;
+    private final Logger logger;
 
-    public GradleEnterpriseApiClient(URL baseUrl, CustomValueNames customValueNames, ConsoleLogger logger) {
+    public GradleEnterpriseApiClient(URL baseUrl, CustomValueNames customValueNames, Logger logger) {
         this.baseUrl = baseUrl;
         this.customValueNames = customValueNames;
         this.logger = logger;

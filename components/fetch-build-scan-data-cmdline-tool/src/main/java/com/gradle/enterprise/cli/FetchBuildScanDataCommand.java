@@ -2,6 +2,7 @@ package com.gradle.enterprise.cli;
 
 import com.gradle.enterprise.api.client.FailedRequestException;
 import com.gradle.enterprise.api.client.GradleEnterpriseApiClient;
+import com.gradle.enterprise.loader.Logger;
 import com.gradle.enterprise.model.BuildScanData;
 import com.gradle.enterprise.model.CustomValueNames;
 import com.gradle.enterprise.model.NumberedBuildScan;
@@ -27,7 +28,7 @@ import java.util.stream.Collectors;
 public class FetchBuildScanDataCommand implements Callable<Integer> {
 
     private final CommandLine.Help.ColorScheme colorScheme;
-    private ConsoleLogger logger;
+    private Logger logger;
 
     public FetchBuildScanDataCommand(CommandLine.Help.ColorScheme colorScheme) {
         this.colorScheme = colorScheme;

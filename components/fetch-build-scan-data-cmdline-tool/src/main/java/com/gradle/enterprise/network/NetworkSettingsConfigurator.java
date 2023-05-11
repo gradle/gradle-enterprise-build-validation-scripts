@@ -1,6 +1,6 @@
 package com.gradle.enterprise.network;
 
-import com.gradle.enterprise.cli.ConsoleLogger;
+import com.gradle.enterprise.loader.Logger;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -10,7 +10,7 @@ import java.util.Properties;
 
 public class NetworkSettingsConfigurator {
 
-    public static void configureNetworkSettings(Path networkSettingsFile, ConsoleLogger logger) {
+    public static void configureNetworkSettings(Path networkSettingsFile, Logger logger) {
         try {
             configureBasedOnProperties(networkSettingsFile, logger);
         } catch (IOException e) {
@@ -18,7 +18,7 @@ public class NetworkSettingsConfigurator {
         }
     }
 
-    private static void configureBasedOnProperties(Path networkSettingsFile, ConsoleLogger logger) throws IOException {
+    private static void configureBasedOnProperties(Path networkSettingsFile, Logger logger) throws IOException {
         if (Files.isRegularFile(networkSettingsFile)) {
             logger.debug("Loading network settings from " + networkSettingsFile.toAbsolutePath());
             Properties proxyProps = loadProperties(networkSettingsFile);

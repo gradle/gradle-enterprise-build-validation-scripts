@@ -1,7 +1,7 @@
 package com.gradle.enterprise.api.client;
 
 import com.google.common.base.Strings;
-import com.gradle.enterprise.cli.ConsoleLogger;
+import com.gradle.enterprise.loader.Logger;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -23,7 +23,7 @@ public class AuthenticationConfigurator {
     private static final String MALFORMED_ENVIRONMENT_VARIABLE_ERROR = "Environment variable " + EnvVars.ACCESS_KEY
             + " is malformed (expected format: 'server-host=access-key' or 'server-host1=access-key1;server-host2=access-key2')";
 
-    public static void configureAuth(URL url, ApiClient client, ConsoleLogger logger) {
+    public static void configureAuth(URL url, ApiClient client, Logger logger) {
         String username = System.getenv(EnvVars.USERNAME);
         String password = System.getenv(EnvVars.PASSWORD);
 
@@ -44,7 +44,7 @@ public class AuthenticationConfigurator {
         }
     }
 
-    private static Optional<String> lookupAccessKey(URL url, ConsoleLogger logger) {
+    private static Optional<String> lookupAccessKey(URL url, Logger logger) {
         try {
             Properties accessKeysByHost = new Properties();
             accessKeysByHost.putAll(loadMavenHomeAccessKeys());
