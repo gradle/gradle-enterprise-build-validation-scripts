@@ -1,15 +1,11 @@
 package com.gradle.enterprise.api.client;
 
 import com.gradle.enterprise.api.GradleEnterpriseApi;
-import com.gradle.enterprise.api.model.Build;
-import com.gradle.enterprise.api.model.BuildAttributesValue;
-import com.gradle.enterprise.api.model.GradleAttributes;
-import com.gradle.enterprise.api.model.GradleBuildCachePerformance;
-import com.gradle.enterprise.api.model.GradleBuildCachePerformanceTaskExecutionEntry;
-import com.gradle.enterprise.api.model.MavenAttributes;
-import com.gradle.enterprise.api.model.MavenBuildCachePerformance;
-import com.gradle.enterprise.api.model.MavenBuildCachePerformanceGoalExecutionEntry;
-import com.gradle.enterprise.loader.Logger;
+import com.gradle.enterprise.api.model.*;
+import com.gradle.enterprise.cli.ConsoleLogger;
+import com.gradle.enterprise.loader.BuildScanDataLoader;
+import com.gradle.enterprise.loader.OfflineBuildScanDataLoader;
+import com.gradle.enterprise.loader.OnlineBuildScanDataLoader;
 import com.gradle.enterprise.model.BuildScanData;
 import com.gradle.enterprise.model.CustomValueNames;
 import com.gradle.enterprise.model.NumberedBuildScan;
@@ -24,22 +20,20 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.time.Duration;
 import java.time.format.DateTimeParseException;
-import java.util.AbstractMap;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static com.gradle.enterprise.api.model.GradleBuildCachePerformanceTaskExecutionEntry.AvoidanceOutcomeEnum.EXECUTED_CACHEABLE;
 import static com.gradle.enterprise.api.model.GradleBuildCachePerformanceTaskExecutionEntry.AvoidanceOutcomeEnum.EXECUTED_NOT_CACHEABLE;
 import static com.gradle.enterprise.api.model.GradleBuildCachePerformanceTaskExecutionEntry.NonCacheabilityCategoryEnum.DISABLED_TO_ENSURE_CORRECTNESS;
 import static com.gradle.enterprise.api.model.GradleBuildCachePerformanceTaskExecutionEntry.NonCacheabilityCategoryEnum.OVERLAPPING_OUTPUTS;
+import static com.gradle.enterprise.loader.BuildScanDataLoader.BuildToolType;
 
 public class GradleEnterpriseApiClient {
 
     private final URL baseUrl;
     private final GradleEnterpriseApi apiClient;
+    private final BuildScanDataLoader buildScanDataLoader;
 
     private final CustomValueNames customValueNames;
 
@@ -56,6 +50,10 @@ public class GradleEnterpriseApiClient {
         AuthenticationConfigurator.configureAuth(baseUrl, client, logger);
 
         this.apiClient = new GradleEnterpriseApi(client);
+
+        this.buildScanDataLoader = baseUrl.getProtocol().equals("file")
+                ? OfflineBuildScanDataLoader.newInstance(null) // todo
+                : new OnlineBuildScanDataLoader();
     }
 
     private OkHttpClient configureHttpClient(OkHttpClient httpClient) {
@@ -126,28 +124,32 @@ public class GradleEnterpriseApiClient {
         int runNum = buildScan.runNum();
         String buildScanId = buildScan.buildScanId();
         try {
-            Build build = apiClient.getBuild(buildScanId, null);
-            if (build.getBuildToolType().equalsIgnoreCase("gradle")) {
-                GradleAttributes attributes = apiClient.getGradleAttributes(buildScanId, null);
-                GradleBuildCachePerformance buildCachePerformance = apiClient.getGradleBuildCachePerformance(buildScanId, null);
+            BuildToolType buildToolType = buildScanDataLoader.determineBuildToolType(buildScan.uri());
+            if (buildToolType.equals(BuildToolType.GRADLE)) {
+                BuildScanDataLoader.Pair<GradleAttributes, GradleBuildCachePerformance> result =
+                        buildScanDataLoader.loadDataForGradle(buildScan.uri());
+                GradleAttributes attributes = result.first;
+                GradleBuildCachePerformance performance = result.second;
                 return new BuildScanData(
-                    runNum,
-                    attributes.getRootProjectName(),
-                    buildScanId,
-                    baseUrl,
-                    findCustomValue(customValueNames.getGitRepositoryKey(), attributes.getValues()),
-                    findCustomValue(customValueNames.getGitBranchKey(), attributes.getValues()),
-                    findCustomValue(customValueNames.getGitCommitIdKey(), attributes.getValues()),
-                    attributes.getRequestedTasks(),
-                    buildOutcomeFrom(attributes),
-                    remoteBuildCacheUrlFrom(buildCachePerformance),
-                    summarizeTaskExecutions(buildCachePerformance),
-                    buildTimeFrom(buildCachePerformance),
-                    serializationFactorFrom(buildCachePerformance)
+                        runNum,
+                        attributes.getRootProjectName(),
+                        buildScanId,
+                        baseUrl,
+                        findCustomValue(customValueNames.getGitRepositoryKey(), attributes.getValues()),
+                        findCustomValue(customValueNames.getGitBranchKey(), attributes.getValues()),
+                        findCustomValue(customValueNames.getGitCommitIdKey(), attributes.getValues()),
+                        attributes.getRequestedTasks(),
+                        buildOutcomeFrom(attributes),
+                        remoteBuildCacheUrlFrom(performance),
+                        summarizeTaskExecutions(performance),
+                        buildTimeFrom(performance),
+                        serializationFactorFrom(performance)
                 );
-            } else if (build.getBuildToolType().equalsIgnoreCase("maven")) {
-                MavenAttributes attributes = apiClient.getMavenAttributes(buildScanId, null);
-                MavenBuildCachePerformance buildCachePerformance = apiClient.getMavenBuildCachePerformance(buildScanId, null);
+            } else if (buildToolType.equals(BuildToolType.MAVEN)) {
+                BuildScanDataLoader.Pair<MavenAttributes, MavenBuildCachePerformance> result =
+                        buildScanDataLoader.loadDataForMaven(buildScan.uri());
+                MavenAttributes attributes = result.first;
+                MavenBuildCachePerformance performance = result.second;
                 return new BuildScanData(
                         runNum,
                         attributes.getTopLevelProjectName(),
@@ -158,20 +160,20 @@ public class GradleEnterpriseApiClient {
                         findCustomValue(customValueNames.getGitCommitIdKey(), attributes.getValues()),
                         attributes.getRequestedGoals(),
                         buildOutcomeFrom(attributes),
-                        remoteBuildCacheUrlFrom(buildCachePerformance),
-                        summarizeTaskExecutions(buildCachePerformance),
-                        buildTimeFrom(buildCachePerformance),
-                        serializationFactorFrom(buildCachePerformance)
+                        remoteBuildCacheUrlFrom(performance),
+                        summarizeTaskExecutions(performance),
+                        buildTimeFrom(performance),
+                        serializationFactorFrom(performance)
                 );
             } else {
-                throw new RuntimeException(String.format("Build scan %s was generated by an unknown build agent: %s.", buildScan.url(), build.getBuildToolType()));
+                throw new RuntimeException(String.format("Build scan %s was generated by an unknown build agent: %s.", buildScan.url(), buildToolType));
             }
-        } catch (ApiException e) {
-            throw new FailedRequestException(buildScan.url(), e);
+        } catch (RuntimeException e) { // todo fix nesting of exceptions
+            throw e; // throw new FailedRequestException(buildScan.url(), e); // todo fix
         }
     }
 
-    private String findCustomValue(String key, List<BuildAttributesValue> values) {
+    private static String findCustomValue(String key, List<BuildAttributesValue> values) {
         return values.stream()
             .filter(v -> v.getName().equals(key))
             .map(v -> {
@@ -184,21 +186,21 @@ public class GradleEnterpriseApiClient {
             .orElse("");
     }
 
-    private String buildOutcomeFrom(GradleAttributes attributes) {
+    private static String buildOutcomeFrom(GradleAttributes attributes) {
         if(!attributes.getHasFailed()) {
             return "SUCCESS";
         }
         return "FAILED";
     }
 
-    private String buildOutcomeFrom(MavenAttributes attributes) {
+    private static String buildOutcomeFrom(MavenAttributes attributes) {
         if(!attributes.getHasFailed()) {
             return "SUCCESS";
         }
         return "FAILED";
     }
 
-    private URL remoteBuildCacheUrlFrom(GradleBuildCachePerformance buildCachePerformance) {
+    private static URL remoteBuildCacheUrlFrom(GradleBuildCachePerformance buildCachePerformance) {
         if (buildCachePerformance.getBuildCaches() == null ||
             buildCachePerformance.getBuildCaches().getRemote().getUrl() == null) {
             return null;
@@ -212,7 +214,7 @@ public class GradleEnterpriseApiClient {
         }
     }
 
-    private URL remoteBuildCacheUrlFrom(MavenBuildCachePerformance buildCachePerformance) {
+    private static URL remoteBuildCacheUrlFrom(MavenBuildCachePerformance buildCachePerformance) {
         if (buildCachePerformance.getBuildCaches() == null ||
             buildCachePerformance.getBuildCaches().getRemote() == null ||
             buildCachePerformance.getBuildCaches().getRemote().getUrl() == null) {
@@ -228,9 +230,9 @@ public class GradleEnterpriseApiClient {
     }
 
     @NotNull
-    private Map<String, TaskExecutionSummary> summarizeTaskExecutions(GradleBuildCachePerformance buildCachePerformance) {
+    private static Map<String, TaskExecutionSummary> summarizeTaskExecutions(GradleBuildCachePerformance buildCachePerformance) {
         Map<String, List<GradleBuildCachePerformanceTaskExecutionEntry>> tasksByOutcome = buildCachePerformance.getTaskExecution().stream()
-            .collect(Collectors.groupingBy(this::avoidanceOutcome));
+            .collect(Collectors.groupingBy(GradleEnterpriseApiClient::avoidanceOutcome));
 
         Map<String, TaskExecutionSummary> summariesByOutcome = tasksByOutcome.entrySet()
             .stream()
@@ -243,7 +245,7 @@ public class GradleEnterpriseApiClient {
         return toTotalAvoidedFromCache(summariesByOutcome);
     }
 
-    private String avoidanceOutcome(GradleBuildCachePerformanceTaskExecutionEntry task) {
+    private static String avoidanceOutcome(GradleBuildCachePerformanceTaskExecutionEntry task) {
         GradleBuildCachePerformanceTaskExecutionEntry.AvoidanceOutcomeEnum avoidanceOutcome = task.getAvoidanceOutcome();
         GradleBuildCachePerformanceTaskExecutionEntry.NonCacheabilityCategoryEnum nonCacheabilityCategory = task.getNonCacheabilityCategory();
         if (avoidanceOutcome == EXECUTED_NOT_CACHEABLE && (nonCacheabilityCategory == OVERLAPPING_OUTPUTS || nonCacheabilityCategory == DISABLED_TO_ENSURE_CORRECTNESS)) {
@@ -253,7 +255,7 @@ public class GradleEnterpriseApiClient {
     }
 
     @NotNull
-    private Map<String, TaskExecutionSummary> summarizeTaskExecutions(MavenBuildCachePerformance buildCachePerformance) {
+    private static Map<String, TaskExecutionSummary> summarizeTaskExecutions(MavenBuildCachePerformance buildCachePerformance) {
         Map<String, List<MavenBuildCachePerformanceGoalExecutionEntry>> tasksByOutcome = buildCachePerformance.getGoalExecution().stream()
             .collect(Collectors.groupingBy(
                 t -> t.getAvoidanceOutcome().toString()
@@ -330,4 +332,5 @@ public class GradleEnterpriseApiClient {
     private static BigDecimal serializationFactorFrom(MavenBuildCachePerformance buildCachePerformance) {
         return BigDecimal.valueOf(buildCachePerformance.getSerializationFactor());
     }
+
 }
