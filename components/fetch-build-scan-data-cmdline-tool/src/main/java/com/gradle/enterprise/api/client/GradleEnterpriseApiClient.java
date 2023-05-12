@@ -1,6 +1,5 @@
 package com.gradle.enterprise.api.client;
 
-import com.gradle.enterprise.api.GradleEnterpriseApi;
 import com.gradle.enterprise.api.model.*;
 import com.gradle.enterprise.cli.ConsoleLogger;
 import com.gradle.enterprise.loader.BuildScanDataLoader;
@@ -32,10 +31,8 @@ import static com.gradle.enterprise.loader.BuildScanDataLoader.BuildToolType;
 public class GradleEnterpriseApiClient {
 
     private final URL baseUrl;
-    private final GradleEnterpriseApi apiClient;
-    private final BuildScanDataLoader buildScanDataLoader;
-
     private final CustomValueNames customValueNames;
+    private final BuildScanDataLoader buildScanDataLoader;
 
     private final Logger logger;
 
@@ -44,12 +41,11 @@ public class GradleEnterpriseApiClient {
         this.customValueNames = customValueNames;
         this.logger = logger;
 
+        // todo this all goes away
         ApiClient client = new ApiClient();
         client.setHttpClient(configureHttpClient(client.getHttpClient()));
         client.setBasePath(baseUrl.toString());
         AuthenticationConfigurator.configureAuth(baseUrl, client, logger);
-
-        this.apiClient = new GradleEnterpriseApi(client);
 
         this.buildScanDataLoader = baseUrl.getProtocol().equals("file")
                 ? OfflineBuildScanDataLoader.newInstance(null) // todo
