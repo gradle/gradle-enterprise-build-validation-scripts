@@ -11,6 +11,7 @@ public interface BuildScanDataLoader {
 
     BuildToolType determineBuildToolType(URI resource);
 
+    // todo in online mode, fetch the two models in parallel (for both Gradle and Maven)
     Pair<GradleAttributes, GradleBuildCachePerformance> loadDataForGradle(URI resource);
 
     Pair<MavenAttributes, MavenBuildCachePerformance> loadDataForMaven(URI resource);

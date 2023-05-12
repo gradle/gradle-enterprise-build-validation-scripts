@@ -1,6 +1,8 @@
 package com.gradle.enterprise.model;
 
 import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -55,6 +57,14 @@ public class NumberedBuildScan {
             return new URL(baseUrl, "/s/" + buildScanId);
         } catch (MalformedURLException e) {
             throw new RuntimeException(e.getMessage(), e);
+        }
+    }
+
+    public URI uri() { // todo
+        try {
+            return url().toURI();
+        } catch (URISyntaxException e) {
+            throw new RuntimeException(e);
         }
     }
 
