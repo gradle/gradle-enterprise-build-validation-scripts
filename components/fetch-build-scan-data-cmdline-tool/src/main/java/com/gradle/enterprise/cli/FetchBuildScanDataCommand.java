@@ -40,6 +40,9 @@ public class FetchBuildScanDataCommand implements Callable<Integer> {
     @Parameters(paramLabel = "BUILD_SCAN", description = "The build scans to fetch. Each build scan URL is preceded by the run num that produced the build scan.", arity = "1..*")
     private List<String> runNumsAndBuildScanUrls;
 
+    @Option(names = {"--license-file"}, description = "Specifies the location of the Gradle Enterprise license.", required = true)
+    private Path licenseFile;
+
     @Option(names = {"--mapping-file"}, description = "Specifies a mapping file that configures the names used to fetch important custom values.")
     private Optional<Path> customValuesMappingFile;
 
@@ -85,7 +88,7 @@ public class FetchBuildScanDataCommand implements Callable<Integer> {
     private BuildScanData fetchBuildScanData(NumberedBuildScan buildScan, CustomValueNames customValueNames) {
         logStartFetchingBuildScanData(buildScan);
         try {
-            GradleEnterpriseApiClient apiClient = new GradleEnterpriseApiClient(buildScan.baseUrl(), customValueNames, logger);
+            GradleEnterpriseApiClient apiClient = new GradleEnterpriseApiClient(buildScan.baseUrl(), customValueNames, licenseFile, logger);
             BuildScanData data = apiClient.fetchBuildScanData(buildScan);
 
             logFinishedFetchingBuildScanData(buildScan);

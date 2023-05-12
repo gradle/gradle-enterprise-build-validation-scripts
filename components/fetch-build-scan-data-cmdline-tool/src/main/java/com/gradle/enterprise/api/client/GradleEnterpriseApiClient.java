@@ -13,6 +13,7 @@ import com.gradle.enterprise.model.TaskExecutionSummary;
 import java.math.BigDecimal;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.nio.file.Path;
 import java.time.Duration;
 import java.util.AbstractMap;
 import java.util.Arrays;
@@ -33,11 +34,11 @@ public final class GradleEnterpriseApiClient {
     private final CustomValueNames customValueNames;
     private final BuildScanDataLoader buildScanDataLoader;
 
-    public GradleEnterpriseApiClient(URL baseUrl, CustomValueNames customValueNames, Logger logger) {
+    public GradleEnterpriseApiClient(URL baseUrl, CustomValueNames customValueNames, Path licenseFile, Logger logger) {
         this.baseUrl = baseUrl;
         this.customValueNames = customValueNames;
         this.buildScanDataLoader = baseUrl.getProtocol().equals("file")
-                ? OfflineBuildScanDataLoader.newInstance(null) // todo
+                ? OfflineBuildScanDataLoader.newInstance(licenseFile)
                 : new OnlineBuildScanDataLoader(logger);
     }
 
