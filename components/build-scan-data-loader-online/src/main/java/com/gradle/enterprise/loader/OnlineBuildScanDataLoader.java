@@ -63,8 +63,7 @@ public final class OnlineBuildScanDataLoader implements BuildScanDataLoader {
 
     private synchronized GradleEnterpriseApiClient getOrCreateClient(URL buildScanUrl) {
         URL baseUrl = extractBaseUrl(buildScanUrl);
-        apiClientsByBaseUrl.computeIfAbsent(buildScanUrl.toString(), k -> new GradleEnterpriseApiClient(baseUrl, logger));
-        return apiClientsByBaseUrl.get(baseUrl.toString());
+        return apiClientsByBaseUrl.computeIfAbsent(baseUrl.toString(), k -> new GradleEnterpriseApiClient(baseUrl, logger));
     }
 
     private static URL toBuildScanURL(URI resource) {
