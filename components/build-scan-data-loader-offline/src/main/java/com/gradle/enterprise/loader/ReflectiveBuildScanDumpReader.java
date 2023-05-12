@@ -23,14 +23,14 @@ final class ReflectiveBuildScanDumpReader {
 
     static ReflectiveBuildScanDumpReader newInstance(Path licenseFile) {
         try {
-            Class<?> buildScanDumpExtractorClass = Class.forName("com.gradle.enterprise.scans.supporttools.scandump.BuildScanDumpReader");
-            Method newInstance = buildScanDumpExtractorClass.getMethod("newInstance", Path.class);
+            Class<?> buildScanDumpReaderClass = Class.forName("com.gradle.enterprise.scans.supporttools.scandump.BuildScanDumpReader");
+            Method newInstance = buildScanDumpReaderClass.getMethod("newInstance", Path.class);
             Object instance = newInstance.invoke(null, licenseFile);
             return new ReflectiveBuildScanDumpReader(instance);
         } catch (ClassNotFoundException e) {
             throw new IllegalStateException("Unable to find the Build Scan dump extractor", e);
         } catch (InvocationTargetException e) {
-            // We know that the real BuildScanDumpExtractor can only throw runtime exceptions (no checked exceptions are declared)
+            // We know that the real BuildScanDumpReader can only throw runtime exceptions (no checked exceptions are declared)
             throw (RuntimeException) e.getCause();
         } catch (NoSuchMethodException | IllegalAccessException e) {
             throw new RuntimeException("Unable to read Build Scan dumps: " + e.getMessage(), e);
@@ -43,7 +43,7 @@ final class ReflectiveBuildScanDumpReader {
             String buildToolType = (String) readBuildToolType.invoke(null, scanDump);
             return BuildToolType.valueOf(buildToolType);
         } catch (InvocationTargetException e) {
-            // We know that the real BuildScanDumpExtractor can only throw runtime exceptions (no checked exceptions are declared)
+            // We know that the real BuildScanDumpReader can only throw runtime exceptions (no checked exceptions are declared)
             throw (RuntimeException) e.getCause();
         } catch (NoSuchMethodException | IllegalAccessException e) {
             throw new RuntimeException("Unable to read Build Scan dumps: " + e.getMessage(), e);
@@ -60,7 +60,7 @@ final class ReflectiveBuildScanDumpReader {
 
             return new Pair<>(attributes, buildCachePerformance);
         } catch (InvocationTargetException e) {
-            // We know that the real BuildScanDumpExtractor can only throw runtime exceptions (no checked exceptions are declared)
+            // We know that the real BuildScanDumpReader can only throw runtime exceptions (no checked exceptions are declared)
             throw (RuntimeException) e.getCause();
         } catch (NoSuchMethodException | NoSuchFieldException | IllegalAccessException e) {
             throw new RuntimeException("Unable to read Build Scan dump: " + e.getMessage(), e);
@@ -78,7 +78,7 @@ final class ReflectiveBuildScanDumpReader {
 
             return new Pair<>(attributes, buildCachePerformance);
         } catch (InvocationTargetException e) {
-            // We know that the real BuildScanDumpExtractor can only throw runtime exceptions (no checked exceptions are declared)
+            // We know that the real BuildScanDumpReader can only throw runtime exceptions (no checked exceptions are declared)
             throw (RuntimeException) e.getCause();
         } catch (NoSuchMethodException | NoSuchFieldException | IllegalAccessException e) {
             throw new RuntimeException("Unable to read Build Scan dump: " + e.getMessage(), e);
