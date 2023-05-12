@@ -5,7 +5,6 @@ plugins {
     id("java")
     id("jvm-test-suite")
     id("com.github.johnrengelman.shadow") version "8.1.1"
-    id("org.openapi.generator") version "6.6.0"
 }
 
 description = "Application to fetch build scan data using the Gradle Enterprise Export API"
@@ -19,18 +18,6 @@ dependencies {
     implementation(project(":build-scan-data-loader-online"))
     implementation(project(":build-scan-data-loader-offline"))
 
-    implementation(platform("com.squareup.okhttp3:okhttp-bom:4.11.0"))
-    implementation("com.squareup.okhttp3:okhttp")
-    implementation("com.squareup.okhttp3:okhttp-tls")
-    implementation("com.squareup.okhttp3:logging-interceptor")
-
-    implementation("io.swagger:swagger-annotations:1.6.10")
-    implementation("io.gsonfire:gson-fire:1.8.5")
-    implementation("javax.ws.rs:jsr311-api:1.1.1")
-    implementation("javax.ws.rs:javax.ws.rs-api:2.1.1")
-
-    implementation("javax.annotation:javax.annotation-api:1.3.2")
-    implementation("com.google.guava:guava:31.1-jre")
     implementation("info.picocli:picocli:4.7.3")
     annotationProcessor("info.picocli:picocli-codegen:4.7.3")
 }
@@ -44,34 +31,6 @@ java {
 
 val test by testing.suites.getting(JvmTestSuite::class) {
     useJUnitJupiter()
-}
-
-openApiGenerate {
-    generatorName.set("java")
-    inputSpec.set("$projectDir/src/main/openapi/openapi.yaml")
-    outputDir.set("$buildDir/generated/gradle_enterprise_api")
-    ignoreFileOverride.set("$projectDir/.openapi-generator-ignore")
-    modelPackage.set("com.gradle.enterprise.api.model")
-    apiPackage.set("com.gradle.enterprise.api")
-    invokerPackage.set("com.gradle.enterprise.api.client")
-    // see https://github.com/OpenAPITools/openapi-generator/blob/master/docs/generators/java.md for a description of each configuration option
-    configOptions.set(mapOf(
-            "library" to "okhttp-gson",
-            "dateLibrary" to "java8",
-            "hideGenerationTimestamp" to "true",
-            "openApiNullable" to "false",
-            "useBeanValidation" to "false",
-            "disallowAdditionalPropertiesIfNotPresent" to "false",
-            "sourceFolder" to ""  // makes IDEs like IntelliJ more reliably interpret the class packages.
-    ))
-}
-
-sourceSets {
-    main {
-        java {
-            srcDir(tasks.openApiGenerate)
-        }
-    }
 }
 
 tasks.withType(JavaCompile::class).configureEach {
