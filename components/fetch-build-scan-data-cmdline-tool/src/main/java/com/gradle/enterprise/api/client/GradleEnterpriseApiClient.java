@@ -9,7 +9,6 @@ import com.gradle.enterprise.model.BuildScanData;
 import com.gradle.enterprise.model.CustomValueNames;
 import com.gradle.enterprise.model.NumberedBuildScan;
 import com.gradle.enterprise.model.TaskExecutionSummary;
-import org.jetbrains.annotations.NotNull;
 
 import java.math.BigDecimal;
 import java.net.MalformedURLException;
@@ -55,7 +54,6 @@ public final class GradleEnterpriseApiClient {
         }
     }
 
-    @NotNull
     private BuildScanData analyzeGradleBuild(int runNum, String buildScanId, BuildScanDataLoader.Pair<GradleAttributes, GradleBuildCachePerformance> result) {
         GradleAttributes attributes = result.first;
         GradleBuildCachePerformance performance = result.second;
@@ -76,7 +74,6 @@ public final class GradleEnterpriseApiClient {
         );
     }
 
-    @NotNull
     private BuildScanData analyzeMavenBuild(int runNum, String buildScanId, BuildScanDataLoader.Pair<MavenAttributes, MavenBuildCachePerformance> result) {
         MavenAttributes attributes = result.first;
         MavenBuildCachePerformance performance = result.second;
@@ -153,7 +150,6 @@ public final class GradleEnterpriseApiClient {
         }
     }
 
-    @NotNull
     private static Map<String, TaskExecutionSummary> summarizeTaskExecutions(GradleBuildCachePerformance buildCachePerformance) {
         Map<String, List<GradleBuildCachePerformanceTaskExecutionEntry>> tasksByOutcome = buildCachePerformance.getTaskExecution().stream()
                 .collect(Collectors.groupingBy(GradleEnterpriseApiClient::avoidanceOutcome));
@@ -178,7 +174,6 @@ public final class GradleEnterpriseApiClient {
         return avoidanceOutcome.toString();
     }
 
-    @NotNull
     private static Map<String, TaskExecutionSummary> summarizeTaskExecutions(MavenBuildCachePerformance buildCachePerformance) {
         Map<String, List<MavenBuildCachePerformanceGoalExecutionEntry>> tasksByOutcome = buildCachePerformance.getGoalExecution().stream()
                 .collect(Collectors.groupingBy(

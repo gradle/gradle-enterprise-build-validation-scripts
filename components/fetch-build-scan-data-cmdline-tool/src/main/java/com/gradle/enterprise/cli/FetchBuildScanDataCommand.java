@@ -7,7 +7,6 @@ import com.gradle.enterprise.model.BuildScanData;
 import com.gradle.enterprise.model.CustomValueNames;
 import com.gradle.enterprise.model.NumberedBuildScan;
 import com.gradle.enterprise.network.NetworkSettingsConfigurator;
-import org.jetbrains.annotations.NotNull;
 import picocli.CommandLine;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
@@ -76,7 +75,6 @@ public class FetchBuildScanDataCommand implements Callable<Integer> {
         return ExitCode.OK;
     }
 
-    @NotNull
     private List<BuildScanData> fetchBuildScanData(List<NumberedBuildScan> buildScans, CustomValueNames customValueKeys) {
         return buildScans.stream()
             .parallel()
