@@ -5,7 +5,7 @@ plugins {
     id("java")
     id("jvm-test-suite")
     id("com.github.johnrengelman.shadow") version "8.1.1"
-    id("org.openapi.generator") version "6.5.0"
+    id("org.openapi.generator") version "6.6.0"
 }
 
 description = "Application to fetch build scan data using the Gradle Enterprise Export API"
