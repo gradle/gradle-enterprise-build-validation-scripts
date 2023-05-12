@@ -16,6 +16,8 @@ repositories {
 
 dependencies {
     implementation(project(":build-scan-data-loader-api"))
+    implementation(project(":build-scan-data-loader-online"))
+    implementation(project(":build-scan-data-loader-offline"))
 
     implementation(platform("com.squareup.okhttp3:okhttp-bom:4.11.0"))
     implementation("com.squareup.okhttp3:okhttp")
