@@ -77,9 +77,11 @@ fetch_build_scans_and_build_time_metrics() {
 # Note: Callers of this function require stdout to be clean. No logging can be
 #       done inside this function.
 fetch_build_scan_data() {
-  local logging_level="$1"
+  local logging_level build_scan_urls args
+  args=()
+  logging_level="$1"
   shift
-  local build_scan_urls=("$@")
+  build_scan_urls=("$@")
 
   if [[ "${debug_mode}" == "on" ]]; then
     args+=("--debug")
@@ -96,6 +98,8 @@ fetch_build_scan_data() {
   if [[ "${logging_level}" == "brief_logging" ]]; then
     args+=("--brief-logging")
   fi
+
+  args+=("--license-file" "${GRADLE_ENTERPRISE_LICENSE}")
 
   for run_num in "${!build_scan_urls[@]}"; do
     args+=( "${run_num},${build_scan_urls[run_num]}" )

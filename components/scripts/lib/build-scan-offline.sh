@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 readonly GRADLE_ENTERPRISE_LICENSE="${SCRIPT_DIR}/gradle-enterprise.license"
-readonly READ_BUILD_SCAN_DATA_JAR="${LIB_DIR}/build-scan-clients/read-build-scan-data-cmdline-tool-${SCRIPT_VERSION}-all.jar"
+readonly BUILD_SCAN_DUMP_READER_JAR="${LIB_DIR}/build-scan-clients/build-scan-dump-reader.jar"
 
 build_scan_dumps=()
 
@@ -9,8 +9,8 @@ verify_offline_mode_required_files_exist() {
   if [ ! -f "$GRADLE_ENTERPRISE_LICENSE" ]; then
     die "ERROR: Missing required file gradle-enterprise.license in the root folder of the build validation scripts" "${INVALID_INPUT}"
   fi
-  if [ ! -f "$READ_BUILD_SCAN_DATA_JAR" ]; then
-    die "ERROR: Missing required file to read the build scan data" "${INVALID_INPUT}"
+  if [ ! -f "$BUILD_SCAN_DUMP_READER_JAR" ]; then
+    die "ERROR: Missing required file to read the Build Scan data" "${INVALID_INPUT}"
   fi
 }
 
@@ -38,18 +38,15 @@ find_build_scan_dump() {
 }
 
 read_build_scan_dumps() {
-  local build_scan_data args
-  args=()
+  local build_scan_data build_scan_dump_urls
+  build_scan_dump_urls=()
 
-  args+=(
-      "extract"
-      "--license-file" "${SCRIPT_DIR}/gradle-enterprise.license"
-      "0,${build_scan_dumps[0]}"
-      "1,${build_scan_dumps[1]}"
-  )
+  for run_num in "${!build_scan_dumps[@]}"; do
+    build_scan_dump_urls+=( "file://${build_scan_dumps[run_num]}" )
+  done
 
   echo "Extracting Build Scan data for all builds"
-  if ! build_scan_data="$(invoke_java "$READ_BUILD_SCAN_DATA_JAR" "${args[@]}")"; then
+  if ! build_scan_data="$(fetch_build_scan_data 'brief_logging' "${build_scan_dump_urls[@]}")"; then
     exit "$UNEXPECTED_ERROR"
   fi
   echo "Finished extracting Build Scan data for all builds"
