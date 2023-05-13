@@ -1,4 +1,4 @@
-package com.gradle.enterprise.loader;
+package com.gradle.enterprise.loader.offline;
 
 import com.gradle.enterprise.api.model.GradleAttributes;
 import com.gradle.enterprise.api.model.GradleBuildCachePerformance;

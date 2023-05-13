@@ -2,7 +2,7 @@ package com.gradle.enterprise.cli;
 
 import com.gradle.enterprise.loader.BuildScanDataLoader;
 import com.gradle.enterprise.loader.Logger;
-import com.gradle.enterprise.loader.OfflineBuildScanDataLoader;
+import com.gradle.enterprise.loader.offline.OfflineBuildScanDataLoader;
 import com.gradle.enterprise.loader.online.OnlineBuildScanDataLoader;
 
 import java.net.URI;

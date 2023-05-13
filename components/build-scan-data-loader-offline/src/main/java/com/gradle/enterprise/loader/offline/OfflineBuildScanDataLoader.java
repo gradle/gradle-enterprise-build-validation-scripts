@@ -1,9 +1,10 @@
-package com.gradle.enterprise.loader;
+package com.gradle.enterprise.loader.offline;
 
 import com.gradle.enterprise.api.model.GradleAttributes;
 import com.gradle.enterprise.api.model.GradleBuildCachePerformance;
 import com.gradle.enterprise.api.model.MavenAttributes;
 import com.gradle.enterprise.api.model.MavenBuildCachePerformance;
+import com.gradle.enterprise.loader.BuildScanDataLoader;
 
 import java.net.URI;
 import java.nio.file.Path;
