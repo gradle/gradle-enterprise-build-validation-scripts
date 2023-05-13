@@ -1,5 +1,6 @@
 plugins {
     id("java-library")
+    id("jvm-test-suite")
 }
 
 repositories {
@@ -21,4 +22,8 @@ java {
         languageVersion.set(JavaLanguageVersion.of(8))
         vendor.set(JvmVendorSpec.AZUL)
     }
+}
+
+val test by testing.suites.getting(JvmTestSuite::class) {
+    useJUnitJupiter()
 }
