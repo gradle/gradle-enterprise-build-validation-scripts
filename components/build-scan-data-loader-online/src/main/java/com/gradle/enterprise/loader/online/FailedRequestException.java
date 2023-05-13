@@ -1,4 +1,4 @@
-package com.gradle.enterprise.loader;
+package com.gradle.enterprise.loader.online;
 
 import com.gradle.enterprise.api.client.ApiException;
 

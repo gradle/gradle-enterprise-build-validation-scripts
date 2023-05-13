@@ -1,17 +1,19 @@
-package com.gradle.enterprise.loader;
+package com.gradle.enterprise.loader.online;
 
 import com.gradle.enterprise.api.client.ApiException;
 import com.gradle.enterprise.api.model.GradleAttributes;
 import com.gradle.enterprise.api.model.GradleBuildCachePerformance;
 import com.gradle.enterprise.api.model.MavenAttributes;
 import com.gradle.enterprise.api.model.MavenBuildCachePerformance;
+import com.gradle.enterprise.loader.BuildScanDataLoader;
+import com.gradle.enterprise.loader.Logger;
 
 import java.net.URI;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 
-import static com.gradle.enterprise.loader.BuildScanUrlUtils.*;
+import static com.gradle.enterprise.loader.online.BuildScanUrlUtils.*;
 
 public final class OnlineBuildScanDataLoader implements BuildScanDataLoader {
 

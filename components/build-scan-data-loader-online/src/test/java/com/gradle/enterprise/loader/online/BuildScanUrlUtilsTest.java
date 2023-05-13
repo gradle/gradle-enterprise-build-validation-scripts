@@ -1,5 +1,6 @@
-package com.gradle.enterprise.loader;
+package com.gradle.enterprise.loader.online;
 
+import com.gradle.enterprise.loader.online.BuildScanUrlUtils;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 

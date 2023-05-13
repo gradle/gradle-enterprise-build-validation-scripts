@@ -3,7 +3,7 @@ package com.gradle.enterprise.cli;
 import com.gradle.enterprise.loader.BuildScanDataLoader;
 import com.gradle.enterprise.loader.Logger;
 import com.gradle.enterprise.loader.OfflineBuildScanDataLoader;
-import com.gradle.enterprise.loader.OnlineBuildScanDataLoader;
+import com.gradle.enterprise.loader.online.OnlineBuildScanDataLoader;
 
 import java.net.URI;
 import java.nio.file.Path;

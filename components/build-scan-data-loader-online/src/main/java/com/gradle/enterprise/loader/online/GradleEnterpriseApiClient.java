@@ -1,10 +1,11 @@
-package com.gradle.enterprise.loader;
+package com.gradle.enterprise.loader.online;
 
 import com.gradle.enterprise.api.GradleEnterpriseApi;
 import com.gradle.enterprise.api.client.ApiClient;
 import com.gradle.enterprise.api.client.ApiException;
 import com.gradle.enterprise.api.model.*;
 import com.gradle.enterprise.loader.BuildScanDataLoader.BuildScanData;
+import com.gradle.enterprise.loader.Logger;
 import okhttp3.Credentials;
 import okhttp3.OkHttpClient;
 import okhttp3.tls.HandshakeCertificates;

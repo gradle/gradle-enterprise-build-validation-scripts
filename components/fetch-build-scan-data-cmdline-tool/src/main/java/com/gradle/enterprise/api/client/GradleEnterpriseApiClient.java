@@ -2,9 +2,6 @@ package com.gradle.enterprise.api.client;
 
 import com.gradle.enterprise.api.model.*;
 import com.gradle.enterprise.loader.BuildScanDataLoader;
-import com.gradle.enterprise.loader.Logger;
-import com.gradle.enterprise.loader.OfflineBuildScanDataLoader;
-import com.gradle.enterprise.loader.OnlineBuildScanDataLoader;
 import com.gradle.enterprise.model.BuildScanData;
 import com.gradle.enterprise.model.CustomValueNames;
 import com.gradle.enterprise.model.NumberedBuildScan;
@@ -13,7 +10,6 @@ import com.gradle.enterprise.model.TaskExecutionSummary;
 import java.math.BigDecimal;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.nio.file.Path;
 import java.time.Duration;
 import java.util.AbstractMap;
 import java.util.Arrays;

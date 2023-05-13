@@ -1,7 +1,8 @@
-package com.gradle.enterprise.loader;
+package com.gradle.enterprise.loader.online;
 
 import com.google.common.base.Strings;
 import com.gradle.enterprise.api.client.ApiClient;
+import com.gradle.enterprise.loader.Logger;
 
 import java.io.BufferedReader;
 import java.io.IOException;
