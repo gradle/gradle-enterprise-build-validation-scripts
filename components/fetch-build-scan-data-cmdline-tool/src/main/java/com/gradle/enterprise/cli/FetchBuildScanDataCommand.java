@@ -1,6 +1,5 @@
 package com.gradle.enterprise.cli;
 
-import com.gradle.enterprise.api.client.BuildScanDataAnalyzer;
 import com.gradle.enterprise.loader.online.FailedRequestException;
 import com.gradle.enterprise.loader.Logger;
 import com.gradle.enterprise.model.BuildScanData;

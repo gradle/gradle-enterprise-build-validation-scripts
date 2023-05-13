@@ -1,4 +1,4 @@
-package com.gradle.enterprise.api.client;
+package com.gradle.enterprise.cli;
 
 import com.gradle.enterprise.api.model.*;
 import com.gradle.enterprise.loader.BuildScanDataLoader;
