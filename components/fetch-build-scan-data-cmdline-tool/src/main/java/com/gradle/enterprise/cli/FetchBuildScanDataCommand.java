@@ -1,6 +1,6 @@
 package com.gradle.enterprise.cli;
 
-import com.gradle.enterprise.api.client.GradleEnterpriseApiClient;
+import com.gradle.enterprise.api.client.BuildScanDataAnalyzer;
 import com.gradle.enterprise.loader.online.FailedRequestException;
 import com.gradle.enterprise.loader.Logger;
 import com.gradle.enterprise.model.BuildScanData;
@@ -90,9 +90,9 @@ public class FetchBuildScanDataCommand implements Callable<Integer> {
     private BuildScanData fetchBuildScanData(NumberedBuildScan buildScan, CustomValueNames customValueNames) {
         logStartFetchingBuildScanData(buildScan);
         try {
-            // TODO can we create one of these for everyone?
-            GradleEnterpriseApiClient apiClient = new GradleEnterpriseApiClient(customValueNames, createBuildScanDataLoader(buildScan.resource, licenseFile, logger));
-            BuildScanData data = apiClient.fetchBuildScanData(buildScan);
+            // TODO can we create one analyzer for all build scans?
+            BuildScanDataAnalyzer analyzer = new BuildScanDataAnalyzer(customValueNames, createBuildScanDataLoader(buildScan.resource, licenseFile, logger));
+            BuildScanData data = analyzer.analyzeBuildScanData(buildScan);
 
             logFinishedFetchingBuildScanData(buildScan);
             return data;
