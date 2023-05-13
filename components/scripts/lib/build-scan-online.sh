@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
+readonly FETCH_BUILD_SCAN_DATA_JAR="${LIB_DIR}/build-scan-clients/fetch-build-scan-data-cmdline-tool-${SCRIPT_VERSION}-all.jar"
 readonly FETCH_BUILD_SCAN_DATA_MAIN_CLASS="com.gradle.enterprise.Main"
-readonly BUILD_SCAN_CLIENTS="${LIB_DIR}/build-scan-clients"
 
 # This is a helper function for the common pattern of reading Build Scan metadata
 # from the build-scans.csv file, then retrieving build metrics using the Gradle
@@ -106,5 +106,5 @@ fetch_build_scan_data() {
     args+=( "${run_num},${build_scan_urls[run_num]}" )
   done
 
-  APP_OPTS="-Dpicocli.ansi=true" invoke_java "${BUILD_SCAN_CLIENTS}/*" "${FETCH_BUILD_SCAN_DATA_MAIN_CLASS}" "${args[@]}"
+  APP_OPTS="-Dpicocli.ansi=true" invoke_java "${FETCH_BUILD_SCAN_DATA_JAR}:${BUILD_SCAN_DUMP_READER_JAR}" "${FETCH_BUILD_SCAN_DATA_MAIN_CLASS}" "${args[@]}"
 }
