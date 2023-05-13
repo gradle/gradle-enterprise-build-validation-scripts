@@ -8,7 +8,9 @@
 #
 # shellcheck disable=SC2128,SC2178
 invoke_java() {
-  local classpath="$1"
+  local CLASSPATH="$1"
+  shift
+  local mainClassName="$1"
   shift
 
   # OS specific support (must be 'true' or 'false').
@@ -39,7 +41,7 @@ location of your Java installation."
     fi
   else
     JAVACMD=java
-    which java >/dev/null 2>&1 || die "ERROR: JAVA_HOME is not set and no 'java' command could be found in your PATH
+    which java >/dev/null 2>&1 || die "ERROR: JAVA_HOME is not set and no 'java' command could be found in your PATH.
 
 Please set the JAVA_HOME variable in your environment to match the
 location of your Java installation."
@@ -111,7 +113,10 @@ location of your Java installation."
   #     double quotes to make sure that they get re-expanded; and
   #   * put everything else in single quotes, so that it's not re-expanded.
 
-  set -- -Dpicocli.ansi=true -jar "$classpath" "$@"
+  set -- \
+    -classpath "$CLASSPATH" \
+    "${mainClassName}" \
+    "$@"
 
   # Stop when "xargs" is not available.
   if ! command -v xargs >/dev/null 2>&1; then
