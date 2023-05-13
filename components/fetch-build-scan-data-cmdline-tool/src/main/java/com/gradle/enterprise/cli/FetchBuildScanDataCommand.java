@@ -1,7 +1,7 @@
 package com.gradle.enterprise.cli;
 
-import com.gradle.enterprise.loader.online.FailedRequestException;
 import com.gradle.enterprise.loader.Logger;
+import com.gradle.enterprise.loader.online.FailedRequestException;
 import com.gradle.enterprise.model.BuildScanData;
 import com.gradle.enterprise.model.CustomValueNames;
 import com.gradle.enterprise.model.NumberedBuildScan;

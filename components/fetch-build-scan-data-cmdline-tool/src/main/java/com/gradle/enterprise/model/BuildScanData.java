@@ -68,10 +68,14 @@ public class BuildScanData {
     }
 
     public URL getBuildScanUrl() {
-        try {
-            return new URL(gradleEnterpriseServerUrl, "/s/" + buildScanId);
-        } catch (MalformedURLException e) {
-            throw new RuntimeException(e.getMessage(), e);
+        if (gradleEnterpriseServerUrl == null) {
+            return null;
+        } else {
+            try {
+                return new URL(gradleEnterpriseServerUrl, "/s/" + buildScanId);
+            } catch (MalformedURLException e) {
+                throw new RuntimeException(e.getMessage(), e);
+            }
         }
     }
 
