@@ -19,6 +19,8 @@ import java.util.Optional;
 import java.util.concurrent.Callable;
 import java.util.stream.Collectors;
 
+import static com.gradle.enterprise.cli.BuildScanDataLoaderFactory.createBuildScanDataLoader;
+
 @Command(
     name = "fetch-build-scan-data-cmdline-tool",
     mixinStandardHelpOptions = true,
@@ -88,7 +90,8 @@ public class FetchBuildScanDataCommand implements Callable<Integer> {
     private BuildScanData fetchBuildScanData(NumberedBuildScan buildScan, CustomValueNames customValueNames) {
         logStartFetchingBuildScanData(buildScan);
         try {
-            GradleEnterpriseApiClient apiClient = new GradleEnterpriseApiClient(buildScan.baseUrl(), customValueNames, licenseFile, logger);
+            // TODO can we create one of these for everyone?
+            GradleEnterpriseApiClient apiClient = new GradleEnterpriseApiClient(customValueNames, createBuildScanDataLoader(buildScan.uri(), licenseFile, logger));
             BuildScanData data = apiClient.fetchBuildScanData(buildScan);
 
             logFinishedFetchingBuildScanData(buildScan);

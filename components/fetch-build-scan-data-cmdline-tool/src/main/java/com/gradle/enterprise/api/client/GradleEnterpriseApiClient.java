@@ -33,11 +33,9 @@ public final class GradleEnterpriseApiClient {
     private final CustomValueNames customValueNames;
     private final BuildScanDataLoader buildScanDataLoader;
 
-    public GradleEnterpriseApiClient(URL baseUrl, CustomValueNames customValueNames, Path licenseFile, Logger logger) {
+    public GradleEnterpriseApiClient(CustomValueNames customValueNames, BuildScanDataLoader buildScanDataLoader) {
         this.customValueNames = customValueNames;
-        this.buildScanDataLoader = baseUrl.getProtocol().equals("file")
-                ? OfflineBuildScanDataLoader.newInstance(licenseFile)
-                : new OnlineBuildScanDataLoader(logger);
+        this.buildScanDataLoader = buildScanDataLoader;
     }
 
     public BuildScanData fetchBuildScanData(NumberedBuildScan buildScan) {
