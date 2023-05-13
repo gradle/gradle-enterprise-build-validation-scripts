@@ -27,12 +27,12 @@ public final class OfflineBuildScanDataLoader implements BuildScanDataLoader {
     }
 
     @Override
-    public Pair<GradleAttributes, GradleBuildCachePerformance> loadDataForGradle(URI resource) {
+    public BuildScanData<GradleAttributes, GradleBuildCachePerformance> loadDataForGradle(URI resource) {
         return reader.readGradleBuildScanDump(Paths.get(resource));
     }
 
     @Override
-    public Pair<MavenAttributes, MavenBuildCachePerformance> loadDataForMaven(URI resource) {
+    public BuildScanData<MavenAttributes, MavenBuildCachePerformance> loadDataForMaven(URI resource) {
         return reader.readMavenBuildScanDump(Paths.get(resource));
     }
 

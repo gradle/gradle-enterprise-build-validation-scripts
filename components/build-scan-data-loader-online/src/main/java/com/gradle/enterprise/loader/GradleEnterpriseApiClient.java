@@ -4,15 +4,17 @@ import com.gradle.enterprise.api.GradleEnterpriseApi;
 import com.gradle.enterprise.api.client.ApiClient;
 import com.gradle.enterprise.api.client.ApiException;
 import com.gradle.enterprise.api.model.*;
-import com.gradle.enterprise.loader.BuildScanDataLoader.Pair;
+import com.gradle.enterprise.loader.BuildScanDataLoader.BuildScanData;
 import okhttp3.Credentials;
 import okhttp3.OkHttpClient;
 import okhttp3.tls.HandshakeCertificates;
 
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.time.Duration;
 import java.time.format.DateTimeParseException;
 import java.util.Locale;
+import java.util.Optional;
 
 public class GradleEnterpriseApiClient {
 
@@ -99,18 +101,27 @@ public class GradleEnterpriseApiClient {
         return build.getBuildToolType();
     }
 
-    public Pair<GradleAttributes, GradleBuildCachePerformance> loadDataForGradle(String buildScanId) throws ApiException {
+    public BuildScanData<GradleAttributes, GradleBuildCachePerformance> loadDataForGradle(String buildScanId) throws ApiException {
         GradleAttributes attributes = apiClient.getGradleAttributes(buildScanId, null);
         GradleBuildCachePerformance buildCachePerformance = apiClient.getGradleBuildCachePerformance(buildScanId, null);
 
-        return new Pair<>(attributes, buildCachePerformance);
+        try {
+            return new BuildScanData<>(Optional.of(baseUrl.toURI()), attributes, buildCachePerformance);
+        } catch (URISyntaxException e) {
+            // Should never get here
+            throw new RuntimeException(e);
+        }
     }
 
-    public Pair<MavenAttributes, MavenBuildCachePerformance> loadDataForMaven(String buildScanId) throws ApiException {
+    public BuildScanData<MavenAttributes, MavenBuildCachePerformance> loadDataForMaven(String buildScanId) throws ApiException {
         MavenAttributes attributes = apiClient.getMavenAttributes(buildScanId, null);
         MavenBuildCachePerformance buildCachePerformance = apiClient.getMavenBuildCachePerformance(buildScanId, null);
 
-        return new Pair<>(attributes, buildCachePerformance);
+        try {
+            return new BuildScanData<>(Optional.of(baseUrl.toURI()), attributes, buildCachePerformance);
+        } catch (URISyntaxException e) {
+            // Should never get here
+            throw new RuntimeException(e);
+        }
     }
-
 }

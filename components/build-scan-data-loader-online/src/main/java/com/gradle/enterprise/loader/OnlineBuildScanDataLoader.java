@@ -36,7 +36,7 @@ public final class OnlineBuildScanDataLoader implements BuildScanDataLoader {
     }
 
     @Override
-    public Pair<GradleAttributes, GradleBuildCachePerformance> loadDataForGradle(URI resource) {
+    public BuildScanData<GradleAttributes, GradleBuildCachePerformance> loadDataForGradle(URI resource) {
         URL buildScanUrl = toBuildScanURL(resource);
         GradleEnterpriseApiClient apiClient = getOrCreateClient(buildScanUrl);
         String buildScanId = extractBuildScanId(buildScanUrl);
@@ -49,7 +49,7 @@ public final class OnlineBuildScanDataLoader implements BuildScanDataLoader {
     }
 
     @Override
-    public Pair<MavenAttributes, MavenBuildCachePerformance> loadDataForMaven(URI resource) {
+    public BuildScanData<MavenAttributes, MavenBuildCachePerformance> loadDataForMaven(URI resource) {
         URL buildScanUrl = toBuildScanURL(resource);
         GradleEnterpriseApiClient apiClient = getOrCreateClient(buildScanUrl);
         String buildScanId = extractBuildScanId(buildScanUrl);

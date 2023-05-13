@@ -30,12 +30,10 @@ import static com.gradle.enterprise.loader.BuildScanDataLoader.BuildToolType.*;
 
 public final class GradleEnterpriseApiClient {
 
-    private final URL baseUrl;
     private final CustomValueNames customValueNames;
     private final BuildScanDataLoader buildScanDataLoader;
 
     public GradleEnterpriseApiClient(URL baseUrl, CustomValueNames customValueNames, Path licenseFile, Logger logger) {
-        this.baseUrl = baseUrl;
         this.customValueNames = customValueNames;
         this.buildScanDataLoader = baseUrl.getProtocol().equals("file")
                 ? OfflineBuildScanDataLoader.newInstance(licenseFile)
@@ -55,14 +53,15 @@ public final class GradleEnterpriseApiClient {
         }
     }
 
-    private BuildScanData analyzeGradleBuild(int runNum, String buildScanId, BuildScanDataLoader.Pair<GradleAttributes, GradleBuildCachePerformance> result) {
-        GradleAttributes attributes = result.first;
-        GradleBuildCachePerformance performance = result.second;
+    private BuildScanData analyzeGradleBuild(int runNum, String buildScanId, BuildScanDataLoader.BuildScanData<GradleAttributes, GradleBuildCachePerformance> result) {
+        GradleAttributes attributes = result.attributes;
+        GradleBuildCachePerformance performance = result.buildCachePerformance;
+
         return new BuildScanData(
                 runNum,
                 attributes.getRootProjectName(),
                 buildScanId,
-                baseUrl,
+                result.gradleEnterpriseServerURL().orElse(null),
                 findCustomValue(customValueNames.getGitRepositoryKey(), attributes.getValues()),
                 findCustomValue(customValueNames.getGitBranchKey(), attributes.getValues()),
                 findCustomValue(customValueNames.getGitCommitIdKey(), attributes.getValues()),
@@ -75,14 +74,14 @@ public final class GradleEnterpriseApiClient {
         );
     }
 
-    private BuildScanData analyzeMavenBuild(int runNum, String buildScanId, BuildScanDataLoader.Pair<MavenAttributes, MavenBuildCachePerformance> result) {
-        MavenAttributes attributes = result.first;
-        MavenBuildCachePerformance performance = result.second;
+    private BuildScanData analyzeMavenBuild(int runNum, String buildScanId, BuildScanDataLoader.BuildScanData<MavenAttributes, MavenBuildCachePerformance> result) {
+        MavenAttributes attributes = result.attributes;
+        MavenBuildCachePerformance performance = result.buildCachePerformance;
         return new BuildScanData(
                 runNum,
                 attributes.getTopLevelProjectName(),
                 buildScanId,
-                baseUrl,
+                result.gradleEnterpriseServerURL().orElse(null),
                 findCustomValue(customValueNames.getGitRepositoryKey(), attributes.getValues()),
                 findCustomValue(customValueNames.getGitBranchKey(), attributes.getValues()),
                 findCustomValue(customValueNames.getGitCommitIdKey(), attributes.getValues()),

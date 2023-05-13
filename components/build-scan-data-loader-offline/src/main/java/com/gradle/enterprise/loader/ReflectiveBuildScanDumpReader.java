@@ -4,12 +4,13 @@ import com.gradle.enterprise.api.model.GradleAttributes;
 import com.gradle.enterprise.api.model.GradleBuildCachePerformance;
 import com.gradle.enterprise.api.model.MavenAttributes;
 import com.gradle.enterprise.api.model.MavenBuildCachePerformance;
-import com.gradle.enterprise.loader.BuildScanDataLoader.Pair;
+import com.gradle.enterprise.loader.BuildScanDataLoader.BuildScanData;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.nio.file.FileSystems;
 import java.nio.file.Path;
+import java.util.Optional;
 
 import static com.gradle.enterprise.loader.BuildScanDataLoader.*;
 
@@ -50,7 +51,7 @@ final class ReflectiveBuildScanDumpReader {
         }
     }
 
-    Pair<GradleAttributes, GradleBuildCachePerformance> readGradleBuildScanDump(Path scanDump) {
+    BuildScanData<GradleAttributes, GradleBuildCachePerformance> readGradleBuildScanDump(Path scanDump) {
         try {
             Method extractGradleBuildScanDump = buildScanDumpReader.getClass().getMethod("readGradleBuildScanDump", Path.class);
             Object gradleBuild = extractGradleBuildScanDump.invoke(buildScanDumpReader, scanDump);
@@ -58,7 +59,7 @@ final class ReflectiveBuildScanDumpReader {
             GradleAttributes attributes = (GradleAttributes) gradleBuild.getClass().getField("attributes").get(gradleBuild);
             GradleBuildCachePerformance buildCachePerformance = (GradleBuildCachePerformance) gradleBuild.getClass().getField("buildCachePerformance").get(gradleBuild);
 
-            return new Pair<>(attributes, buildCachePerformance);
+            return new BuildScanData<>(Optional.empty(), attributes, buildCachePerformance);
         } catch (InvocationTargetException e) {
             // We know that the real BuildScanDumpReader can only throw runtime exceptions (no checked exceptions are declared)
             throw (RuntimeException) e.getCause();
@@ -68,7 +69,7 @@ final class ReflectiveBuildScanDumpReader {
     }
 
     @SuppressWarnings({"WeakerAccess", "unused"})
-    Pair<MavenAttributes, MavenBuildCachePerformance> readMavenBuildScanDump(Path scanDump) {
+    BuildScanData<MavenAttributes, MavenBuildCachePerformance> readMavenBuildScanDump(Path scanDump) {
         try {
             Method extractMavenBuildScanDump = buildScanDumpReader.getClass().getMethod("readMavenBuildScanDump", Path.class);
             Object mavenBuild = extractMavenBuildScanDump.invoke(buildScanDumpReader, scanDump);
@@ -76,7 +77,7 @@ final class ReflectiveBuildScanDumpReader {
             MavenAttributes attributes = (MavenAttributes) mavenBuild.getClass().getField("attributes").get(mavenBuild);
             MavenBuildCachePerformance buildCachePerformance = (MavenBuildCachePerformance) mavenBuild.getClass().getField("buildCachePerformance").get(mavenBuild);
 
-            return new Pair<>(attributes, buildCachePerformance);
+            return new BuildScanData<>(Optional.empty(), attributes, buildCachePerformance);
         } catch (InvocationTargetException e) {
             // We know that the real BuildScanDumpReader can only throw runtime exceptions (no checked exceptions are declared)
             throw (RuntimeException) e.getCause();
@@ -88,7 +89,7 @@ final class ReflectiveBuildScanDumpReader {
     // TODO Remove
     public static void main(String[] args) {
         ReflectiveBuildScanDumpReader extractor = ReflectiveBuildScanDumpReader.newInstance(FileSystems.getDefault().getPath("/Users/jhurne/Projects/road-tests/build-validation/gradle-enterprise.aux.prod.license"));
-        Pair<GradleAttributes, GradleBuildCachePerformance> result = extractor.readGradleBuildScanDump(FileSystems.getDefault().getPath("/Users/jhurne/Projects/road-tests/build-validation/gradle-enterprise-gradle-build-validation/.data/02-validate-local-build-caching-same-location/20230511T111441-645cb201/second-build_ge-solutions/sample-projects/gradle/8.x/no-ge/build-scan-8.0.2-3.12.6-1683796487697-104c8ac5-cf01-4eb6-8b2d-f447d4803249.scan"));
+        BuildScanData<GradleAttributes, GradleBuildCachePerformance> result = extractor.readGradleBuildScanDump(FileSystems.getDefault().getPath("/Users/jhurne/Projects/road-tests/build-validation/gradle-enterprise-gradle-build-validation/.data/02-validate-local-build-caching-same-location/20230511T111441-645cb201/second-build_ge-solutions/sample-projects/gradle/8.x/no-ge/build-scan-8.0.2-3.12.6-1683796487697-104c8ac5-cf01-4eb6-8b2d-f447d4803249.scan"));
         System.out.println("Successfully fetched build scan dump data: " + result);
     }
 

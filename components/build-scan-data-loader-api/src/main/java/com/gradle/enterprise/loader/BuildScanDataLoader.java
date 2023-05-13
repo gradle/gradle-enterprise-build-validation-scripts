@@ -5,29 +5,48 @@ import com.gradle.enterprise.api.model.GradleBuildCachePerformance;
 import com.gradle.enterprise.api.model.MavenAttributes;
 import com.gradle.enterprise.api.model.MavenBuildCachePerformance;
 
+import java.net.MalformedURLException;
 import java.net.URI;
+import java.net.URL;
+import java.util.Optional;
 
 public interface BuildScanDataLoader {
 
     BuildToolType determineBuildToolType(URI resource);
 
-    // todo in online mode, fetch the two models in parallel (for both Gradle and Maven)
-    Pair<GradleAttributes, GradleBuildCachePerformance> loadDataForGradle(URI resource);
+    // TODO add static factory method to build the BuildScanDataLoader
 
-    Pair<MavenAttributes, MavenBuildCachePerformance> loadDataForMaven(URI resource);
+    // todo in online mode, fetch the two models in parallel (for both Gradle and Maven)
+    BuildScanData<GradleAttributes, GradleBuildCachePerformance> loadDataForGradle(URI resource);
+
+    BuildScanData<MavenAttributes, MavenBuildCachePerformance> loadDataForMaven(URI resource);
+
+    static
 
     enum BuildToolType {GRADLE, MAVEN}
 
-    final class Pair<S, T> {
+    final class BuildScanData<A, B> {
 
-        public final S first;
-        public final T second;
+        public final Optional<URI> gradleEnterpriseServerUri;
+        public final A attributes;
+        public final B buildCachePerformance;
 
-        public Pair(S first, T second) {
-            this.first = first;
-            this.second = second;
+        public BuildScanData(Optional<URI> gradleEnterpriseServerUri, A attributes, B buildCachePerformance) {
+            this.gradleEnterpriseServerUri = gradleEnterpriseServerUri;
+            this.attributes = attributes;
+            this.buildCachePerformance = buildCachePerformance;
         }
 
+        public Optional<URL> gradleEnterpriseServerURL() {
+            return gradleEnterpriseServerUri.map(u -> {
+                try {
+                    return u.toURL();
+                } catch (MalformedURLException e) {
+                    // Should never get here
+                    throw new RuntimeException(e);
+                }
+            });
+        }
     }
 
 }
