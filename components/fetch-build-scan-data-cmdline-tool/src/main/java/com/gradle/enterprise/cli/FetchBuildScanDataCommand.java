@@ -91,7 +91,7 @@ public class FetchBuildScanDataCommand implements Callable<Integer> {
         logStartFetchingBuildScanData(buildScan);
         try {
             // TODO can we create one of these for everyone?
-            GradleEnterpriseApiClient apiClient = new GradleEnterpriseApiClient(customValueNames, createBuildScanDataLoader(buildScan.uri(), licenseFile, logger));
+            GradleEnterpriseApiClient apiClient = new GradleEnterpriseApiClient(customValueNames, createBuildScanDataLoader(buildScan.resource, licenseFile, logger));
             BuildScanData data = apiClient.fetchBuildScanData(buildScan);
 
             logFinishedFetchingBuildScanData(buildScan);
@@ -99,10 +99,10 @@ public class FetchBuildScanDataCommand implements Callable<Integer> {
         } catch (RuntimeException e) {
             logException(e);
             return new BuildScanData(
-                buildScan.runNum(),
+                buildScan.runNum,
                 "",
-                buildScan.buildScanId(),
-                buildScan.baseUrl(),
+                "",
+                null,
                 "",
                 "",
                 "",
@@ -149,13 +149,13 @@ public class FetchBuildScanDataCommand implements Callable<Integer> {
 
     private void logStartFetchingBuildScanData(NumberedBuildScan buildScan) {
         if (!briefLogging) {
-            logger.info("Fetching Build Scan data for %s build", toOrdinal(buildScan.runNum()));
+            logger.info("Fetching Build Scan data for %s build", toOrdinal(buildScan.runNum));
         }
     }
 
     private void logFinishedFetchingBuildScanData(NumberedBuildScan buildScan) {
         if (!briefLogging) {
-            logger.info("Finished fetching Build Scan data for %s build", toOrdinal(buildScan.runNum()));
+            logger.info("Finished fetching Build Scan data for %s build", toOrdinal(buildScan.runNum));
         }
     }
 

@@ -10,14 +10,12 @@ import java.util.stream.Collectors;
 import static java.lang.Integer.parseInt;
 
 public class NumberedBuildScan {
-    private final int runNum;
-    private final URL baseUrl;
-    private final String buildScanId;
+    public final int runNum;
+    public final URI resource;
 
-    private NumberedBuildScan(int runNum, URL baseUrl, String buildScanId) {
+    private NumberedBuildScan(int runNum, URI resource) {
         this.runNum = runNum;
-        this.baseUrl = baseUrl;
-        this.buildScanId = buildScanId;
+        this.resource = resource;
     }
 
     public static List<NumberedBuildScan> parse(List<String> runNumsAndBuildScanUrls) {
@@ -27,65 +25,20 @@ public class NumberedBuildScan {
     public static NumberedBuildScan parse(String runNumAndBuildScanUrl) {
         String[] parts = runNumAndBuildScanUrl.split(",");
         if (parts.length != 2) {
-            throw new IllegalArgumentException("Invalid numbered Build Scan URL: " + runNumAndBuildScanUrl);
+            throw new IllegalArgumentException("Invalid numbered Build Scan: " + runNumAndBuildScanUrl);
         }
 
         String runNum = parts[0];
-        URL buildScanUrl = toURL(parts[1]);
+        URI buildScanResource = toURI(parts[1]);
 
-        return new NumberedBuildScan(
-            parseInt(runNum),
-            extractBaseUrl(buildScanUrl),
-            extractBuildScanId(buildScanUrl)
-        );
+        return new NumberedBuildScan(parseInt(runNum), buildScanResource);
     }
 
-    public int runNum() {
-        return runNum;
-    }
-
-    public URL baseUrl() {
-        return baseUrl;
-    }
-
-    public String buildScanId() {
-        return buildScanId;
-    }
-
-    public URL url() {
+    private static URI toURI(String resource) {
         try {
-            return new URL(baseUrl, "/s/" + buildScanId);
-        } catch (MalformedURLException e) {
-            throw new RuntimeException(e.getMessage(), e);
-        }
-    }
-
-    public URI uri() { // todo
-        try {
-            return url().toURI();
+            return new URI(resource);
         } catch (URISyntaxException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    private static URL extractBaseUrl(URL buildScanUrl) {
-        String port = (buildScanUrl.getPort() != -1) ? ":" + buildScanUrl.getPort() : "";
-        return toURL(buildScanUrl.getProtocol() + "://" + buildScanUrl.getHost() + port);
-    }
-
-    private static String extractBuildScanId(URL buildScanUrl) {
-        String[] pathSegments = buildScanUrl.getPath().split("/");
-        if (pathSegments.length <= 2 || !pathSegments[1].equals("s")) {
-            throw new IllegalArgumentException("Invalid Build Scan URL: " + buildScanUrl);
-        }
-        return pathSegments[2];
-    }
-
-    private static URL toURL(String url) {
-        try {
-            return new URL(url);
-        } catch (MalformedURLException e) {
-            throw new IllegalArgumentException("Invalid Build Scan URL: " + url, e);
+            throw new IllegalArgumentException("Invalid Build Scan resource: " + resource, e);
         }
     }
 }
