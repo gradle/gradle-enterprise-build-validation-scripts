@@ -1,5 +1,7 @@
 package com.gradle.enterprise.loader.offline;
 
+import com.google.gson.reflect.TypeToken;
+import com.gradle.enterprise.api.client.JSON;
 import com.gradle.enterprise.api.model.GradleAttributes;
 import com.gradle.enterprise.api.model.GradleBuildCachePerformance;
 import com.gradle.enterprise.api.model.MavenAttributes;
@@ -12,11 +14,13 @@ import java.nio.file.FileSystems;
 import java.nio.file.Path;
 import java.util.Optional;
 
-import static com.gradle.enterprise.loader.BuildScanDataLoader.*;
+import static com.gradle.enterprise.loader.BuildScanDataLoader.BuildToolType;
 
 final class ReflectiveBuildScanDumpReader {
-
     private final Object buildScanDumpReader;
+
+    // We need to instantiate the class so that the gson field is initialized.
+    private final static JSON json = new JSON();
 
     private ReflectiveBuildScanDumpReader(Object buildScanDumpReader) {
         this.buildScanDumpReader = buildScanDumpReader;
@@ -55,9 +59,10 @@ final class ReflectiveBuildScanDumpReader {
         try {
             Method extractGradleBuildScanDump = buildScanDumpReader.getClass().getMethod("readGradleBuildScanDump", Path.class);
             Object gradleBuild = extractGradleBuildScanDump.invoke(buildScanDumpReader, scanDump);
-
-            GradleAttributes attributes = (GradleAttributes) gradleBuild.getClass().getField("attributes").get(gradleBuild);
-            GradleBuildCachePerformance buildCachePerformance = (GradleBuildCachePerformance) gradleBuild.getClass().getField("buildCachePerformance").get(gradleBuild);
+            GradleAttributes attributes = JSON.deserialize((String) gradleBuild.getClass().getField("attributes").get(gradleBuild), new TypeToken<GradleAttributes>() {
+            }.getType());
+            GradleBuildCachePerformance buildCachePerformance = JSON.deserialize((String) gradleBuild.getClass().getField("buildCachePerformance").get(gradleBuild), new TypeToken<GradleBuildCachePerformance>() {
+            }.getType());
 
             return new BuildScanData<>(Optional.empty(), attributes, buildCachePerformance);
         } catch (InvocationTargetException e) {
@@ -73,9 +78,10 @@ final class ReflectiveBuildScanDumpReader {
         try {
             Method extractMavenBuildScanDump = buildScanDumpReader.getClass().getMethod("readMavenBuildScanDump", Path.class);
             Object mavenBuild = extractMavenBuildScanDump.invoke(buildScanDumpReader, scanDump);
-
-            MavenAttributes attributes = (MavenAttributes) mavenBuild.getClass().getField("attributes").get(mavenBuild);
-            MavenBuildCachePerformance buildCachePerformance = (MavenBuildCachePerformance) mavenBuild.getClass().getField("buildCachePerformance").get(mavenBuild);
+            MavenAttributes attributes = JSON.deserialize((String) mavenBuild.getClass().getField("attributes").get(mavenBuild), new TypeToken<MavenAttributes>() {
+            }.getType());
+            MavenBuildCachePerformance buildCachePerformance = JSON.deserialize((String) mavenBuild.getClass().getField("buildCachePerformance").get(mavenBuild), new TypeToken<MavenBuildCachePerformance>() {
+            }.getType());
 
             return new BuildScanData<>(Optional.empty(), attributes, buildCachePerformance);
         } catch (InvocationTargetException e) {
