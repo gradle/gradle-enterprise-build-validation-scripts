@@ -28,5 +28,5 @@ runs:
       shell: bash
     - name: Validate Gradle Configuration Cache compatibility
       run: exit 3
-      if: steps.run.outputs.configCacheStored != '1' || steps.run.outputs.configCacheReused != '1'
+      if: steps.run.outputs.configCacheReused == '0' || steps.run.outputs.configCacheStored != steps.run.outputs.configCacheReused
       shell: bash
