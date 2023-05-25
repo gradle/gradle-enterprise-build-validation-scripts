@@ -1,1 +1,1 @@
-- [NEW] TBD
+- [FIX] API requests do not allow time for build scans to become available
