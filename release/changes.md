@@ -1,1 +1,2 @@
+- [NEW] Drop support for Gradle Enterprise versions older than 2023.1 when using `-e` command line option
 - [FIX] API requests do not allow time for build scans to become available
