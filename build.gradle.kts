@@ -51,7 +51,7 @@ dependencies {
     commonComponents(project(path = ":fetch-build-scan-data-cmdline-tool", configuration = "shadow"))
     mavenComponents(project(":configure-gradle-enterprise-maven-extension"))
     mavenComponents("com.gradle:gradle-enterprise-maven-extension:1.17.2")
-    mavenComponents("com.gradle:common-custom-user-data-maven-extension:1.11.1")
+    mavenComponents("com.gradle:common-custom-user-data-maven-extension:1.12")
 }
 
 shellcheck {
