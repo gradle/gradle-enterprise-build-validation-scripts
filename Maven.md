@@ -158,6 +158,7 @@ file from Gradle Inc. to be present in the root directory of the scripts.
 ```bash
 ./01-validate-local-build-caching-same-location.sh -i -x
 ```
+
 ## Specifying the JVM used to analyze Build Scan data
 
 The scripts use a Java-based utility to fetch and analyze Build Scan data.
