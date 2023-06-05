@@ -3,6 +3,7 @@ package com.gradle.enterprise.api.client;
 import com.gradle.enterprise.api.GradleEnterpriseApi;
 import com.gradle.enterprise.api.model.Build;
 import com.gradle.enterprise.api.model.BuildAttributesValue;
+import com.gradle.enterprise.api.model.BuildQuery;
 import com.gradle.enterprise.api.model.GradleAttributes;
 import com.gradle.enterprise.api.model.GradleBuildCachePerformance;
 import com.gradle.enterprise.api.model.GradleBuildCachePerformanceTaskExecutionEntry;
@@ -37,6 +38,8 @@ import static com.gradle.enterprise.api.model.GradleBuildCachePerformanceTaskExe
 import static com.gradle.enterprise.api.model.GradleBuildCachePerformanceTaskExecutionEntry.NonCacheabilityCategoryEnum.OVERLAPPING_OUTPUTS;
 
 public class GradleEnterpriseApiClient {
+
+    private static final Integer DEFAULT_AVAILABILITY_WAIT_TIMEOUT_SECS = 10;
 
     private final URL baseUrl;
     private final GradleEnterpriseApi apiClient;
@@ -126,7 +129,9 @@ public class GradleEnterpriseApiClient {
         int runNum = buildScan.runNum();
         String buildScanId = buildScan.buildScanId();
         try {
-            Build build = apiClient.getBuild(buildScanId, null);
+            BuildQuery buildQuery = new BuildQuery().availabilityWaitTimeoutSecs(DEFAULT_AVAILABILITY_WAIT_TIMEOUT_SECS);
+            Build build = apiClient.getBuild(buildScanId, buildQuery);
+
             if (build.getBuildToolType().equalsIgnoreCase("gradle")) {
                 GradleAttributes attributes = apiClient.getGradleAttributes(buildScanId, null);
                 GradleBuildCachePerformance buildCachePerformance = apiClient.getGradleBuildCachePerformance(buildScanId, null);
