@@ -27,7 +27,7 @@ dependencies {
 
     implementation("com.google.guava:guava:32.0.0-jre")
     implementation("info.picocli:picocli:4.7.3")
-    annotationProcessor("info.picocli:picocli-codegen:4.7.3")
+    annotationProcessor("info.picocli:picocli-codegen:4.7.4")
 }
 
 java {
