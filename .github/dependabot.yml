@@ -10,6 +10,10 @@ updates:
     directory: "/"
     registries:
       - gradle-plugin-portal
+    ignore:
+      # Update only patch version of GE Maven extension
+      - dependency-name: "com.gradle:gradle-enterprise-maven-extension"
+        update-types: ["version-update:semver-major", "version-update:semver-minor"]
     schedule:
       interval: "daily"
       time: "02:00"
