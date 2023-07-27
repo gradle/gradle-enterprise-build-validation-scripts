@@ -1,8 +1,3 @@
-def isTopLevelBuild = !gradle.parent
-if (!isTopLevelBuild) {
-    return
-}
-
 // the way this closure reads system properties means they are not tracked as inputs to the configuration cache model,
 // the same is the case when reading environment variables with Gradle [6.5, 7.3]
 def getInputParam = { String name ->

@@ -1,3 +1,4 @@
 - [NEW] Drop support for Gradle Enterprise versions older than 2023.1 when using `-e` command line option
 - [NEW] Use `CLIENT_JAVA_HOME` environment variable to control the JVM used to run the Build Scan clients
 - [FIX] API requests do not allow time for build scans to become available
+- [FIX] Build caching configuration is not applied to child builds

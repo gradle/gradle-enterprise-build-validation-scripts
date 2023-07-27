@@ -8,7 +8,6 @@ plugins {
     id("com.felipefzdz.gradle.shellcheck") version "1.4.6"
     id("com.github.breadmoirai.github-release") version "2.4.1"
     id("org.gradle.crypto.checksum") version "1.4.0"
-    id("org.gradle.wrapper-upgrade") version "0.11.1"
 }
 
 group = "com.gradle"
@@ -50,21 +49,13 @@ dependencies {
     argbash("argbash:argbash:2.10.0@zip")
     commonComponents(project(path = ":fetch-build-scan-data-cmdline-tool", configuration = "shadow"))
     mavenComponents(project(":configure-gradle-enterprise-maven-extension"))
-    mavenComponents("com.gradle:gradle-enterprise-maven-extension:1.17.2")
-    mavenComponents("com.gradle:common-custom-user-data-maven-extension:1.12")
+    mavenComponents("com.gradle:gradle-enterprise-maven-extension:1.17.4")
+    mavenComponents("com.gradle:common-custom-user-data-maven-extension:1.12.2")
 }
 
 shellcheck {
     additionalArguments = "-a -x"
     shellcheckVersion = "v0.8.0"
-}
-
-wrapperUpgrade {
-    gradle {
-        create("gradle-enterprise-build-validation-scripts") {
-            repo.set("gradle/gradle-enterprise-build-validation-scripts")
-        }
-    }
 }
 
 val unpackArgbash by tasks.registering(Copy::class) {

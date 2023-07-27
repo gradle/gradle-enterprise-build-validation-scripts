@@ -171,7 +171,7 @@ if (GradleVersion.current() < GradleVersion.version('6.0')) {
                 if (!scanPluginComponent) {
                     logger.quiet("Applying $BUILD_SCAN_PLUGIN_CLASS via init script")
                     logger.quiet("Connection to Gradle Enterprise: $geUrl, allowUntrustedServer: $geAllowUntrustedServer")
-                    pluginManager.apply(initscript.classLoader.loadClass(BUILD_SCAN_PLUGIN_CLASS))
+                    applyPluginExternally(pluginManager, BUILD_SCAN_PLUGIN_CLASS)
                     if (geUrl) buildScan.server = geUrl
                     if (geAllowUntrustedServer) buildScan.allowUntrustedServer = parseBoolean(geAllowUntrustedServer)
                 }
@@ -224,7 +224,7 @@ if (GradleVersion.current() < GradleVersion.version('6.0')) {
             if (!settings.pluginManager.hasPlugin(GRADLE_ENTERPRISE_PLUGIN_ID)) {
                 logger.quiet("Applying $GRADLE_ENTERPRISE_PLUGIN_CLASS via init script")
                 logger.quiet("Connection to Gradle Enterprise: $geUrl, allowUntrustedServer: $geAllowUntrustedServer")
-                settings.pluginManager.apply(initscript.classLoader.loadClass(GRADLE_ENTERPRISE_PLUGIN_CLASS))
+                applyPluginExternally(settings.pluginManager, GRADLE_ENTERPRISE_PLUGIN_CLASS)
                 extensionsWithPublicType(settings, GRADLE_ENTERPRISE_EXTENSION_CLASS).collect { settings[it.name] }.each { ext ->
                     if (geUrl) ext.server = geUrl
                     if (geAllowUntrustedServer) ext.allowUntrustedServer = parseBoolean(geAllowUntrustedServer)
@@ -292,4 +292,18 @@ static String appendIfMissing(String str, String suffix) {
 
 static String urlEncode(String str) {
     return URLEncoder.encode(str, StandardCharsets.UTF_8.name())
+}
+
+void applyPluginExternally(PluginManager pluginManager, String pluginClassName) {
+    def oldValue = System.getProperty('gradle.enterprise.externally-applied')
+    System.setProperty('gradle.enterprise.externally-applied', 'true')
+    try {
+        pluginManager.apply(initscript.classLoader.loadClass(pluginClassName))
+    } finally {
+        if (oldValue == null) {
+            System.clearProperty('gradle.enterprise.externally-applied')
+        } else {
+            System.setProperty('gradle.enterprise.externally-applied', oldValue)
+        }
+    }
 }
