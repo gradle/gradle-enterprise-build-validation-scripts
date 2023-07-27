@@ -18,7 +18,7 @@ The build validation scripts are compatible with a large range of Gradle version
 
 | Build Validation Scripts version | Compatible Gradle versions | Compatible Gradle Enterprise versions |
 |----------------------------------|----------------------------|---------------------------------------|
-| 2.0+                             | 5.0+                       | 2022.1+                               |  
+| 2.0+                             | 5.0+                       | 2022.1+                               |
 | 1.0 - 1.0.2                      | 5.0+                       | 2021.2+                               |
 
 ## Installation
@@ -86,7 +86,7 @@ is invoked, as shown in the example below.
 
 The scripts return with an exit code that depends on the outcome of running a given experiment.
 
-| Exit Code | Reason                                                                                                 | 
+| Exit Code | Reason                                                                                                 |
 |-----------|--------------------------------------------------------------------------------------------------------|
 | 0         | The experiment completed successfully                                                                  |
 | 1         | An invalid input was provided while attempting to run the experiment                                   |
@@ -153,13 +153,25 @@ Gradle Enterprise server at ge.example.io.
 ## Running the experiments without publishing build scans
 
 The scripts that run all builds locally can be configured to not publish any build scans and instead extract the required data
-right during the build to surface the state of work avoidance by passing the `-x` or `--disable-build-scan-publishing` command 
+right during the build to surface the state of work avoidance by passing the `-x` or `--disable-build-scan-publishing` command
 line argument. Obviously, no deeper analysis via build scans is possible. The use of this configuration option requires a license
 file from Gradle Inc. to be present in the root directory of the scripts.
 
 ```bash
 ./02-validate-local-build-caching-same-location.sh -i -x
 ```
+
+## Specifying the JVM used to analyze Build Scan data
+
+The scripts use a Java-based utility to fetch and analyze Build Scan data.
+If you need to run the Java-component of the scripts with a different Java Virtual Machine than what is configured by default on your system, then you can set the `CLIENT_JAVA_HOME` environment variable when running the scripts:
+
+```bash
+CLIENT_JAVA_HOME="/opt/java/temurin-17.0.7+7" ./02-validate-local-build-caching-same-location.sh -i
+```
+
+If `CLIENT_JAVA_HOME` is not specified, then the scripts will use the JVM referenced by the `JAVA_HOME` environment variable.
+If `JAVA_HOME` is not defined, then the scripts will use the java executable found on the system path.
 
 ## Analyzing the results
 
