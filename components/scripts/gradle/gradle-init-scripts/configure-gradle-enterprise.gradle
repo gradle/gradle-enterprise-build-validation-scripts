@@ -268,6 +268,21 @@ if (GradleVersion.current() < GradleVersion.version('6.0')) {
     }
 }
 
+void applyPluginExternally(PluginManager pluginManager, String pluginClassName) {
+    def externallyApplied = 'gradle.enterprise.externally-applied'
+    def oldValue = System.getProperty(externallyApplied)
+    System.setProperty(externallyApplied, 'true')
+    try {
+        pluginManager.apply(initscript.classLoader.loadClass(pluginClassName))
+    } finally {
+        if (oldValue == null) {
+            System.clearProperty(externallyApplied)
+        } else {
+            System.setProperty(externallyApplied, oldValue)
+        }
+    }
+}
+
 static def extensionsWithPublicType(def container, String publicType) {
     container.extensions.extensionsSchema.elements.findAll { it.publicType.concreteClass.name == publicType }
 }
@@ -292,18 +307,4 @@ static String appendIfMissing(String str, String suffix) {
 
 static String urlEncode(String str) {
     return URLEncoder.encode(str, StandardCharsets.UTF_8.name())
-}
-
-void applyPluginExternally(PluginManager pluginManager, String pluginClassName) {
-    def oldValue = System.getProperty('gradle.enterprise.externally-applied')
-    System.setProperty('gradle.enterprise.externally-applied', 'true')
-    try {
-        pluginManager.apply(initscript.classLoader.loadClass(pluginClassName))
-    } finally {
-        if (oldValue == null) {
-            System.clearProperty('gradle.enterprise.externally-applied')
-        } else {
-            System.setProperty('gradle.enterprise.externally-applied', oldValue)
-        }
-    }
 }
