@@ -155,7 +155,7 @@ right during the build to surface the state of work avoidance by passing the `-x
 line argument.
 
 The use of this option requires at least Java 17 to analyze the build data. The JVM version to analyze the build data is
-[configurable](#specifying-the-jvm-used-to-analyze-the-build-scan-data). You can still run the builds of the experiments with a JVM
+[configurable](#specifying-the-jvm-used-to-analyze-the-build-data). You can still run the builds of the experiments with a JVM
 version lower than Java 17.
 
 The use of this configuration option also requires a license file from Gradle Inc. to be present in the root directory of the scripts.
