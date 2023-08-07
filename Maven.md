@@ -159,17 +159,18 @@ file from Gradle Inc. to be present in the root directory of the scripts.
 ./01-validate-local-build-caching-same-location.sh -i -x
 ```
 
-## Specifying the JVM used to analyze Build Scan data
+## Specifying the JVM used to analyze the Build Scan data
 
-The scripts use a Java-based utility to fetch and analyze Build Scan data.
-If you need to run the Java-component of the scripts with a different Java Virtual Machine than what is configured by default on your system, then you can set the `CLIENT_JAVA_HOME` environment variable when running the scripts:
+The scripts use a Java-based utility to fetch and analyze the captured Build Scan data.
+If you need to run the utility with a different Java Virtual Machine than what is configured by default on your system and used when running your builds,
+then you can set the `CLIENT_JAVA_HOME` environment variable when invoking the scripts:
 
 ```bash
 CLIENT_JAVA_HOME="/opt/java/temurin-17.0.7+7" ./01-validate-local-build-caching-same-location.sh -i
 ```
 
-If `CLIENT_JAVA_HOME` is not specified, then the scripts will use the JVM referenced by the `JAVA_HOME` environment variable.
-If `JAVA_HOME` is not defined, then the scripts will use the java executable found on the system path.
+If `CLIENT_JAVA_HOME` is not specified, then the utility will use the JVM referenced by the `JAVA_HOME` environment variable.
+If `JAVA_HOME` is not defined, then the utility will use the Java executable found on the system path.
 
 ## Analyzing the results
 
