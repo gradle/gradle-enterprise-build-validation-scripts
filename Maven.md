@@ -148,13 +148,13 @@ Gradle Enterprise server at ge.example.io.
 ./01-validate-local-build-caching-same-location.sh -i -e -s https://ge.example.io
 ```
 
-## Running the experiments without publishing build scans
+## Running the experiments without publishing Build Scan data
 
-The scripts that run all builds locally can be configured to not publish any build scans and instead extract the required data
+The scripts that run all builds locally can be configured to not publish any Build Scan data and instead extract the required data
 right during the build to surface the state of work avoidance by passing the `-x` or `--disable-build-scan-publishing` command
-line argument. Obviously, no deeper analysis via build scans is possible.
+line argument.
 
-The use of this option requires at least Java 17 to analyze the Build Scan data. The JVM version to analyze the Build Scan data is
+The use of this option requires at least Java 17 to analyze the build data. The JVM version to analyze the build data is
 [configurable](#specifying-the-jvm-used-to-analyze-the-build-scan-data). You can still run the builds of the experiments with a JVM
 version lower than Java 17.
 
@@ -164,9 +164,9 @@ The use of this configuration option also requires a license file from Gradle In
 ./01-validate-local-build-caching-same-location.sh -i -x
 ```
 
-## Specifying the JVM used to analyze the Build Scan data
+## Specifying the JVM used to analyze the build data
 
-The scripts use a Java-based utility to fetch and analyze the captured Build Scan data.
+The scripts use a Java-based utility to fetch and analyze the captured build data.
 If you need to run the utility with a different Java Virtual Machine than what is configured by default on your system and used when running your builds,
 then you can set the `CLIENT_JAVA_HOME` environment variable when invoking the scripts:
 
