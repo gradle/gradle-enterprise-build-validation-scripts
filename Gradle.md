@@ -154,8 +154,13 @@ Gradle Enterprise server at ge.example.io.
 
 The scripts that run all builds locally can be configured to not publish any build scans and instead extract the required data
 right during the build to surface the state of work avoidance by passing the `-x` or `--disable-build-scan-publishing` command
-line argument. Obviously, no deeper analysis via build scans is possible. The use of this configuration option requires a license
-file from Gradle Inc. to be present in the root directory of the scripts.
+line argument. Obviously, no deeper analysis via build scans is possible.
+
+The use of this option requires at least Java 17 to analyze the Build Scan data. The JVM version to analyze the Build Scan data is
+[configurable](#specifying-the-jvm-used-to-analyze-the-build-scan-data). You can still run the builds of the experiments with a JVM 
+version lower than Java 17.
+
+The use of this configuration option also requires a license file from Gradle Inc. to be present in the root directory of the scripts.
 
 ```bash
 ./02-validate-local-build-caching-same-location.sh -i -x
