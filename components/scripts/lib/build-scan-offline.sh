@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-readonly READ_BUILD_SCAN_DATA_JAR="${LIB_DIR}/build-scan-clients/build-scan-data-tool-${SUMMARY_VERSION}.jar"
+readonly READ_BUILD_SCAN_DATA_JAR="${LIB_DIR}/build-scan-clients/build-scan-summary-${SUMMARY_VERSION}.jar"
 
 build_scan_dumps=()
 

@@ -46,11 +46,11 @@ val argbash by configurations.creating
 val commonComponents by configurations.creating
 val mavenComponents by configurations.creating
 
-val buildScanSummaryVersion = "2023.2"
+val buildScanSummaryVersion = "1.0-2023.2"
 
 dependencies {
     argbash("argbash:argbash:2.10.0@zip")
-    commonComponents("com.gradle.enterprise:build-scan-data-tool:${buildScanSummaryVersion}")
+    commonComponents("com.gradle.enterprise:build-scan-summary:${buildScanSummaryVersion}")
     mavenComponents(project(":configure-gradle-enterprise-maven-extension"))
     mavenComponents("com.gradle:gradle-enterprise-maven-extension:1.18.1")
     mavenComponents("com.gradle:common-custom-user-data-maven-extension:1.12.2")
