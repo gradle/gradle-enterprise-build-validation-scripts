@@ -10,6 +10,7 @@ readonly EXP_NO="03"
 readonly EXP_SCAN_TAG=exp3-gradle
 readonly BUILD_TOOL="Gradle"
 readonly SCRIPT_VERSION="<HEAD>"
+readonly SUMMARY_VERSION="<SUMMARY_VERSION>"
 readonly SHOW_RUN_ID=true
 
 # Needed to bootstrap the script

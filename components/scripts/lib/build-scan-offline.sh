@@ -1,14 +1,10 @@
 #!/usr/bin/env bash
 
-readonly GRADLE_ENTERPRISE_LICENSE="${SCRIPT_DIR}/gradle-enterprise.license"
-readonly READ_BUILD_SCAN_DATA_JAR="${LIB_DIR}/build-scan-clients/read-build-scan-data-cmdline-tool-${SCRIPT_VERSION}-all.jar"
+readonly READ_BUILD_SCAN_DATA_JAR="${LIB_DIR}/build-scan-clients/build-scan-data-tool-${SUMMARY_VERSION}.jar"
 
 build_scan_dumps=()
 
 verify_offline_mode_required_files_exist() {
-  if [ ! -f "$GRADLE_ENTERPRISE_LICENSE" ]; then
-    die "ERROR: Missing required file gradle-enterprise.license in the root folder of the build validation scripts" "${INVALID_INPUT}"
-  fi
   if [ ! -f "$READ_BUILD_SCAN_DATA_JAR" ]; then
     die "ERROR: Missing required file to read the build scan data" "${INVALID_INPUT}"
   fi
@@ -43,7 +39,6 @@ read_build_scan_dumps() {
 
   args+=(
       "extract"
-      "--license-file" "${SCRIPT_DIR}/gradle-enterprise.license"
       "0,${build_scan_dumps[0]}"
       "1,${build_scan_dumps[1]}"
   )

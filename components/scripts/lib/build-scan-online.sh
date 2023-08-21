@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-readonly FETCH_BUILD_SCAN_DATA_JAR="${LIB_DIR}/build-scan-clients/fetch-build-scan-data-cmdline-tool-${SCRIPT_VERSION}-all.jar"
+readonly FETCH_BUILD_SCAN_DATA_JAR="${LIB_DIR}/build-scan-clients/build-scan-data-tool-${SUMMARY_VERSION}.jar"
 
 # This is a helper function for the common pattern of reading Build Scan metadata
 # from the build-scans.csv file, then retrieving build metrics using the Gradle
