@@ -13,6 +13,26 @@ plugins {
 group = "com.gradle"
 
 repositories {
+    maven {
+        name = "Solutions"
+        url = uri("https://repo.gradle.org/artifactory/solutions")
+        credentials {
+            username = providers
+                .environmentVariable("GRADLE_SOLUTIONS_REPOSITORY_USERNAME")
+                .orElse(providers.gradleProperty("gradleSolutionsRepositoryUsername"))
+                .get()
+            password = providers
+                .environmentVariable("GRADLE_SOLUTIONS_REPOSITORY_PASSWORD")
+                .orElse(providers.gradleProperty("gradleSolutionsRepositoryPassword"))
+                .get()
+        }
+        authentication {
+            create<BasicAuthentication>("basic")
+        }
+        content {
+            includeModule("com.gradle.develocity", "build-scan-summary")
+        }
+    }
     exclusiveContent {
         forRepository {
             ivy {
@@ -36,6 +56,7 @@ val isDevelopmentRelease = !hasProperty("finalRelease")
 val releaseVersion = releaseVersion()
 val releaseNotes = releaseNotes()
 val distributionVersion = distributionVersion()
+val buildScanSummaryVersion = "0.9-2023.2"
 
 allprojects {
     version = releaseVersion.get()
@@ -47,7 +68,7 @@ val mavenComponents by configurations.creating
 
 dependencies {
     argbash("argbash:argbash:2.10.0@zip")
-    commonComponents(project(path = ":fetch-build-scan-data-cmdline-tool", configuration = "shadow"))
+    commonComponents("com.gradle.develocity:build-scan-summary:${buildScanSummaryVersion}")
     mavenComponents(project(":configure-gradle-enterprise-maven-extension"))
     mavenComponents("com.gradle:gradle-enterprise-maven-extension:1.18.4")
     mavenComponents("com.gradle:common-custom-user-data-maven-extension:1.13")
@@ -95,7 +116,10 @@ val copyGradleScripts by tasks.registering(Copy::class) {
     // local variable required for configuration cache compatibility
     // https://docs.gradle.org/current/userguide/configuration_cache.html#config_cache:not_yet_implemented:accessing_top_level_at_execution
     val releaseVersion = releaseVersion
+    val buildScanSummaryVersion = buildScanSummaryVersion
+
     inputs.property("project.version", releaseVersion)
+    inputs.property("summary.version", buildScanSummaryVersion)
 
     from(layout.projectDirectory.file("LICENSE"))
     from(layout.projectDirectory.dir("release").file("version.txt"))
@@ -104,6 +128,7 @@ val copyGradleScripts by tasks.registering(Copy::class) {
     from(layout.projectDirectory.dir("components/scripts/gradle")) {
         exclude("gradle-init-scripts")
         filter { line: String -> line.replace("<HEAD>", releaseVersion.get()) }
+        filter { line: String -> line.replace("<SUMMARY_VERSION>", buildScanSummaryVersion) }
     }
     from(layout.projectDirectory.dir("components/scripts/gradle")) {
         include("gradle-init-scripts/**")
@@ -116,6 +141,7 @@ val copyGradleScripts by tasks.registering(Copy::class) {
         include("lib/**")
         exclude("lib/cli-parsers")
         filter { line: String -> line.replace("<HEAD>", releaseVersion.get()) }
+        filter { line: String -> line.replace("<SUMMARY_VERSION>", buildScanSummaryVersion) }
     }
     from(generateBashCliParsers.map { it.outputDir.file("lib/cli-parsers/gradle") }) {
         into("lib/")
@@ -133,7 +159,10 @@ val copyMavenScripts by tasks.registering(Copy::class) {
     // local variable required for configuration cache compatibility
     // https://docs.gradle.org/current/userguide/configuration_cache.html#config_cache:not_yet_implemented:accessing_top_level_at_execution
     val releaseVersion = releaseVersion
+    val buildScanSummaryVersion = buildScanSummaryVersion
+
     inputs.property("project.version", releaseVersion)
+    inputs.property("summary.version", buildScanSummaryVersion)
 
     from(layout.projectDirectory.file("LICENSE"))
     from(layout.projectDirectory.dir("release").file("version.txt"))
@@ -141,6 +170,7 @@ val copyMavenScripts by tasks.registering(Copy::class) {
 
     from(layout.projectDirectory.dir("components/scripts/maven")) {
         filter { line: String -> line.replace("<HEAD>", releaseVersion.get()) }
+        filter { line: String -> line.replace("<SUMMARY_VERSION>", buildScanSummaryVersion) }
     }
     from(layout.projectDirectory.dir("components/scripts/")) {
         include("README.md")
@@ -149,6 +179,7 @@ val copyMavenScripts by tasks.registering(Copy::class) {
         include("lib/**")
         exclude("lib/cli-parsers")
         filter { line: String -> line.replace("<HEAD>", releaseVersion.get()) }
+        filter { line: String -> line.replace("<SUMMARY_VERSION>", buildScanSummaryVersion) }
     }
     from(generateBashCliParsers.map { it.outputDir.file("lib/cli-parsers/maven") }) {
         into("lib/")

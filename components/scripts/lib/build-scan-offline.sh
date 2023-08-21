@@ -1,18 +1,12 @@
 #!/usr/bin/env bash
 
-readonly GRADLE_ENTERPRISE_LICENSE="${SCRIPT_DIR}/gradle-enterprise.license"
-readonly READ_BUILD_SCAN_DATA_JAR="${LIB_DIR}/build-scan-clients/read-build-scan-data-cmdline-tool-${SCRIPT_VERSION}-all.jar"
+readonly READ_BUILD_SCAN_DATA_JAR="${LIB_DIR}/build-scan-clients/build-scan-summary-${SUMMARY_VERSION}.jar"
+
+# Build scan summary exit codes
+readonly SUCCESS=0
+readonly JVM_VERSION_NOT_SUPPORTED=3
 
 build_scan_dumps=()
-
-verify_offline_mode_required_files_exist() {
-  if [ ! -f "$GRADLE_ENTERPRISE_LICENSE" ]; then
-    die "ERROR: Missing required file gradle-enterprise.license in the root folder of the build validation scripts" "${INVALID_INPUT}"
-  fi
-  if [ ! -f "$READ_BUILD_SCAN_DATA_JAR" ]; then
-    die "ERROR: Missing required file to read the build scan data" "${INVALID_INPUT}"
-  fi
-}
 
 find_and_read_build_scan_dumps() {
   find_build_scan_dumps
@@ -38,18 +32,19 @@ find_build_scan_dump() {
 }
 
 read_build_scan_dumps() {
-  local build_scan_data args
-  args=()
+  local args build_scan_data build_scan_summary_exit_code
 
-  args+=(
-      "extract"
-      "--license-file" "${SCRIPT_DIR}/gradle-enterprise.license"
-      "0,${build_scan_dumps[0]}"
-      "1,${build_scan_dumps[1]}"
+  args=(
+    "0,file://${build_scan_dumps[0]}"
+    "1,file://${build_scan_dumps[1]}"
   )
 
   echo "Extracting Build Scan data for all builds"
-  if ! build_scan_data="$(JAVA_HOME="${CLIENT_JAVA_HOME:-$JAVA_HOME}" invoke_java "$READ_BUILD_SCAN_DATA_JAR" "${args[@]}")"; then
+  build_scan_data="$(JAVA_HOME="${CLIENT_JAVA_HOME:-$JAVA_HOME}" invoke_java "$READ_BUILD_SCAN_DATA_JAR" "${args[@]}")"
+  build_scan_summary_exit_code="$?"
+  if [[ $build_scan_summary_exit_code -eq $JVM_VERSION_NOT_SUPPORTED ]]; then
+    die "ERROR: Java 17+ is required when using --disable-build-scan-publishing. Rerun the script with Java 17+ or set the CLIENT_JAVA_HOME environment variable to a Java 17+ installation." "$UNEXPECTED_ERROR"
+  elif [[ $build_scan_summary_exit_code -ne $SUCCESS ]]; then
     exit "$UNEXPECTED_ERROR"
   fi
   echo "Finished extracting Build Scan data for all builds"
