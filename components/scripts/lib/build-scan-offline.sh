@@ -38,9 +38,8 @@ read_build_scan_dumps() {
   args=()
 
   args+=(
-      "extract"
-      "0,${build_scan_dumps[0]}"
-      "1,${build_scan_dumps[1]}"
+      "0,file://${build_scan_dumps[0]}"
+      "1,file://${build_scan_dumps[1]}"
   )
 
   echo "Extracting Build Scan data for all builds"

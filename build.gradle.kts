@@ -95,6 +95,7 @@ val copyGradleScripts by tasks.registering(Copy::class) {
     group = "build"
     description = "Copies the Gradle source and the generated scripts to the output directory."
 
+    val buildScanSummaryVersion = buildScanSummaryVersion
     // local variable required for configuration cache compatibility
     // https://docs.gradle.org/current/userguide/configuration_cache.html#config_cache:not_yet_implemented:accessing_top_level_at_execution
     val releaseVersion = releaseVersion
@@ -135,6 +136,7 @@ val copyMavenScripts by tasks.registering(Copy::class) {
     group = "build"
     description = "Copies the Maven source and the generated scripts to the output directory."
 
+    val buildScanSummaryVersion = buildScanSummaryVersion
     // local variable required for configuration cache compatibility
     // https://docs.gradle.org/current/userguide/configuration_cache.html#config_cache:not_yet_implemented:accessing_top_level_at_execution
     val releaseVersion = releaseVersion
