@@ -100,6 +100,7 @@ val copyGradleScripts by tasks.registering(Copy::class) {
     val buildScanSummaryVersion = buildScanSummaryVersion
 
     inputs.property("project.version", releaseVersion)
+    inputs.property("summary.version", buildScanSummaryVersion)
 
     from(layout.projectDirectory.file("LICENSE"))
     from(layout.projectDirectory.dir("release").file("version.txt"))
@@ -142,6 +143,7 @@ val copyMavenScripts by tasks.registering(Copy::class) {
     val buildScanSummaryVersion = buildScanSummaryVersion
 
     inputs.property("project.version", releaseVersion)
+    inputs.property("summary.version", buildScanSummaryVersion)
 
     from(layout.projectDirectory.file("LICENSE"))
     from(layout.projectDirectory.dir("release").file("version.txt"))
