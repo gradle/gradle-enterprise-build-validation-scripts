@@ -4,12 +4,6 @@ readonly READ_BUILD_SCAN_DATA_JAR="${LIB_DIR}/build-scan-clients/build-scan-summ
 
 build_scan_dumps=()
 
-verify_offline_mode_required_files_exist() {
-  if [ ! -f "$READ_BUILD_SCAN_DATA_JAR" ]; then
-    die "ERROR: Missing required file to read the build scan data" "${INVALID_INPUT}"
-  fi
-}
-
 find_and_read_build_scan_dumps() {
   find_build_scan_dumps
   read_build_scan_dumps

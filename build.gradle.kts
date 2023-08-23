@@ -37,6 +37,7 @@ val isDevelopmentRelease = !hasProperty("finalRelease")
 val releaseVersion = releaseVersion()
 val releaseNotes = releaseNotes()
 val distributionVersion = distributionVersion()
+val buildScanSummaryVersion = "0.9-2023.2"
 
 allprojects {
     version = releaseVersion.get()
@@ -45,8 +46,6 @@ allprojects {
 val argbash by configurations.creating
 val commonComponents by configurations.creating
 val mavenComponents by configurations.creating
-
-val buildScanSummaryVersion = "1.0-2023.2"
 
 dependencies {
     argbash("argbash:argbash:2.10.0@zip")
@@ -97,8 +96,9 @@ val copyGradleScripts by tasks.registering(Copy::class) {
 
     // local variable required for configuration cache compatibility
     // https://docs.gradle.org/current/userguide/configuration_cache.html#config_cache:not_yet_implemented:accessing_top_level_at_execution
-    val buildScanSummaryVersion = buildScanSummaryVersion
     val releaseVersion = releaseVersion
+    val buildScanSummaryVersion = buildScanSummaryVersion
+
     inputs.property("project.version", releaseVersion)
 
     from(layout.projectDirectory.file("LICENSE"))
@@ -138,8 +138,9 @@ val copyMavenScripts by tasks.registering(Copy::class) {
 
     // local variable required for configuration cache compatibility
     // https://docs.gradle.org/current/userguide/configuration_cache.html#config_cache:not_yet_implemented:accessing_top_level_at_execution
-    val buildScanSummaryVersion = buildScanSummaryVersion
     val releaseVersion = releaseVersion
+    val buildScanSummaryVersion = buildScanSummaryVersion
+
     inputs.property("project.version", releaseVersion)
 
     from(layout.projectDirectory.file("LICENSE"))
