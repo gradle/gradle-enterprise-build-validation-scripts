@@ -13,7 +13,26 @@ plugins {
 group = "com.gradle"
 
 repositories {
-    mavenLocal()
+    maven {
+        name = "Solutions"
+        url = uri("https://repo.gradle.org/artifactory/solutions")
+        credentials {
+            username = providers
+                .environmentVariable("GRADLE_SOLUTIONS_REPOSITORY_USERNAME")
+                .orElse(providers.gradleProperty("gradleSolutionsRepositoryUsername"))
+                .get()
+            password = providers
+                .environmentVariable("GRADLE_SOLUTIONS_REPOSITORY_PASSWORD")
+                .orElse(providers.gradleProperty("gradleSolutionsRepositoryPassword"))
+                .get()
+        }
+        authentication {
+            create<BasicAuthentication>("basic")
+        }
+        content {
+            includeModule("com.gradle.enterprise", "build-scan-summary")
+        }
+    }
     exclusiveContent {
         forRepository {
             ivy {
