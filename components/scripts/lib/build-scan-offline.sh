@@ -43,7 +43,7 @@ read_build_scan_dumps() {
   build_scan_data="$(JAVA_HOME="${CLIENT_JAVA_HOME:-$JAVA_HOME}" invoke_java "$READ_BUILD_SCAN_DATA_JAR" "${args[@]}")"
   build_scan_summary_exit_code="$?"
   if [[ $build_scan_summary_exit_code -eq $JVM_VERSION_NOT_SUPPORTED ]]; then
-    die "ERROR: Java 17+ is required when using --disable-build-scan-publishing. Rerun the script with Java 17+ or set the environment variable CLIENT_JAVA_HOME to a Java 17+ installation." "$UNEXPECTED_ERROR"
+    die "ERROR: Java 17+ is required when using --disable-build-scan-publishing. Rerun the script with Java 17+ or set the CLIENT_JAVA_HOME environment variable to a Java 17+ installation." "$UNEXPECTED_ERROR"
   elif [[ $build_scan_summary_exit_code -ne $SUCCESS ]]; then
     exit "$UNEXPECTED_ERROR"
   fi
