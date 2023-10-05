@@ -64,7 +64,7 @@ jobs:
       - name: Set up JDK ${{ matrix.java-version }} on WSL
         if: ${{ runner.os == 'Windows' }}
         run: |
-          sudo update-ca-certificates
+          sudo update-ca-certificates -v
           wget -O - https://packages.adoptium.net/artifactory/api/gpg/key/public | sudo apt-key add -
           echo "deb https://packages.adoptium.net/artifactory/deb $(awk -F= '/^VERSION_CODENAME/{print$2}' /etc/os-release) main" | sudo tee /etc/apt/sources.list.d/adoptium.list
           sudo apt-get update
