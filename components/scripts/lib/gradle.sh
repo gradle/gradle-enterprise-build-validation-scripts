@@ -16,7 +16,7 @@ invoke_gradle() {
 
   if [ "$enable_ge" == "on" ]; then
     args+=("-Dcom.gradle.enterprise.build-validation.gradle.plugin-repository.url=https://plugins.gradle.org/m2")
-    args+=("-Dcom.gradle.enterprise.build-validation.gradle-enterprise.plugin.version=3.15.1")
+    args+=("-Dcom.gradle.enterprise.build-validation.gradle-enterprise.plugin.version=3.14.1")
     args+=("-Dcom.gradle.enterprise.build-validation.ccud.plugin.version=1.11.3")
   fi
 
