@@ -10,6 +10,7 @@ readonly EXP_NO="02"
 readonly EXP_SCAN_TAG=exp2-gradle
 readonly BUILD_TOOL="Gradle"
 readonly SCRIPT_VERSION="<HEAD>"
+readonly SUMMARY_VERSION="<SUMMARY_VERSION>"
 readonly SHOW_RUN_ID=true
 
 # Needed to bootstrap the script
@@ -39,10 +40,6 @@ ge_server=''
 interactive_mode=''
 
 main() {
-  if [[ "$build_scan_publishing_mode" == "off" ]]; then
-    verify_offline_mode_required_files_exist
-  fi
-
   if [ "${interactive_mode}" == "on" ]; then
     wizard_execute
   else

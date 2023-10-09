@@ -10,6 +10,7 @@ readonly EXP_NO="04"
 readonly EXP_SCAN_TAG=exp4-maven
 readonly BUILD_TOOL="Maven"
 readonly SCRIPT_VERSION="<HEAD>"
+readonly SUMMARY_VERSION="<SUMMARY_VERSION>"
 readonly SHOW_RUN_ID=true
 
 # Needed to bootstrap the script
