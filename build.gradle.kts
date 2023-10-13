@@ -6,7 +6,7 @@ import org.gradle.crypto.checksum.Checksum
 plugins {
     id("base")
     id("com.felipefzdz.gradle.shellcheck") version "1.4.6"
-    id("com.github.breadmoirai.github-release") version "2.4.1"
+    id("com.github.breadmoirai.github-release") version "2.5.1"
     id("org.gradle.crypto.checksum") version "1.4.0"
 }
 
