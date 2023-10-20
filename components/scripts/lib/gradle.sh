@@ -32,6 +32,7 @@ invoke_gradle() {
     -Dcom.gradle.enterprise.build-validation.runNum="${run_num}"
     -Dcom.gradle.enterprise.build-validation.scriptsVersion="${SCRIPT_VERSION}"
     -Dscan.capture-task-input-files=true
+    -Dpts.enabled=false
   )
 
   # https://stackoverflow.com/a/31485948
