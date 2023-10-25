@@ -1487,7 +1487,6 @@ components:
       description: Information about the local build cache used in the build.
       required:
         - isEnabled
-        - isDisabledDueToError
       properties:
         isEnabled:
           type: boolean
@@ -1503,6 +1502,7 @@ components:
           description: >-
             Whether the local cache was disabled due to an error occuring in
             loading or storing local build cache entries.
+          x-nullable: true
         directory:
           type: string
           description: >-
@@ -1515,7 +1515,6 @@ components:
       description: Information about the remote build cache used in the build.
       required:
         - isEnabled
-        - isDisabledDueToError
       properties:
         isEnabled:
           type: boolean
@@ -1531,6 +1530,7 @@ components:
           description: >-
             Wether the remote build cache was disabled during the build due to
             an error occuring in loading or storing remote build cache entries.
+          x-nullable: true
         url:
           type: string
           description: >-
@@ -1797,7 +1797,6 @@ components:
       x-nullable: true
       required:
         - isEnabled
-        - isDisabledDueToError
       properties:
         isEnabled:
           type: boolean
@@ -1813,6 +1812,7 @@ components:
           description: >-
             Whether the local cache was disabled due to an error occuring in
             loading or storing local build cache entries.
+          x-nullable: true
         directory:
           type: string
           description: >-
@@ -1829,7 +1829,6 @@ components:
       x-nullable: true
       required:
         - isEnabled
-        - isDisabledDueToError
       properties:
         isEnabled:
           type: boolean
@@ -1845,6 +1844,7 @@ components:
           description: >-
             Whether the remote build cache was disabled during the build due to
             an error occuring in loading or storing remote build cache entries.
+          x-nullable: true
         url:
           type: string
           description: >-
