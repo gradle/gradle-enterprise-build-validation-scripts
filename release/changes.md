@@ -1,1 +1,1 @@
-- [NEW] TBD
+- [FIX] Error when fetching build scans for experiment summary using Develocity 2023.3.2

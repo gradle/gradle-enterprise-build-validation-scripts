@@ -26,7 +26,7 @@ The build validation scripts are compatible with a large range of Gradle version
 Use the following command to download and unpack the build validation scripts for Gradle to the current directory:
 
 ```bash
-curl -s -L -O https://github.com/gradle/gradle-enterprise-build-validation-scripts/releases/download/v2.5/gradle-enterprise-gradle-build-validation-2.5.zip && unzip -q -o gradle-enterprise-gradle-build-validation-2.5.zip
+curl -s -L -O https://github.com/gradle/gradle-enterprise-build-validation-scripts/releases/download/v2.5.1/gradle-enterprise-gradle-build-validation-2.5.1.zip && unzip -q -o gradle-enterprise-gradle-build-validation-2.5.1.zip
 ```
 
 ## Structure
