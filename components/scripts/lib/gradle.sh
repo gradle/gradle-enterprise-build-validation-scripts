@@ -16,7 +16,7 @@ invoke_gradle() {
 
   if [ "$enable_ge" == "on" ]; then
     args+=("-Dcom.gradle.enterprise.build-validation.gradle.plugin-repository.url=https://plugins.gradle.org/m2")
-    args+=("-Dcom.gradle.enterprise.build-validation.gradle-enterprise.plugin.version=3.16.1")
+    args+=("-Dcom.gradle.enterprise.build-validation.gradle-enterprise.plugin.version=3.14.1") # Max version for GE server 2023.2 -> See https://docs.gradle.com/enterprise/compatibility/#develocity_compatibility
     args+=("-Dcom.gradle.enterprise.build-validation.ccud.plugin.version=1.12.1")
   fi
 
