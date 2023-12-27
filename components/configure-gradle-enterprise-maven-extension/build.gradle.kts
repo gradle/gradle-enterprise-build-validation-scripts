@@ -8,7 +8,7 @@ repositories {
 
 dependencies {
     compileOnly("org.apache.maven:maven-core:3.9.6")
-    compileOnly("org.codehaus.plexus:plexus-component-annotations:2.1.1")
+    compileOnly("org.codehaus.plexus:plexus-component-annotations:2.2.0")
     compileOnly("com.gradle:gradle-enterprise-maven-extension:1.18.1")
 }
 
