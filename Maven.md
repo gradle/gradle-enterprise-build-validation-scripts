@@ -1,4 +1,4 @@
-# Gradle Enterprise Build Validation Scripts for Maven
+# Develocity Build Validation Scripts for Maven
 
 The purpose of the build validation scripts is to assist you in validating that your Maven build is in an optimal state in terms of maximizing work avoidance. The validation scripts do not actually modify your build, but they surface what can be improved in your build to avoid unnecessary work in several scenarios.
 
@@ -14,9 +14,9 @@ If you plan to use the build validation scripts on Windows, then you will need t
 
 ## Compatibility
 
-The build validation scripts are compatible with a large range of Maven versions, as laid out in the table below. Getting the best user experience when running an experiment and when being presented with the results of an experiment requires access to the Gradle Enterprise server that holds the captured build data. Fetching that build data requires a compatible version of Gradle Enterprise, as laid out in the table below.
+The build validation scripts are compatible with a large range of Maven versions, as laid out in the table below. Getting the best user experience when running an experiment and when being presented with the results of an experiment requires access to the Develocity server that holds the captured build data. Fetching that build data requires a compatible version of Develocity, as laid out in the table below.
 
-| Build Validation Scripts version | Compatible Maven versions | Compatible Gradle Enterprise versions |
+| Build Validation Scripts version | Compatible Maven versions | Compatible Develocity versions |
 |----------------------------------|---------------------------| ------------------------------------- |
 | 2.0+                             | 3.3.1+                    | 2022.1+                               |
 | 1.0 - 1.0.2                      | 3.3.1+                    | 2021.2+                               |
@@ -94,29 +94,29 @@ The scripts return with an exit code that depends on the outcome of running a gi
 
 ## Applying the Common Custom User Data Maven extension
 
-To get the most out of the experiments and also when building with Gradle Enterprise during daily development, it is highly recommended that you apply the [Common Custom User Data Maven extension](https://github.com/gradle/common-custom-user-data-maven-extension) to your build. This free, open-source plugin enhances build scans with additional tags, links, and custom values that are considered during the experiments.
+To get the most out of the experiments and also when building with Develocity during daily development, it is highly recommended that you apply the [Common Custom User Data Maven extension](https://github.com/gradle/common-custom-user-data-maven-extension) to your build. This free, open-source plugin enhances build scans with additional tags, links, and custom values that are considered during the experiments.
 
 You can find a complete example of how to apply the Common Custom User Data Maven extension to your build [here](https://github.com/gradle/gradle-enterprise-build-config-samples/blob/main/common-gradle-enterprise-maven-configuration/.mvn/extensions.xml).
 
-## Authenticating with Gradle Enterprise
+## Authenticating with Develocity
 
-Some scripts fetch data from build scans that were published as part of running an experiment. The build scan data is fetched by leveraging the [Gradle Enterprise API](https://docs.gradle.com/enterprise/api-manual/). It is not strictly necessary that you have permission to call these APIs to execute a script successfully, but the summary provided once the script has finished running its experiment will be more comprehensive if the build scan data is accessible.
+Some scripts fetch data from build scans that were published as part of running an experiment. The build scan data is fetched by leveraging the [Develocity API](https://docs.gradle.com/enterprise/api-manual/). It is not strictly necessary that you have permission to call these APIs to execute a script successfully, but the summary provided once the script has finished running its experiment will be more comprehensive if the build scan data is accessible.
 
-You can check your granted permissions by navigating in the browser to the 'My Settings' section from the user menu of your Gradle Enterprise UI. You need the 'Access build data via the API' permission. Additionally, the script needs an access key to authenticate with the APIs. See [Authenticating with Gradle Enterprise](https://docs.gradle.com/enterprise/maven-extension/#authenticating_with_gradle_enterprise) for details on how to create an access key and storing it locally.
+You can check your granted permissions by navigating in the browser to the 'My Settings' section from the user menu of your Develocity UI. You need the 'Access build data via the API' permission. Additionally, the script needs an access key to authenticate with the APIs. See [Authenticating with Develocity](https://docs.gradle.com/enterprise/maven-extension/#authenticating_with_gradle_enterprise) for details on how to create an access key and storing it locally.
 
 By default, the scripts fetching build scan data try to find the access key in the `enterprise/keys.properties` file within the Gradle user home directory (`~/.gradle` by default). Alternatively, the access key can be specified via the `GRADLE_ENTERPRISE_ACCESS_KEY` environment variable. You can also authenticate with the APIs using username and password instead by setting the `GRADLE_ENTERPRISE_USERNAME` and `GRADLE_ENTERPRISE_PASSWORD` environment variables.
 
-## Configuring the network settings to connect to Gradle Enterprise
+## Configuring the network settings to connect to Develocity
 
-The scripts that fetch build scan data can be configured to use a HTTP(S) proxy, to use a custom Java trust store, and to disable SSL certificate validation when connecting to Gradle Enterprise. The network settings configuration is automatically picked up by the build validation scripts from a `network.settings` file put in the same location as where the scripts are run. A [configuration file template](components/scripts/network.settings) can be found at the same location as where the scripts are located.
+The scripts that fetch build scan data can be configured to use a HTTP(S) proxy, to use a custom Java trust store, and to disable SSL certificate validation when connecting to Develocity. The network settings configuration is automatically picked up by the build validation scripts from a `network.settings` file put in the same location as where the scripts are run. A [configuration file template](components/scripts/network.settings) can be found at the same location as where the scripts are located.
 
-If your Gradle Enterprise server can only be reached via a HTTP(S) proxy, edit the `network.settings` file and uncomment and update the lines that start with `http.` and `https.`, using the values required by your HTTP(S) proxy server.
+If your Develocity server can only be reached via a HTTP(S) proxy, edit the `network.settings` file and uncomment and update the lines that start with `http.` and `https.`, using the values required by your HTTP(S) proxy server.
 
-If your Gradle Enterprise server is using a certificate signed by an internal Certificate Authority (CA), edit the `network.settings` file and uncomment and update the lines that start with `javax.net.ssl.trustStore`, specifying where your custom trust store is, what type of trust store it is, and the password required to access the trust store.
+If your Develocity server is using a certificate signed by an internal Certificate Authority (CA), edit the `network.settings` file and uncomment and update the lines that start with `javax.net.ssl.trustStore`, specifying where your custom trust store is, what type of trust store it is, and the password required to access the trust store.
 
-In the unlikely and insecure case that your Gradle Enterprise server is using a self-signed certificate, edit the `network.settings` file and uncomment and update the lines that start with `ssl`.
+In the unlikely and insecure case that your Develocity server is using a self-signed certificate, edit the `network.settings` file and uncomment and update the lines that start with `ssl`.
 
-If the requests to fetch the build scan data from your Gradle Enterprise server are timing out, edit the `network.settings` file and uncomment and update the lines that end with `timeout`.
+If the requests to fetch the build scan data from your Develocity server are timing out, edit the `network.settings` file and uncomment and update the lines that end with `timeout`.
 
 ## Configuring custom value lookup names
 
@@ -129,7 +129,7 @@ The scripts that fetch build scan data expect some of it to be present as custom
 ## Redirecting build scan publishing
 
 The scripts that run one or more builds locally can be configured to publish build scans to a different
-Gradle Enterprise server than the one that the builds point to by passing the `-s` or `--gradle-enterprise-server`
+Develocity server than the one that the builds point to by passing the `-s` or `--gradle-enterprise-server`
 command line argument. In the example below, the script will configure the local builds to publish their build scans
 to ge.example.io regardless of what server is configured in the build.
 
@@ -137,12 +137,12 @@ to ge.example.io regardless of what server is configured in the build.
 ./01-validate-local-build-caching-same-location.sh -i -s https://ge.example.io
 ```
 
-## Instrumenting the build with Gradle Enterprise
+## Instrumenting the build with Develocity
 
-The scripts that run one or more builds locally can be configured to connect the builds to a given Gradle Enterprise
-server in case the builds are not already connected to Gradle Enterprise by passing the `-e` or `--enable-gradle-enterprise`
+The scripts that run one or more builds locally can be configured to connect the builds to a given Develocity
+server in case the builds are not already connected to Develocity by passing the `-e` or `--enable-gradle-enterprise`
 command line argument. In the example below, the script will configure the non-instrumented builds to connect to the
-Gradle Enterprise server at ge.example.io.
+Develocity server at ge.example.io.
 
 ```bash
 ./01-validate-local-build-caching-same-location.sh -i -e -s https://ge.example.io
@@ -215,13 +215,13 @@ The estimated reduction in serial execution time of the goals of the second buil
 
 #### Executed cacheable goals
 
-The serial execution time of the goals executed in the second build that Gradle Enterprise considered cacheable. These goals stored their outputs in the build cache during the first build but were unable to reuse the outputs during the second build.
+The serial execution time of the goals executed in the second build that Develocity considered cacheable. These goals stored their outputs in the build cache during the first build but were unable to reuse the outputs during the second build.
 
 These executed cacheable goals can usually be fixed such that their outputs are reused in the second build of the experiment.
 
 ####  Executed non-cacheable goals
 
-The serial execution time of the goals executed in the second build that Gradle Enterprise considered non-cacheable. These goals did not store their outputs in the build cache during the first build and did not try to reuse the outputs during the second build.
+The serial execution time of the goals executed in the second build that Develocity considered non-cacheable. These goals did not store their outputs in the build cache during the first build and did not try to reuse the outputs during the second build.
 
 These executed non-cacheable goals can oftentimes be made cacheable through the proper declaration of their inputs and outputs such that their outputs can be stored during the first build of the experiment and reused in the second build of the experiment.
 
