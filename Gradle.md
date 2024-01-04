@@ -133,10 +133,10 @@ The scripts that fetch build scan data expect some of it to be present as custom
 The scripts that run one or more builds locally can be configured to publish build scans to a different
 Develocity server than the one that the builds point to by passing the `-s` or `--gradle-enterprise-server`
 command line argument. In the example below, the script will configure the local builds to publish their build scans
-to ge.example.io regardless of what server is configured in the build.
+to develocity.example.io regardless of what server is configured in the build.
 
 ```bash
-./02-validate-local-build-caching-same-location.sh -i -s https://ge.example.io
+./02-validate-local-build-caching-same-location.sh -i -s https://develocity.example.io
 ```
 
 ## Instrumenting the build with Develocity
@@ -144,10 +144,10 @@ to ge.example.io regardless of what server is configured in the build.
 The scripts that run one or more builds locally can be configured to connect the builds to a given Develocity
 server in case the builds are not already connected to Develocity by passing the `-e` or `--enable-gradle-enterprise`
 command line argument. In the example below, the script will configure the non-instrumented builds to connect to the
-Develocity server at ge.example.io.
+Develocity server at develocity.example.io.
 
 ```bash
-./02-validate-local-build-caching-same-location.sh -i -e -s https://ge.example.io
+./02-validate-local-build-caching-same-location.sh -i -e -s https://develocity.example.io
 ```
 
 ## Running the experiments without publishing Build Scan data
