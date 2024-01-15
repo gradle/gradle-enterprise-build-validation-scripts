@@ -1,16 +1,16 @@
-> _This repository is maintained by the Gradle Enterprise Solutions team, as one of several publicly available repositories:_
-> - _[Gradle Enterprise Build Configuration Samples][ge-build-config-samples]_
-> - _[Gradle Enterprise Build Optimization Experiments][ge-build-optimization-experiments]_
-> - _[Gradle Enterprise Build Validation Scripts][ge-build-validation-scripts] (this repository)_
-> - _[Gradle Enterprise Open Source Projects][ge-oss-projects]_
+> _This repository is maintained by the Develocity Solutions team, as one of several publicly available repositories:_
+> - _[Develocity Build Configuration Samples][develocity-build-config-samples]_
+> - _[Develocity Build Optimization Experiments][develocity-build-optimization-experiments]_
+> - _[Develocity Build Validation Scripts][develocity-build-validation-scripts] (this repository)_
+> - _[Develocity Open Source Projects][develocity-oss-projects]_
 > - _[Common Custom User Data Maven Extension][ccud-maven-extension]_
 > - _[Common Custom User Data Gradle Plugin][ccud-gradle-plugin]_
 > - _[Android Cache Fix Gradle Plugin][android-cache-fix-plugin]_
 
-# Gradle Enterprise Build Validation Scripts
+# Develocity Build Validation Scripts
 
 [![Verify Build](https://github.com/gradle/gradle-enterprise-build-validation-scripts/actions/workflows/build-verification.yml/badge.svg?branch=main)](https://github.com/gradle/gradle-enterprise-build-validation-scripts/actions/workflows/build-verification.yml)
-[![Revved up by Gradle Enterprise](https://img.shields.io/badge/Revved%20up%20by-Gradle%20Enterprise-06A0CE?logo=Gradle&labelColor=02303A)](https://ge.solutions-team.gradle.com/scans)
+[![Revved up by Develocity](https://img.shields.io/badge/Revved%20up%20by-Develocity-06A0CE?logo=Gradle&labelColor=02303A)](https://ge.solutions-team.gradle.com/scans)
 
 The purpose of the build validation scripts is to assist you in validating that your Gradle and Maven builds are in an optimal state in terms of maximizing work avoidance. The build validation scripts do not actually modify your build, but they surface what can be improved in your build to avoid unnecessary work in several scenarios.
 
@@ -37,18 +37,18 @@ If the build fails with _Error while executing shellcheck: docker: Cannot connec
 
 ## Learn more
 
-Visit our website to learn more about [Gradle Enterprise][gradle-enterprise].
+Visit our website to learn more about [Develocity][develocity].
 
 ## License
 
-The Gradle Enterprise build validation scripts are open-source software released under the [Apache 2.0 License][apache-license].
+The Develocity build validation scripts are open-source software released under the [Apache 2.0 License][apache-license].
 
-[ge-build-config-samples]: https://github.com/gradle/gradle-enterprise-build-config-samples
-[ge-build-optimization-experiments]: https://github.com/gradle/gradle-enterprise-build-optimization-experiments
-[ge-build-validation-scripts]: https://github.com/gradle/gradle-enterprise-build-validation-scripts
-[ge-oss-projects]: https://github.com/gradle/gradle-enterprise-oss-projects
+[develocity-build-config-samples]: https://github.com/gradle/gradle-enterprise-build-config-samples
+[develocity-build-optimization-experiments]: https://github.com/gradle/gradle-enterprise-build-optimization-experiments
+[develocity-build-validation-scripts]: https://github.com/gradle/gradle-enterprise-build-validation-scripts
+[develocity-oss-projects]: https://github.com/gradle/gradle-enterprise-oss-projects
 [ccud-gradle-plugin]: https://github.com/gradle/common-custom-user-data-gradle-plugin
 [ccud-maven-extension]: https://github.com/gradle/common-custom-user-data-maven-extension
 [android-cache-fix-plugin]: https://github.com/gradle/android-cache-fix-gradle-plugin
-[gradle-enterprise]: https://gradle.com/enterprise
+[develocity]: https://gradle.com/develocity
 [apache-license]: https://www.apache.org/licenses/LICENSE-2.0.html
