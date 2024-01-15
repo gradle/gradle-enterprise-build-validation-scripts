@@ -16,7 +16,7 @@ If you plan to use the build validation scripts on Windows, then you will need t
 
 The build validation scripts are compatible with a large range of Maven versions, as laid out in the table below. Getting the best user experience when running an experiment and when being presented with the results of an experiment requires access to the Develocity server that holds the captured build data. Fetching that build data requires a compatible version of Develocity, as laid out in the table below.
 
-| Build Validation Scripts version | Compatible Maven versions | Compatible Develocity versions |
+| Build Validation Scripts version | Compatible Maven versions | Compatible Develocity versions        |
 |----------------------------------|---------------------------| ------------------------------------- |
 | 2.0+                             | 3.3.1+                    | 2022.1+                               |
 | 1.0 - 1.0.2                      | 3.3.1+                    | 2021.2+                               |
@@ -45,9 +45,9 @@ a specific experiment of the build validation process:
 | Script                                                 | Experiment                                                                                                      |
 |:-------------------------------------------------------|:----------------------------------------------------------------------------------------------------------------|
 | 01-validate-local-build-caching-same-location.sh       | Validates that a Maven build is optimized for local build caching when invoked from the same location.          |
-| 02-validate-local-build-caching-different-locations.sh | Validates that a Maven build is optimized for local build caching when invoked from different locations.       |
-| 03-validate-remote-build-caching-ci-ci.sh              | Validates that a Maven build is optimized for remote build caching when invoked from different CI agents.      |
-| 04-validate-remote-build-caching-ci-local.sh           | Validates that a Maven build is optimized for remote build caching when invoked on CI agent and local machine. |
+| 02-validate-local-build-caching-different-locations.sh | Validates that a Maven build is optimized for local build caching when invoked from different locations.        |
+| 03-validate-remote-build-caching-ci-ci.sh              | Validates that a Maven build is optimized for remote build caching when invoked from different CI agents.       |
+| 04-validate-remote-build-caching-ci-local.sh           | Validates that a Maven build is optimized for remote build caching when invoked on CI agent and local machine.  |
 </details>
 
 All intermediate and final output produced while running a given script is stored under `.data/<script_name>/<timestamp>-<run_id>`.
