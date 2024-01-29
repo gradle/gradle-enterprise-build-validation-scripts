@@ -18,7 +18,7 @@ jobs:
           java-version: '8'
           distribution: 'adopt'
       - name: Set up Gradle
-        uses: gradle/gradle-build-action@v2
+        uses: gradle/gradle-build-action@v3
       - name: Build with Gradle
         run: ./gradlew build -i
         env:
