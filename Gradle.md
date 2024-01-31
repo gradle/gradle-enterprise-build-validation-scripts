@@ -100,7 +100,7 @@ To get the most out of the experiments and also when building with Develocity du
 
 You can find a complete example of how to apply the Common Custom User Data Gradle plugin to your build [here](https://github.com/gradle/develocity-build-config-samples/tree/main/common-gradle-enterprise-gradle-configuration-groovy/settings.gradle) for Groovy DSL and [here](https://github.com/gradle/develocity-build-config-samples/blob/main/common-gradle-enterprise-gradle-configuration-kotlin/settings.gradle.kts) for Kotlin DSL.
 
-## Authenticating with Develocity
+## Authenticating with Gradle Enterprise
 
 Some scripts fetch data from build scans that were published as part of running an experiment. The build scan data is fetched by leveraging the [Develocity API](https://docs.gradle.com/enterprise/api-manual/). It is not strictly necessary that you have permission to call these APIs to execute a script successfully, but the summary provided once the script has finished running its experiment will be more comprehensive if the build scan data is accessible.
 
