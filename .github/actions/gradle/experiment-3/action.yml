@@ -115,7 +115,7 @@ runs:
         cat $RECEIPT_FILE >> $GITHUB_STEP_SUMMARY
       shell: bash
     - name: Archive receipt
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: experiment-3-receipt
         path: gradle-enterprise-gradle-build-validation/.data/03-validate-local-build-caching-different-locations/latest*/exp3-*.receipt
