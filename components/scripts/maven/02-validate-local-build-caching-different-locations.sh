@@ -147,9 +147,13 @@ execute_build() {
   # shellcheck disable=SC2086  # we want tasks to expand with word splitting in this case
   invoke_maven "${run_num}" \
      -Dgradle.cache.local.enabled=true \
+     -Ddevelocity.cache.local.enabled=true \
      -Dgradle.cache.local.storeEnabled=true \
+     -Ddevelocity.cache.local.storeEnabled=true \
      -Dgradle.cache.remote.enabled=false \
+     -Ddevelocity.cache.remote.enabled=false \
      -Dgradle.cache.local.directory="${BUILD_CACHE_DIR}" \
+     -Ddevelocity.cache.local.directory="${BUILD_CACHE_DIR}" \
      clean ${tasks}
 }
 

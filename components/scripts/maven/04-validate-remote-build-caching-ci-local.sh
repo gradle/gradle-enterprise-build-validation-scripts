@@ -192,9 +192,9 @@ validate_build_config() {
 
 execute_build() {
   local args
-  args=(-Dgradle.cache.local.enabled=false -Dgradle.cache.remote.enabled=true)
+  args=(-Dgradle.cache.local.enabled=false -Ddevelocity.cache.local.enabled=false -Dgradle.cache.remote.enabled=true -Ddevelocity.cache.remote.enabled=true)
   if [ -n "${remote_build_cache_url}" ]; then
-    args+=("-Dgradle.cache.remote.url=${remote_build_cache_url}")
+    args+=("-Dgradle.cache.remote.url=${remote_build_cache_url} -Ddevelocity.cache.remote.url=${remote_build_cache_url}")
   fi
 
   # shellcheck disable=SC2206  # we want tasks to expand with word splitting in this case
