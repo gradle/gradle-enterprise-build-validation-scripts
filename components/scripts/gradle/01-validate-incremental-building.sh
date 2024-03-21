@@ -145,9 +145,9 @@ execute_build() {
 
 print_gradle_command() {
   if [[ "${build_scan_publishing_mode}" == "on" ]]; then
-    info "./gradlew --no-build-cache -Dscan.tag.${EXP_SCAN_TAG} -Dscan.value.runId=${RUN_ID} $*$(print_extra_args)"
+    info "./gradlew --no-build-cache -Dscan.tag.${EXP_SCAN_TAG} -Dscan.value.runId=${RUN_ID} -Dpts.enabled=false $*$(print_extra_args)"
   else
-    info "./gradlew --no-build-cache -Dscan.dump -Dscan.tag.${EXP_SCAN_TAG} -Dscan.value.runId=${RUN_ID} $*$(print_extra_args)"
+    info "./gradlew --no-build-cache -Dscan.dump -Dscan.tag.${EXP_SCAN_TAG} -Dscan.value.runId=${RUN_ID} -Dpts.enabled=false $*$(print_extra_args)"
   fi
 }
 
