@@ -1,33 +1,22 @@
-import com.gradle.enterprise.gradleplugin.internal.extension.BuildScanExtensionWithHiddenFeatures
-
 plugins {
-    id("com.gradle.enterprise") version "3.16.2"
+    id("com.gradle.develocity") version "3.17"
     id("com.gradle.common-custom-user-data-gradle-plugin") version "2.0"
     id("org.gradle.toolchains.foojay-resolver-convention") version "0.8.0"
 }
 
 val isCI = System.getenv("GITHUB_ACTIONS") != null
 
-gradleEnterprise {
+develocity {
     server = "https://ge.solutions-team.gradle.com"
     buildScan {
-        capture { isTaskInputFiles = true }
-        isUploadInBackground = !isCI
-        publishAlways()
-        this as BuildScanExtensionWithHiddenFeatures
-        publishIfAuthenticated()
-        obfuscation {
-            ipAddresses { addresses -> addresses.map { "0.0.0.0" } }
-        }
+        uploadInBackground = !isCI
+        publishing.onlyIf { it.isAuthenticated }
+        obfuscation.ipAddresses { addresses -> addresses.map { "0.0.0.0" } }
     }
 }
 
 buildCache {
-    local {
-        isEnabled = true
-    }
-
-    remote(gradleEnterprise.buildCache) {
+    remote(develocity.buildCache) {
         isEnabled = true
         // Check access key presence to avoid build cache errors on PR builds when access key is not present
         val accessKey = System.getenv("GRADLE_ENTERPRISE_ACCESS_KEY")
