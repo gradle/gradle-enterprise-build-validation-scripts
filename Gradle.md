@@ -100,7 +100,7 @@ You can verify that the script can properly interact with your Develocity server
 the local builds to publish their build scans to a Develocity server reachable at develocity.example.io.
 
 ```bash
-./01-validate-incremental-building.sh -t assemble -r https://github.com/etiennestuder/java-ordered-properties.git -e -s https://develocity.example.io
+./01-validate-incremental-building.sh -t assemble -r https://github.com/gradle/gradle-build-scan-quickstart -e -s https://develocity.example.io
 ```
 
 ## Applying the Common Custom User Data Gradle plugin
