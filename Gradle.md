@@ -94,6 +94,15 @@ The scripts return with an exit code that depends on the outcome of running a gi
 | 3         | The build was not fully cacheable for the given task graph and `--fail-if-not-fully-cacheable` was set |
 | 100       | An unclassified, fatal error happened while running the experiment                                     |
 
+## Verifying the setup
+
+You can verify that the script can properly interact with your Develocity server. In the example below, the script will configure 
+the local builds to publish their build scans to a Develocity server reachable at develocity.example.io.
+
+```bash
+./01-validate-incremental-building.sh -t assemble -r https://github.com/etiennestuder/java-ordered-properties.git -e -s https://develocity.example.io
+```
+
 ## Applying the Common Custom User Data Gradle plugin
 
 To get the most out of the experiments and also when building with Develocity during daily development, it is highly recommended that you apply the [Common Custom User Data Gradle plugin](https://github.com/gradle/common-custom-user-data-gradle-plugin) to your build. This free, open-source plugin enhances build scans with additional tags, links, and custom values that are considered during the experiments.
