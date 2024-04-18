@@ -29,6 +29,12 @@ Use the following command to download and unpack the build validation scripts fo
 curl -s -L -O https://github.com/gradle/gradle-enterprise-build-validation-scripts/releases/download/v2.5.1/gradle-enterprise-gradle-build-validation-2.5.1.zip && unzip -q -o gradle-enterprise-gradle-build-validation-2.5.1.zip
 ```
 
+Once downloaded, run the following command to verify that the scripts are set up correctly:
+
+```bash
+./01-validate-incremental-building.sh --version
+```
+
 ## Structure
 
 In the top-level folder, there are five different scripts that you can execute, each one representing
