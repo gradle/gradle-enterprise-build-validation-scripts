@@ -103,6 +103,8 @@ the local builds to publish their build scans to a Develocity server reachable a
 ./01-validate-incremental-building.sh -t assemble -r https://github.com/gradle/gradle-build-scan-quickstart -e -s https://develocity.example.io
 ```
 
+If this does not complete successfully and produce a proper experiment summary, consult the items listed further below. 
+
 ## Applying the Common Custom User Data Gradle plugin
 
 To get the most out of the experiments and also when building with Develocity during daily development, it is highly recommended that you apply the [Common Custom User Data Gradle plugin](https://github.com/gradle/common-custom-user-data-gradle-plugin) to your build. This free, open-source plugin enhances build scans with additional tags, links, and custom values that are considered during the experiments.

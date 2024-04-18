@@ -101,6 +101,8 @@ the local builds to publish their build scans to a Develocity server reachable a
 ./01-validate-local-build-caching-same-location.sh -g compile -r https://github.com/gradle/maven-build-scan-quickstart -e -s https://develocity.example.io
 ```
 
+If this does not complete successfully and produce a proper experiment summary, consult the items listed further below.
+
 ## Applying the Common Custom User Data Maven extension
 
 To get the most out of the experiments and also when building with Develocity during daily development, it is highly recommended that you apply the [Common Custom User Data Maven extension](https://github.com/gradle/common-custom-user-data-maven-extension) to your build. This free, open-source plugin enhances build scans with additional tags, links, and custom values that are considered during the experiments.
