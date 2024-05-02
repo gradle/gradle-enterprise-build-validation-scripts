@@ -15,7 +15,7 @@ group = "com.gradle"
 repositories {
     maven {
         name = "Solutions"
-        url = uri("https://repo.gradle.org/artifactory/solutions")
+        url = uri("https://repo.grdev.net/artifactory/solutions")
         credentials {
             username = providers
                 .environmentVariable("GRADLE_SOLUTIONS_REPOSITORY_USERNAME")

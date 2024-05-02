@@ -157,22 +157,6 @@ Develocity server at develocity.example.io.
 ./01-validate-local-build-caching-same-location.sh -i -e -s https://develocity.example.io
 ```
 
-## Running the experiments without publishing Build Scan data
-
-The scripts that run all builds locally can be configured to not publish any Build Scan data and instead extract the required data
-right during the build to surface the state of work avoidance by passing the `-x` or `--disable-build-scan-publishing` command
-line argument.
-
-The use of this option requires at least Java 17 to analyze the build data. The JVM version to analyze the build data is
-[configurable](#specifying-the-jvm-used-to-analyze-the-build-data). You can still run the builds of the experiments with a JVM
-version lower than Java 17.
-
-The use of this configuration option also requires a license file from Gradle Inc. to be present in the root directory of the scripts.
-
-```bash
-./01-validate-local-build-caching-same-location.sh -i -x
-```
-
 ## Specifying the JVM used to analyze the build data
 
 The scripts use a Java-based utility to fetch and analyze the captured build data.
