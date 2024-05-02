@@ -15,9 +15,6 @@ failed_to_load_lib() {
 # shellcheck source=lib/scripts/logging.sh
 source "${LIB_DIR}/logging.sh" || failed_to_load_lib logging.sh
 
-# shellcheck source=lib/scripts/build-scan-offline.sh
-source "${LIB_DIR}/build-scan-offline.sh" || failed_to_load_lib build-scan-offline.sh
-
 # shellcheck source=lib/scripts/build-scan-parse.sh
 source "${LIB_DIR}/build-scan-parse.sh" || failed_to_load_lib build-scan-parse.sh
 
