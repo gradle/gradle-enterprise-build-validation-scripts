@@ -29,6 +29,9 @@ inputs:
   enableGradleEnterprise:
     description: "Enables Gradle Enterprise on a project not already connected"
     required: false
+  debug:
+    description: "Enable debug logging for this experiment of the build validation scripts"
+    required: false
 outputs:
   buildScanFirstBuild:
     description: "First build scan url"
@@ -80,6 +83,10 @@ runs:
         if [ "${{ inputs.enableGradleEnterprise }}" == "true" ]; then
           ARG_GE_ENABLE="${{ inputs.enableGradleEnterprise }}"
         fi
+        ARG_DEBUG=""
+        if [ "${{ inputs.debug }}" == "true" ]; then
+          ARG_DEBUG="${{ inputs.debug }}"
+        fi
 
         # Navigate into the folder containing the validation scripts
         cd gradle-enterprise-gradle-build-validation
@@ -94,7 +101,8 @@ runs:
           ${ARG_TASKS:+"-t" "$ARG_TASKS"} \
           ${ARG_ARGS:+"-a" "$ARG_ARGS"} \
           ${ARG_GE_URL:+"-s" "$ARG_GE_URL"} \
-          ${ARG_GE_ENABLE:+"-e"}
+          ${ARG_GE_ENABLE:+"-e"} \
+          ${ARG_DEBUG:+"--debug"}
 
         # Set the Build Scan urls as outputs
         RECEIPT_FILE=".data/01-validate-incremental-building/latest/exp1-*.receipt"
