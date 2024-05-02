@@ -55,7 +55,7 @@ dependencies {
 
 shellcheck {
     additionalArguments = "-a -x"
-    shellcheckVersion = "v0.8.0"
+    shellcheckVersion = "v0.10.0"
 }
 
 val unpackArgbash by tasks.registering(Copy::class) {
