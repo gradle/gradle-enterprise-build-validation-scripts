@@ -50,7 +50,7 @@ abstract class ApplyArgbash @Inject constructor(
 
                 logger.info("Applying argbash to $file")
                 execOperations.exec {
-                    commandLine(argbash, file, "-o", outputFile)
+                    commandLine("/usr/bin/env", "bash", argbash, file, "-o", outputFile)
                 }
             }
         }
