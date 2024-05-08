@@ -102,7 +102,8 @@ runs:
           ${ARG_ARGS:+"-a" "$ARG_ARGS"} \
           ${ARG_GE_URL:+"-s" "$ARG_GE_URL"} \
           ${ARG_GE_ENABLE:+"-e"} \
-          ${ARG_FAIL_IF_NOT_FULLY_CACHEABLE:+"-f"}
+          ${ARG_FAIL_IF_NOT_FULLY_CACHEABLE:+"-f"} \
+          ${RUNNER_DEBUG:+"--debug"}
 
         # Set the Build Scan urls as outputs
         RECEIPT_FILE=".data/03-validate-local-build-caching-different-locations/latest/exp3-*.receipt"
