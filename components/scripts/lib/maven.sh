@@ -51,6 +51,11 @@ invoke_maven() {
     args+=("-Dgradle.enterprise.allowUntrustedServer=false")
   fi
 
+  if [[ "${build_scan_publishing_mode}" == "off" ]]; then
+    args+=("-Dcom.gradle.enterprise.build-validation.omitServerUrlValidation=true")
+    args+=("-Dscan.dump")
+  fi
+
   args+=(
     -Dmaven.ext.class.path="${extension_classpath}"
     -Dcom.gradle.enterprise.build-validation.expDir="${EXP_DIR}"
@@ -87,7 +92,7 @@ invoke_maven() {
       die "ERROR: Experiment aborted due to a non-recoverable failure: $(cat "${EXP_DIR}/errors.txt")"
   fi
 
-  if is_build_scan_metadata_missing "$run_num"; then
+  if [[ "${build_scan_publishing_mode}" == "on" ]] && is_build_scan_metadata_missing "$run_num"; then
       print_bl
       die "ERROR: Experiment aborted due to a non-recoverable failure: No Build Scan was published"
   fi

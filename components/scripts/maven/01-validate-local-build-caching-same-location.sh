@@ -71,11 +71,16 @@ execute() {
 wizard_execute() {
   print_introduction
 
-  print_bl
-  explain_prerequisites_ccud_maven_extension "I."
+  if [[ "${build_scan_publishing_mode}" == "on" ]]; then
+    print_bl
+    explain_prerequisites_ccud_maven_extension "I."
 
-  print_bl
-  explain_prerequisites_api_access "II."
+    print_bl
+    explain_prerequisites_api_access "II."
+  else
+    print_bl
+    explain_prerequisites_ccud_maven_extension
+  fi
 
   print_bl
   explain_collect_git_details
@@ -142,11 +147,19 @@ execute_build() {
 }
 
 print_maven_command() {
-   info "./mvnw -Dscan -Dscan.tag.${EXP_SCAN_TAG} -Dscan.value.runId=${RUN_ID} clean ${tasks}$(print_extra_args)"
+   if [[ "${build_scan_publishing_mode}" == "on" ]]; then
+     info "./mvnw -Dscan -Dscan.tag.${EXP_SCAN_TAG} -Dscan.value.runId=${RUN_ID} clean ${tasks}$(print_extra_args)"
+   else
+     info "./mvnw -Dscan.dump -Dscan.tag.${EXP_SCAN_TAG} -Dscan.value.runId=${RUN_ID} clean ${tasks}$(print_extra_args)"
+   fi
  }
 
 fetch_build_cache_metrics() {
-  process_build_scan_data_online
+  if [ "$build_scan_publishing_mode" == "on" ]; then
+    process_build_scan_data_online
+  else
+    find_and_read_build_scan_dumps
+  fi
 }
 
 print_introduction() {
@@ -237,7 +250,8 @@ EOF
 
 explain_measure_build_results() {
   local text
-  IFS='' read -r -d '' text <<EOF
+  if [[ "${build_scan_publishing_mode}" == "on" ]]; then
+    IFS='' read -r -d '' text <<EOF
 $(print_separator)
 ${HEADER_COLOR}Measure build results${RESTORE}
 
@@ -250,13 +264,29 @@ two builds to assist you in your investigation.
 
 ${USER_ACTION_COLOR}Press <Enter> to measure the build results.${RESTORE}
 EOF
+  else
+    IFS='' read -r -d '' text <<EOF
+$(print_separator)
+${HEADER_COLOR}Measure build results${RESTORE}
+
+Now that the second build has finished successfully, you are ready to measure how
+well your build leverages Gradle Enterprise's local build caching functionality
+for the invoked set of Maven goals.
+
+Some of the build scan data will be extracted from the locally stored, intermediate
+build data produced by the two builds to assist you in your investigation.
+
+${USER_ACTION_COLOR}Press <Enter> to measure the build results.${RESTORE}
+EOF
+  fi
   print_interactive_text "${text}"
   wait_for_enter
 }
 
 explain_and_print_summary() {
   local text
-  IFS='' read -r -d '' text <<EOF
+  if [[ "${build_scan_publishing_mode}" == "on" ]]; then
+    IFS='' read -r -d '' text <<EOF
 The ‘Summary’ section below captures the configuration of the experiment and the
 two build scans that were published as part of running the experiment. The build
 scan of the second build is particularly interesting since this is where you can
@@ -278,6 +308,23 @@ $(print_command_to_repeat_experiment)
 
 $(explain_when_to_rerun_experiment)
 EOF
+  else
+    IFS='' read -r -d '' text <<EOF
+The ‘Summary’ section below captures the configuration of the experiment. No
+build scans are available for inspection since publishing was disabled for the
+experiment.
+
+$(explain_performance_characteristics)
+
+$(explain_command_to_repeat_experiment)
+
+$(print_summary)
+
+$(print_command_to_repeat_experiment)
+
+$(explain_when_to_rerun_experiment)
+EOF
+  fi
   print_interactive_text "${text}"
 }
 
