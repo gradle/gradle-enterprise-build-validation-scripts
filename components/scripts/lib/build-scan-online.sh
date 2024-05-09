@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-readonly FETCH_BUILD_SCAN_DATA_JAR="${SCRIPT_DIR}/lib/develocity/build-scan-summary-${SUMMARY_VERSION}.jar"
+readonly BUILD_SCAN_SUMMARY_JAR="${SCRIPT_DIR}/lib/develocity/build-scan-summary-${SUMMARY_VERSION}.jar"
 
 # This is a helper function for the common pattern of reading Build Scan metadata
 # from the build-scans.csv file, then retrieving build metrics using the Gradle
@@ -101,5 +101,5 @@ fetch_build_scan_data() {
     args+=( "${run_num},${build_scan_urls[run_num]}" )
   done
 
-  JAVA_HOME="${CLIENT_JAVA_HOME:-$JAVA_HOME}" invoke_java "${FETCH_BUILD_SCAN_DATA_JAR}" "${args[@]}"
+  JAVA_HOME="${CLIENT_JAVA_HOME:-$JAVA_HOME}" invoke_java "${BUILD_SCAN_SUMMARY_JAR}" "${args[@]}"
 }
