@@ -132,22 +132,27 @@ val copyGradleScripts by tasks.registering(Copy::class) {
     }
     from(layout.projectDirectory.dir("components/scripts/gradle")) {
         include("gradle-init-scripts/**")
-        into("lib/")
+        into("lib/scripts/")
     }
     from(layout.projectDirectory.dir("components/scripts")) {
         include("README.md")
         include("mapping.example")
         include("network.settings")
-        include("lib/**")
-        exclude("lib/cli-parsers")
         filter { line: String -> line.replace("<HEAD>", releaseVersion.get()) }
         filter { line: String -> line.replace("<SUMMARY_VERSION>", buildScanSummaryVersion) }
     }
+    from(layout.projectDirectory.dir("components/scripts/lib")) {
+        include("**")
+        exclude("cli-parsers")
+        filter { line: String -> line.replace("<HEAD>", releaseVersion.get()) }
+        filter { line: String -> line.replace("<SUMMARY_VERSION>", buildScanSummaryVersion) }
+        into("lib/scripts/")
+    }
     from(generateBashCliParsers.map { it.outputDir.file("lib/cli-parsers/gradle") }) {
-        into("lib/")
+        into("lib/scripts/")
     }
     from(commonComponents) {
-        into("lib/build-scan-clients/")
+        into("lib/scripts/build-scan-clients/")
     }
     into(layout.buildDirectory.dir("scripts/gradle"))
 }
@@ -176,19 +181,24 @@ val copyMavenScripts by tasks.registering(Copy::class) {
         include("README.md")
         include("mapping.example")
         include("network.settings")
-        include("lib/**")
-        exclude("lib/cli-parsers")
         filter { line: String -> line.replace("<HEAD>", releaseVersion.get()) }
         filter { line: String -> line.replace("<SUMMARY_VERSION>", buildScanSummaryVersion) }
     }
+    from(layout.projectDirectory.dir("components/scripts/lib")) {
+        include("**")
+        exclude("cli-parsers")
+        filter { line: String -> line.replace("<HEAD>", releaseVersion.get()) }
+        filter { line: String -> line.replace("<SUMMARY_VERSION>", buildScanSummaryVersion) }
+        into("lib/scripts/")
+    }
     from(generateBashCliParsers.map { it.outputDir.file("lib/cli-parsers/maven") }) {
-        into("lib/")
+        into("lib/scripts/")
     }
     from(commonComponents) {
-        into("lib/build-scan-clients/")
+        into("lib/scripts/build-scan-clients/")
     }
     from(mavenComponents) {
-        into("lib/maven-libs/")
+        into("lib/scripts/maven-libs/")
     }
     into(layout.buildDirectory.dir("scripts/maven"))
 }
@@ -237,8 +247,8 @@ val shellcheckGradleScripts by tasks.registering(Shellcheck::class) {
     description = "Perform quality checks on Gradle build validation scripts using Shellcheck."
     sourceFiles = copyGradleScripts.get().outputs.files.asFileTree.matching {
         include("**/*.sh")
-        // scripts in lib/ are checked when Shellcheck checks the top-level scripts because the top-level scripts include (source) the scripts in lib/
-        exclude("lib/")
+        // scripts in lib/scripts/ are checked when Shellcheck checks the top-level scripts because the top-level scripts include (source) the scripts in lib/
+        exclude("lib/scripts/")
     }
     // scripts in lib/ are still inputs to this task (we want shellcheck to run if they change) even though we don't include them explicitly in sourceFiles
     inputs.files(copyGradleScripts.get().outputs.files.asFileTree.matching {
@@ -258,8 +268,8 @@ val shellcheckMavenScripts by tasks.registering(Shellcheck::class) {
     description = "Perform quality checks on Maven build validation scripts using Shellcheck."
     sourceFiles = copyMavenScripts.get().outputs.files.asFileTree.matching {
         include("**/*.sh")
-        // scripts in lib/ are checked when Shellcheck checks the top-level scripts because the top-level scripts include (source) the scripts in lib/
-        exclude("lib/")
+        // scripts in lib/scripts/ are checked when Shellcheck checks the top-level scripts because the top-level scripts include (source) the scripts in lib/
+        exclude("lib/scripts/")
     }
     // scripts in lib/ are still inputs to this task (we want shellcheck to run if they change) even though we don't include them explicitly in sourceFiles
     inputs.files(copyMavenScripts.get().outputs.files.asFileTree.matching {
