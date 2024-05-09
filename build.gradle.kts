@@ -152,7 +152,7 @@ val copyGradleScripts by tasks.registering(Copy::class) {
         into("lib/scripts/")
     }
     from(commonComponents) {
-        into("lib/scripts/build-scan-clients/")
+        into("lib/develocity/")
     }
     into(layout.buildDirectory.dir("scripts/gradle"))
 }
@@ -195,7 +195,7 @@ val copyMavenScripts by tasks.registering(Copy::class) {
         into("lib/scripts/")
     }
     from(commonComponents) {
-        into("lib/scripts/build-scan-clients/")
+        into("lib/develocity/")
     }
     from(mavenComponents) {
         into("lib/scripts/maven-libs/")
