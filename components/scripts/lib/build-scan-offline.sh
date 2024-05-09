@@ -1,9 +1,7 @@
 #!/usr/bin/env bash
 
-readonly BUILD_SCAN_SUMMARY_JAR="${SCRIPT_DIR}/lib/develocity/build-scan-summary-${SUMMARY_VERSION}.jar"
-
-# Build scan summary exit codes
-readonly SUCCESS=0
+# Build scan summary-specific exit codes
+# SUCCESS is already defined in exit-codes.sh
 readonly JVM_VERSION_NOT_SUPPORTED=3
 
 build_scan_dumps=()
