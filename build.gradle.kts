@@ -13,26 +13,6 @@ plugins {
 group = "com.gradle"
 
 repositories {
-    maven {
-        name = "Solutions"
-        url = uri("https://repo.grdev.net/artifactory/enterprise-libs-snapshots-local")
-        credentials {
-            username = providers
-                .environmentVariable("GRADLE_SOLUTIONS_REPOSITORY_USERNAME")
-                .orElse(providers.gradleProperty("gradleSolutionsRepositoryUsername"))
-                .get()
-            password = providers
-                .environmentVariable("GRADLE_SOLUTIONS_REPOSITORY_PASSWORD")
-                .orElse(providers.gradleProperty("gradleSolutionsRepositoryPassword"))
-                .get()
-        }
-        authentication {
-            create<BasicAuthentication>("basic")
-        }
-        content {
-            includeModule("com.gradle.develocity", "build-scan-summary")
-        }
-    }
     exclusiveContent {
         forRepository {
             ivy {
@@ -63,12 +43,10 @@ allprojects {
 }
 
 val argbash by configurations.creating
-val commonComponents by configurations.creating
 val mavenComponents by configurations.creating
 
 dependencies {
     argbash("argbash:argbash:2.10.0@zip")
-    commonComponents("com.gradle.develocity:build-scan-summary:${buildScanSummaryVersion}")
     mavenComponents(project(":configure-gradle-enterprise-maven-extension"))
     mavenComponents("com.gradle:gradle-enterprise-maven-extension:1.18.4")
     mavenComponents("com.gradle:common-custom-user-data-maven-extension:1.13")
@@ -151,7 +129,8 @@ val copyGradleScripts by tasks.registering(Copy::class) {
     from(generateBashCliParsers.map { it.outputDir.file("lib/cli-parsers/gradle") }) {
         into("lib/scripts/")
     }
-    from(commonComponents) {
+    from(layout.projectDirectory.dir("components/develocity")) {
+        include("build-scan-summary-${buildScanSummaryVersion}.jar")
         into("lib/develocity/")
     }
     into(layout.buildDirectory.dir("scripts/gradle"))
@@ -194,7 +173,8 @@ val copyMavenScripts by tasks.registering(Copy::class) {
     from(generateBashCliParsers.map { it.outputDir.file("lib/cli-parsers/maven") }) {
         into("lib/scripts/")
     }
-    from(commonComponents) {
+    from(layout.projectDirectory.dir("components/develocity")) {
+        include("build-scan-summary-${buildScanSummaryVersion}.jar")
         into("lib/develocity/")
     }
     from(mavenComponents) {
