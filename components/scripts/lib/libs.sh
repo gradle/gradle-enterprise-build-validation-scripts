@@ -1,7 +1,5 @@
 #!/usr/bin/env bash
 
-readonly BUILD_SCAN_SUMMARY_JAR="${SCRIPT_DIR}/lib/develocity/build-scan-summary-${SUMMARY_VERSION}.jar"
-
 failed_to_load_lib() {
   local lib_name _RED _BOLD _RESTORE _UNEXPECTED_ERROR
   _RED=$(echo -en '\033[00;31m')
