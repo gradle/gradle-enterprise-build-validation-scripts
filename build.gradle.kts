@@ -36,7 +36,7 @@ val isDevelopmentRelease = !hasProperty("finalRelease")
 val releaseVersion = releaseVersion()
 val releaseNotes = releaseNotes()
 val distributionVersion = distributionVersion()
-val buildScanSummaryVersion = "0.9-2024.1.1-20240503130149"
+val buildScanSummaryVersion = "0.9-2024.1.2-20240515173555"
 
 allprojects {
     version = releaseVersion.get()
@@ -133,6 +133,10 @@ val copyGradleScripts by tasks.registering(Copy::class) {
         include("build-scan-summary-${buildScanSummaryVersion}.jar")
         into("lib/develocity/")
     }
+    from(layout.projectDirectory.dir("components/third-party")) {
+        include("build-scan-summary-dependencies-${buildScanSummaryVersion}.jar")
+        into("lib/third-party/")
+    }
     into(layout.buildDirectory.dir("scripts/gradle"))
 }
 
@@ -176,6 +180,10 @@ val copyMavenScripts by tasks.registering(Copy::class) {
     from(layout.projectDirectory.dir("components/develocity")) {
         include("build-scan-summary-${buildScanSummaryVersion}.jar")
         into("lib/develocity/")
+    }
+    from(layout.projectDirectory.dir("components/third-party")) {
+        include("build-scan-summary-dependencies-${buildScanSummaryVersion}.jar")
+        into("lib/third-party/")
     }
     from(mavenComponents) {
         into("lib/scripts/maven-libs/")

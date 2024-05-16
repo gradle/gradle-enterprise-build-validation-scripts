@@ -38,7 +38,7 @@ read_build_scan_dumps() {
   )
 
   echo "Extracting Build Scan data for all builds"
-  build_scan_data="$(JAVA_HOME="${CLIENT_JAVA_HOME:-$JAVA_HOME}" invoke_java "$BUILD_SCAN_SUMMARY_JAR" "${args[@]}")"
+  build_scan_data="$(JAVA_HOME="${CLIENT_JAVA_HOME:-$JAVA_HOME}" invoke_java "${BUILD_SCAN_SUMMARY_JAR}:${SCRIPT_DIR}/lib/third-party/*" com.gradle.develocity.scans.summary.Main "${args[@]}")"
   build_scan_summary_exit_code="$?"
   if [[ $build_scan_summary_exit_code -eq $JVM_VERSION_NOT_SUPPORTED ]]; then
     die "ERROR: Java 17+ is required when using --disable-build-scan-publishing. Rerun the script with Java 17+ or set the CLIENT_JAVA_HOME environment variable to a Java 17+ installation." "$UNEXPECTED_ERROR"

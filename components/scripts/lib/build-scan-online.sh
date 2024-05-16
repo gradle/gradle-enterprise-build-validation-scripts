@@ -99,5 +99,5 @@ fetch_build_scan_data() {
     args+=( "${run_num},${build_scan_urls[run_num]}" )
   done
 
-  JAVA_HOME="${CLIENT_JAVA_HOME:-$JAVA_HOME}" invoke_java "${BUILD_SCAN_SUMMARY_JAR}" "${args[@]}"
+  JAVA_HOME="${CLIENT_JAVA_HOME:-$JAVA_HOME}" invoke_java "${BUILD_SCAN_SUMMARY_JAR}:${SCRIPT_DIR}/lib/third-party/*" com.gradle.develocity.scans.summary.Main "${args[@]}"
 }
