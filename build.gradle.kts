@@ -195,10 +195,10 @@ val copyMavenScripts by tasks.registering(Copy::class) {
     from(generateBashCliParsers.map { it.outputDir.file("lib/cli-parsers/maven") }) {
         into("lib/scripts/")
     }
-    from(layout.projectDirectory.dir("components/develocity")) {
+    from(copyDevelocityComponents) {
         into("lib/develocity/")
     }
-    from(layout.projectDirectory.dir("components/third-party")) {
+    from(copyThirdPartyComponents) {
         into("lib/third-party/")
     }
     from(mavenComponents) {
