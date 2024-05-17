@@ -196,11 +196,9 @@ val copyMavenScripts by tasks.registering(Copy::class) {
         into("lib/scripts/")
     }
     from(layout.projectDirectory.dir("components/develocity")) {
-        include("build-scan-summary-${buildScanSummaryVersion}.jar")
         into("lib/develocity/")
     }
     from(layout.projectDirectory.dir("components/third-party")) {
-        include("build-scan-summary-dependencies-${buildScanSummaryVersion}.jar")
         into("lib/third-party/")
     }
     from(mavenComponents) {
