@@ -36,6 +36,7 @@ val isDevelopmentRelease = !hasProperty("finalRelease")
 val releaseVersion = releaseVersion()
 val releaseNotes = releaseNotes()
 val distributionVersion = distributionVersion()
+extra["develocityMavenExtensionAdaptersVersion"] = "1.0"
 
 allprojects {
     version = releaseVersion.get()
@@ -96,6 +97,8 @@ val copyGradleScripts by tasks.registering(Copy::class) {
     // https://docs.gradle.org/current/userguide/configuration_cache.html#config_cache:not_yet_implemented:accessing_top_level_at_execution
     val releaseVersion = releaseVersion
     inputs.property("project.version", releaseVersion)
+    val mavenExtensionAdaptersVersion = rootProject.extra["develocityMavenExtensionAdaptersVersion"].toString()
+    inputs.property("develocityMavenExtensionAdaptersVersion", mavenExtensionAdaptersVersion)
 
     from(layout.projectDirectory.file("LICENSE"))
     from(layout.projectDirectory.dir("release").file("version.txt"))
@@ -116,6 +119,7 @@ val copyGradleScripts by tasks.registering(Copy::class) {
         include("lib/**")
         exclude("lib/cli-parsers")
         filter { line: String -> line.replace("<HEAD>", releaseVersion.get()) }
+        filter { line: String -> line.replace("<EXTENSION_ADAPTERS_VERSION>", mavenExtensionAdaptersVersion) }
     }
     from(generateBashCliParsers.map { it.outputDir.file("lib/cli-parsers/gradle") }) {
         into("lib/")
@@ -134,6 +138,8 @@ val copyMavenScripts by tasks.registering(Copy::class) {
     // https://docs.gradle.org/current/userguide/configuration_cache.html#config_cache:not_yet_implemented:accessing_top_level_at_execution
     val releaseVersion = releaseVersion
     inputs.property("project.version", releaseVersion)
+    val mavenExtensionAdaptersVersion = rootProject.extra["develocityMavenExtensionAdaptersVersion"].toString()
+    inputs.property("develocityMavenExtensionAdaptersVersion", mavenExtensionAdaptersVersion)
 
     from(layout.projectDirectory.file("LICENSE"))
     from(layout.projectDirectory.dir("release").file("version.txt"))
@@ -149,6 +155,7 @@ val copyMavenScripts by tasks.registering(Copy::class) {
         include("lib/**")
         exclude("lib/cli-parsers")
         filter { line: String -> line.replace("<HEAD>", releaseVersion.get()) }
+        filter { line: String -> line.replace("<EXTENSION_ADAPTERS_VERSION>", mavenExtensionAdaptersVersion) }
     }
     from(generateBashCliParsers.map { it.outputDir.file("lib/cli-parsers/maven") }) {
         into("lib/")
