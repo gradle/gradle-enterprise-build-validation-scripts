@@ -7,7 +7,7 @@
   <!-- that they should prefer consuming it instead. -->
   <!-- do_not_remove: published-with-gradle-metadata -->
   <modelVersion>4.0.0</modelVersion>
-  <groupId>com.gradle.develocity</groupId>
+  <groupId>com.gradle</groupId>
   <artifactId>build-scan-summary</artifactId>
   <version>0.9-2024.1.2-prerelease</version>
   <dependencies>

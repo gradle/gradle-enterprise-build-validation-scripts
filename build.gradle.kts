@@ -29,8 +29,16 @@ repositories {
             includeModule("argbash", "argbash")
         }
     }
+    exclusiveContent {
+        forRepository {
+            maven("file://${layout.projectDirectory.dir("components/develocity").asFile.path}")
+        }
+        filter {
+            includeModule("com.gradle", "build-scan-summary")
+        }
+    }
     mavenCentral()
-    maven("file://${layout.projectDirectory.dir("components/develocity").asFile.path}")
+   
 }
 
 val isDevelopmentRelease = !hasProperty("finalRelease")
@@ -48,7 +56,7 @@ val mavenComponents by configurations.creating
 val buildScanSummaryComponent by configurations.creating {
     attributes.attribute(
         TargetJvmEnvironment.TARGET_JVM_ENVIRONMENT_ATTRIBUTE,
-        project.objects.named(TargetJvmEnvironment.STANDARD_JVM)
+        objects.named(TargetJvmEnvironment.STANDARD_JVM)
     )
 }
 
@@ -57,7 +65,7 @@ dependencies {
     mavenComponents(project(":configure-gradle-enterprise-maven-extension"))
     mavenComponents("com.gradle:gradle-enterprise-maven-extension:1.18.4")
     mavenComponents("com.gradle:common-custom-user-data-maven-extension:1.13")
-    buildScanSummaryComponent("com.gradle.develocity:build-scan-summary:$buildScanSummaryVersion")
+    buildScanSummaryComponent("com.gradle:build-scan-summary:$buildScanSummaryVersion")
 }
 
 shellcheck {
