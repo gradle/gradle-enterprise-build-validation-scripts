@@ -29,14 +29,23 @@ repositories {
             includeModule("argbash", "argbash")
         }
     }
+    exclusiveContent {
+        forRepository {
+            maven("file://${layout.projectDirectory.dir("components/develocity").asFile.path}")
+        }
+        filter {
+            includeModule("com.gradle", "build-scan-summary")
+        }
+    }
     mavenCentral()
+   
 }
 
 val isDevelopmentRelease = !hasProperty("finalRelease")
 val releaseVersion = releaseVersion()
 val releaseNotes = releaseNotes()
 val distributionVersion = distributionVersion()
-val buildScanSummaryVersion = "0.9-2024.1.2-20240515173555"
+val buildScanSummaryVersion = "0.9-2024.1.2-prerelease"
 
 allprojects {
     version = releaseVersion.get()
@@ -44,17 +53,36 @@ allprojects {
 
 val argbash by configurations.creating
 val mavenComponents by configurations.creating
+val buildScanSummaryComponent by configurations.creating {
+    attributes.attribute(
+        TargetJvmEnvironment.TARGET_JVM_ENVIRONMENT_ATTRIBUTE,
+        objects.named(TargetJvmEnvironment.STANDARD_JVM)
+    )
+}
 
 dependencies {
     argbash("argbash:argbash:2.10.0@zip")
     mavenComponents(project(":configure-gradle-enterprise-maven-extension"))
     mavenComponents("com.gradle:gradle-enterprise-maven-extension:1.18.4")
     mavenComponents("com.gradle:common-custom-user-data-maven-extension:1.13")
+    buildScanSummaryComponent("com.gradle:build-scan-summary:$buildScanSummaryVersion")
 }
 
 shellcheck {
     additionalArguments = "-a -x"
     shellcheckVersion = "v0.10.0"
+}
+
+val copyDevelocityComponents by tasks.registering(Sync::class) {
+    from(buildScanSummaryComponent)
+    into(project.layout.buildDirectory.dir("components/develocity"))
+    include("build-scan-summary-$buildScanSummaryVersion.jar")
+}
+
+val copyThirdPartyComponents by tasks.registering(Sync::class) {
+    from(buildScanSummaryComponent)
+    into(project.layout.buildDirectory.dir("components/third-party"))
+    exclude("build-scan-summary-$buildScanSummaryVersion.jar")
 }
 
 val unpackArgbash by tasks.registering(Copy::class) {
@@ -129,12 +157,10 @@ val copyGradleScripts by tasks.registering(Copy::class) {
     from(generateBashCliParsers.map { it.outputDir.file("lib/cli-parsers/gradle") }) {
         into("lib/scripts/")
     }
-    from(layout.projectDirectory.dir("components/develocity")) {
-        include("build-scan-summary-${buildScanSummaryVersion}.jar")
+    from(copyDevelocityComponents) {
         into("lib/develocity/")
     }
-    from(layout.projectDirectory.dir("components/third-party")) {
-        include("build-scan-summary-dependencies-${buildScanSummaryVersion}.jar")
+    from(copyThirdPartyComponents) {
         into("lib/third-party/")
     }
     into(layout.buildDirectory.dir("scripts/gradle"))
@@ -177,12 +203,10 @@ val copyMavenScripts by tasks.registering(Copy::class) {
     from(generateBashCliParsers.map { it.outputDir.file("lib/cli-parsers/maven") }) {
         into("lib/scripts/")
     }
-    from(layout.projectDirectory.dir("components/develocity")) {
-        include("build-scan-summary-${buildScanSummaryVersion}.jar")
+    from(copyDevelocityComponents) {
         into("lib/develocity/")
     }
-    from(layout.projectDirectory.dir("components/third-party")) {
-        include("build-scan-summary-dependencies-${buildScanSummaryVersion}.jar")
+    from(copyThirdPartyComponents) {
         into("lib/third-party/")
     }
     from(mavenComponents) {
