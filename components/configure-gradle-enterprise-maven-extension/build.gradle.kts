@@ -1,5 +1,6 @@
 plugins {
     id("java")
+    id("com.github.johnrengelman.shadow") version "8.1.1"
 }
 
 repositories {
@@ -10,7 +11,7 @@ dependencies {
     compileOnly("org.apache.maven:maven-core:3.9.6")
     compileOnly("org.codehaus.plexus:plexus-component-annotations:2.2.0")
     compileOnly("com.gradle:develocity-maven-extension:1.21.3")
-    implementation("com.gradle:develocity-maven-extension-adapters:${rootProject.extra["develocityMavenExtensionAdaptersVersion"]}")
+    implementation("com.gradle:develocity-maven-extension-adapters:1.0")
 }
 
 description = "Maven extension to capture the build scan URL"

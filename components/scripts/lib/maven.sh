@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-readonly CONFIGURE_GRADLE_ENTERPRISE_CLASSPATH="${LIB_DIR}/maven-libs/configure-gradle-enterprise-maven-extension-${SCRIPT_VERSION}.jar:${LIB_DIR}/maven-libs/develocity-maven-extension-adapters-<EXTENSION_ADAPTERS_VERSION>.jar"
+readonly CONFIGURE_GRADLE_ENTERPRISE_JAR="${LIB_DIR}/maven-libs/configure-gradle-enterprise-maven-extension-${SCRIPT_VERSION}-all.jar"
 
 find_maven_executable() {
   if [ -f "./mvnw" ]; then
@@ -28,7 +28,7 @@ invoke_maven() {
   fi
 
   local extension_classpath
-  extension_classpath="${CONFIGURE_GRADLE_ENTERPRISE_CLASSPATH}"
+  extension_classpath="${CONFIGURE_GRADLE_ENTERPRISE_JAR}"
 
   if [ "$enable_ge" == "on" ]; then
     # Reset the extension classpath and add all of the jars in the lib/maven dir
