@@ -178,7 +178,7 @@ val copyMavenScripts by tasks.registering(Copy::class) {
     inputs.property("project.version", releaseVersion)
     inputs.property("summary.version", buildScanSummaryVersion)
 
-    from(layout.projectDirectory.dir("components/licenses/gradle"))
+    from(layout.projectDirectory.dir("components/licenses/maven"))
     from(layout.projectDirectory.dir("release").file("version.txt"))
     rename("version.txt", "VERSION")
 
