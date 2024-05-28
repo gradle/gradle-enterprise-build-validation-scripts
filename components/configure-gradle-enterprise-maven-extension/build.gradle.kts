@@ -8,7 +8,7 @@ repositories {
 }
 
 dependencies {
-    compileOnly("org.apache.maven:maven-core:3.9.6")
+    compileOnly("org.apache.maven:maven-core:3.6.3")  // intentionally compiling against an older version to preserve compatibility with older versions of Maven
     compileOnly("org.codehaus.plexus:plexus-component-annotations:2.2.0")
     compileOnly("com.gradle:develocity-maven-extension:1.21.3")
     implementation("com.gradle:develocity-maven-extension-adapters:1.0")
