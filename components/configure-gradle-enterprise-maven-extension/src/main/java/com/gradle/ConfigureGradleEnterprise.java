@@ -1,15 +1,13 @@
 package com.gradle;
 
 import com.gradle.develocity.agent.maven.adapters.enterprise.GradleEnterpriseApiAdapter;
-import com.gradle.maven.extension.api.GradleEnterpriseApi;
-import com.gradle.maven.extension.api.GradleEnterpriseListener;
 import org.apache.maven.execution.MavenSession;
 
 import javax.inject.Inject;
 
-@SuppressWarnings({"unused", "deprecation"})
-public class ConfigureGradleEnterprise implements GradleEnterpriseListener {
-    private static final String EXPERIMENT_DIR = System.getProperty("com.gradle.enterprise.build-validation.expDir");
+// Using fully qualified class names to avoid deprecation warnings on import statements
+@SuppressWarnings({"deprecation"})
+public class ConfigureGradleEnterprise implements com.gradle.maven.extension.api.GradleEnterpriseListener {
 
     private final ConfigureDevelocityAdaptor configureDevelocityAdaptor;
 
@@ -19,7 +17,7 @@ public class ConfigureGradleEnterprise implements GradleEnterpriseListener {
     }
 
     @Override
-    public void configure(GradleEnterpriseApi api, MavenSession session) {
+    public void configure(com.gradle.maven.extension.api.GradleEnterpriseApi api, MavenSession session) {
         configureDevelocityAdaptor.configure(new GradleEnterpriseApiAdapter(api), session);
     }
 }
