@@ -45,7 +45,7 @@ val isDevelopmentRelease = !hasProperty("finalRelease")
 val releaseVersion = releaseVersion()
 val releaseNotes = releaseNotes()
 val distributionVersion = distributionVersion()
-val buildScanSummaryVersion = "0.9-2024.1.2-prerelease"
+val buildScanSummaryVersion = "1.0-2024.1-20240529162525"
 
 allprojects {
     version = releaseVersion.get()
