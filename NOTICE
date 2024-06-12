@@ -1,13 +1,6 @@
-Develocity Build Validation Scripts
-Copyright 2021-2024 Gradle, Inc.
-Licensed under Apache v2 license
-
-Some portions are subject to the Gradle, Inc. Terms of Use, available at https://gradle.com/legal/terms-of-use/ (the "Gradle License")
-See LICENSE for more details.
-
-The following copyright statements and licenses apply to various open
+The following copyright statements and licenses apply to various third party open
 source software packages (or portions thereof) that are distributed with
-this content.
+this content in the folder titled "lib/third-party".
 
 TABLE OF CONTENTS
 =================
@@ -162,7 +155,8 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 
-SECTION 2: Common Development and Distribution License (CDDL) v1.0 and GNU General Public License (GPL) v2 with Classpath Exception
+SECTION 2: Common Development and Distribution License (CDDL) v1.0 and G
+NU General Public License (GPL) v2 with Classpath Exception
 ====================================================================================================================================
 
 JAX-RS
