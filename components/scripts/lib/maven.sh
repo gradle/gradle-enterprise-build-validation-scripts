@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 find_versioned_jar() {
-  lcoal dir_to_search base_name
+  local dir_to_search base_name
   dir_to_search="$1"
   base_name="$2"
 
