@@ -10,7 +10,7 @@ find_versioned_jar() {
 
 CONFIGURE_GRADLE_ENTERPRISE_JAR="${LIB_DIR}/maven-libs/configure-gradle-enterprise-maven-extension-${SCRIPT_VERSION}.jar"
 GRADLE_ENTERPRISE_MAVEN_EXTENSION_JAR="$(find_versioned_jar "${SCRIPT_DIR}/lib/develocity" "gradle-enterprise-maven-extension")"
-COMMON_CUSTOM_USER_DATA_MAVEN_EXTENSION_JAR="$(find_versioned_jar "${LIB_DIR}/maven-libs" "common-custom-user-data-maven-extension")"
+COMMON_CUSTOM_USER_DATA_MAVEN_EXTENSION_JAR="$(find_versioned_jar "${SCRIPT_DIR}/lib/third-party" "common-custom-user-data-maven-extension")"
 readonly CONFIGURE_GRADLE_ENTERPRISE_JAR GRADLE_ENTERPRISE_MAVEN_EXTENSION_JAR COMMON_CUSTOM_USER_DATA_MAVEN_EXTENSION_JAR
 
 find_maven_executable() {

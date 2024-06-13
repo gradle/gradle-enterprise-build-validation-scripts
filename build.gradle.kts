@@ -52,21 +52,22 @@ allprojects {
 }
 
 val argbash by configurations.creating
-val mavenComponents by configurations.creating
 val develocityComponents by configurations.creating {
     attributes.attribute(
         TargetJvmEnvironment.TARGET_JVM_ENVIRONMENT_ATTRIBUTE,
         objects.named(TargetJvmEnvironment.STANDARD_JVM)
     )
 }
+val mavenComponents by configurations.creating
+val thirdPartyMavenComponents by configurations.creating
 val develocityMavenComponents by configurations.creating
 
 dependencies {
     argbash("argbash:argbash:2.10.0@zip")
-    mavenComponents(project(":configure-gradle-enterprise-maven-extension"))
-    mavenComponents("com.gradle:common-custom-user-data-maven-extension:1.13")
     develocityComponents("com.gradle:build-scan-summary:$buildScanSummaryVersion")
     develocityMavenComponents("com.gradle:gradle-enterprise-maven-extension:1.18.4")
+    mavenComponents(project(":configure-gradle-enterprise-maven-extension"))
+    thirdPartyMavenComponents("com.gradle:common-custom-user-data-maven-extension:1.13")
 }
 
 shellcheck {
@@ -213,6 +214,9 @@ val copyMavenScripts by tasks.registering(Copy::class) {
         into("lib/develocity/")
     }
     from(copyThirdPartyComponents) {
+        into("lib/third-party/")
+    }
+    from(thirdPartyMavenComponents) {
         into("lib/third-party/")
     }
     from(mavenComponents) {
