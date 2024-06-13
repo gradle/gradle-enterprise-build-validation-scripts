@@ -1,6 +1,17 @@
 #!/usr/bin/env bash
 
-readonly CONFIGURE_GRADLE_ENTERPRISE_JAR="${LIB_DIR}/maven-libs/configure-gradle-enterprise-maven-extension-${SCRIPT_VERSION}.jar"
+find_versioned_jar() {
+  lcoal dir_to_search base_name
+  dir_to_search="$1"
+  base_name="$2"
+
+  find "${dir_to_search}" -name "${base_name}*" -type f -print -quit
+}
+
+CONFIGURE_GRADLE_ENTERPRISE_JAR="${LIB_DIR}/maven-libs/configure-gradle-enterprise-maven-extension-${SCRIPT_VERSION}.jar"
+GRADLE_ENTERPRISE_MAVEN_EXTENSION_JAR="$(find_versioned_jar "${SCRIPT_DIR}/lib/develocity" "gradle-enterprise-maven-extension")"
+COMMON_CUSTOM_USER_DATA_MAVEN_EXTENSION_JAR="$(find_versioned_jar "${LIB_DIR}/maven-libs" "common-custom-user-data-maven-extension")"
+readonly CONFIGURE_GRADLE_ENTERPRISE_JAR GRADLE_ENTERPRISE_MAVEN_EXTENSION_JAR COMMON_CUSTOM_USER_DATA_MAVEN_EXTENSION_JAR
 
 find_maven_executable() {
   if [ -f "./mvnw" ]; then
@@ -31,19 +42,7 @@ invoke_maven() {
   extension_classpath="${CONFIGURE_GRADLE_ENTERPRISE_JAR}"
 
   if [ "$enable_ge" == "on" ]; then
-    # Reset the extension classpath and add all of the jars in the lib/maven dir
-    # The lib/maven dir includes:
-    #  - the Gradle Enterprise Maven extension
-    #  - the Common Custom User Data Maven extension
-    #  - the configure-gradle-enterprise Maven extension
-    extension_classpath=""
-    for jar in "${LIB_DIR}"/maven-libs/*; do
-      if [ "${extension_classpath}" == "" ]; then
-        extension_classpath="${jar}"
-      else
-        extension_classpath="${extension_classpath}:${jar}"
-      fi
-    done
+    extension_classpath="${extension_classpath}:${GRADLE_ENTERPRISE_MAVEN_EXTENSION_JAR}:${COMMON_CUSTOM_USER_DATA_MAVEN_EXTENSION_JAR}"
   fi
 
   if [ -n "${ge_server}" ]; then
