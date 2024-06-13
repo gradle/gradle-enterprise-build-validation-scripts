@@ -53,19 +53,20 @@ allprojects {
 
 val argbash by configurations.creating
 val mavenComponents by configurations.creating
-val buildScanSummaryComponent by configurations.creating {
+val develocityComponents by configurations.creating {
     attributes.attribute(
         TargetJvmEnvironment.TARGET_JVM_ENVIRONMENT_ATTRIBUTE,
         objects.named(TargetJvmEnvironment.STANDARD_JVM)
     )
 }
+val develocityMavenComponents by configurations.creating
 
 dependencies {
     argbash("argbash:argbash:2.10.0@zip")
     mavenComponents(project(":configure-gradle-enterprise-maven-extension"))
-    mavenComponents("com.gradle:gradle-enterprise-maven-extension:1.18.4")
     mavenComponents("com.gradle:common-custom-user-data-maven-extension:1.13")
-    buildScanSummaryComponent("com.gradle:build-scan-summary:$buildScanSummaryVersion")
+    develocityComponents("com.gradle:build-scan-summary:$buildScanSummaryVersion")
+    develocityMavenComponents("com.gradle:gradle-enterprise-maven-extension:1.18.4")
 }
 
 shellcheck {
@@ -74,13 +75,13 @@ shellcheck {
 }
 
 val copyDevelocityComponents by tasks.registering(Sync::class) {
-    from(buildScanSummaryComponent)
+    from(develocityComponents)
     into(project.layout.buildDirectory.dir("components/develocity"))
     include("build-scan-summary-$buildScanSummaryVersion.jar")
 }
 
 val copyThirdPartyComponents by tasks.registering(Sync::class) {
-    from(buildScanSummaryComponent)
+    from(develocityComponents)
     into(project.layout.buildDirectory.dir("components/third-party"))
     exclude("build-scan-summary-$buildScanSummaryVersion.jar")
 }
@@ -206,6 +207,9 @@ val copyMavenScripts by tasks.registering(Copy::class) {
         into("lib/scripts/")
     }
     from(copyDevelocityComponents) {
+        into("lib/develocity/")
+    }
+    from(develocityMavenComponents) {
         into("lib/develocity/")
     }
     from(copyThirdPartyComponents) {
