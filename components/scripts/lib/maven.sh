@@ -8,7 +8,7 @@ find_versioned_jar() {
   find "${dir_to_search}" -name "${base_name}*" -type f -print -quit
 }
 
-CONFIGURE_GRADLE_ENTERPRISE_JAR="${LIB_DIR}/maven-libs/configure-gradle-enterprise-maven-extension-${SCRIPT_VERSION}.jar"
+CONFIGURE_GRADLE_ENTERPRISE_JAR="${LIB_DIR}/maven-libs/configure-gradle-enterprise-maven-extension-${SCRIPT_VERSION}-all.jar"
 GRADLE_ENTERPRISE_MAVEN_EXTENSION_JAR="$(find_versioned_jar "${SCRIPT_DIR}/lib/develocity" "gradle-enterprise-maven-extension")"
 COMMON_CUSTOM_USER_DATA_MAVEN_EXTENSION_JAR="$(find_versioned_jar "${SCRIPT_DIR}/lib/third-party" "common-custom-user-data-maven-extension")"
 readonly CONFIGURE_GRADLE_ENTERPRISE_JAR GRADLE_ENTERPRISE_MAVEN_EXTENSION_JAR COMMON_CUSTOM_USER_DATA_MAVEN_EXTENSION_JAR

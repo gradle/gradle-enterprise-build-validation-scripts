@@ -14,6 +14,8 @@ updates:
       # Update only patch version of GE Maven extension
       - dependency-name: "com.gradle:gradle-enterprise-maven-extension"
         update-types: ["version-update:semver-major", "version-update:semver-minor"]
+      # intentionally compiling against an older version to preserve compatibility with older versions of Maven
+      - dependency-name: "org.apache.maven:maven-core"
     schedule:
       interval: "daily"
       time: "02:00"

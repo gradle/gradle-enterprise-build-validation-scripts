@@ -38,7 +38,7 @@ repositories {
         }
     }
     mavenCentral()
-   
+
 }
 
 val isDevelopmentRelease = !hasProperty("finalRelease")
@@ -66,7 +66,7 @@ dependencies {
     argbash("argbash:argbash:2.10.0@zip")
     develocityComponents("com.gradle:build-scan-summary:$buildScanSummaryVersion")
     develocityMavenComponents("com.gradle:gradle-enterprise-maven-extension:1.18.4")
-    mavenComponents(project(":configure-gradle-enterprise-maven-extension"))
+    mavenComponents(project(path = ":configure-gradle-enterprise-maven-extension", configuration = "shadow"))
     thirdPartyMavenComponents("com.gradle:common-custom-user-data-maven-extension:1.13")
 }
 
