@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-readonly CONFIGURE_GRADLE_ENTERPRISE_JAR="${LIB_DIR}/maven-libs/configure-gradle-enterprise-maven-extension-${SCRIPT_VERSION}.jar"
+readonly CONFIGURE_GRADLE_ENTERPRISE_JAR="${LIB_DIR}/maven-libs/configure-gradle-enterprise-maven-extension-${SCRIPT_VERSION}-all.jar"
 
 find_maven_executable() {
   if [ -f "./mvnw" ]; then

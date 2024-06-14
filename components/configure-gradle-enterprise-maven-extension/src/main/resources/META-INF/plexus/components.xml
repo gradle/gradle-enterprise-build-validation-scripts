@@ -7,5 +7,12 @@
       <description>Configures Gradle Enterprise</description>
       <isolated-realm>false</isolated-realm>
     </component>
+    <component>
+      <role>com.gradle.develocity.agent.maven.api.DevelocityListener</role>
+      <role-hint>configure-develocity</role-hint>
+      <implementation>com.gradle.ConfigureDevelocity</implementation>
+      <description>Configures Develocity</description>
+      <isolated-realm>false</isolated-realm>
+    </component>
   </components>
 </component-set>
