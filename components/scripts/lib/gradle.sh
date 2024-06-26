@@ -25,11 +25,6 @@ invoke_gradle() {
     args+=("-Dcom.gradle.enterprise.build-validation.gradle-enterprise.allow-untrusted-server=false")
   fi
 
-  if [[ "${build_scan_publishing_mode}" == "off" ]]; then
-    args+=("-Dcom.gradle.enterprise.build-validation.omitServerUrlValidation=true")
-    args+=("-Dscan.dump")
-  fi
-
   args+=(
     -Dcom.gradle.enterprise.build-validation.expDir="${EXP_DIR}"
     -Dcom.gradle.enterprise.build-validation.expId="${EXP_SCAN_TAG}"
@@ -65,7 +60,7 @@ invoke_gradle() {
     die "ERROR: Experiment aborted due to a non-recoverable failure: $(cat "${EXP_DIR}/errors.txt")"
   fi
 
-  if [[ "${build_scan_publishing_mode}" == "on" ]] && is_build_scan_metadata_missing "$run_num"; then
+  if is_build_scan_metadata_missing "$run_num"; then
     print_bl
     die "ERROR: Experiment aborted due to a non-recoverable failure: No Build Scan was published"
   fi

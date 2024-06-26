@@ -29,6 +29,8 @@ BUILD_SCAN_FILE="${EXP_DIR}/build-scans.csv"
 readonly BUILD_SCAN_FILE
 BUILD_CACHE_DIR="${EXP_DIR}/build-cache"
 readonly BUILD_CACHE_DIR
+BUILD_SCAN_SUMMARY_JAR="${SCRIPT_DIR}/lib/develocity/build-scan-summary-${SUMMARY_VERSION}.jar"
+readonly BUILD_SCAN_SUMMARY_JAR
 
 if [[ "${BUILD_TOOL}" == "Gradle" ]]; then
   BUILD_TOOL_TASK="task"

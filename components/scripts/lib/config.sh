@@ -57,13 +57,6 @@ map_common_script_args() {
     enable_ge="${_arg_enable_gradle_enterprise}"
   fi
 
-  build_scan_publishing_mode=on
-  if [ -n "${_arg_disable_build_scan_publishing+x}" ]; then
-    if [[ "${_arg_disable_build_scan_publishing}" == "on" ]]; then
-      build_scan_publishing_mode=off
-    fi
-  fi
-
   if [ -n "${_arg_fail_if_not_fully_cacheable+x}" ]; then
     fail_if_not_fully_cacheable="${_arg_fail_if_not_fully_cacheable}"
   fi
@@ -103,7 +96,7 @@ validate_required_args() {
     fi
   fi
 
-  if [[ "${enable_ge}" == "on" && -z "${ge_server}" && "${build_scan_publishing_mode}" == "on" ]]; then
+  if [[ "${enable_ge}" == "on" && -z "${ge_server}" ]]; then
     _PRINT_HELP=yes die "ERROR: Missing required argument when enabling Gradle Enterprise on a project not already connected: --gradle-enterprise-server" "${INVALID_INPUT}"
   fi
 }
@@ -286,10 +279,6 @@ generate_command_to_repeat_experiment() {
 
   if [[ "${enable_ge}" == "on" ]]; then
     cmd+=("-e")
-  fi
-
-  if [[ "${build_scan_publishing_mode}" == "off" ]]; then
-    cmd+=("-x")
   fi
 
   if [[ "${fail_if_not_fully_cacheable}" == "on" ]]; then

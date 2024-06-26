@@ -10,6 +10,8 @@
 invoke_java() {
   local classpath="$1"
   shift
+  local mainClass="$1"
+  shift
 
   # OS specific support (must be 'true' or 'false').
   cygwin=false
@@ -111,7 +113,7 @@ location of your Java installation."
   #     double quotes to make sure that they get re-expanded; and
   #   * put everything else in single quotes, so that it's not re-expanded.
 
-  set -- -Dpicocli.ansi=true -jar "$classpath" "$@"
+  set -- -Dpicocli.ansi=true -cp "$classpath" "$mainClass" "$@"
 
   # Stop when "xargs" is not available.
   if ! command -v xargs >/dev/null 2>&1; then

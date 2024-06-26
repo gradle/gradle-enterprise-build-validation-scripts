@@ -29,33 +29,62 @@ repositories {
             includeModule("argbash", "argbash")
         }
     }
+    exclusiveContent {
+        forRepository {
+            maven("file://${layout.projectDirectory.dir("components/develocity").asFile.path}")
+        }
+        filter {
+            includeModule("com.gradle", "build-scan-summary")
+        }
+    }
     mavenCentral()
+
 }
 
 val isDevelopmentRelease = !hasProperty("finalRelease")
 val releaseVersion = releaseVersion()
 val releaseNotes = releaseNotes()
 val distributionVersion = distributionVersion()
+val buildScanSummaryVersion = "1.0-2024.1-20240529162525"
 
 allprojects {
     version = releaseVersion.get()
 }
 
 val argbash by configurations.creating
-val commonComponents by configurations.creating
+val develocityComponents by configurations.creating {
+    attributes.attribute(
+        TargetJvmEnvironment.TARGET_JVM_ENVIRONMENT_ATTRIBUTE,
+        objects.named(TargetJvmEnvironment.STANDARD_JVM)
+    )
+}
 val mavenComponents by configurations.creating
+val thirdPartyMavenComponents by configurations.creating
+val develocityMavenComponents by configurations.creating
 
 dependencies {
     argbash("argbash:argbash:2.10.0@zip")
-    commonComponents(project(path = ":fetch-build-scan-data-cmdline-tool", configuration = "shadow"))
+    develocityComponents("com.gradle:build-scan-summary:$buildScanSummaryVersion")
+    develocityMavenComponents("com.gradle:gradle-enterprise-maven-extension:1.18.4")
     mavenComponents(project(path = ":configure-gradle-enterprise-maven-extension", configuration = "shadow"))
-    mavenComponents("com.gradle:gradle-enterprise-maven-extension:1.18.4")
-    mavenComponents("com.gradle:common-custom-user-data-maven-extension:1.13")
+    thirdPartyMavenComponents("com.gradle:common-custom-user-data-maven-extension:1.13")
 }
 
 shellcheck {
     additionalArguments = "-a -x"
     shellcheckVersion = "v0.10.0"
+}
+
+val copyDevelocityComponents by tasks.registering(Sync::class) {
+    from(develocityComponents)
+    into(project.layout.buildDirectory.dir("components/develocity"))
+    include("build-scan-summary-$buildScanSummaryVersion.jar")
+}
+
+val copyThirdPartyComponents by tasks.registering(Sync::class) {
+    from(develocityComponents)
+    into(project.layout.buildDirectory.dir("components/third-party"))
+    exclude("build-scan-summary-$buildScanSummaryVersion.jar")
 }
 
 val unpackArgbash by tasks.registering(Copy::class) {
@@ -95,33 +124,47 @@ val copyGradleScripts by tasks.registering(Copy::class) {
     // local variable required for configuration cache compatibility
     // https://docs.gradle.org/current/userguide/configuration_cache.html#config_cache:not_yet_implemented:accessing_top_level_at_execution
     val releaseVersion = releaseVersion
-    inputs.property("project.version", releaseVersion)
+    val buildScanSummaryVersion = buildScanSummaryVersion
 
-    from(layout.projectDirectory.file("LICENSE"))
+    inputs.property("project.version", releaseVersion)
+    inputs.property("summary.version", buildScanSummaryVersion)
+
+    from(layout.projectDirectory.dir("components/licenses/gradle"))
+    from(layout.projectDirectory.file("NOTICE"))
     from(layout.projectDirectory.dir("release").file("version.txt"))
     rename("version.txt", "VERSION")
 
     from(layout.projectDirectory.dir("components/scripts/gradle")) {
         exclude("gradle-init-scripts")
         filter { line: String -> line.replace("<HEAD>", releaseVersion.get()) }
+        filter { line: String -> line.replace("<SUMMARY_VERSION>", buildScanSummaryVersion) }
     }
     from(layout.projectDirectory.dir("components/scripts/gradle")) {
         include("gradle-init-scripts/**")
-        into("lib/")
+        into("lib/scripts/")
     }
     from(layout.projectDirectory.dir("components/scripts")) {
         include("README.md")
         include("mapping.example")
         include("network.settings")
-        include("lib/**")
-        exclude("lib/cli-parsers")
         filter { line: String -> line.replace("<HEAD>", releaseVersion.get()) }
+        filter { line: String -> line.replace("<SUMMARY_VERSION>", buildScanSummaryVersion) }
+    }
+    from(layout.projectDirectory.dir("components/scripts/lib")) {
+        include("**")
+        exclude("cli-parsers")
+        filter { line: String -> line.replace("<HEAD>", releaseVersion.get()) }
+        filter { line: String -> line.replace("<SUMMARY_VERSION>", buildScanSummaryVersion) }
+        into("lib/scripts/")
     }
     from(generateBashCliParsers.map { it.outputDir.file("lib/cli-parsers/gradle") }) {
-        into("lib/")
+        into("lib/scripts/")
     }
-    from(commonComponents) {
-        into("lib/build-scan-clients/")
+    from(copyDevelocityComponents) {
+        into("lib/develocity/")
+    }
+    from(copyThirdPartyComponents) {
+        into("lib/third-party/")
     }
     into(layout.buildDirectory.dir("scripts/gradle"))
 }
@@ -133,31 +176,51 @@ val copyMavenScripts by tasks.registering(Copy::class) {
     // local variable required for configuration cache compatibility
     // https://docs.gradle.org/current/userguide/configuration_cache.html#config_cache:not_yet_implemented:accessing_top_level_at_execution
     val releaseVersion = releaseVersion
-    inputs.property("project.version", releaseVersion)
+    val buildScanSummaryVersion = buildScanSummaryVersion
 
-    from(layout.projectDirectory.file("LICENSE"))
+    inputs.property("project.version", releaseVersion)
+    inputs.property("summary.version", buildScanSummaryVersion)
+
+    from(layout.projectDirectory.dir("components/licenses/maven"))
+    from(layout.projectDirectory.file("NOTICE"))
     from(layout.projectDirectory.dir("release").file("version.txt"))
     rename("version.txt", "VERSION")
 
     from(layout.projectDirectory.dir("components/scripts/maven")) {
         filter { line: String -> line.replace("<HEAD>", releaseVersion.get()) }
+        filter { line: String -> line.replace("<SUMMARY_VERSION>", buildScanSummaryVersion) }
     }
     from(layout.projectDirectory.dir("components/scripts/")) {
         include("README.md")
         include("mapping.example")
         include("network.settings")
-        include("lib/**")
-        exclude("lib/cli-parsers")
         filter { line: String -> line.replace("<HEAD>", releaseVersion.get()) }
+        filter { line: String -> line.replace("<SUMMARY_VERSION>", buildScanSummaryVersion) }
+    }
+    from(layout.projectDirectory.dir("components/scripts/lib")) {
+        include("**")
+        exclude("cli-parsers")
+        filter { line: String -> line.replace("<HEAD>", releaseVersion.get()) }
+        filter { line: String -> line.replace("<SUMMARY_VERSION>", buildScanSummaryVersion) }
+        into("lib/scripts/")
     }
     from(generateBashCliParsers.map { it.outputDir.file("lib/cli-parsers/maven") }) {
-        into("lib/")
+        into("lib/scripts/")
     }
-    from(commonComponents) {
-        into("lib/build-scan-clients/")
+    from(copyDevelocityComponents) {
+        into("lib/develocity/")
+    }
+    from(develocityMavenComponents) {
+        into("lib/develocity/")
+    }
+    from(copyThirdPartyComponents) {
+        into("lib/third-party/")
+    }
+    from(thirdPartyMavenComponents) {
+        into("lib/third-party/")
     }
     from(mavenComponents) {
-        into("lib/maven-libs/")
+        into("lib/scripts/maven-libs/")
     }
     into(layout.buildDirectory.dir("scripts/maven"))
 }
@@ -206,8 +269,8 @@ val shellcheckGradleScripts by tasks.registering(Shellcheck::class) {
     description = "Perform quality checks on Gradle build validation scripts using Shellcheck."
     sourceFiles = copyGradleScripts.get().outputs.files.asFileTree.matching {
         include("**/*.sh")
-        // scripts in lib/ are checked when Shellcheck checks the top-level scripts because the top-level scripts include (source) the scripts in lib/
-        exclude("lib/")
+        // scripts in lib/scripts/ are checked when Shellcheck checks the top-level scripts because the top-level scripts include (source) the scripts in lib/
+        exclude("lib/scripts/")
     }
     // scripts in lib/ are still inputs to this task (we want shellcheck to run if they change) even though we don't include them explicitly in sourceFiles
     inputs.files(copyGradleScripts.get().outputs.files.asFileTree.matching {
@@ -227,8 +290,8 @@ val shellcheckMavenScripts by tasks.registering(Shellcheck::class) {
     description = "Perform quality checks on Maven build validation scripts using Shellcheck."
     sourceFiles = copyMavenScripts.get().outputs.files.asFileTree.matching {
         include("**/*.sh")
-        // scripts in lib/ are checked when Shellcheck checks the top-level scripts because the top-level scripts include (source) the scripts in lib/
-        exclude("lib/")
+        // scripts in lib/scripts/ are checked when Shellcheck checks the top-level scripts because the top-level scripts include (source) the scripts in lib/
+        exclude("lib/scripts/")
     }
     // scripts in lib/ are still inputs to this task (we want shellcheck to run if they change) even though we don't include them explicitly in sourceFiles
     inputs.files(copyMavenScripts.get().outputs.files.asFileTree.matching {
