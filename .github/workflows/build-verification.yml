@@ -19,7 +19,7 @@ jobs:
           distribution: 'adopt'
       - name: Set up Gradle
         uses: gradle/gradle-build-action@v3
+        with:
+          develocity-access-key: ${{ secrets.DV_SOLUTIONS_ACCESS_KEY }}
       - name: Build with Gradle
         run: ./gradlew build -i
-        env:
-          GRADLE_ENTERPRISE_ACCESS_KEY: ${{ secrets.GE_SOLUTIONS_ACCESS_TOKEN }}
