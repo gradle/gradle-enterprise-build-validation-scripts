@@ -87,7 +87,7 @@ val copyThirdPartyComponents by tasks.registering(Sync::class) {
     exclude("build-scan-summary-$buildScanSummaryVersion.jar")
 }
 
-val unpackArgbash by tasks.registering(Copy::class) {
+val unpackArgbash by tasks.registering(Sync::class) {
     group = "argbash"
     description = "Unpacks Argbash."
     from(zipTree(argbash.singleFile)) {
@@ -117,7 +117,7 @@ val generateBashCliParsers by tasks.registering(ApplyArgbash::class) {
     })
 }
 
-val copyGradleScripts by tasks.registering(Copy::class) {
+val copyGradleScripts by tasks.registering(Sync::class) {
     group = "build"
     description = "Copies the Gradle source and the generated scripts to the output directory."
 
@@ -169,7 +169,7 @@ val copyGradleScripts by tasks.registering(Copy::class) {
     into(layout.buildDirectory.dir("scripts/gradle"))
 }
 
-val copyMavenScripts by tasks.registering(Copy::class) {
+val copyMavenScripts by tasks.registering(Sync::class) {
     group = "build"
     description = "Copies the Maven source and the generated scripts to the output directory."
 
