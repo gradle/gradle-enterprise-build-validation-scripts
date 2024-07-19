@@ -10,6 +10,7 @@ readonly EXP_NO="01"
 readonly EXP_SCAN_TAG=exp1-gradle
 readonly BUILD_TOOL="Gradle"
 readonly SCRIPT_VERSION="<HEAD>"
+readonly SUMMARY_VERSION="<SUMMARY_VERSION>"
 readonly SHOW_RUN_ID=true
 
 # Needed to bootstrap the script
@@ -18,13 +19,13 @@ readonly SCRIPT_NAME
 # shellcheck disable=SC2164  # it is highly unlikely cd will fail here because we're cding to the location of this script
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")"; cd -P "$(dirname "$(readlink "${BASH_SOURCE[0]}" || echo .)")"; pwd)"
 readonly SCRIPT_DIR
-readonly LIB_DIR="${SCRIPT_DIR}/lib"
+readonly LIB_DIR="${SCRIPT_DIR}/lib/scripts"
 readonly INIT_SCRIPTS_DIR="${LIB_DIR}/gradle-init-scripts"
 
 # Include and parse the command line arguments
-# shellcheck source=lib/01-cli-parser.sh
+# shellcheck source=lib/scripts/01-cli-parser.sh
 source "${LIB_DIR}/${EXP_NO}-cli-parser.sh" || { echo -e "\033[00;31m\033[1mERROR: Couldn't find '${LIB_DIR}/${EXP_NO}-cli-parser.sh'\033[0m"; exit 100; }
-# shellcheck source=lib/libs.sh
+# shellcheck source=lib/scripts/libs.sh
 source "${LIB_DIR}/libs.sh" || { echo -e "\033[00;31m\033[1mERROR: Couldn't find '${LIB_DIR}/libs.sh'\033[0m"; exit 100; }
 
 # These will be set by the config functions (see lib/config.sh)
@@ -39,10 +40,6 @@ ge_server=''
 interactive_mode=''
 
 main() {
-  if [[ "$build_scan_publishing_mode" == "off" ]]; then
-    verify_offline_mode_required_files_exist
-  fi
-
   if [ "${interactive_mode}" == "on" ]; then
     wizard_execute
   else
@@ -74,16 +71,11 @@ execute() {
 wizard_execute() {
   print_introduction
 
-  if [[ "${build_scan_publishing_mode}" == "on" ]]; then
-    print_bl
-    explain_prerequisites_ccud_gradle_plugin "I."
+  print_bl
+  explain_prerequisites_ccud_gradle_plugin "I."
 
-    print_bl
-    explain_prerequisites_api_access "II."
-  else
-    print_bl
-    explain_prerequisites_ccud_gradle_plugin
-  fi
+  print_bl
+  explain_prerequisites_api_access "II."
 
   print_bl
   explain_collect_git_details
@@ -144,19 +136,11 @@ execute_build() {
 }
 
 print_gradle_command() {
-  if [[ "${build_scan_publishing_mode}" == "on" ]]; then
     info "./gradlew --no-build-cache -Dscan.tag.${EXP_SCAN_TAG} -Dscan.value.runId=${RUN_ID} $*$(print_extra_args)"
-  else
-    info "./gradlew --no-build-cache -Dscan.dump -Dscan.tag.${EXP_SCAN_TAG} -Dscan.value.runId=${RUN_ID} $*$(print_extra_args)"
-  fi
 }
 
 fetch_build_cache_metrics() {
-  if [ "$build_scan_publishing_mode" == "on" ]; then
-    process_build_scan_data_online
-  else
-    find_and_read_build_scan_dumps
-  fi
+  process_build_scan_data_online
 }
 
 # Overrides summary.sh#print_performance_characteristics
@@ -274,8 +258,7 @@ EOF
 
 explain_measure_build_results() {
   local text
-  if [[ "${build_scan_publishing_mode}" == "on" ]]; then
-    IFS='' read -r -d '' text <<EOF
+  IFS='' read -r -d '' text <<EOF
 $(print_separator)
 ${HEADER_COLOR}Measure build results${RESTORE}
 
@@ -288,30 +271,13 @@ the two builds to assist you in your investigation.
 
 ${USER_ACTION_COLOR}Press <Enter> to measure the build results.${RESTORE}
 EOF
-  else
-    IFS='' read -r -d '' text <<EOF
-$(print_separator)
-${HEADER_COLOR}Measure build results${RESTORE}
-
-Now that the second build has finished successfully, you are ready to measure
-how well your build leverages Gradle’s incremental build functionality for the
-invoked set of Gradle tasks.
-
-Some of the build scan data will be extracted from the locally stored,
-intermediate build data produced by the two builds to assist you in your
-investigation.
-
-${USER_ACTION_COLOR}Press <Enter> to measure the build results.${RESTORE}
-EOF
-  fi
   print_interactive_text "${text}"
   wait_for_enter
 }
 
 explain_and_print_summary() {
   local text
-  if [[ "${build_scan_publishing_mode}" == "on" ]]; then
-    IFS='' read -r -d '' text <<EOF
+  IFS='' read -r -d '' text <<EOF
 The ‘Summary’ section below captures the configuration of the experiment and
 the two build scans that were published as part of running the experiment. The
 build scan of the second build is particularly interesting since this is where
@@ -334,23 +300,6 @@ $(print_command_to_repeat_experiment)
 
 $(explain_when_to_rerun_experiment)
 EOF
-  else
-    IFS='' read -r -d '' text <<EOF
-The ‘Summary’ section below captures the configuration of the experiment. No
-build scans are available for inspection since publishing was disabled for the
-experiment.
-
-$(explain_performance_characteristics)
-
-$(explain_command_to_repeat_experiment)
-
-$(print_summary)
-
-$(print_command_to_repeat_experiment)
-
-$(explain_when_to_rerun_experiment)
-EOF
-  fi
   print_interactive_text "${text}"
 }
 

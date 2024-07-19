@@ -10,6 +10,7 @@ readonly EXP_NO="05"
 readonly EXP_SCAN_TAG=exp5-gradle
 readonly BUILD_TOOL="Gradle"
 readonly SCRIPT_VERSION="<HEAD>"
+readonly SUMMARY_VERSION="<SUMMARY_VERSION>"
 readonly SHOW_RUN_ID=true
 
 # Needed to bootstrap the script
@@ -18,13 +19,13 @@ readonly SCRIPT_NAME
 # shellcheck disable=SC2164  # it is highly unlikely cd will fail here because we're cding to the location of this script
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")"; cd -P "$(dirname "$(readlink "${BASH_SOURCE[0]}" || echo .)")"; pwd)"
 readonly SCRIPT_DIR
-readonly LIB_DIR="${SCRIPT_DIR}/lib"
+readonly LIB_DIR="${SCRIPT_DIR}/lib/scripts"
 readonly INIT_SCRIPTS_DIR="${LIB_DIR}/gradle-init-scripts"
 
 # Include and parse the command line arguments
-# shellcheck source=lib/05-cli-parser.sh
+# shellcheck source=lib/scripts/05-cli-parser.sh
 source "${LIB_DIR}/${EXP_NO}-cli-parser.sh" || { echo -e "\033[00;31m\033[1mERROR: Couldn't find '${LIB_DIR}/${EXP_NO}-cli-parser.sh'\033[0m"; exit 100; }
-# shellcheck source=lib/libs.sh
+# shellcheck source=lib/scripts/libs.sh
 source "${LIB_DIR}/libs.sh" || { echo -e "\033[00;31m\033[1mERROR: Couldn't find '${LIB_DIR}/libs.sh'\033[0m"; exit 100; }
 
 # These will be set by the config functions (see lib/config.sh)
