@@ -31,7 +31,7 @@ repositories {
     }
     exclusiveContent {
         forRepository {
-            maven("file://${layout.projectDirectory.dir("components/develocity").asFile.path}")
+            maven("https://repo.gradle.org/artifactory/solutions")
         }
         filter {
             includeModule("com.gradle", "build-scan-summary")
@@ -45,7 +45,7 @@ val isDevelopmentRelease = !hasProperty("finalRelease")
 val releaseVersion = releaseVersion()
 val releaseNotes = releaseNotes()
 val distributionVersion = distributionVersion()
-val buildScanSummaryVersion = "1.0-2024.1-20240529162525"
+val buildScanSummaryVersion = "1.0-2024.1"
 
 allprojects {
     version = releaseVersion.get()
