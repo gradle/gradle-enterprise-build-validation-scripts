@@ -1,1 +1,1 @@
-- [NEW] TBD
+- [NEW] Predictive Test Selection is disabled when running builds

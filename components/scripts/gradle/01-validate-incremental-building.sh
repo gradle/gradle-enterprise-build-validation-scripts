@@ -136,7 +136,7 @@ execute_build() {
 }
 
 print_gradle_command() {
-    info "./gradlew --no-build-cache -Dscan.tag.${EXP_SCAN_TAG} -Dscan.value.runId=${RUN_ID} $*$(print_extra_args)"
+    info "./gradlew --no-build-cache -Dscan.tag.${EXP_SCAN_TAG} -Dscan.value.runId=${RUN_ID} -Dpts.enabled=false $*$(print_extra_args)"
 }
 
 fetch_build_cache_metrics() {
