@@ -64,7 +64,7 @@ jobs:
         if: ${{ runner.os == 'Windows' }}
         uses: Vampire/setup-wsl@v3
         with:
-          distribution: Ubuntu-22.04
+          distribution: Ubuntu-24.04
           additional-packages: curl unzip wget apt-transport-https gnupg
       - name: Set up JDK ${{ matrix.java-version }} on WSL
         if: ${{ runner.os == 'Windows' }}
