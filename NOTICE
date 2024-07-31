@@ -1,0 +1,230 @@
+The following copyright statements and licenses apply to various third party open
+source software packages (or portions thereof) that are distributed with
+this content in the folder titled "lib/third-party".
+
+TABLE OF CONTENTS
+=================
+
+The following is a listing of the open source components detailed in this
+document.  This list is provided for your convenience; please read further if
+you wish to review the copyright notice(s) and the full text of the license
+associated with each component.
+
+
+**SECTION 1: Apache License, V2.0**
+  * Google Guava
+     * `com.google.guava:guava`
+  * Google Gson
+    * `com.google.code.gson:gson`
+  * Gradle Develocity Plugin/Extension Adapters
+    * `com.gradle:develocity-maven-extension-adapters`
+  * Gradle Common Custom User Data Maven Extension
+    * `com.gradle:common-custom-user-data-maven-extension`
+  * Gson on Fire
+    * `io.gsonfire:gson-fire`
+  * Picocli
+    * `info.picocli:picocli`
+  * Square OkHttp
+    * `com.squareup.okhttp3:okhttp`
+    * `com.squareup.okhttp3:logging-interceptor`
+    *  `com.squareup.okhttp3:okhttp-tls`
+  * Swagger Core - Annotations
+    * `io.swagger:swagger-annotations`
+
+**SECTION 2: Common Development and Distribution License (CDDL) v1.0 and GNU General Public License (GPL) v2 with Classpath Exception**
+  * JAX-RS
+    * `javax.ws.rs:javax.ws.rs-api`
+    * `javax.ws.rs:jsr311-api`
+  * Javax Annotations
+    * `javax.annotation:javax.annotation-api`
+
+**SECTION 3: New BSD License**
+  * Findbugs JSR 305
+    * `com.google.code.findbugs:jsr305`
+
+**SECTION 4: Gradle License**
+  * Build Scan Summary
+    * `com.gradle:build-scan-summary`
+
+SECTION 1: Apache License, V2.0
+================================
+
+Google Guava
+------------
+Copyright 2024 Google, Inc.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+   http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+
+Google Gson
+------------
+Copyright 2024 Google, Inc.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+   http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+
+Gradle Develocity Plugin/Extension Adapters
+-------------------------------------------
+Copyright 2024 Gradle, Inc.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+   http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+
+Gradle Common Custom User Data Maven Extension
+----------------------------------------------
+Copyright 2024 Gradle, Inc.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+   http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+
+Gson on Fire
+-------------
+Copyright 2015 Julio Viera
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+   http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+
+Picocli
+-------
+Copyright 2023 Remko Popma
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License
+
+Square OkHttp
+-------------
+Copyright 2019 Square, Inc.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+   http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+
+Swagger Core - Annotations
+---------------------------
+Copyright 2023 SmartBear Software
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+   http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+
+SECTION 2: Common Development and Distribution License (CDDL) v1.0 and 
+GNU General Public License (GPL) v2 with Classpath Exception
+====================================================================================================================================
+
+JAX-RS
+------
+Copyright 2009 Oracle, Inc.
+
+Licensed under the Common Development and Distribution License (CDDL) v1.0 and GNU General Public License (GPL) v2 with Classpath Exception
+See https://javaee.github.io/jsr311/LICENSE
+
+Javax Annotation
+----------------
+Copyright 2007 Oracle, Inc.
+
+Licensed under the Common Development and Distribution License (CDDL) v1.0 and GNU General Public License (GPL) v2 with Classpath Exception
+See https://github.com/javaee/javax.annotation/blob/master/LICENSE
+
+SECTION 3: New BSD License
+=======================================================
+
+Findbugs JSR 305
+----------------
+Copyright 2005 the University of Maryland
+
+Redistribution and use in source and binary forms, with or without modification, are permitted provided that the
+following conditions are met:
+
+1. Redistributions of source code must retain the above copyright notice, this list of conditions and the following
+   disclaimer.
+
+2. Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following
+   disclaimer in the documentation and/or other materials provided with the distribution.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS “AS IS” AND ANY EXPRESS OR IMPLIED WARRANTIES,
+INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
+THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+SECTION 4: Gradle License
+=======================================================
+
+Build Scan Summary
+------------------
+Copyright 2024 Gradle, Inc.
+
+Subject to and licensed pursuant to the Gradle, Inc. Terms of Use, available at https://gradle.com/legal/terms-of-use/ (the "Gradle License").
+You may not use this library except in compliance with the Gradle License.

@@ -10,6 +10,7 @@ readonly EXP_NO="04"
 readonly EXP_SCAN_TAG=exp4-maven
 readonly BUILD_TOOL="Maven"
 readonly SCRIPT_VERSION="<HEAD>"
+readonly SUMMARY_VERSION="<SUMMARY_VERSION>"
 readonly SHOW_RUN_ID=true
 
 # Needed to bootstrap the script
@@ -18,12 +19,12 @@ readonly SCRIPT_NAME
 # shellcheck disable=SC2164  # it is highly unlikely cd will fail here because we're cding to the location of this script
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")"; cd -P "$(dirname "$(readlink "${BASH_SOURCE[0]}" || echo .)")"; pwd)"
 readonly SCRIPT_DIR
-readonly LIB_DIR="${SCRIPT_DIR}/lib"
+readonly LIB_DIR="${SCRIPT_DIR}/lib/scripts"
 
 # Include and parse the command line arguments
-# shellcheck source=lib/04-cli-parser.sh
+# shellcheck source=lib/scripts/04-cli-parser.sh
 source "${LIB_DIR}/${EXP_NO}-cli-parser.sh" || { echo -e "\033[00;31m\033[1mERROR: Couldn't find '${LIB_DIR}/${EXP_NO}-cli-parser.sh'\033[0m"; exit 100; }
-# shellcheck source=lib/libs.sh
+# shellcheck source=lib/scripts/libs.sh
 source "${LIB_DIR}/libs.sh" || { echo -e "\033[00;31m\033[1mERROR: Couldn't find '${LIB_DIR}/libs.sh'\033[0m"; exit 100; }
 
 # These will be set by the config functions (see lib/config.sh)
@@ -201,7 +202,7 @@ execute_build() {
   args+=(clean ${tasks})
 
   info "Running build:"
-  info "./mvnw -Dscan -Dscan.tag.${EXP_SCAN_TAG} -Dscan.value.runId=${RUN_ID} clean ${tasks}$(print_extra_args)"
+  info "./mvnw -Dscan -Dscan.tag.${EXP_SCAN_TAG} -Dscan.value.runId=${RUN_ID} -Dpts.enabled=false clean ${tasks}$(print_extra_args)"
 
   # shellcheck disable=SC2086  # we want tasks to expand with word splitting in this case
   invoke_maven 1 "${args[@]}"
@@ -282,6 +283,11 @@ building the project as part of your pipeline during daily development.
 Make sure the CI configuration uses the proper branch and performs a fresh
 checkout to avoid any build artifacts lingering around from a previous build
 that could influence the experiment.
+
+Also, make sure the CI configuration builds the project with Predictive Test
+Selection (PTS) disabled, as test results will not be stored in the build cache
+when only a subset of tests are selected for execution. PTS can be globally
+disabled using the '-Dpts.enabled=false' system property.
 
 Once the build completes, make a note of the commit id that was used, and enter
 the URL of the build scan produced by the build.

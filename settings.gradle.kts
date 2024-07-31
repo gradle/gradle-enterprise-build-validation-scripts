@@ -1,5 +1,5 @@
 plugins {
-    id("com.gradle.develocity") version "3.17.4"
+    id("com.gradle.develocity") version "3.17.6"
     id("com.gradle.common-custom-user-data-gradle-plugin") version "2.0.2"
     id("org.gradle.toolchains.foojay-resolver-convention") version "0.8.0"
 }
@@ -27,7 +27,5 @@ buildCache {
 rootProject.name = "build-validation-scripts"
 
 include("components/configure-gradle-enterprise-maven-extension")
-include("components/fetch-build-scan-data-cmdline-tool")
 
 project(":components/configure-gradle-enterprise-maven-extension").name = "configure-gradle-enterprise-maven-extension"
-project(":components/fetch-build-scan-data-cmdline-tool").name = "fetch-build-scan-data-cmdline-tool"
