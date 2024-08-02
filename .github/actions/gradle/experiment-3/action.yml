@@ -39,6 +39,9 @@ outputs:
   buildScanSecondBuild:
     description: "Second build scan url"
     value: ${{ steps.run.outputs.buildScanSecondBuild }}
+  receiptArtifactName:
+    description: "Name of the experiment receipt artifact"
+    value: ${{ steps.run.outputs.receiptArtifactName }}
 
 runs:
   using: "composite"
@@ -109,14 +112,16 @@ runs:
         RECEIPT_FILE=".data/03-validate-local-build-caching-different-locations/latest/exp3-*.receipt"
         BUILD_SCAN_1=$(grep -m 1 "first build" ${RECEIPT_FILE} | sed 's/.* //')
         BUILD_SCAN_2=$(grep -m 1 "second build" ${RECEIPT_FILE} | sed 's/.* //')
+        RECEIPT_ARTIFACT_NAME="experiment-3-receipt-$(echo "${{ toJSON(matrix) }}" | md5sum | cut -f 1 -d ' ')"
         
         echo "buildScanFirstBuild=$BUILD_SCAN_1" >> $GITHUB_OUTPUT
         echo "buildScanSecondBuild=$BUILD_SCAN_2" >> $GITHUB_OUTPUT
+        echo "receiptArtifactName=$RECEIPT_ARTIFACT_NAME" >> $GITHUB_OUTPUT
 
         cat $RECEIPT_FILE >> $GITHUB_STEP_SUMMARY
       shell: bash
     - name: Archive receipt
       uses: actions/upload-artifact@v4
       with:
-        name: experiment-3-receipt
+        name: ${{ steps.run.outputs.receiptArtifactName }}
         path: gradle-enterprise-gradle-build-validation/.data/03-validate-local-build-caching-different-locations/latest*/exp3-*.receipt
