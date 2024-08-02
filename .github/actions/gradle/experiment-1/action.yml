@@ -29,6 +29,10 @@ inputs:
   enableGradleEnterprise:
     description: "Enables Gradle Enterprise on a project not already connected"
     required: false
+  archiveRecieptArtifactName:
+    description: "The artifact name for the archive step"
+    default: "experiment-1-receipt"
+    required: false
 outputs:
   buildScanFirstBuild:
     description: "First build scan url"
@@ -110,5 +114,5 @@ runs:
     - name: Archive receipt
       uses: actions/upload-artifact@v4
       with:
-        name: experiment-1-receipt
+        name: ${{ inputs.archiveReceiptArtifactName }}
         path: gradle-enterprise-gradle-build-validation/.data/01-validate-incremental-building/latest*/exp1-*.receipt
