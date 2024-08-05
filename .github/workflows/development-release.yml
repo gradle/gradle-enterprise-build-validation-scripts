@@ -19,7 +19,7 @@ jobs:
           java-version: '8'
           distribution: 'adopt'
       - name: Set up Gradle
-        uses: gradle/actions/setup-gradle@v3
+        uses: gradle/actions/setup-gradle@v4
         with:
           develocity-access-key: ${{ secrets.DV_SOLUTIONS_ACCESS_KEY }}
       - name: Build with Gradle
