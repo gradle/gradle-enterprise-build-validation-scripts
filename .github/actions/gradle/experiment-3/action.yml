@@ -118,5 +118,5 @@ runs:
     - name: Archive receipt
       uses: actions/upload-artifact@v4
       with:
-        name: experiment-3-receipt-${{ github.run_id }}-${{github.run_number}}-${{ github.job }}-${{ strategy.job-index || '0' }}-${{ strategy.job-total || '0' }}
+        name: experiment-3-receipt-${{ github.job }}-${{ strategy.job-index || '0' }}-${{ strategy.job-total || '0' }}
         path: gradle-enterprise-gradle-build-validation/.data/03-validate-local-build-caching-different-locations/latest*/exp3-*.receipt
