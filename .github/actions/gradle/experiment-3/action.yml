@@ -116,7 +116,13 @@ runs:
         cat $RECEIPT_FILE >> $GITHUB_STEP_SUMMARY
       shell: bash
     - name: Archive receipt
+      id: upload-artifact
       uses: actions/upload-artifact@v4
       with:
-        name: experiment-3-receipt
+        name: experiment-3-receipt-${{ github.job }}${{ strategy.job-total > 1 && format('-{0}', strategy.job-index) || '' }}
         path: gradle-enterprise-gradle-build-validation/.data/03-validate-local-build-caching-different-locations/latest*/exp3-*.receipt
+    - name: Add artifact link to summary
+      run: |
+        echo "-------------" >> $GITHUB_STEP_SUMMARY
+        echo "Download receipt: ${{ steps.upload-artifact.outputs.artifact-url }}" >> $GITHUB_STEP_SUMMARY
+      shell: bash
