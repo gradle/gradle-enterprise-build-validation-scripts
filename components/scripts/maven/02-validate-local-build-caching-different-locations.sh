@@ -140,8 +140,12 @@ execute_build() {
   invoke_maven "${run_num}" \
      -Dgradle.cache.local.enabled=true \
      -Dgradle.cache.local.storeEnabled=true \
-     -Dgradle.cache.remote.enabled=false \
      -Dgradle.cache.local.directory="${BUILD_CACHE_DIR}" \
+     -Dgradle.cache.remote.enabled=false \
+     -Ddevelocity.cache.local.enabled=true \
+     -Ddevelocity.cache.local.storeEnabled=true \
+     -Ddevelocity.cache.local.directory="${BUILD_CACHE_DIR}" \
+     -Ddevelocity.cache.remote.enabled=false \
      clean ${tasks}
 }
 

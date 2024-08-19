@@ -46,8 +46,12 @@ invoke_maven() {
   fi
 
   if [ -n "${ge_server}" ]; then
-    args+=("-Dgradle.enterprise.url=${ge_server}")
-    args+=("-Dgradle.enterprise.allowUntrustedServer=false")
+    args+=(
+      -Dgradle.enterprise.url="${ge_server}"
+      -Dgradle.enterprise.allowUntrustedServer=false
+      -Ddevelocity.url="${ge_server}"
+      -Ddevelocity.allowUntrustedServer=false
+    )
   fi
 
   args+=(
@@ -58,6 +62,7 @@ invoke_maven() {
     -Dcom.gradle.enterprise.build-validation.runNum="${run_num}"
     -Dcom.gradle.enterprise.build-validation.scriptsVersion="${SCRIPT_VERSION}"
     -Dgradle.scan.captureGoalInputFiles=true
+    -Ddevelocity.scan.captureFileFingerprints=true
     -Dpts.enabled=false
   )
 
