@@ -1,1 +1,2 @@
 - [NEW] Predictive Test Selection is disabled when running builds
+- [FIX] Gradle Enterprise deprecation warnings are printed to the console for Maven builds using Develocity extension
