@@ -1,2 +1,1 @@
-- [NEW] Predictive Test Selection is disabled when running builds
-- [NEW] Full support for both Gradle Enterprise and Develocity branded plugins and extensions
+- [NEW] TBD
