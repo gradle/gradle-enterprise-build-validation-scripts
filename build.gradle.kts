@@ -130,7 +130,7 @@ val copyGradleScripts by tasks.registering(Sync::class) {
     inputs.property("summary.version", buildScanSummaryVersion)
 
     from(layout.projectDirectory.dir("components/licenses/gradle"))
-    from(layout.projectDirectory.file("NOTICE"))
+    from(layout.projectDirectory.file("components/licenses/NOTICE"))
     from(layout.projectDirectory.dir("release").file("version.txt"))
     rename("version.txt", "VERSION")
 
@@ -182,7 +182,7 @@ val copyMavenScripts by tasks.registering(Sync::class) {
     inputs.property("summary.version", buildScanSummaryVersion)
 
     from(layout.projectDirectory.dir("components/licenses/maven"))
-    from(layout.projectDirectory.file("NOTICE"))
+    from(layout.projectDirectory.file("components/licenses/NOTICE"))
     from(layout.projectDirectory.dir("release").file("version.txt"))
     rename("version.txt", "VERSION")
 
