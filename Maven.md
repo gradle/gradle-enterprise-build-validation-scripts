@@ -245,6 +245,10 @@ git clone https://github.com/gradle/maven-build-scan-quickstart $HOME/maven-buil
 ./01-validate-local-build-caching-same-location.sh -i -r file://$HOME/maven-build-scan-quickstart
 ```
 
+> [!IMPORTANT]
+> Regardless of whether you use a local or remote Git repository, any changes _must be_ commited for them to be picked up by the experiments.
+> The benefit of using a local Git repository is that the changes don't need to be pushed to the remote repository.
+
 ## Dealing with filename too long errors on Windows
 
 When the scripts clone the Git project, an error might occur on Windows when the absolute paths of the checked out files are longer than 260 characters. This problem can be addressed by passing the `core.longpaths` Git configuration option to the scripts.
