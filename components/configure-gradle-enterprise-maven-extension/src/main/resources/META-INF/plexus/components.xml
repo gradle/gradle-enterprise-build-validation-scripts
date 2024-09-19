@@ -1,17 +1,18 @@
 <component-set>
   <components>
     <component>
+      <!--suppress DeprecatedClassUsageInspection -->
       <role>com.gradle.maven.extension.api.GradleEnterpriseListener</role>
-      <role-hint>configure-gradle-enterprise</role-hint>
-      <implementation>com.gradle.ConfigureGradleEnterprise</implementation>
-      <description>Configures Gradle Enterprise</description>
+      <role-hint>configure-gradle-enterprise-listener</role-hint>
+      <implementation>com.gradle.ConfigureGradleEnterpriseListener</implementation>
+      <description>Configures the Gradle Enterprise Maven extension</description>
       <isolated-realm>false</isolated-realm>
     </component>
     <component>
       <role>com.gradle.develocity.agent.maven.api.DevelocityListener</role>
-      <role-hint>configure-develocity</role-hint>
-      <implementation>com.gradle.ConfigureDevelocity</implementation>
-      <description>Configures Develocity</description>
+      <role-hint>configure-develocity-listener</role-hint>
+      <implementation>com.gradle.ConfigureDevelocityListener</implementation>
+      <description>Configures the Develocity Maven extension</description>
       <isolated-realm>false</isolated-realm>
     </component>
   </components>
