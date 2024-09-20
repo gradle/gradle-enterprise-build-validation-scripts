@@ -6,13 +6,13 @@ import org.apache.maven.execution.MavenSession;
 import javax.inject.Inject;
 
 // Using fully qualified class names to avoid deprecation warnings on import statements
-@SuppressWarnings({"deprecation"})
-public class ConfigureGradleEnterprise implements com.gradle.maven.extension.api.GradleEnterpriseListener {
+@SuppressWarnings("deprecation")
+public class ConfigureGradleEnterpriseListener implements com.gradle.maven.extension.api.GradleEnterpriseListener {
 
     private final ConfigureDevelocityAdaptor configureDevelocityAdaptor;
 
     @Inject
-    public ConfigureGradleEnterprise(ConfigureDevelocityAdaptor configureDevelocityAdaptor) {
+    public ConfigureGradleEnterpriseListener(ConfigureDevelocityAdaptor configureDevelocityAdaptor) {
         this.configureDevelocityAdaptor = configureDevelocityAdaptor;
     }
 
@@ -20,4 +20,5 @@ public class ConfigureGradleEnterprise implements com.gradle.maven.extension.api
     public void configure(com.gradle.maven.extension.api.GradleEnterpriseApi api, MavenSession session) {
         configureDevelocityAdaptor.configure(new GradleEnterpriseApiAdapter(api), session);
     }
+
 }
