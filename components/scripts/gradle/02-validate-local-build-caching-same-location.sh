@@ -136,7 +136,7 @@ execute_build() {
   # shellcheck disable=SC2086  # we want tasks to expand with word splitting in this case
   invoke_gradle "${run_num}" \
      --build-cache \
-     --init-script "${INIT_SCRIPTS_DIR}/configure-local-build-caching.gradle" \
+     --init-script "${INIT_SCRIPTS_DIR}/configure-local-build-caching.init.gradle" \
      clean ${tasks}
 }
 

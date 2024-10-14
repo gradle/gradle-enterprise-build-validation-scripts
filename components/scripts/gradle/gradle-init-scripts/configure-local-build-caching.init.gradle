@@ -1,0 +1,20 @@
+static getInputParam(String name) {
+    def ENV_VAR_PREFIX = ''
+    def envVarName = ENV_VAR_PREFIX + name.toUpperCase().replace('.', '_').replace('-', '_')
+    return System.getProperty(name) ?: System.getenv(envVarName)
+}
+
+def expDir = getInputParam('develocity.build-validation.expDir')
+
+settingsEvaluated { settings ->
+    settings.buildCache {
+        local {
+            enabled = true
+            push = true
+            directory = new File(expDir, 'build-cache')
+        }
+        remote(HttpBuildCache) {
+            enabled = false
+        }
+    }
+}

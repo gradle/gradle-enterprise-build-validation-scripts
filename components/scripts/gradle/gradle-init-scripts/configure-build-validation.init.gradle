@@ -1,0 +1,219 @@
+import org.gradle.util.GradleVersion
+import java.nio.charset.StandardCharsets
+
+def BUILD_SCAN_PLUGIN_ID = 'com.gradle.build-scan'
+def GRADLE_ENTERPRISE_PLUGIN_ID = 'com.gradle.enterprise'
+def DEVELOCITY_PLUGIN_ID = 'com.gradle.develocity'
+def CCUD_PLUGIN_ID = 'com.gradle.common-custom-user-data-gradle-plugin'
+
+static getInputParam(String name) {
+    def ENV_VAR_PREFIX = ''
+    def envVarName = ENV_VAR_PREFIX + name.toUpperCase().replace('.', '_').replace('-', '_')
+    return System.getProperty(name) ?: System.getenv(envVarName)
+}
+
+def isTopLevelBuild = !gradle.parent
+if (!isTopLevelBuild) {
+    return
+}
+
+def expDir = getInputParam('develocity.build-validation.expDir')
+def expId = getInputParam('develocity.build-validation.expId')
+def runId = getInputParam('develocity.build-validation.runId')
+def scriptsVersion = getInputParam('develocity.build-validation.scriptsVersion')
+
+def atLeastGradle5 = GradleVersion.current() >= GradleVersion.version('5.0')
+
+// register build scan listeners to capture build scan URL/id and to track publishing errors
+def registerBuildScanActions = { def buildScan, def rootProjectName ->
+    buildScan.buildScanPublished { publishedBuildScan ->
+        // defer reading the `runNum` system property until execution time since it does not affect
+        // the configuration of the build, and given its value changes between consecutive build invocations
+        // it would always invalidate the configuration cache model from the first build invocation
+        // in the second build invocation
+        def runNum = getInputParam('develocity.build-validation.runNum')
+        def buildScanUri = publishedBuildScan.buildScanUri
+        def buildScanId = publishedBuildScan.buildScanId
+        def port = (buildScanUri.port != -1) ? ':' + buildScanUri.port : ''
+        def baseUrl = "${buildScanUri.scheme}://${buildScanUri.host}${port}"
+
+        def scanFile = new File(expDir, 'build-scans.csv')
+        scanFile.append("${runNum},${rootProjectName},${baseUrl},${buildScanUri},${buildScanId}\n")
+    }
+
+    buildScan.onError { error ->
+        def errorFile = new File(expDir, 'errors.txt')
+        errorFile.text = 'Build Scan publishing failed.'
+    }
+}
+
+// add custom data identifying the experiment
+def addBuildScanCustomData = { def buildScan ->
+    addCustomValueAndSearchLink(buildScan, "Experiment id", expId)
+    buildScan.tag(expId)
+
+    addCustomValueAndSearchLink(buildScan, "Experiment run id", runId)
+
+    buildScan.value("Build validation scripts", scriptsVersion)
+}
+
+// fail if no GE server is configured
+def logErrorMissingGradleEnterpriseServerURL = {
+    def errorFile = new File(expDir, 'errors.txt')
+    errorFile.text = 'The Gradle Enterprise server URL has not been configured in the project or on the command line.'
+}
+
+// fail if the GE / Build Scan plugin is not applied
+def logErrorMissingGradleEnterprisePlugin = { def plugin ->
+    def errorFile = new File(expDir, 'errors.txt')
+    errorFile.text = "The $plugin plugin is missing from the project."
+}
+
+// do not fail if the CCUD plugin is not applied but surface a warning
+def logWarningMissingCommonCustomUserDataGradlePlugin = {
+    def warningFile = new File(expDir, 'warnings.txt')
+    warningFile.append("The com.gradle.common-custom-user-data-gradle-plugin plugin is missing from " +
+            "the project (see https://github.com/gradle/common-custom-user-data-gradle-plugin).\n")
+}
+
+// configure build scan behavior and optionally apply the GE / Build Scan / CCUD plugin
+if (GradleVersion.current() < GradleVersion.version('6.0')) {
+    //noinspection GroovyAssignabilityCheck
+    rootProject {
+        // todo can this just use PluginManager#hasPlugin now?
+        buildscript.configurations.getByName("classpath").incoming.afterResolve { ResolvableDependencies incoming ->
+            def resolutionResult = incoming.resolutionResult
+
+            def scanPluginComponent = resolutionResult.allComponents.find {
+                it.moduleVersion.with { group == "com.gradle" && ['build-scan-plugin', 'gradle-enterprise-gradle-plugin', 'develocity-gradle-plugin'].contains(name) }
+            }
+            // todo we don't claim to support < Gradle 5.0 so should we always recommend applying the DV plugin?
+            if (!scanPluginComponent) {
+                if (atLeastGradle5) {
+                    logErrorMissingGradleEnterprisePlugin(DEVELOCITY_PLUGIN_ID)
+                    throw new IllegalStateException("The com.gradle.develocity plugin is missing from the project.\n" +
+                            "Either apply it directly (see https://docs.gradle.com/develocity/gradle-plugin/current/#gradle_5_x) to the project,\n" +
+                            "or use `--enable-gradle-enterprise` when running the build validation script.")
+                } else {
+                    logErrorMissingGradleEnterprisePlugin(BUILD_SCAN_PLUGIN_ID)
+                    throw new IllegalStateException("The com.gradle.build-scan plugin is missing from the project.\n" +
+                            "Either apply it directly (see https://docs.gradle.com/develocity/gradle-plugin/legacy#gradle_5_x) to the project,\n" +
+                            "or use `--enable-gradle-enterprise` when running the build validation script.")
+                }
+            }
+
+            def ccudPluginComponent = resolutionResult.allComponents.find {
+                it.moduleVersion.with { group == "com.gradle" && name == "common-custom-user-data-gradle-plugin" }
+            }
+            if (!ccudPluginComponent) {
+                logWarningMissingCommonCustomUserDataGradlePlugin()
+            }
+        }
+
+        pluginManager.withPlugin(BUILD_SCAN_PLUGIN_ID) {
+            afterEvaluate {
+                if (!buildScan.server) {
+                    logErrorMissingGradleEnterpriseServerURL()
+                    throw new IllegalStateException("The Gradle Enterprise server URL is not configured.\n" +
+                            "Either configure it directly (see https://docs.gradle.com/develocity/gradle-plugin/legacy#gradle_5_x_2) in the project,\n" +
+                            "or use `--gradle-enterprise-server` when running the build validation script.")
+                }
+
+                registerBuildScanActions(buildScan, rootProject.name)
+                addBuildScanCustomData(buildScan)
+            }
+        }
+
+        pluginManager.withPlugin(DEVELOCITY_PLUGIN_ID) {
+            afterEvaluate {
+                if (!develocity.server) {
+                    logErrorMissingGradleEnterpriseServerURL()
+                    throw new IllegalStateException("The Develocity server URL is not configured.\n" +
+                            "Either configure it directly (see https://docs.gradle.com/develocity/gradle-plugin/current/#connecting_to_develocity) in the project,\n" +
+                            "or use `--gradle-enterprise-server` when running the build validation script.")
+                }
+
+                registerBuildScanActions(buildScan, rootProject.name)
+                addBuildScanCustomData(buildScan)
+            }
+        }
+    }
+} else {
+    gradle.settingsEvaluated { settings ->
+        if (!settings.pluginManager.hasPlugin(GRADLE_ENTERPRISE_PLUGIN_ID) && !settings.pluginManager.hasPlugin(DEVELOCITY_PLUGIN_ID)) {
+            logErrorMissingGradleEnterprisePlugin(DEVELOCITY_PLUGIN_ID)
+            throw new IllegalStateException("The com.gradle.develocity plugin is missing from the project.\n" +
+                    "Either apply it directly (see https://docs.gradle.com/develocity/gradle-plugin/current/#applying_the_plugin#gradle_6_x_and_later),\n" +
+                    "or use `--enable-gradle-enterprise` when running the build validation script.")
+        }
+
+        if (!settings.pluginManager.hasPlugin(CCUD_PLUGIN_ID)) {
+            logWarningMissingCommonCustomUserDataGradlePlugin()
+        }
+
+        eachDevelocitySettingsExtension(settings,
+            { develocity ->
+                if (!develocity.server) {
+                    logErrorMissingGradleEnterpriseServerURL()
+                    throw new IllegalStateException("The Develocity server URL is not configured.\n" +
+                            "Either configure it directly (see https://docs.gradle.com/develocity/gradle-plugin/current/#connecting_to_develocity) in the project,\n" +
+                            "or use `--gradle-enterprise-server` when running the build validation script.")
+                }
+
+                registerBuildScanActions(develocity.buildScan, settings.rootProject.name)
+                addBuildScanCustomData(develocity.buildScan)
+            },
+            { gradleEnterprise ->
+                if (!gradleEnterprise.server) {
+                    logErrorMissingGradleEnterpriseServerURL()
+                    throw new IllegalStateException("The Gradle Enterprise server URL is not configured.\n" +
+                            "Either configure it directly (see https://docs.gradle.com/develocity/gradle-plugin/legacy/#gradle_6_x_and_later_2) in the project,\n" +
+                            "or use `--gradle-enterprise-server` when running the build validation script.")
+                }
+
+                registerBuildScanActions(gradleEnterprise.buildScan, settings.rootProject.name)
+                addBuildScanCustomData(gradleEnterprise.buildScan)
+            }
+        )
+    }
+}
+
+/**
+ * Apply the `dvAction` to all 'develocity' extensions.
+ * If no 'develocity' extensions are found, apply the `geAction` to all 'gradleEnterprise' extensions.
+ * (The develocity plugin creates both extensions, and we want to prefer configuring 'develocity').
+ */
+static def eachDevelocitySettingsExtension(def settings, def dvAction, def geAction = dvAction) {
+    def GRADLE_ENTERPRISE_EXTENSION_CLASS = 'com.gradle.enterprise.gradleplugin.GradleEnterpriseExtension'
+    def DEVELOCITY_CONFIGURATION_CLASS = 'com.gradle.develocity.agent.gradle.DevelocityConfiguration'
+
+    def dvExtensions = settings.extensions.extensionsSchema.elements
+            .findAll { it.publicType.concreteClass.name == DEVELOCITY_CONFIGURATION_CLASS }
+            .collect { settings[it.name] }
+    if (!dvExtensions.empty) {
+        dvExtensions.each(dvAction)
+    } else {
+        def geExtensions = settings.extensions.extensionsSchema.elements
+                .findAll { it.publicType.concreteClass.name == GRADLE_ENTERPRISE_EXTENSION_CLASS }
+                .collect { settings[it.name] }
+        geExtensions.each(geAction)
+    }
+}
+
+static void addCustomValueAndSearchLink(buildScan, String label, String value) {
+    buildScan.value(label, value)
+    if (buildScan.metaClass.respondsTo(buildScan, 'getServer') && buildScan.server) { // required for Gradle 4.x / build-scan-plugin 1.16
+        String server = buildScan.server
+        String searchParams = "search.names=" + urlEncode(label) + "&search.values=" + urlEncode(value)
+        String url = appendIfMissing(server, "/") + "scans?" + searchParams + "#selection.buildScanB=" + urlEncode("{SCAN_ID}")
+        buildScan.link(label + " build scans", url)
+    }
+}
+
+static String appendIfMissing(String str, String suffix) {
+    return str.endsWith(suffix) ? str : str + suffix
+}
+
+static String urlEncode(String str) {
+    return URLEncoder.encode(str, StandardCharsets.UTF_8.name())
+}

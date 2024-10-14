@@ -1,0 +1,26 @@
+static getInputParam(String name) {
+    def ENV_VAR_PREFIX = ''
+    def envVarName = ENV_VAR_PREFIX + name.toUpperCase().replace('.', '_').replace('-', '_')
+    return System.getProperty(name) ?: System.getenv(envVarName)
+}
+
+def remoteBuildCacheUrl = getInputParam('develocity.build-validation.remoteBuildCacheUrl')
+
+settingsEvaluated { settings ->
+    settings.buildCache {
+        local {
+            enabled = false
+        }
+        remote(HttpBuildCache) {
+            enabled = true
+            push = false
+            if (remoteBuildCacheUrl) {
+                url = withPathTrailingSlash(new URI(remoteBuildCacheUrl))
+            }
+        }
+    }
+}
+
+static URI withPathTrailingSlash(URI uri) {
+    uri.path.endsWith("/") ? uri : new URI(uri.scheme, uri.userInfo, uri.host, uri.port, uri.path + "/", uri.query, uri.fragment)
+}
