@@ -47,7 +47,7 @@ the summary produced by the build validation scripts.
 
 The first step of each experiment is to clone the repository containing the build to validate.
 If your repository requires authentication to clone, such as a private repository, you can use the [`actions/checkout`](https://github.com/marketplace/actions/checkout) action to perform the clone instead, as it supports cloning from repositories requiring authentication.
-You can then configure value of the `gitRepo` input parameter to the directory containing the local checkout.
+You can then configure the value of the `gitRepo` input parameter to the directory containing the local checkout.
 
 ```yaml
 steps:
