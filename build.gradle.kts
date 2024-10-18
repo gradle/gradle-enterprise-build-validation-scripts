@@ -31,6 +31,22 @@ repositories {
     }
     exclusiveContent {
         forRepository {
+            ivy {
+                url = uri("https://raw.githubusercontent.com/gradle/develocity-ci-injection/")
+                patternLayout {
+                    artifact("refs/tags/v[revision]/reference/develocity-injection.init.gradle")
+                }
+                metadataSources {
+                    artifact()
+                }
+            }
+        }
+        filter {
+            includeModule("com.gradle", "develocity-injection")
+        }
+    }
+    exclusiveContent {
+        forRepository {
             maven("https://repo.gradle.org/artifactory/solutions")
         }
         filter {
@@ -52,6 +68,10 @@ allprojects {
 }
 
 val argbash by configurations.creating
+val develocityInjection = configurations.dependencyScope("develocityInjection").get()
+val develocityInjectionResolvable = configurations.resolvable("${develocityInjection.name}Resolvable") {
+    extendsFrom(develocityInjection)
+}
 val develocityComponents by configurations.creating {
     attributes.attribute(
         TargetJvmEnvironment.TARGET_JVM_ENVIRONMENT_ATTRIBUTE,
@@ -64,6 +84,7 @@ val develocityMavenComponents by configurations.creating
 
 dependencies {
     argbash("argbash:argbash:2.10.0@zip")
+    develocityInjection("com.gradle:develocity-injection:1.0")
     develocityComponents("com.gradle:build-scan-summary:$buildScanSummaryVersion")
     develocityMavenComponents("com.gradle:gradle-enterprise-maven-extension:1.18.4")
     mavenComponents(project(path = ":configure-gradle-enterprise-maven-extension", configuration = "shadow"))
@@ -142,6 +163,10 @@ val copyGradleScripts by tasks.registering(Sync::class) {
     from(layout.projectDirectory.dir("components/scripts/gradle")) {
         include("gradle-init-scripts/**")
         into("lib/scripts/")
+    }
+    from(develocityInjectionResolvable) {
+        rename { "develocity-injection.gradle" }
+        into("lib/scripts/gradle-init-scripts")
     }
     from(layout.projectDirectory.dir("components/scripts")) {
         include("README.md")

@@ -1,0 +1,196 @@
+import org.gradle.util.GradleVersion
+import java.nio.charset.StandardCharsets
+
+static getInputParam(String name) {
+    def ENV_VAR_PREFIX = ''
+    def envVarName = ENV_VAR_PREFIX + name.toUpperCase().replace('.', '_').replace('-', '_')
+    return System.getProperty(name) ?: System.getenv(envVarName)
+}
+
+def isTopLevelBuild = !gradle.parent
+if (!isTopLevelBuild) {
+    return
+}
+
+def BUILD_SCAN_PLUGIN_ID = 'com.gradle.build-scan'
+def GRADLE_ENTERPRISE_PLUGIN_ID = 'com.gradle.enterprise'
+def DEVELOCITY_PLUGIN_ID = 'com.gradle.develocity'
+def CCUD_PLUGIN_ID = 'com.gradle.common-custom-user-data-gradle-plugin'
+
+def develocityUrl = getInputParam('develocity.url')
+
+def expDir = getInputParam('develocity.build-validation.expDir')
+def expId = getInputParam('develocity.build-validation.expId')
+def runId = getInputParam('develocity.build-validation.runId')
+def scriptsVersion = getInputParam('develocity.build-validation.scriptsVersion')
+
+def atLeastGradle5 = GradleVersion.current() >= GradleVersion.version('5.0')
+
+// register build scan listeners to capture build scan URL/id and to track publishing errors
+def registerBuildScanActions = { def buildScan, def rootProjectName ->
+    buildScan.buildScanPublished { publishedBuildScan ->
+        // defer reading the runNum system property until execution time since it does not affect
+        // the configuration of the build, and given its value changes between consecutive build invocations
+        // it would always invalidate the configuration cache model from the first build invocation
+        // in the second build invocation
+        def getInputParam = { String name ->
+            def ENV_VAR_PREFIX = ''
+            def envVarName = ENV_VAR_PREFIX + name.toUpperCase().replace('.', '_').replace('-', '_')
+            return System.getProperty(name) ?: System.getenv(envVarName)
+        }
+        def runNum = getInputParam('develocity.build-validation.runNum')
+        def buildScanUri = publishedBuildScan.buildScanUri
+        def buildScanId = publishedBuildScan.buildScanId
+        def port = (buildScanUri.port != -1) ? ':' + buildScanUri.port : ''
+        def baseUrl = "${buildScanUri.scheme}://${buildScanUri.host}${port}"
+
+        def scanFile = new File(expDir, 'build-scans.csv')
+        scanFile.append("${runNum},${rootProjectName},${baseUrl},${buildScanUri},${buildScanId}\n")
+    }
+
+    buildScan.onError { error ->
+        def errorFile = new File(expDir, 'errors.txt')
+        errorFile.text = 'Build Scan publishing failed.'
+    }
+}
+
+// add custom data identifying the experiment
+def addBuildScanCustomData = { def buildScan, def server ->
+    addCustomValueAndSearchLink(buildScan, server, "Experiment id", expId)
+    buildScan.tag(expId)
+
+    addCustomValueAndSearchLink(buildScan, server, "Experiment run id", runId)
+
+    buildScan.value("Build validation scripts", scriptsVersion)
+}
+
+// fail if no server is configured
+def failMissingDevelocityServerURL = { def docs ->
+    def errorFile = new File(expDir, 'errors.txt')
+    errorFile.text = 'The Develocity server URL has not been configured in the project or on the command line.'
+    throw new IllegalStateException("The Develocity server URL is not configured.\n"
+            + "Either configure it directly (see $docs) in the project,\n"
+            + "or use --gradle-enterprise-server when running the build validation script.")
+}
+
+// fail if a plugin is not applied
+def failMissingPlugin = { def plugin, docs ->
+    def errorFile = new File(expDir, 'errors.txt')
+    errorFile.text = "The $plugin plugin is missing from the project."
+    throw new IllegalStateException("The $plugin plugin is missing from the project.\n" +
+            "Either apply it directly (see $docs),\n" +
+            "or use --enable-gradle-enterprise when running the build validation script.")
+}
+
+// do not fail if the CCUD plugin is not applied but surface a warning
+def warnMissingCommonCustomUserDataGradlePlugin = {
+    def warningFile = new File(expDir, 'warnings.txt')
+    warningFile.append("The com.gradle.common-custom-user-data-gradle-plugin plugin is missing from " +
+            "the project (see https://github.com/gradle/common-custom-user-data-gradle-plugin).\n")
+}
+
+if (GradleVersion.current() < GradleVersion.version('6.0')) {
+    //noinspection GroovyAssignabilityCheck
+    rootProject {
+        afterEvaluate {
+            if (!pluginManager.hasPlugin(BUILD_SCAN_PLUGIN_ID) && !pluginManager.hasPlugin(DEVELOCITY_PLUGIN_ID)) {
+                if (atLeastGradle5) {
+                    failMissingPlugin(DEVELOCITY_PLUGIN_ID, 'https://docs.gradle.com/develocity/gradle-plugin/current/#gradle_5_x')
+                } else {
+                    failMissingPlugin(BUILD_SCAN_PLUGIN_ID, 'https://docs.gradle.com/develocity/gradle-plugin/legacy/#gradle_2_1_4_10_3')
+                }
+            }
+
+            if (!pluginManager.hasPlugin(CCUD_PLUGIN_ID)) {
+                warnMissingCommonCustomUserDataGradlePlugin()
+            }
+
+            pluginManager.withPlugin(BUILD_SCAN_PLUGIN_ID) {
+                // only execute if Develocity plugin isn't applied
+                if (pluginManager.hasPlugin(DEVELOCITY_PLUGIN_ID)) return
+
+                if (develocityUrl) {
+                    buildScan.server = develocityUrl
+                }
+
+                if (!buildScan.server) {
+                    failMissingDevelocityServerURL('https://docs.gradle.com/develocity/gradle-plugin/legacy#gradle_5_x_2')
+                }
+
+                buildScan.publishAlways()
+                registerBuildScanActions(buildScan, rootProject.name)
+                addBuildScanCustomData(buildScan, buildScan.server)
+            }
+
+            pluginManager.withPlugin(DEVELOCITY_PLUGIN_ID) {
+                if (develocityUrl) {
+                    develocity.server = develocityUrl
+                }
+
+                if (!develocity.server.present) {
+                    develocity.buildScan.publishing.onlyIf { false } // prevent publishing to scans.gradle.com
+                    failMissingDevelocityServerURL('https://docs.gradle.com/develocity/gradle-plugin/current/#connecting_to_develocity')
+                }
+
+                registerBuildScanActions(develocity.buildScan, rootProject.name)
+                addBuildScanCustomData(develocity.buildScan, develocity.server.get())
+            }
+        }
+    }
+} else {
+    gradle.settingsEvaluated { settings ->
+        if (!settings.pluginManager.hasPlugin(GRADLE_ENTERPRISE_PLUGIN_ID) && !settings.pluginManager.hasPlugin(DEVELOCITY_PLUGIN_ID)) {
+            failMissingPlugin(DEVELOCITY_PLUGIN_ID, 'https://docs.gradle.com/develocity/gradle-plugin/current/#gradle_6_x_and_later')
+        }
+
+        if (!settings.pluginManager.hasPlugin(CCUD_PLUGIN_ID)) {
+            warnMissingCommonCustomUserDataGradlePlugin()
+        }
+
+        settings.pluginManager.withPlugin(GRADLE_ENTERPRISE_PLUGIN_ID) {
+            // only execute if Develocity plugin isn't applied
+            if (settings.pluginManager.hasPlugin(DEVELOCITY_PLUGIN_ID)) return
+
+            if (develocityUrl) {
+                settings.gradleEnterprise.server = develocityUrl
+            }
+
+            if (!settings.gradleEnterprise.server) {
+                failMissingDevelocityServerURL('https://docs.gradle.com/develocity/gradle-plugin/legacy/#gradle_6_x_and_later_2')
+            }
+
+            settings.gradleEnterprise.buildScan.publishAlways()
+            registerBuildScanActions(settings.gradleEnterprise.buildScan, settings.rootProject.name)
+            addBuildScanCustomData(settings.gradleEnterprise.buildScan, settings.gradleEnterprise.server)
+        }
+
+        settings.pluginManager.withPlugin(DEVELOCITY_PLUGIN_ID) {
+            if (develocityUrl) {
+                settings.develocity.server = develocityUrl
+            }
+
+            if (!settings.develocity.server.present) {
+                settings.develocity.buildScan.publishing.onlyIf { false } // prevent publishing to scans.gradle.com
+                failMissingDevelocityServerURL('https://docs.gradle.com/develocity/gradle-plugin/current/#connecting_to_develocity')
+            }
+
+            registerBuildScanActions(settings.develocity.buildScan, settings.rootProject.name)
+            addBuildScanCustomData(settings.develocity.buildScan, settings.develocity.server.get())
+        }
+    }
+}
+
+static void addCustomValueAndSearchLink(buildScan, String server, label, String value) {
+    buildScan.value(label, value)
+    String searchParams = "search.names=" + urlEncode(label) + "&search.values=" + urlEncode(value)
+    String url = appendIfMissing(server, "/") + "scans?" + searchParams + "#selection.buildScanB=" + urlEncode("{SCAN_ID}")
+    buildScan.link(label + " build scans", url)
+}
+
+static String appendIfMissing(String str, String suffix) {
+    return str.endsWith(suffix) ? str : str + suffix
+}
+
+static String urlEncode(String str) {
+    return URLEncoder.encode(str, StandardCharsets.UTF_8.name())
+}
