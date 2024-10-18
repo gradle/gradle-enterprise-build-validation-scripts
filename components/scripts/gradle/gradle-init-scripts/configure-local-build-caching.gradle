@@ -1,13 +1,10 @@
-// the way this closure reads system properties means they are not tracked as inputs to the configuration cache model,
-// the same is the case when reading environment variables with Gradle [6.5, 7.3]
-def getInputParam = { String name ->
-    def envVarName = name.toUpperCase().replace('.', '_').replace('-', '_')
-    return gradle.startParameter.systemPropertiesArgs[name] ?: System.getenv(envVarName)
+static getInputParam(String name) {
+    def ENV_VAR_PREFIX = ''
+    def envVarName = ENV_VAR_PREFIX + name.toUpperCase().replace('.', '_').replace('-', '_')
+    return System.getProperty(name) ?: System.getenv(envVarName)
 }
 
-// the following local variable does not change between the build invocations of the same experiment run
-// thus, reading its value in way that the configuration cache does not track it is acceptable
-def expDir = getInputParam('com.gradle.enterprise.build-validation.expDir')
+def expDir = getInputParam('develocity.build-validation.expDir')
 
 settingsEvaluated { settings ->
     settings.buildCache {
