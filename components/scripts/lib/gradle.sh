@@ -12,26 +12,35 @@ invoke_gradle() {
     cd "${project_dir}" > /dev/null 2>&1 || die "ERROR: Subdirectory ${project_dir} (set with --project-dir) does not exist in ${project_name}" "${INVALID_INPUT}"
   fi
 
-  args+=(--init-script "${INIT_SCRIPTS_DIR}/configure-gradle-enterprise.gradle")
+  args+=(
+    --init-script "${INIT_SCRIPTS_DIR}/develocity-injection.gradle"
+    --init-script "${INIT_SCRIPTS_DIR}/configure-build-validation.gradle"
+    -Ddevelocity.injection.init-script-name=develocity-injection.gradle
+    -Ddevelocity.injection-enabled=true
+  )
 
   if [ "$enable_ge" == "on" ]; then
-    args+=("-Dcom.gradle.enterprise.build-validation.gradle.plugin-repository.url=https://plugins.gradle.org/m2")
-    args+=("-Dcom.gradle.enterprise.build-validation.gradle-enterprise.plugin.version=3.14.1")
-    args+=("-Dcom.gradle.enterprise.build-validation.ccud.plugin.version=2.0.2")
+    args+=(
+      -Dgradle.plugin-repository.url=https://plugins.gradle.org/m2
+      -Ddevelocity.plugin.version="3.14.1"
+      -Ddevelocity.ccud.plugin.version="2.0.2"
+    )
   fi
 
   if [ -n "${ge_server}" ]; then
-    args+=("-Dcom.gradle.enterprise.build-validation.gradle-enterprise.url=${ge_server}")
-    args+=("-Dcom.gradle.enterprise.build-validation.gradle-enterprise.allow-untrusted-server=false")
+    args+=(
+      -Ddevelocity.url="${ge_server}"
+      -Ddevelocity.allow-untrusted-server=false
+    )
   fi
 
   args+=(
-    -Dcom.gradle.enterprise.build-validation.expDir="${EXP_DIR}"
-    -Dcom.gradle.enterprise.build-validation.expId="${EXP_SCAN_TAG}"
-    -Dcom.gradle.enterprise.build-validation.runId="${RUN_ID}"
-    -Dcom.gradle.enterprise.build-validation.runNum="${run_num}"
-    -Dcom.gradle.enterprise.build-validation.scriptsVersion="${SCRIPT_VERSION}"
-    -Dscan.capture-task-input-files=true
+    -Ddevelocity.build-validation.expDir="${EXP_DIR}"
+    -Ddevelocity.build-validation.expId="${EXP_SCAN_TAG}"
+    -Ddevelocity.build-validation.runId="${RUN_ID}"
+    -Ddevelocity.build-validation.runNum="${run_num}"
+    -Ddevelocity.build-validation.scriptsVersion="${SCRIPT_VERSION}"
+    -Ddevelocity.capture-file-fingerprints=true
     -Dpts.enabled=false
   )
 
