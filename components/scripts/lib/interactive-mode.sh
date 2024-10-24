@@ -21,7 +21,7 @@ print_separator() {
 
 print_introduction_title() {
   cat <<EOF
-${HEADER_COLOR}Gradle Enterprise - Build Validation
+${HEADER_COLOR}Develocity - Build Validation
 
 Experiment ${EXP_NO}: ${EXP_DESCRIPTION}${RESTORE}
 EOF
@@ -186,8 +186,8 @@ explain_prerequisites_empty_remote_build_cache() {
 If you choose option b) and do not want to interfere with an already existing
 build caching configuration in your build, you can override the local and
 remote build cache configuration via system properties right when triggering
-the build on CI. Details on how to provide the overrides are available from
-the documentation of the the Gradle Enterprise Maven extension.
+the build on CI. Details on how to provide the overrides are available from the
+documentation of the the Develocity Maven extension.
 
 https://docs.gradle.com/enterprise/maven-extension/#configuring_the_remote_cache
 EOF
@@ -218,8 +218,8 @@ a) If none of your builds are yet writing to the remote build cache besides
 the builds of this experiment, purge the remote build cache that your build
 is configured to connect to. You can purge the remote build cache by navigating
 in the browser to the 'Build Cache' admin section from the user menu of your
-Gradle Enterprise UI, selecting the build cache node the build is pointing to,
-and then clicking the 'Purge cache' button.
+Develocity UI, selecting the build cache node the build is pointing to, and then
+clicking the 'Purge cache' button.
 
 b) If you are not in a position to purge the remote build cache, you can connect
 to a unique shard of the remote build cache each time you run this experiment.
@@ -255,15 +255,15 @@ explain_prerequisites_api_access() {
 
   IFS='' read -r -d '' text <<EOF
 $(print_separator)
-${HEADER_COLOR}Preparation ${preparation_step}- Ensure Gradle Enterprise API access${RESTORE}
+${HEADER_COLOR}Preparation ${preparation_step}- Ensure Develocity API access${RESTORE}
 
 Some build scan data will be fetched from the invoked builds via the Gradle
-Enterprise API. It is not strictly necessary that you have permission to
-call the Gradle Enterprise API while doing this experiment, but the summary
-provided at the end of the experiment will be more comprehensive if the build
-scan data is accessible. Details on how to check your access permissions and
-how to provide the necessary API credentials when running the experiment are
-available from the documentation of the build validation scripts.
+Enterprise API. It is not strictly necessary that you have permission to call
+the Develocity API while doing this experiment, but the summary provided at the
+end of the experiment will be more comprehensive if the build scan data is
+accessible. Details on how to check your access permissions and how to provide
+the necessary API credentials when running the experiment are available from the
+documentation of the build validation scripts.
 
 ${documentation_link}
 

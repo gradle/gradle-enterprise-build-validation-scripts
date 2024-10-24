@@ -159,7 +159,7 @@ print_introduction() {
 $(print_introduction_title)
 
 In this experiment, you will validate how well a given project leverages
-Gradle Enterprise’s local build caching functionality when running the build in
+Develocity’s local build caching functionality when running the build in
 the same location. A build is considered fully cacheable if it can be invoked
 twice in a row with build caching enabled and, during the second invocation,
 all cacheable goals avoid performing any work because:
@@ -246,8 +246,8 @@ $(print_separator)
 ${HEADER_COLOR}Measure build results${RESTORE}
 
 Now that the second build has finished successfully, you are ready to measure in
-Gradle Enterprise how well your build leverages Gradle Enterprise's local build
-caching functionality for the invoked set of Maven goals.
+Develocity how well your build leverages Develocity's local build caching
+functionality for the invoked set of Maven goals.
 
 Some of the build scan data will be fetched from the build scans produced by the
 two builds to assist you in your investigation.

@@ -278,7 +278,7 @@ $(print_separator)
 ${HEADER_COLOR}Measure build results${RESTORE}
 
 Now that the second build has finished successfully, you are ready to measure in
-Gradle Enterprise how well your build leverages Gradle’s local build caching
+Develocity how well your build leverages Gradle’s local build caching
 functionality for the invoked set of Gradle tasks.
 
 Some of the build scan data will be fetched from the build scans produced by the

@@ -242,8 +242,8 @@ Now that the second build has finished successfully, some of the build scan
 data will be fetched from the two provided build scans to assist you in your
 investigation.
 
-The build scan data will be fetched via the Gradle Enterprise API, as explained
-earlier in the preparations section of this experiment.
+The build scan data will be fetched via the Develocity API, as explained earlier
+in the preparations section of this experiment.
 
 Some of the fetched build scan data is expected to be present as custom values.
 By default, this experiment assumes that these custom values have been created
@@ -262,9 +262,9 @@ explain_measure_build_results() {
 $(print_separator)
 ${HEADER_COLOR}Measure build results${RESTORE}
 
-At this point, you are ready to measure in Gradle Enterprise how well your
-build leverages Gradle’s remote build cache for the set of Gradle tasks invoked
-from two different CI agents.
+At this point, you are ready to measure in Develocity how well your build
+leverages Gradle’s remote build cache for the set of Gradle tasks invoked from
+two different CI agents.
 
 ${USER_ACTION_COLOR}Press <Enter> to measure the build results.${RESTORE}
 EOF
