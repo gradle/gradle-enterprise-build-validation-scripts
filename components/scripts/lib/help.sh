@@ -40,10 +40,10 @@ print_option_usage() {
        _print_option_usage "-m, --mapping-file" "Specifies the mapping file for the custom value names used in the build scans."
        ;;
     -s)
-       _print_option_usage "-s, --gradle-enterprise-server" "Specifies the URL for the Gradle Enterprise server to connect to."
+       _print_option_usage "-s, --develocity-server" "Specifies the URL for the Develocity server to connect to."
        ;;
     -e)
-       _print_option_usage "-e, --enable-gradle-enterprise" "Enables Gradle Enterprise on a project not already connected."
+       _print_option_usage "-e, --enable-develocity" "Enables Develocity on a project not already connected."
        ;;
     -f)
        _print_option_usage "-f, --fail-if-not-fully-cacheable" "Terminates with exit code ${BUILD_NOT_FULLY_CACHEABLE} if the build is not fully cacheable."

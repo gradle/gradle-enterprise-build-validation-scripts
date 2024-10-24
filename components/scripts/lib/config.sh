@@ -7,6 +7,17 @@ process_args() {
 
   print_bl
   validate_required_args
+  check_legacy_options
+}
+
+check_legacy_options() {
+  if [ -n "${_arg_gradle_enterprise_server}" ]; then
+    warnings+=("The --gradle-enterprise-server command line argument is deprecated and will be removed in a future release. Use --develocity-server instead.")
+  fi
+
+  if [ "${_arg_enable_gradle_enterprise}" == "on" ]; then
+    warnings+=("The --enable-gradle-enterprise command line argument is deprecated and will be removed in a future release. Use --enable-develocity instead.")
+  fi
 }
 
 map_common_script_args() {
@@ -49,12 +60,14 @@ map_common_script_args() {
     mapping_file="${_arg_mapping_file}"
   fi
 
-  if [ -n "${_arg_gradle_enterprise_server+x}" ]; then
-    ge_server="${_arg_gradle_enterprise_server}"
+  ge_server="${_arg_gradle_enterprise_server}"
+  if [ -n "${_arg_develocity_server}" ]; then
+    ge_server="${_arg_develocity_server}"
   fi
 
-  if [ -n "${_arg_enable_gradle_enterprise+x}" ]; then
-    enable_ge="${_arg_enable_gradle_enterprise}"
+  enable_ge="${_arg_enable_gradle_enterprise}"
+  if [ "${_arg_enable_develocity}" == "on" ]; then
+    enable_ge="${_arg_enable_develocity}"
   fi
 
   if [ -n "${_arg_fail_if_not_fully_cacheable+x}" ]; then
