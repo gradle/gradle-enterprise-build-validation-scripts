@@ -30,6 +30,7 @@ invoke_gradle() {
   if [ -n "${ge_server}" ]; then
     args+=(
       -Ddevelocity.url="${ge_server}"
+      -Ddevelocity.enforce-url=true
       -Ddevelocity.allow-untrusted-server=false
     )
   fi

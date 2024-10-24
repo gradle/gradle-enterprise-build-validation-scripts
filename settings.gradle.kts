@@ -29,3 +29,12 @@ rootProject.name = "build-validation-scripts"
 include("components/configure-gradle-enterprise-maven-extension")
 
 project(":components/configure-gradle-enterprise-maven-extension").name = "configure-gradle-enterprise-maven-extension"
+
+val develocityCiInjectionProjectDir = providers.gradleProperty("develocityCiInjectionProjectDir")
+if (develocityCiInjectionProjectDir.isPresent) {
+    includeBuild(develocityCiInjectionProjectDir) {
+        dependencySubstitution {
+            substitute(module("com.gradle:develocity-injection")).using(project(":"))
+        }
+    }
+}

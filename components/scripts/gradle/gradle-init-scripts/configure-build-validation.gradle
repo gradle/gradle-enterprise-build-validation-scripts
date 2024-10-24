@@ -17,8 +17,6 @@ def GRADLE_ENTERPRISE_PLUGIN_ID = 'com.gradle.enterprise'
 def DEVELOCITY_PLUGIN_ID = 'com.gradle.develocity'
 def CCUD_PLUGIN_ID = 'com.gradle.common-custom-user-data-gradle-plugin'
 
-def develocityUrl = getInputParam('develocity.url')
-
 def expDir = getInputParam('develocity.build-validation.expDir')
 def expId = getInputParam('develocity.build-validation.expId')
 def runId = getInputParam('develocity.build-validation.runId')
@@ -103,11 +101,6 @@ if (GradleVersion.current() < GradleVersion.version('6.0')) {
             pluginManager.withPlugin(BUILD_SCAN_PLUGIN_ID) {
                 // only execute if Develocity plugin isn't applied
                 if (pluginManager.hasPlugin(DEVELOCITY_PLUGIN_ID)) return
-
-                if (develocityUrl) {
-                    buildScan.server = develocityUrl
-                }
-
                 if (!buildScan.server) {
                     failMissingDevelocityServerURL('https://docs.gradle.com/develocity/gradle-plugin/legacy#gradle_5_x_2')
                 }
@@ -118,10 +111,6 @@ if (GradleVersion.current() < GradleVersion.version('6.0')) {
             }
 
             pluginManager.withPlugin(DEVELOCITY_PLUGIN_ID) {
-                if (develocityUrl) {
-                    develocity.server = develocityUrl
-                }
-
                 if (!develocity.server.present) {
                     develocity.buildScan.publishing.onlyIf { false } // prevent publishing to scans.gradle.com
                     failMissingDevelocityServerURL('https://docs.gradle.com/develocity/gradle-plugin/current/#connecting_to_develocity')
@@ -145,11 +134,6 @@ if (GradleVersion.current() < GradleVersion.version('6.0')) {
         settings.pluginManager.withPlugin(GRADLE_ENTERPRISE_PLUGIN_ID) {
             // only execute if Develocity plugin isn't applied
             if (settings.pluginManager.hasPlugin(DEVELOCITY_PLUGIN_ID)) return
-
-            if (develocityUrl) {
-                settings.gradleEnterprise.server = develocityUrl
-            }
-
             if (!settings.gradleEnterprise.server) {
                 failMissingDevelocityServerURL('https://docs.gradle.com/develocity/gradle-plugin/legacy/#gradle_6_x_and_later_2')
             }
@@ -160,10 +144,6 @@ if (GradleVersion.current() < GradleVersion.version('6.0')) {
         }
 
         settings.pluginManager.withPlugin(DEVELOCITY_PLUGIN_ID) {
-            if (develocityUrl) {
-                settings.develocity.server = develocityUrl
-            }
-
             if (!settings.develocity.server.present) {
                 settings.develocity.buildScan.publishing.onlyIf { false } // prevent publishing to scans.gradle.com
                 failMissingDevelocityServerURL('https://docs.gradle.com/develocity/gradle-plugin/current/#connecting_to_develocity')
