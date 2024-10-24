@@ -149,7 +149,7 @@ validate_required_args() {
   fi
 
   if [[ "${enable_ge}" == "on" && -z "${ge_server}" ]]; then
-    _PRINT_HELP=yes die "ERROR: Missing required argument when enabling Gradle Enterprise on a project not already connected: --gradle-enterprise-server" "${INVALID_INPUT}"
+    _PRINT_HELP=yes die "ERROR: Missing required argument when enabling Develocity on a project not already connected: --develocity-server" "${INVALID_INPUT}"
   fi
 }
 
@@ -309,8 +309,8 @@ Now that the build on CI has finished successfully, some of the build scan
 data will be fetched from the provided build scan to assist you in your
 investigation.
 
-The build scan data will be fetched via the Gradle Enterprise API, as explained
-earlier in the preparations section of this experiment.
+The build scan data will be fetched via the Develocity API, as explained earlier
+in the preparations section of this experiment.
 
 Some of the fetched build scan data is expected to be present as custom values.
 By default, this experiment assumes that these custom values have been created
@@ -415,9 +415,9 @@ explain_measure_build_results() {
 $(print_separator)
 ${HEADER_COLOR}Measure build results${RESTORE}
 
-At this point, you are ready to measure in Gradle Enterprise how well your
-build leverages Gradle’s remote build cache for the set of Gradle tasks invoked
-from a CI agent and then on a local machine.
+At this point, you are ready to measure in Develocity how well your build
+leverages Gradle’s remote build cache for the set of Gradle tasks invoked from a
+CI agent and then on a local machine.
 
 Some of the build scan data will be fetched from the build scans produced by the
 two builds to assist you in your investigation.

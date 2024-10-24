@@ -147,7 +147,7 @@ validate_required_args() {
   fi
 
   if [[ "${enable_ge}" == "on" && -z "${ge_server}" ]]; then
-    _PRINT_HELP=yes die "ERROR: Missing required argument when enabling Gradle Enterprise on a project not already connected: --gradle-enterprise-server" "${INVALID_INPUT}"
+    _PRINT_HELP=yes die "ERROR: Missing required argument when enabling Develocity on a project not already connected: --develocity-server" "${INVALID_INPUT}"
   fi
 }
 
@@ -227,11 +227,10 @@ print_introduction() {
 $(print_introduction_title)
 
 In this experiment, you will validate how well a given project leverages
-Gradle Enterprise's remote build caching functionality when running the build
-from a CI agent and then on a local machine. A build is considered fully
-cacheable if it can be invoked twice in a row with build caching enabled and,
-during the second invocation, all cacheable goals avoid performing any work
-because:
+Develocity's remote build caching functionality when running the build from a CI
+agent and then on a local machine. A build is considered fully cacheable if it
+can be invoked twice in a row with build caching enabled and, during the second
+invocation, all cacheable goals avoid performing any work because:
 
   * The cacheable goals' inputs have not changed since their last invocation and
   * The cacheable goals' outputs are present in the remote build cache and
@@ -317,15 +316,15 @@ Now that the build on CI has finished successfully, some of the build scan
 data will be fetched from the provided build scan to assist you in your
 investigation.
 
-The build scan data will be fetched via the Gradle Enterprise Export API. It is
-not strictly necessary that you have permission to call the Export API while
-doing this experiment, but the summary provided at the end of the experiment
-will be more comprehensive if the build scan data is accessible. You can check
-your granted permissions by navigating in the browser to the 'My Settings'
-section from the user menu of your Gradle Enterprise UI. Your Gradle Enterprise
-access key must be specified in the ~/.m2/.gradle-enterprise/keys.properties file.
+The build scan data will be fetched via the Develocity API. It is not strictly
+necessary that you have permission to call the API while doing this experiment,
+but the summary provided at the end of the experiment will be more comprehensive
+if the build scan data is accessible. You can check your granted permissions by
+navigating in the browser to the 'My Settings' section from the user menu of
+your Develocity UI. Your Develocity access key must be specified in the
+~/.m2/.develocity/keys.properties file.
 
-https://docs.gradle.com/enterprise/gradle-plugin/#via_file
+https://docs.gradle.com/develocity/maven-extension/current/#via_file
 
 Some of the fetched build scan data is expected to be present as custom values.
 By default, this experiment assumes that these custom values have been created
@@ -430,9 +429,9 @@ explain_measure_build_results() {
 $(print_separator)
 ${HEADER_COLOR}Measure build results${RESTORE}
 
-At this point, you are ready to measure in Gradle Enterprise how well your
-build leverages Gradle Enterprise's remote build cache for the set of Gradle
-goals invoked from a CI agent and then on a local machine.
+At this point, you are ready to measure in Develocity how well your build
+leverages Develocity's remote build cache for the set of Gradle goals invoked
+from a CI agent and then on a local machine.
 
 Some of the build scan data will be fetched from the build scans produced by the
 two builds to assist you in your investigation.

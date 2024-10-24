@@ -58,7 +58,7 @@ public class ConfigureDevelocityAdaptor {
             if (buildScan.getServer() == null && !omitServerUrlValidation) {
                 buildScan.publishAlwaysIf(false); // disable publishing, otherwise scans.gradle.com will be used
                 File errorFile = new File(EXPERIMENT_DIR, "errors.txt");
-                append(errorFile, "The Gradle Enterprise server URL has not been configured in the project or on the command line.");
+                append(errorFile, "The Develocity server URL has not been configured in the project or on the command line.");
             }
         });
 

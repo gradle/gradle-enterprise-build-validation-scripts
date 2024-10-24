@@ -97,7 +97,7 @@ validate_required_args() {
   fi
 
   if [[ "${enable_ge}" == "on" && -z "${ge_server}" ]]; then
-    _PRINT_HELP=yes die "ERROR: Missing required argument when enabling Gradle Enterprise on a project not already connected: --gradle-enterprise-server" "${INVALID_INPUT}"
+    _PRINT_HELP=yes die "ERROR: Missing required argument when enabling Develocity on a project not already connected: --develocity-server" "${INVALID_INPUT}"
   fi
 }
 

@@ -70,7 +70,7 @@ def failMissingDevelocityServerURL = { def docs ->
     errorFile.text = 'The Develocity server URL has not been configured in the project or on the command line.'
     throw new IllegalStateException("The Develocity server URL is not configured.\n"
             + "Either configure it directly (see $docs) in the project,\n"
-            + "or use --gradle-enterprise-server when running the build validation script.")
+            + "or use --develocity-server when running the build validation script.")
 }
 
 // fail if a plugin is not applied
@@ -79,7 +79,7 @@ def failMissingPlugin = { def plugin, docs ->
     errorFile.text = "The $plugin plugin is missing from the project."
     throw new IllegalStateException("The $plugin plugin is missing from the project.\n" +
             "Either apply it directly (see $docs),\n" +
-            "or use --enable-gradle-enterprise when running the build validation script.")
+            "or use --enable-develocity when running the build validation script.")
 }
 
 // do not fail if the CCUD plugin is not applied but surface a warning
