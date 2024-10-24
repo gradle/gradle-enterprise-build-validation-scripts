@@ -68,9 +68,12 @@ allprojects {
 }
 
 val argbash by configurations.creating
-val develocityInjection = configurations.dependencyScope("develocityInjection").get()
+val develocityInjection = configurations.dependencyScope("develocityInjection") {
+    attributes.attribute(Category.CATEGORY_ATTRIBUTE, objects.named("develocity-injection-script"))
+}.get()
 val develocityInjectionResolvable = configurations.resolvable("${develocityInjection.name}Resolvable") {
     extendsFrom(develocityInjection)
+    attributes.attribute(Category.CATEGORY_ATTRIBUTE, objects.named("develocity-injection-script"))
 }
 val develocityComponents by configurations.creating {
     attributes.attribute(
