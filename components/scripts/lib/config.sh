@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+readonly LEGACY_DISTRIBUTION="false"
+
 process_args() {
   parse_commandline "$@"
   map_common_script_args
@@ -11,6 +13,10 @@ process_args() {
 }
 
 check_legacy_options() {
+  if [ "${LEGACY_DISTRIBUTION}" == "true" ]; then
+    warnings+=("The distribution of the Develocity Build Validation Scripts prefixed with 'gradle-enterprise' is deprecated and will be removed in a future release. Migrate to the distribution prefixed with 'develocity' instead.")
+  fi
+
   if [ -n "${_arg_gradle_enterprise_server}" ]; then
     warnings+=("The --gradle-enterprise-server command line argument is deprecated and will be removed in a future release. Use --develocity-server instead.")
   fi

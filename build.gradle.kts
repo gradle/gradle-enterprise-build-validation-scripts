@@ -250,10 +250,36 @@ val copyMavenScripts by tasks.registering(Sync::class) {
     into(layout.buildDirectory.dir("scripts/maven"))
 }
 
+val copyLegacyGradleScripts by tasks.registering(Sync::class) {
+    group = "build"
+    description = "Copies the Gradle source and the generated scripts to the output directory."
+    from(copyGradleScripts) {
+        exclude("lib/scripts/config.sh")
+    }
+    from(copyGradleScripts) {
+        include("lib/scripts/config.sh")
+        filter { line: String -> line.replace("LEGACY_DISTRIBUTION=\"false\"", "LEGACY_DISTRIBUTION=\"true\"") }
+    }
+    into(layout.buildDirectory.dir("scripts/gradle-legacy"))
+}
+
+val copyLegacyMavenScripts by tasks.registering(Sync::class) {
+    group = "build"
+    description = "Copies the Maven source and the generated scripts to the output directory."
+    from(copyMavenScripts) {
+        exclude("lib/scripts/config.sh")
+    }
+    from(copyMavenScripts) {
+        include("lib/scripts/config.sh")
+        filter { line: String -> line.replace("LEGACY_DISTRIBUTION=\"false\"", "LEGACY_DISTRIBUTION=\"true\"") }
+    }
+    into(layout.buildDirectory.dir("scripts/maven-legacy"))
+}
+
 val assembleGradleScripts by tasks.registering(Zip::class) {
     group = "build"
     description = "Packages the Gradle experiment scripts in a zip archive."
-    archiveBaseName.set("gradle-enterprise-gradle-build-validation")
+    archiveBaseName.set("develocity-gradle-build-validation")
     archiveFileName.set(archiveBaseName.flatMap { a -> distributionVersion.map { v -> "$a-$v.zip" } })
     from(copyGradleScripts)
     into(archiveBaseName.get())
@@ -262,31 +288,32 @@ val assembleGradleScripts by tasks.registering(Zip::class) {
 val assembleMavenScripts by tasks.registering(Zip::class) {
     group = "build"
     description = "Packages the Maven experiment scripts in a zip archive."
-    archiveBaseName.set("gradle-enterprise-maven-build-validation")
+    archiveBaseName.set("develocity-maven-build-validation")
     archiveFileName.set(archiveBaseName.flatMap { a -> distributionVersion.map { v -> "$a-$v.zip" } })
     from(copyMavenScripts)
     into(archiveBaseName.get())
 }
 
+val assembleLegacyGradleScripts by tasks.registering(Zip::class) {
+    group = "build"
+    description = "Packages the Gradle experiment scripts in a zip archive."
+    archiveBaseName.set("gradle-enterprise-gradle-build-validation")
+    archiveFileName.set(archiveBaseName.flatMap { a -> distributionVersion.map { v -> "$a-$v.zip" } })
+    from(copyLegacyGradleScripts)
+    into(archiveBaseName.get())
+}
+
+val assembleLegacyMavenScripts by tasks.registering(Zip::class) {
+    group = "build"
+    description = "Packages the Maven experiment scripts in a zip archive."
+    archiveBaseName.set("gradle-enterprise-maven-build-validation")
+    archiveFileName.set(archiveBaseName.flatMap { a -> distributionVersion.map { v -> "$a-$v.zip" } })
+    from(copyLegacyMavenScripts)
+    into(archiveBaseName.get())
+}
+
 tasks.assemble {
-    dependsOn(assembleGradleScripts, assembleMavenScripts)
-}
-
-val consumableGradleScripts by configurations.creating {
-    isCanBeConsumed = true
-    isCanBeResolved = false
-    attributes.attribute(Usage.USAGE_ATTRIBUTE, objects.named("gradle-build-validation-scripts"))
-}
-
-val consumableMavenScripts by configurations.creating {
-    isCanBeConsumed = true
-    isCanBeResolved = false
-    attributes.attribute(Usage.USAGE_ATTRIBUTE, objects.named("maven-build-validation-scripts"))
-}
-
-artifacts {
-    add(consumableGradleScripts.name, assembleGradleScripts)
-    add(consumableMavenScripts.name, assembleMavenScripts)
+    dependsOn(assembleGradleScripts, assembleMavenScripts, assembleLegacyGradleScripts, assembleLegacyMavenScripts)
 }
 
 val shellcheckGradleScripts by tasks.registering(Shellcheck::class) {
@@ -338,7 +365,7 @@ tasks.check {
 val generateChecksums by tasks.registering(Checksum::class) {
     group = "distribution"
     description = "Generates checksums for the distribution zip files."
-    inputFiles.setFrom(assembleGradleScripts, assembleMavenScripts)
+    inputFiles.setFrom(assembleGradleScripts, assembleMavenScripts, assembleLegacyGradleScripts, assembleLegacyMavenScripts)
     outputDirectory.set(layout.buildDirectory.dir("distributions/checksums").get().asFile)
     checksumAlgorithm.set(Checksum.Algorithm.SHA512)
 }
@@ -354,7 +381,7 @@ githubRelease {
     overwrite.set(isDevelopmentRelease)
     generateReleaseNotes.set(false)
     body.set(releaseNotes)
-    releaseAssets(assembleGradleScripts, assembleMavenScripts, generateChecksums.map { it.outputs.files.asFileTree })
+    releaseAssets(assembleGradleScripts, assembleMavenScripts, assembleLegacyGradleScripts, assembleLegacyMavenScripts, generateChecksums.map { it.outputs.files.asFileTree })
 }
 
 val createReleaseTag by tasks.registering(CreateGitTag::class) {

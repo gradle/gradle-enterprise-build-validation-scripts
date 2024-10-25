@@ -103,7 +103,7 @@ runs:
         fi
 
         # Navigate into the folder containing the validation scripts
-        cd gradle-enterprise-maven-build-validation
+        cd develocity-maven-build-validation
 
         # Run the experiment
         ./02-validate-local-build-caching-different-locations.sh \
@@ -134,7 +134,7 @@ runs:
       uses: actions/upload-artifact@v4
       with:
         name: experiment-2-receipt-${{ github.job }}${{ strategy.job-total > 1 && format('-{0}', strategy.job-index) || '' }}
-        path: gradle-enterprise-maven-build-validation/.data/02-validate-local-build-caching-different-locations/latest*/exp2-*.receipt
+        path: develocity-maven-build-validation/.data/02-validate-local-build-caching-different-locations/latest*/exp2-*.receipt
     - name: Add artifact link to summary
       run: |
         echo "-------------" >> $GITHUB_STEP_SUMMARY
