@@ -25,6 +25,7 @@ The build validation scripts are compatible with a large range of Gradle version
 
 Use the following command to download and unpack the build validation scripts for Gradle to the current directory:
 
+[//]: # (TODO SHOULD BE UPDATED TO DEVELOCITY DISTRIBUTION NEXT RELEASE)
 ```bash
 curl -s -L -O https://github.com/gradle/gradle-enterprise-build-validation-scripts/releases/download/v2.6/gradle-enterprise-gradle-build-validation-2.6.zip && unzip -q -o gradle-enterprise-gradle-build-validation-2.6.zip
 ```
@@ -109,13 +110,13 @@ To get the most out of the experiments and also when building with Develocity du
 
 You can find a complete example of how to apply the Common Custom User Data Gradle plugin to your build [here](https://github.com/gradle/develocity-build-config-samples/tree/main/common-develocity-gradle-configuration-groovy/settings.gradle) for Groovy DSL and [here](https://github.com/gradle/develocity-build-config-samples/blob/main/common-develocity-gradle-configuration-kotlin/settings.gradle.kts) for Kotlin DSL.
 
-## Authenticating with Gradle Enterprise
+## Authenticating with Develocity
 
-Some scripts fetch data from build scans that were published as part of running an experiment. The build scan data is fetched by leveraging the [Develocity API](https://docs.gradle.com/enterprise/api-manual/). It is not strictly necessary that you have permission to call these APIs to execute a script successfully, but the summary provided once the script has finished running its experiment will be more comprehensive if the build scan data is accessible.
+Some scripts fetch data from build scans that were published as part of running an experiment. The build scan data is fetched by leveraging the [Develocity API](https://docs.gradle.com/develocity/api-manual/). It is not strictly necessary that you have permission to call these APIs to execute a script successfully, but the summary provided once the script has finished running its experiment will be more comprehensive if the build scan data is accessible.
 
-You can check your granted permissions by navigating in the browser to the 'My Settings' section from the user menu of your Develocity UI. You need the 'Access build data via the API' permission. Additionally, the script needs an access key to authenticate with the APIs. See [Authenticating with Develocity](https://docs.gradle.com/enterprise/gradle-plugin/#authenticating) for details on how to create an access key and storing it locally.
+You can check your granted permissions by navigating in the browser to the 'My Settings' section from the user menu of your Develocity UI. You need the 'Access build data via the API' permission. Additionally, the script needs an access key to authenticate with the APIs. See [Authenticating with Develocity](https://docs.gradle.com/develocity/gradle-plugin/current/#authenticating) for details on how to create an access key and storing it locally.
 
-By default, the scripts fetching build scan data try to find the access key in the `enterprise/keys.properties` file within the Gradle user home directory (`~/.gradle` by default). Alternatively, the access key can be specified via the `GRADLE_ENTERPRISE_ACCESS_KEY` environment variable. You can also authenticate with the APIs using username and password instead by setting the `GRADLE_ENTERPRISE_USERNAME` and `GRADLE_ENTERPRISE_PASSWORD` environment variables.
+By default, the scripts fetching build scan data try to find the access key in the `develocity/keys.properties` file within the Gradle user home directory (`~/.gradle` by default). Alternatively, the access key can be specified via the `DEVELOCITY_ACCESS_KEY` environment variable. You can also authenticate with the APIs using username and password instead by setting the `DEVELOCITY_USERNAME` and `DEVELOCITY_PASSWORD` environment variables.
 
 ## Configuring the network settings to connect to Develocity
 
@@ -140,7 +141,7 @@ The scripts that fetch build scan data expect some of it to be present as custom
 ## Redirecting build scan publishing
 
 The scripts that run one or more builds locally can be configured to publish build scans to a different
-Develocity server than the one that the builds point to by passing the `-s` or `--gradle-enterprise-server`
+Develocity server than the one that the builds point to by passing the `-s` or `--develocity-server`
 command line argument. In the example below, the script will configure the local builds to publish their build scans
 to develocity.example.io regardless of what server is configured in the build.
 
@@ -151,7 +152,7 @@ to develocity.example.io regardless of what server is configured in the build.
 ## Instrumenting the build with Develocity
 
 The scripts that run one or more builds locally can be configured to connect the builds to a given Develocity
-server in case the builds are not already connected to Develocity by passing the `-e` or `--enable-gradle-enterprise`
+server in case the builds are not already connected to Develocity by passing the `-e` or `--enable-develocity`
 command line argument. In the example below, the script will configure the non-instrumented builds to connect to the
 Develocity server at develocity.example.io.
 

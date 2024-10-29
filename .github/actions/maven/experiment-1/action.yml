@@ -23,10 +23,18 @@ inputs:
   args:
     description: "Additional arguments to pass to Maven"
     required: false
+  develocityUrl:
+    description: "The URL for the Develocity server to connect to"
+    required: false
   gradleEnterpriseUrl:
+    deprecationMessage: "This parameter is deprecated and will be removed in a future release. Use 'develocityUrl' instead."
     description: "The URL for the Gradle Enterprise server to connect to"
     required: false
+  enableDevelocity:
+    description: "Enables Develocity on a project not already connected"
+    required: false
   enableGradleEnterprise:
+    deprecationMessage: "This parameter is deprecated and will be removed in a future release. Use 'enableDevelocity' instead."
     description: "Enables Gradle Enterprise on a project not already connected"
     required: false
   failIfNotFullyCacheable:
@@ -79,9 +87,15 @@ runs:
         if [ ! -z "${{ inputs.gradleEnterpriseUrl }}" ]; then
           ARG_GE_URL="${{ inputs.gradleEnterpriseUrl }}"
         fi
+        if [ ! -z "${{ inputs.develocityUrl }}" ]; then
+          ARG_GE_URL="${{ inputs.develocityUrl }}"
+        fi
         ARG_GE_ENABLE=""
         if [ "${{ inputs.enableGradleEnterprise }}" == "true" ]; then
           ARG_GE_ENABLE="${{ inputs.enableGradleEnterprise }}"
+        fi
+        if [ "${{ inputs.enableDeveocity }}" == "true" ]; then
+          ARG_GE_ENABLE="${{ inputs.enableDeveocity }}"
         fi
         ARG_FAIL_IF_NOT_FULLY_CACHEABLE=""
         if [ "${{ inputs.failIfNotFullyCacheable }}" == "true" ]; then
@@ -89,7 +103,7 @@ runs:
         fi
 
         # Navigate into the folder containing the validation scripts
-        cd gradle-enterprise-maven-build-validation
+        cd develocity-maven-build-validation
 
         # Run the experiment
         ./01-validate-local-build-caching-same-location.sh \
@@ -120,7 +134,7 @@ runs:
       uses: actions/upload-artifact@v4
       with:
         name: experiment-1-receipt-${{ github.job }}${{ strategy.job-total > 1 && format('-{0}', strategy.job-index) || '' }}
-        path: gradle-enterprise-maven-build-validation/.data/01-validate-local-build-caching-same-location/latest*/exp1-*.receipt
+        path: develocity-maven-build-validation/.data/01-validate-local-build-caching-same-location/latest*/exp1-*.receipt
     - name: Add artifact link to summary
       run: |
         echo "-------------" >> $GITHUB_STEP_SUMMARY

@@ -19,7 +19,7 @@ buildCache {
     remote(develocity.buildCache) {
         isEnabled = true
         // Check access key presence to avoid build cache errors on PR builds when access key is not present
-        val accessKey = System.getenv("GRADLE_ENTERPRISE_ACCESS_KEY")
+        val accessKey = System.getenv("DEVELOCITY_ACCESS_KEY")
         isPush = isCI && !accessKey.isNullOrEmpty()
     }
 }

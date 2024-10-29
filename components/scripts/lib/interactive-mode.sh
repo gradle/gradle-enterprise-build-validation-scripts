@@ -21,7 +21,7 @@ print_separator() {
 
 print_introduction_title() {
   cat <<EOF
-${HEADER_COLOR}Gradle Enterprise - Build Validation
+${HEADER_COLOR}Develocity - Build Validation
 
 Experiment ${EXP_NO}: ${EXP_DESCRIPTION}${RESTORE}
 EOF
@@ -40,10 +40,10 @@ explain_prerequisites_ccud_gradle_plugin() {
 $(print_separator)
 ${HEADER_COLOR}Preparation ${preparation_step}- Configure build with Common Custom User Data Gradle plugin${RESTORE}
 
-To get the most out of this experiment and also when building with Gradle
-Enterprise during daily development, it is advisable that you apply the Common
-Custom User Data Gradle plugin to your build. Details on how to apply the
-plugin are available from the documentation of the build validation scripts.
+To get the most out of this experiment and also when building with Develocity
+during daily development, it is advisable that you apply the Common Custom User
+Data Gradle plugin to your build. Details on how to apply the plugin are
+available from the documentation of the build validation scripts.
 
 https://github.com/gradle/gradle-enterprise-build-validation-scripts/blob/main/Gradle.md#applying-the-common-custom-user-data-gradle-plugin
 
@@ -68,10 +68,10 @@ explain_prerequisites_ccud_maven_extension() {
 $(print_separator)
 ${HEADER_COLOR}Preparation ${preparation_step}- Configure build with Common Custom User Data Maven extension${RESTORE}
 
-To get the most out of this experiment and also when building with Gradle
-Enterprise during daily development, it is advisable that you apply the Common
-Custom User Data Maven extension to your build. Details on how to apply the
-extension are available from the documentation of the build validation scripts.
+To get the most out of this experiment and also when building with Develocity
+during daily development, it is advisable that you apply the Common Custom User
+Data Maven extension to your build. Details on how to apply the extension are
+available from the documentation of the build validation scripts.
 
 https://github.com/gradle/gradle-enterprise-build-validation-scripts/blob/main/Maven.md#applying-the-common-custom-user-data-maven-extension
 
@@ -102,19 +102,14 @@ typical build configuration is described below.
 gradle.properties:
 org.gradle.caching=true
 
-settings.gradle:
+settings.gradle(.kts):
 buildCache {
   local { enabled = false }                     // must be false for this experiment
-  remote(HttpBuildCache) {
-    url = 'https://ge.example.com/cache/exp4/'  // adjust to your GE hostname, and note the trailing slash
-    allowUntrustedServer = true                 // set to false if a trusted certificate is configured for the GE server
-    credentials { creds ->
-      // inject credentials with read-write access to the remote build cache via env vars set in your CI environment
-      creds.username = System.getenv('GRADLE_ENTERPRISE_CACHE_USERNAME')
-      creds.password = System.getenv('GRADLE_ENTERPRISE_CACHE_PASSWORD')
-    }
+  remote(develocity.buildCache) {
     enabled = true                              // must be true for this experiment
-    push = System.getenv('BUILD_URL') != null   // adjust to an env var that is always present only in your CI environment
+    allowUntrustedServer = true                 // set to false if a trusted certificate is configured for the Develocity server
+    path = "cache/exp4-2021-dec31-take1"        // update 'exp4-2021-dec31-take1' for each new run of the experiment
+    push = System.getenv("CI") != null          // adjust to an env var that is always present only in your CI environment
 }}
 
 Your updated build configuration needs to be pushed to a separate branch that
@@ -142,26 +137,22 @@ ${HEADER_COLOR}Preparation ${preparation_step}- Configure build for remote build
 You must first configure your build for remote build caching. An extract of a
 typical build configuration is described below.
 
-.mvn/gradle-enterprise.xml:
-<gradleEnterprise>
+.mvn/develocity.xml:
+<develocity>
   <buildCache>
     <local>
-      <enabled>false</enabled>                                  <!-- must be false for this experiment -->
+      <enabled>false</enabled>                          <!-- must be false for this experiment -->
     </local>
     <remote>
       <server>
-        <url>https://ge.example.com/cache/exp3/</url>           <!-- adjust to your GE hostname, and note the trailing slash -->
-        <allowUntrusted>true</allowUntrusted>                   <!-- set to false if a trusted certificate is configured for the GE server -->
-        <credentials>
-          <username>\${env.GRADLE_ENTERPRISE_CACHE_USERNAME}</username>
-          <password>\${env.GRADLE_ENTERPRISE_CACHE_PASSWORD}</password>
-        </credentials>
+        <url>https://develocity.example.com/cache/exp3-2021-dec31-take1/</url>  <!-- adjust to your Develocity hostname, and note the trailing slash -->
+        <allowUntrusted>true</allowUntrusted>           <!-- set to false if a trusted certificate is configured for the Develocity server -->
       </server>
-      <enabled>true</enabled>                                   <!-- must be true for this experiment -->
-      <storeEnabled>#{env['BUILD_URL'] != null}</storeEnabled>  <!-- adjust to an env var that is always present only in your CI environment -->
+      <enabled>true</enabled>                           <!-- must be true for this experiment -->
+      <storeEnabled>#{isTrue(env['CI'])}</storeEnabled> <!-- adjust to an env var that is always present only in your CI environment -->
     </remote>
   </buildCache>
-</gradleEnterprise>
+</develocity>
 
 Your updated build configuration needs to be pushed to a separate branch that
 is only used for running the experiments.
@@ -186,10 +177,10 @@ explain_prerequisites_empty_remote_build_cache() {
 If you choose option b) and do not want to interfere with an already existing
 build caching configuration in your build, you can override the local and
 remote build cache configuration via system properties right when triggering
-the build on CI. Details on how to provide the overrides are available from
-the documentation of the the Gradle Enterprise Maven extension.
+the build on CI. Details on how to provide the overrides are available from the
+documentation of the the Develocity Maven extension.
 
-https://docs.gradle.com/enterprise/maven-extension/#configuring_the_remote_cache
+https://docs.gradle.com/develocity/maven-extension/current/#configuring_the_remote_cache
 EOF
   else
     IFS='' read -r -d '' build_tool_instructions <<EOF
@@ -218,13 +209,13 @@ a) If none of your builds are yet writing to the remote build cache besides
 the builds of this experiment, purge the remote build cache that your build
 is configured to connect to. You can purge the remote build cache by navigating
 in the browser to the 'Build Cache' admin section from the user menu of your
-Gradle Enterprise UI, selecting the build cache node the build is pointing to,
-and then clicking the 'Purge cache' button.
+Develocity UI, selecting the build cache node the build is pointing to, and then
+clicking the 'Purge cache' button.
 
 b) If you are not in a position to purge the remote build cache, you can connect
 to a unique shard of the remote build cache each time you run this experiment.
 A shard is accessed via an identifier that is appended to the path of the remote
-build cache URL, for example https://ge.example.com/cache/exp4-2021-dec31-take1/
+build cache URL, for example https://develocity.example.com/cache/exp4-2021-dec31-take1/
 which encodes the experiment type, the current date, and a counter that needs
 to be increased every time the experiment is rerun. Using such an encoding
 schema ensures that for each run of the experiment an empty remote build cache
@@ -248,22 +239,22 @@ explain_prerequisites_api_access() {
   fi
 
   if [[ "${BUILD_TOOL}" == "Maven" ]]; then
-    documentation_link="https://github.com/gradle/gradle-enterprise-build-validation-scripts/blob/main/Maven.md#authenticating-with-gradle-enterprise"
+    documentation_link="https://github.com/gradle/gradle-enterprise-build-validation-scripts/blob/main/Maven.md#authenticating-with-develocity"
   else
-    documentation_link="https://github.com/gradle/gradle-enterprise-build-validation-scripts/blob/main/Gradle.md#authenticating-with-gradle-enterprise"
+    documentation_link="https://github.com/gradle/gradle-enterprise-build-validation-scripts/blob/main/Gradle.md#authenticating-with-develocity"
   fi
 
   IFS='' read -r -d '' text <<EOF
 $(print_separator)
-${HEADER_COLOR}Preparation ${preparation_step}- Ensure Gradle Enterprise API access${RESTORE}
+${HEADER_COLOR}Preparation ${preparation_step}- Ensure Develocity API access${RESTORE}
 
-Some build scan data will be fetched from the invoked builds via the Gradle
-Enterprise API. It is not strictly necessary that you have permission to
-call the Gradle Enterprise API while doing this experiment, but the summary
-provided at the end of the experiment will be more comprehensive if the build
-scan data is accessible. Details on how to check your access permissions and
-how to provide the necessary API credentials when running the experiment are
-available from the documentation of the build validation scripts.
+Some build scan data will be fetched from the invoked builds via the Develocity
+API. It is not strictly necessary that you have permission to call the
+Develocity API while doing this experiment, but the summary provided at the end
+of the experiment will be more comprehensive if the build scan data is
+accessible. Details on how to check your access permissions and how to provide
+the necessary API credentials when running the experiment are available from the
+documentation of the build validation scripts.
 
 ${documentation_link}
 

@@ -25,8 +25,8 @@ jobs:
         with:
           name: artifacts
           path: |
-            build/distributions/gradle-enterprise-gradle-build-validation-*.zip
-            build/distributions/gradle-enterprise-maven-build-validation-*.zip
+            build/distributions/develocity-gradle-build-validation-*.zip
+            build/distributions/develocity-maven-build-validation-*.zip
 
   cross_platform_tests:
     name: Test
@@ -85,41 +85,32 @@ jobs:
           name: artifacts
       - name: Extract build validation scripts
         run: |
-          unzip -o gradle-enterprise-gradle-build-validation-*.zip
-          unzip -o gradle-enterprise-maven-build-validation-*.zip
+          unzip -o develocity-gradle-build-validation-*.zip
+          unzip -o develocity-maven-build-validation-*.zip
       - name: Run Gradle Experiment 01
-        run: |
-          cd gradle-enterprise-gradle-build-validation
-          ./01-validate-incremental-building.sh -r https://github.com/etiennestuder/java-ordered-properties -t build -s https://ge.solutions-team.gradle.com
+        working-directory: develocity-gradle-build-validation
+        run: ./01-validate-incremental-building.sh -r https://github.com/etiennestuder/java-ordered-properties -t build -s https://ge.solutions-team.gradle.com
       - name: Run Gradle Experiment 02
-        run: |
-          cd gradle-enterprise-gradle-build-validation
-          ./02-validate-local-build-caching-same-location.sh -r https://github.com/etiennestuder/java-ordered-properties -t build -s https://ge.solutions-team.gradle.com
+        working-directory: develocity-gradle-build-validation
+        run: ./02-validate-local-build-caching-same-location.sh -r https://github.com/etiennestuder/java-ordered-properties -t build -s https://ge.solutions-team.gradle.com
       - name: Run Gradle Experiment 03
-        run: |
-          cd gradle-enterprise-gradle-build-validation
-          ./03-validate-local-build-caching-different-locations.sh -r https://github.com/etiennestuder/java-ordered-properties -t build -s https://ge.solutions-team.gradle.com
+        working-directory: develocity-gradle-build-validation
+        run: ./03-validate-local-build-caching-different-locations.sh -r https://github.com/etiennestuder/java-ordered-properties -t build -s https://ge.solutions-team.gradle.com
       - name: Run Gradle Experiment 04
-        run: |
-          cd gradle-enterprise-gradle-build-validation
-          ./04-validate-remote-build-caching-ci-ci.sh -1 https://ge.solutions-team.gradle.com/s/p4ghldkcscfwi -2 https://ge.solutions-team.gradle.com/s/jhzljnet32x5m
+        working-directory: develocity-gradle-build-validation
+        run: ./04-validate-remote-build-caching-ci-ci.sh -1 https://ge.solutions-team.gradle.com/s/p4ghldkcscfwi -2 https://ge.solutions-team.gradle.com/s/jhzljnet32x5m
       - name: Run Gradle Experiment 05
-        run: |
-          cd gradle-enterprise-gradle-build-validation
-          ./05-validate-remote-build-caching-ci-local.sh -1 https://ge.solutions-team.gradle.com/s/cemwsttqjhzhq -s https://ge.solutions-team.gradle.com -u https://ge.solutions-team.gradle.com/cache/
+        working-directory: develocity-gradle-build-validation
+        run: ./05-validate-remote-build-caching-ci-local.sh -1 https://ge.solutions-team.gradle.com/s/cemwsttqjhzhq -s https://ge.solutions-team.gradle.com -u https://ge.solutions-team.gradle.com/cache/
       - name: Run Maven Experiment 01
-        run: |
-          cd gradle-enterprise-maven-build-validation
-          ./01-validate-local-build-caching-same-location.sh -r https://github.com/gradle/maven-build-scan-quickstart.git -g test -s https://ge.solutions-team.gradle.com
+        working-directory: develocity-maven-build-validation
+        run: ./01-validate-local-build-caching-same-location.sh -r https://github.com/gradle/maven-build-scan-quickstart.git -g test -s https://ge.solutions-team.gradle.com
       - name: Run Maven Experiment 02
-        run: |
-          cd gradle-enterprise-maven-build-validation
-          ./02-validate-local-build-caching-different-locations.sh -r https://github.com/gradle/maven-build-scan-quickstart.git -g test -s https://ge.solutions-team.gradle.com
+        working-directory: develocity-maven-build-validation
+        run: ./02-validate-local-build-caching-different-locations.sh -r https://github.com/gradle/maven-build-scan-quickstart.git -g test -s https://ge.solutions-team.gradle.com
       - name: Run Maven Experiment 03
-        run: |
-          cd gradle-enterprise-maven-build-validation
-          ./03-validate-remote-build-caching-ci-ci.sh -1 https://ge.solutions-team.gradle.com/s/sysk4hrdbkja6 -2 https://ge.solutions-team.gradle.com/s/f7yfwfxqzg5us
+        working-directory: develocity-maven-build-validation
+        run: ./03-validate-remote-build-caching-ci-ci.sh -1 https://ge.solutions-team.gradle.com/s/sysk4hrdbkja6 -2 https://ge.solutions-team.gradle.com/s/f7yfwfxqzg5us
       - name: Run Maven Experiment 04
-        run: |
-          cd gradle-enterprise-maven-build-validation
-          ./04-validate-remote-build-caching-ci-local.sh -1 https://ge.solutions-team.gradle.com/s/6jgkaknikci2c -e -s https://ge.solutions-team.gradle.com
+        working-directory: develocity-maven-build-validation
+        run: ./04-validate-remote-build-caching-ci-local.sh -1 https://ge.solutions-team.gradle.com/s/6jgkaknikci2c -e -s https://ge.solutions-team.gradle.com

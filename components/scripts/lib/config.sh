@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+readonly LEGACY_DISTRIBUTION="false"
+
 process_args() {
   parse_commandline "$@"
   map_common_script_args
@@ -7,6 +9,21 @@ process_args() {
 
   print_bl
   validate_required_args
+  check_legacy_options
+}
+
+check_legacy_options() {
+  if [ "${LEGACY_DISTRIBUTION}" == "true" ]; then
+    warnings+=("The distribution of the Develocity Build Validation Scripts prefixed with 'gradle-enterprise' is deprecated and will be removed in a future release. Migrate to the distribution prefixed with 'develocity' instead.")
+  fi
+
+  if [ -n "${_arg_gradle_enterprise_server}" ]; then
+    warnings+=("The --gradle-enterprise-server command line argument is deprecated and will be removed in a future release. Use --develocity-server instead.")
+  fi
+
+  if [ "${_arg_enable_gradle_enterprise}" == "on" ]; then
+    warnings+=("The --enable-gradle-enterprise command line argument is deprecated and will be removed in a future release. Use --enable-develocity instead.")
+  fi
 }
 
 map_common_script_args() {
@@ -49,12 +66,14 @@ map_common_script_args() {
     mapping_file="${_arg_mapping_file}"
   fi
 
-  if [ -n "${_arg_gradle_enterprise_server+x}" ]; then
-    ge_server="${_arg_gradle_enterprise_server}"
+  ge_server="${_arg_gradle_enterprise_server}"
+  if [ -n "${_arg_develocity_server}" ]; then
+    ge_server="${_arg_develocity_server}"
   fi
 
-  if [ -n "${_arg_enable_gradle_enterprise+x}" ]; then
-    enable_ge="${_arg_enable_gradle_enterprise}"
+  enable_ge="${_arg_enable_gradle_enterprise}"
+  if [ "${_arg_enable_develocity}" == "on" ]; then
+    enable_ge="${_arg_enable_develocity}"
   fi
 
   if [ -n "${_arg_fail_if_not_fully_cacheable+x}" ]; then
@@ -97,7 +116,7 @@ validate_required_args() {
   fi
 
   if [[ "${enable_ge}" == "on" && -z "${ge_server}" ]]; then
-    _PRINT_HELP=yes die "ERROR: Missing required argument when enabling Gradle Enterprise on a project not already connected: --gradle-enterprise-server" "${INVALID_INPUT}"
+    _PRINT_HELP=yes die "ERROR: Missing required argument when enabling Develocity on a project not already connected: --develocity-server" "${INVALID_INPUT}"
   fi
 }
 
