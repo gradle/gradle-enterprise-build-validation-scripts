@@ -17,7 +17,8 @@ def GRADLE_ENTERPRISE_PLUGIN_ID = 'com.gradle.enterprise'
 def DEVELOCITY_PLUGIN_ID = 'com.gradle.develocity'
 def CCUD_PLUGIN_ID = 'com.gradle.common-custom-user-data-gradle-plugin'
 
-def develocityUrl = getInputParam('develocity.url')
+def develocityUrl = getInputParam('develocity.build-validation.url')
+def develocityAllowUntrustedServer = Boolean.parseBoolean(getInputParam('develocity.build-validation.allow-untrusted-server'))
 
 def expDir = getInputParam('develocity.build-validation.expDir')
 def expId = getInputParam('develocity.build-validation.expId')
@@ -111,6 +112,7 @@ if (GradleVersion.current() < GradleVersion.version('6.0')) {
 
                 if (develocityUrl) {
                     buildScan.server = develocityUrl
+                    buildScan.allowUntrustedServer = develocityAllowUntrustedServer
                 }
 
                 if (!buildScan.server) {
@@ -125,6 +127,7 @@ if (GradleVersion.current() < GradleVersion.version('6.0')) {
             pluginManager.withPlugin(DEVELOCITY_PLUGIN_ID) {
                 if (develocityUrl) {
                     develocity.server = develocityUrl
+                    develocity.allowUntrustedServer = develocityAllowUntrustedServer
                 }
 
                 if (!develocity.server.present) {
@@ -153,6 +156,7 @@ if (GradleVersion.current() < GradleVersion.version('6.0')) {
 
             if (develocityUrl) {
                 settings.gradleEnterprise.server = develocityUrl
+                settings.gradleEnterprise.allowUntrustedServer = develocityAllowUntrustedServer
             }
 
             if (!settings.gradleEnterprise.server) {
@@ -167,6 +171,7 @@ if (GradleVersion.current() < GradleVersion.version('6.0')) {
         settings.pluginManager.withPlugin(DEVELOCITY_PLUGIN_ID) {
             if (develocityUrl) {
                 settings.develocity.server = develocityUrl
+                settings.develocity.allowUntrustedServer = develocityAllowUntrustedServer
             }
 
             if (!settings.develocity.server.present) {
