@@ -5,6 +5,10 @@ inputs:
   token:
     description: "GitHub token"
     required: false
+  downloadDevelopmentRelease:
+    description: "Downloads the latest development version when 'true'; by default, the latest released version is downloaded"
+    default: "false"
+    required: false
 
 runs:
   using: "composite"
@@ -19,12 +23,17 @@ runs:
           curlOpts+=(--header 'Authorization: Bearer ${{ inputs.token }}')
         fi
 
-        # Get the download url of the latest release
-        downloadUrl=$(curl "${curlOpts[@]}" https://api.github.com/repos/gradle/gradle-enterprise-build-validation-scripts/releases/latest | jq -c '.assets[] | select(.content_type == "application/zip")' | jq -r .browser_download_url | grep develocity-gradle)
+        releaseUrl="https://api.github.com/repos/gradle/gradle-enterprise-build-validation-scripts/releases/latest"
+        if [ "${{ inputs.downloadDevelopmentRelease }}" == "true" ]; then
+          releaseUrl="https://api.github.com/repos/gradle/gradle-enterprise-build-validation-scripts/releases/tags/development-latest"
+        fi
 
-        # Download the latest version of the build validation scripts
+        # Get the download url of the latest development or released version
+        downloadUrl=$(curl "${curlOpts[@]}" "$releaseUrl" | jq -c '.assets[] | select(.content_type == "application/zip")' | jq -r .browser_download_url | grep develocity-gradle)
+
+        # Download the scripts
         curl "${curlOpts[@]}" --output develocity-gradle-build-validation.zip $downloadUrl
 
-        # Unzip the downloaded build validation scripts
+        # Unzip the downloaded scripts
         unzip -q -o develocity-gradle-build-validation.zip
       shell: bash
