@@ -17,7 +17,7 @@ invoke_gradle() {
     DEVELOCITY_INJECTION_ENABLED=true
   )
 
-  if [ "$enable_ge" == "on" ]; then
+  if [ "$enable_develocity" == "on" ]; then
     envs+=(
       GRADLE_PLUGIN_REPOSITORY_URL=https://plugins.gradle.org/m2
       DEVELOCITY_PLUGIN_VERSION="3.14.1"
@@ -25,9 +25,9 @@ invoke_gradle() {
     )
   fi
 
-  if [ -n "${ge_server}" ]; then
+  if [ -n "${develocity_server}" ]; then
     envs+=(
-      DEVELOCITY_BUILD_VALIDATION_URL="${ge_server}"
+      DEVELOCITY_BUILD_VALIDATION_URL="${develocity_server}"
       DEVELOCITY_BUILD_VALIDATION_ALLOW_UNTRUSTED_SERVER=false
     )
   fi
