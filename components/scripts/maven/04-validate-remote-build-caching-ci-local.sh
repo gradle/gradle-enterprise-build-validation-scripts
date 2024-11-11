@@ -34,7 +34,7 @@ git_branch=''
 project_dir=''
 tasks=''
 extra_args=''
-ge_server=''
+develocity_server=''
 interactive_mode=''
 
 ci_build_scan_url=''
@@ -146,7 +146,7 @@ validate_required_args() {
     fi
   fi
 
-  if [[ "${enable_ge}" == "on" && -z "${ge_server}" ]]; then
+  if [[ "${enable_develocity}" == "on" && -z "${develocity_server}" ]]; then
     _PRINT_HELP=yes die "ERROR: Missing required argument when enabling Develocity on a project not already connected: --develocity-server" "${INVALID_INPUT}"
   fi
 }
@@ -483,11 +483,11 @@ generate_command_to_repeat_experiment() {
     cmd+=("-u" "${remote_build_cache_url}")
   fi
 
-  if [ -n "${ge_server}" ]; then
-    cmd+=("-s" "${ge_server}")
+  if [ -n "${develocity_server}" ]; then
+    cmd+=("-s" "${develocity_server}")
   fi
 
-  if [[ "${enable_ge}" == "on" ]]; then
+  if [[ "${enable_develocity}" == "on" ]]; then
     cmd+=("-e")
   fi
 
