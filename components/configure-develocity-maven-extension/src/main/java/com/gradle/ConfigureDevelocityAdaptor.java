@@ -19,7 +19,7 @@ import static java.nio.file.StandardOpenOption.*;
 
 public class ConfigureDevelocityAdaptor {
 
-    private static final String EXPERIMENT_DIR = System.getProperty("com.gradle.enterprise.build-validation.expDir");
+    private static final String EXPERIMENT_DIR = System.getProperty("develocity.build-validation.expDir");
 
     private final RootProjectExtractor rootProjectExtractor;
     private final Logger logger;
@@ -35,14 +35,14 @@ public class ConfigureDevelocityAdaptor {
 
         BuildScanApiAdapter buildScan = api.getBuildScan();
 
-        String geUrl = System.getProperty("gradle.enterprise.url");
-        String geAllowUntrustedServer = System.getProperty("gradle.enterprise.allowUntrustedServer");
+        String develocityUrl = System.getProperty("develocity.url");
+        String develocityAllowUntrustedServer = System.getProperty("develocity.allowUntrustedServer");
 
-        if (geUrl != null && !geUrl.isEmpty()) {
-            buildScan.setServer(geUrl);
+        if (develocityUrl != null && !develocityUrl.isEmpty()) {
+            buildScan.setServer(develocityUrl);
         }
-        if (geAllowUntrustedServer != null && !geAllowUntrustedServer.isEmpty()) {
-            buildScan.setAllowUntrustedServer(Boolean.parseBoolean(geAllowUntrustedServer));
+        if (develocityAllowUntrustedServer != null && !develocityAllowUntrustedServer.isEmpty()) {
+            buildScan.setAllowUntrustedServer(Boolean.parseBoolean(develocityAllowUntrustedServer));
         }
 
         String rootProjectName = rootProjectExtractor.extractRootProject(session).getName();
@@ -53,8 +53,8 @@ public class ConfigureDevelocityAdaptor {
 
     private static void registerBuildScanActions(BuildScanApiAdapter buildScan, String rootProjectName) {
         buildScan.buildFinished(buildResult -> {
-            // communicate via error file that no GE server is set
-            boolean omitServerUrlValidation = parseBoolean(System.getProperty("com.gradle.enterprise.build-validation.omitServerUrlValidation"));
+            // communicate via error file that no Develocity server is set
+            boolean omitServerUrlValidation = parseBoolean(System.getProperty("develocity.build-validation.omitServerUrlValidation"));
             if (buildScan.getServer() == null && !omitServerUrlValidation) {
                 buildScan.publishAlwaysIf(false); // disable publishing, otherwise scans.gradle.com will be used
                 File errorFile = new File(EXPERIMENT_DIR, "errors.txt");
@@ -63,19 +63,19 @@ public class ConfigureDevelocityAdaptor {
         });
 
         buildScan.buildFinished(buildResult -> {
-            String expId = System.getProperty("com.gradle.enterprise.build-validation.expId");
+            String expId = System.getProperty("develocity.build-validation.expId");
             addCustomValueAndSearchLink(buildScan, "Experiment id", expId);
             buildScan.tag(expId);
 
-            String runId = System.getProperty("com.gradle.enterprise.build-validation.runId");
+            String runId = System.getProperty("develocity.build-validation.runId");
             addCustomValueAndSearchLink(buildScan, "Experiment run id", runId);
 
-            String scriptsVersion = System.getProperty("com.gradle.enterprise.build-validation.scriptsVersion");
+            String scriptsVersion = System.getProperty("develocity.build-validation.scriptsVersion");
             buildScan.value("Build validation scripts", scriptsVersion);
         });
 
         buildScan.buildScanPublished(scan -> {
-            String runNum = System.getProperty("com.gradle.enterprise.build-validation.runNum");
+            String runNum = System.getProperty("develocity.build-validation.runNum");
             URI buildScanUri = scan.getBuildScanUri();
             String buildScanId = scan.getBuildScanId();
             String port = buildScanUri.getPort() != -1 ? ":" + buildScanUri.getPort() : "";
