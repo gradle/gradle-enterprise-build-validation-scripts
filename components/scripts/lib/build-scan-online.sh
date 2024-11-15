@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 
 # This is a helper function for the common pattern of reading Build Scan metadata
-# from the build-scans.csv file, then retrieving build metrics using the Gradle
-# Enterprise API.
+# from the build-scans.csv file, then retrieving build metrics using the
+# Develocity API.
 process_build_scan_data_online() {
   read_build_scan_metadata
   fetch_build_scans_and_build_time_metrics 'brief_logging' "${build_scan_urls[@]}"
