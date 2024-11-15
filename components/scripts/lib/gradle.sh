@@ -27,8 +27,9 @@ invoke_gradle() {
 
   if [ -n "${ge_server}" ]; then
     envs+=(
-      DEVELOCITY_BUILD_VALIDATION_URL="${ge_server}"
-      DEVELOCITY_BUILD_VALIDATION_ALLOW_UNTRUSTED_SERVER=false
+      DEVELOCITY_URL="${ge_server}"
+      DEVELOCITY_ENFORCE_URL=true
+      DEVELOCITY_ALLOW_UNTRUSTED_SERVER=false
     )
   fi
 
