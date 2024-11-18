@@ -1,8 +1,7 @@
 #!/usr/bin/env bash
 
 invoke_gradle() {
-  local run_num envs
-  envs=()
+  local run_num
   run_num=$1
   shift
 
