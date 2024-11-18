@@ -194,18 +194,19 @@ validate_build_config() {
 }
 
 execute_build() {
+  local args
+  args=(--build-cache --init-script "${INIT_SCRIPTS_DIR}/configure-remote-build-caching.gradle")
+  if [ -n "${remote_build_cache_url}" ]; then
+    args+=("-Ddevelocity.build-validation.remoteBuildCacheUrl=${remote_build_cache_url}")
+  fi
+
+  # shellcheck disable=SC2206  # we want tasks to expand with word splitting in this case
+  args+=(clean ${tasks})
+
   info "Running build:"
-  print_gradle_command
-
-  # shellcheck disable=SC2086  # we want tasks to expand with word splitting in this case
-  invoke_gradle 1 \
-     --build-cache \
-     --init-script "${INIT_SCRIPTS_DIR}/configure-remote-build-caching.gradle" \
-     clean ${tasks}
-}
-
-print_gradle_command() {
   info "./gradlew --build-cache -Dscan.tag.${EXP_SCAN_TAG} -Dscan.value.runId=${RUN_ID} -Dpts.enabled=false clean ${tasks}$(print_extra_args)"
+
+  invoke_gradle 1 "${args[@]}"
 }
 
 # Overrides summary.sh#print_experiment_specific_summary_info
