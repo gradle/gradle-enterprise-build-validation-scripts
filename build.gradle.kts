@@ -167,6 +167,7 @@ val copyGradleScripts by tasks.registering(Sync::class) {
     from(develocityInjectionResolvable) {
         rename { "develocity-injection.gradle" }
         into("lib/scripts/gradle-init-scripts")
+        filter(TransformDevelocityInjectionScript())
     }
     from(layout.projectDirectory.dir("components/scripts")) {
         include("README.md")

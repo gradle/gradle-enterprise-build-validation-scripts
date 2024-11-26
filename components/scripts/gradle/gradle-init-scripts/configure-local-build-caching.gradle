@@ -1,7 +1,7 @@
-static getInputParam(String name) {
+def getInputParam = { String name ->
     def ENV_VAR_PREFIX = ''
     def envVarName = ENV_VAR_PREFIX + name.toUpperCase().replace('.', '_').replace('-', '_')
-    return System.getProperty(name) ?: System.getenv(envVarName)
+    return gradle.startParameter.systemPropertiesArgs[name] ?: System.getenv(envVarName)
 }
 
 def expDir = getInputParam('develocity.build-validation.expDir')

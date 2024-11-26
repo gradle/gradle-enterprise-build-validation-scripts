@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 
 invoke_gradle() {
-  local run_num envs
-  envs=()
+  local run_num args
+  args=()
   run_num=$1
   shift
 
@@ -12,45 +12,35 @@ invoke_gradle() {
     cd "${project_dir}" > /dev/null 2>&1 || die "ERROR: Subdirectory ${project_dir} (set with --project-dir) does not exist in ${project_name}" "${INVALID_INPUT}"
   fi
 
-  envs+=(
-    DEVELOCITY_INJECTION_INIT_SCRIPT_NAME=develocity-injection.gradle
-    DEVELOCITY_INJECTION_ENABLED=true
+  args+=(
+    --init-script "${INIT_SCRIPTS_DIR}/develocity-injection.gradle"
+    --init-script "${INIT_SCRIPTS_DIR}/configure-build-validation.gradle"
+    -Ddevelocity.injection.init-script-name=develocity-injection.gradle
+    -Ddevelocity.injection-enabled=true
   )
 
   if [ "$enable_ge" == "on" ]; then
-    envs+=(
-      GRADLE_PLUGIN_REPOSITORY_URL=https://plugins.gradle.org/m2
-      DEVELOCITY_PLUGIN_VERSION="3.14.1"
-      DEVELOCITY_CCUD_PLUGIN_VERSION="2.0.2"
+    args+=(
+      -Dgradle.plugin-repository.url=https://plugins.gradle.org/m2
+      -Ddevelocity.plugin.version="3.14.1"
+      -Ddevelocity.ccud.plugin.version="2.0.2"
     )
   fi
 
   if [ -n "${ge_server}" ]; then
-    envs+=(
-      DEVELOCITY_BUILD_VALIDATION_URL="${ge_server}"
-      DEVELOCITY_BUILD_VALIDATION_ALLOW_UNTRUSTED_SERVER=false
+    args+=(
+      -Ddevelocity.build-validation.url="${ge_server}"
+      -Ddevelocity.build-validation.allow-untrusted-server=false
     )
   fi
 
-  if [ -n "${remote_build_cache_url}" ]; then
-    envs+=(
-      DEVELOCITY_BUILD_VALIDATION_REMOTEBUILDCACHEURL="${remote_build_cache_url}"
-    )
-  fi
-
-  envs+=(
-    DEVELOCITY_BUILD_VALIDATION_EXPDIR="${EXP_DIR}"
-    DEVELOCITY_BUILD_VALIDATION_EXPID="${EXP_SCAN_TAG}"
-    DEVELOCITY_BUILD_VALIDATION_RUNID="${RUN_ID}"
-    DEVELOCITY_BUILD_VALIDATION_RUNNUM="${run_num}"
-    DEVELOCITY_BUILD_VALIDATION_SCRIPTSVERSION="${SCRIPT_VERSION}"
-    DEVELOCITY_CAPTURE_FILE_FINGERPRINTS=true
-  )
-
-  local args
-  args=(
-    --init-script "${INIT_SCRIPTS_DIR}/develocity-injection.gradle"
-    --init-script "${INIT_SCRIPTS_DIR}/configure-build-validation.gradle"
+  args+=(
+    -Ddevelocity.build-validation.expDir="${EXP_DIR}"
+    -Ddevelocity.build-validation.expId="${EXP_SCAN_TAG}"
+    -Ddevelocity.build-validation.runId="${RUN_ID}"
+    -Ddevelocity.build-validation.runNum="${run_num}"
+    -Ddevelocity.build-validation.scriptsVersion="${SCRIPT_VERSION}"
+    -Ddevelocity.capture-file-fingerprints=true
     -Dpts.enabled=false
   )
 
@@ -67,13 +57,9 @@ invoke_gradle() {
   rm -f "${EXP_DIR}/errors.txt"
 
   debug "Current directory: $(pwd)"
-  # shellcheck disable=SC2145
-  debug export "${envs[@]}"';' ./gradlew "${args[@]}"
+  debug ./gradlew "${args[@]}"
 
-  # The parenthesis below will intentionally create a subshell. This causes the
-  # environment variables to only be exported for the child process and not leak
-  # to the rest of the script.
-  if (export "${envs[@]}"; ./gradlew "${args[@]}"); then
+  if ./gradlew "${args[@]}"; then
       build_outcomes+=("SUCCESSFUL")
   else
       build_outcomes+=("FAILED")
