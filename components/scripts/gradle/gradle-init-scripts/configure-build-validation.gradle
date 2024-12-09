@@ -1,10 +1,10 @@
 import org.gradle.util.GradleVersion
 import java.nio.charset.StandardCharsets
 
-def getInputParam = { String name ->
+static getInputParam(String name) {
     def ENV_VAR_PREFIX = ''
     def envVarName = ENV_VAR_PREFIX + name.toUpperCase().replace('.', '_').replace('-', '_')
-    return gradle.startParameter.systemPropertiesArgs[name] ?: System.getenv(envVarName)
+    return System.getProperty(name) ?: System.getenv(envVarName)
 }
 
 def isTopLevelBuild = !gradle.parent
@@ -31,16 +31,12 @@ def registerBuildScanActions = { def buildScan, def rootProjectName ->
         // the configuration of the build, and given its value changes between consecutive build invocations
         // it would always invalidate the configuration cache model from the first build invocation
         // in the second build invocation
-        //
-        // System.getProperty can be used here because system properties can be read at *execution* time
-        // safely for Gradle 7.0.2 and earlier, and we must do so anyway because referencing a Gradle
-        // script object, e.g., 'gradle.startParameter', from a Groovy closure is not compatible with
-        // configuration cache
-        def getRunNumInputParam = { String name ->
-            def envVarName = name.toUpperCase().replace('.', '_').replace('-', '_')
+        def getInputParam = { String name ->
+            def ENV_VAR_PREFIX = ''
+            def envVarName = ENV_VAR_PREFIX + name.toUpperCase().replace('.', '_').replace('-', '_')
             return System.getProperty(name) ?: System.getenv(envVarName)
         }
-        def runNum = getRunNumInputParam('develocity.build-validation.runNum')
+        def runNum = getInputParam('develocity.build-validation.runNum')
         def buildScanUri = publishedBuildScan.buildScanUri
         def buildScanId = publishedBuildScan.buildScanId
         def port = (buildScanUri.port != -1) ? ':' + buildScanUri.port : ''
