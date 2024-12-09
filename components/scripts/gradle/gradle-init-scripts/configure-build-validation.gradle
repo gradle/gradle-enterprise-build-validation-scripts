@@ -1,10 +1,10 @@
 import org.gradle.util.GradleVersion
 import java.nio.charset.StandardCharsets
 
-static getInputParam(String name) {
+static getInputParam(Gradle gradle, String name) {
     def ENV_VAR_PREFIX = ''
     def envVarName = ENV_VAR_PREFIX + name.toUpperCase().replace('.', '_').replace('-', '_')
-    return System.getProperty(name) ?: System.getenv(envVarName)
+    return gradle.startParameter.systemPropertiesArgs[name] ?: System.getProperty(name) ?: System.getenv(envVarName)
 }
 
 def isTopLevelBuild = !gradle.parent
@@ -17,10 +17,10 @@ def GRADLE_ENTERPRISE_PLUGIN_ID = 'com.gradle.enterprise'
 def DEVELOCITY_PLUGIN_ID = 'com.gradle.develocity'
 def CCUD_PLUGIN_ID = 'com.gradle.common-custom-user-data-gradle-plugin'
 
-def expDir = getInputParam('develocity.build-validation.expDir')
-def expId = getInputParam('develocity.build-validation.expId')
-def runId = getInputParam('develocity.build-validation.runId')
-def scriptsVersion = getInputParam('develocity.build-validation.scriptsVersion')
+def expDir = getInputParam(gradle, 'develocity.build-validation.expDir')
+def expId = getInputParam(gradle, 'develocity.build-validation.expId')
+def runId = getInputParam(gradle, 'develocity.build-validation.runId')
+def scriptsVersion = getInputParam(gradle, 'develocity.build-validation.scriptsVersion')
 
 def atLeastGradle5 = GradleVersion.current() >= GradleVersion.version('5.0')
 
@@ -31,6 +31,11 @@ def registerBuildScanActions = { def buildScan, def rootProjectName ->
         // the configuration of the build, and given its value changes between consecutive build invocations
         // it would always invalidate the configuration cache model from the first build invocation
         // in the second build invocation
+        //
+        // System.getProperty can be used here because system properties can be read at *execution* time
+        // safely for Gradle 7.0.2 and earlier, and we must do so anyway because referencing a Gradle
+        // script object, e.g., 'gradle.startParameter', from a Groovy closure is not compatible with
+        // configuration cache
         def getInputParam = { String name ->
             def ENV_VAR_PREFIX = ''
             def envVarName = ENV_VAR_PREFIX + name.toUpperCase().replace('.', '_').replace('-', '_')
