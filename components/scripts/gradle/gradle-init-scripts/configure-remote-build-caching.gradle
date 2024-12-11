@@ -1,10 +1,10 @@
-def getInputParam = { String name ->
+static getInputParam(Gradle gradle, String name) {
     def ENV_VAR_PREFIX = ''
     def envVarName = ENV_VAR_PREFIX + name.toUpperCase().replace('.', '_').replace('-', '_')
-    return gradle.startParameter.systemPropertiesArgs[name] ?: System.getenv(envVarName)
+    return gradle.startParameter.systemPropertiesArgs[name] ?: System.getProperty(name) ?: System.getenv(envVarName)
 }
 
-def remoteBuildCacheUrl = getInputParam('develocity.build-validation.remoteBuildCacheUrl')
+def remoteBuildCacheUrl = getInputParam(gradle, 'develocity.build-validation.remoteBuildCacheUrl')
 
 settingsEvaluated { settings ->
     settings.buildCache {
