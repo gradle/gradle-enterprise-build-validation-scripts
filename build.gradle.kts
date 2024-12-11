@@ -68,9 +68,12 @@ allprojects {
 }
 
 val argbash by configurations.creating
-val develocityInjection = configurations.dependencyScope("develocityInjection").get()
+val develocityInjection = configurations.dependencyScope("develocityInjection") {
+    attributes.attribute(Category.CATEGORY_ATTRIBUTE, objects.named("develocity-injection-script"))
+}.get()
 val develocityInjectionResolvable = configurations.resolvable("${develocityInjection.name}Resolvable") {
     extendsFrom(develocityInjection)
+    attributes.attribute(Category.CATEGORY_ATTRIBUTE, objects.named("develocity-injection-script"))
 }
 val develocityComponents by configurations.creating {
     attributes.attribute(
@@ -84,7 +87,7 @@ val develocityMavenComponents by configurations.creating
 
 dependencies {
     argbash("argbash:argbash:2.10.0@zip")
-    develocityInjection("com.gradle:develocity-injection:1.0")
+    develocityInjection("com.gradle:develocity-injection:1.1")
     develocityComponents("com.gradle:build-scan-summary:$buildScanSummaryVersion")
     develocityMavenComponents("com.gradle:gradle-enterprise-maven-extension:1.18.4")
     mavenComponents(project(path = ":configure-gradle-enterprise-maven-extension", configuration = "shadow"))
