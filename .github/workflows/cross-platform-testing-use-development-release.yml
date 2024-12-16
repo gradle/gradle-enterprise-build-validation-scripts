@@ -60,9 +60,9 @@ jobs:
           distribution: ${{ matrix.os == 'macos-14' && 'zulu' || 'temurin' }} # No Temurin JDK 8 distribution for aarch64
       - name: Download and extract build validation Scripts
         run: |
-          curl -L -O https://github.com/gradle/gradle-enterprise-build-validation-scripts/releases/download/development-latest/develocity-gradle-build-validation-dev.zip
+          curl -L -O https://github.com/gradle/develocity-build-validation-scripts/releases/download/development-latest/develocity-gradle-build-validation-dev.zip
           unzip -o develocity-gradle-build-validation-*.zip
-          curl -L -O https://github.com/gradle/gradle-enterprise-build-validation-scripts/releases/download/development-latest/develocity-maven-build-validation-dev.zip
+          curl -L -O https://github.com/gradle/develocity-build-validation-scripts/releases/download/development-latest/develocity-maven-build-validation-dev.zip
           unzip -o develocity-maven-build-validation-*.zip
       - name: Run Gradle Experiment 01
         working-directory: develocity-gradle-build-validation

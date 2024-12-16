@@ -45,7 +45,7 @@ during daily development, it is advisable that you apply the Common Custom User
 Data Gradle plugin to your build. Details on how to apply the plugin are
 available from the documentation of the build validation scripts.
 
-https://github.com/gradle/gradle-enterprise-build-validation-scripts/blob/main/Gradle.md#applying-the-common-custom-user-data-gradle-plugin
+https://github.com/gradle/develocity-build-validation-scripts/blob/main/Gradle.md#applying-the-common-custom-user-data-gradle-plugin
 
 Your updated build configuration should be pushed before proceeding.
 
@@ -73,7 +73,7 @@ during daily development, it is advisable that you apply the Common Custom User
 Data Maven extension to your build. Details on how to apply the extension are
 available from the documentation of the build validation scripts.
 
-https://github.com/gradle/gradle-enterprise-build-validation-scripts/blob/main/Maven.md#applying-the-common-custom-user-data-maven-extension
+https://github.com/gradle/develocity-build-validation-scripts/blob/main/Maven.md#applying-the-common-custom-user-data-maven-extension
 
 Your updated build configuration should be pushed before proceeding.
 
@@ -239,9 +239,9 @@ explain_prerequisites_api_access() {
   fi
 
   if [[ "${BUILD_TOOL}" == "Maven" ]]; then
-    documentation_link="https://github.com/gradle/gradle-enterprise-build-validation-scripts/blob/main/Maven.md#authenticating-with-develocity"
+    documentation_link="https://github.com/gradle/develocity-build-validation-scripts/blob/main/Maven.md#authenticating-with-develocity"
   else
-    documentation_link="https://github.com/gradle/gradle-enterprise-build-validation-scripts/blob/main/Gradle.md#authenticating-with-develocity"
+    documentation_link="https://github.com/gradle/develocity-build-validation-scripts/blob/main/Gradle.md#authenticating-with-develocity"
   fi
 
   IFS='' read -r -d '' text <<EOF

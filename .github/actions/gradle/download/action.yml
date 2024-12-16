@@ -23,9 +23,9 @@ runs:
           curlOpts+=(--header 'Authorization: Bearer ${{ inputs.token }}')
         fi
 
-        releaseUrl="https://api.github.com/repos/gradle/gradle-enterprise-build-validation-scripts/releases/latest"
+        releaseUrl="https://api.github.com/repos/gradle/develocity-build-validation-scripts/releases/latest"
         if [ "${{ inputs.downloadDevelopmentRelease }}" == "true" ]; then
-          releaseUrl="https://api.github.com/repos/gradle/gradle-enterprise-build-validation-scripts/releases/tags/development-latest"
+          releaseUrl="https://api.github.com/repos/gradle/develocity-build-validation-scripts/releases/tags/development-latest"
         fi
 
         # Get the download url of the latest development or released version
