@@ -14,18 +14,18 @@ Create a GitHub Actions workflow with the following steps:
 ```yaml
 steps:
   # Download the latest version of the build validation scripts
-  - uses: gradle/gradle-enterprise-build-validation-scripts/.github/actions/maven/download@actions-stable
+  - uses: gradle/develocity-build-validation-scripts/.github/actions/maven/download@actions-stable
     with:
       token: ${{ secrets.GITHUB_TOKEN }}
   # Run experiment 1
-  - uses: gradle/gradle-enterprise-build-validation-scripts/.github/actions/maven/experiment-1@actions-stable
+  - uses: gradle/develocity-build-validation-scripts/.github/actions/maven/experiment-1@actions-stable
     with:
       gitRepo: <PROJECT_GIT_URL>
       gitBranch: <PROJECT_BRANCH>
       goals: <PROJECT_BUILD_GOAL>
       ...
   # Run experiment 2
-  - uses: gradle/gradle-enterprise-build-validation-scripts/.github/actions/maven/experiment-2@actions-stable
+  - uses: gradle/develocity-build-validation-scripts/.github/actions/maven/experiment-2@actions-stable
     with:
       gitRepo: <PROJECT_GIT_URL>
       gitBranch: <PROJECT_BRANCH>
@@ -48,11 +48,11 @@ steps:
     uses: actions/checkout@v4
     with:
       path: project-to-validate # Check out the project to a directory named 'project-to-validate'
-  - uses: gradle/gradle-enterprise-build-validation-scripts/.github/actions/maven/download@actions-stable
+  - uses: gradle/develocity-build-validation-scripts/.github/actions/maven/download@actions-stable
     with:
       token: ${{ secrets.GITHUB_TOKEN }}
   - name: Run experiment 2
-    uses: gradle/gradle-enterprise-build-validation-scripts/.github/actions/maven/experiment-2@actions-stable
+    uses: gradle/develocity-build-validation-scripts/.github/actions/maven/experiment-2@actions-stable
     with:
       gitRepo: "file://$GITHUB_WORKSPACE/project-to-validate" # Use 'project-to-validate' for the experiment
       goals: <PROJECT_BUILD_GOAL>

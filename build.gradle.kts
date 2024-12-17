@@ -376,7 +376,7 @@ val generateChecksums by tasks.registering(Checksum::class) {
 githubRelease {
     token((findProperty("github.access.token") ?: System.getenv("GITHUB_ACCESS_TOKEN") ?: "").toString())
     owner.set("gradle")
-    repo.set("gradle-enterprise-build-validation-scripts")
+    repo.set("develocity-build-validation-scripts")
     targetCommitish.set("main")
     releaseName.set(gitHubReleaseName())
     tagName.set(gitReleaseTag())

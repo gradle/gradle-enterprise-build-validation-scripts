@@ -13,7 +13,7 @@ permissions:
 
 jobs:
   combine-dependabot-prs:
-    if: github.repository == 'gradle/gradle-enterprise-build-validation-scripts'
+    if: github.repository == 'gradle/develocity-build-validation-scripts'
     runs-on: ubuntu-latest
     steps:
       - name: combine-dependabot-prs
