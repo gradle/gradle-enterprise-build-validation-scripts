@@ -319,6 +319,16 @@ tasks.assemble {
     dependsOn(assembleGradleScripts, assembleMavenScripts, assembleLegacyGradleScripts, assembleLegacyMavenScripts)
 }
 
+configurations.consumable("gradleScriptsConsumable") {
+    attributes.attribute(Usage.USAGE_ATTRIBUTE, objects.named("gradle-build-validation-scripts"))
+    outgoing.artifact(assembleGradleScripts)
+}
+
+configurations.consumable("mavenScriptsConsumable") {
+    attributes.attribute(Usage.USAGE_ATTRIBUTE, objects.named("maven-build-validation-scripts"))
+    outgoing.artifact(assembleMavenScripts)
+}
+
 val shellcheckGradleScripts by tasks.registering(Shellcheck::class) {
     group = "verification"
     description = "Perform quality checks on Gradle build validation scripts using Shellcheck."

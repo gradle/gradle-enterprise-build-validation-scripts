@@ -17,9 +17,13 @@ jobs:
         with:
           java-version: '8'
           distribution: 'adopt'
-      - name: Set up Gradle
-        uses: gradle/actions/setup-gradle@v4
-        with:
-          develocity-access-key: ${{ secrets.DV_SOLUTIONS_ACCESS_KEY }}
+        # @todo the init script from setup-gradle interferes with the BVS tests
+#      - name: Set up Gradle
+#        uses: gradle/actions/setup-gradle@v4
+#        with:
+#          develocity-access-key: ${{ secrets.DV_SOLUTIONS_ACCESS_KEY }}
       - name: Build with Gradle
         run: ./gradlew build
+        env:
+          DEVELOCITY_ACCESS_KEY: ${{ secrets.DV_SOLUTIONS_ACCESS_KEY }}
+          GRADLE_ENTERPRISE_ACCESS_KEY: ${{ secrets.DV_SOLUTIONS_ACCESS_KEY }} # required while injection still uses GE plugin

@@ -27,6 +27,7 @@ buildCache {
 rootProject.name = "build-validation-scripts"
 
 include("components/configure-gradle-enterprise-maven-extension")
+include("test")
 
 project(":components/configure-gradle-enterprise-maven-extension").name = "configure-gradle-enterprise-maven-extension"
 
