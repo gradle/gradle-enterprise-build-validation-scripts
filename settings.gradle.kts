@@ -26,9 +26,9 @@ buildCache {
 
 rootProject.name = "build-validation-scripts"
 
-include("components/configure-gradle-enterprise-maven-extension")
+include("components/configure-develocity-maven-extension")
 
-project(":components/configure-gradle-enterprise-maven-extension").name = "configure-gradle-enterprise-maven-extension"
+project(":components/configure-develocity-maven-extension").name = "configure-develocity-maven-extension"
 
 val develocityCiInjectionProjectDir = providers.gradleProperty("develocityCiInjectionProjectDir")
 if (develocityCiInjectionProjectDir.isPresent) {

@@ -66,14 +66,14 @@ map_common_script_args() {
     mapping_file="${_arg_mapping_file}"
   fi
 
-  ge_server="${_arg_gradle_enterprise_server}"
+  develocity_server="${_arg_gradle_enterprise_server}"
   if [ -n "${_arg_develocity_server}" ]; then
-    ge_server="${_arg_develocity_server}"
+    develocity_server="${_arg_develocity_server}"
   fi
 
-  enable_ge="${_arg_enable_gradle_enterprise}"
+  enable_develocity="${_arg_enable_gradle_enterprise}"
   if [ "${_arg_enable_develocity}" == "on" ]; then
-    enable_ge="${_arg_enable_develocity}"
+    enable_develocity="${_arg_enable_develocity}"
   fi
 
   if [ -n "${_arg_fail_if_not_fully_cacheable+x}" ]; then
@@ -115,7 +115,7 @@ validate_required_args() {
     fi
   fi
 
-  if [[ "${enable_ge}" == "on" && -z "${ge_server}" ]]; then
+  if [[ "${enable_develocity}" == "on" && -z "${develocity_server}" ]]; then
     _PRINT_HELP=yes die "ERROR: Missing required argument when enabling Develocity on a project not already connected: --develocity-server" "${INVALID_INPUT}"
   fi
 }
@@ -292,11 +292,11 @@ generate_command_to_repeat_experiment() {
     cmd+=("-a" "${extra_args}")
   fi
 
-  if [ -n "${ge_server}" ]; then
-    cmd+=("-s" "${ge_server}")
+  if [ -n "${develocity_server}" ]; then
+    cmd+=("-s" "${develocity_server}")
   fi
 
-  if [[ "${enable_ge}" == "on" ]]; then
+  if [[ "${enable_develocity}" == "on" ]]; then
     cmd+=("-e")
   fi
 
