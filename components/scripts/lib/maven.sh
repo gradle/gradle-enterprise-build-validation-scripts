@@ -8,10 +8,10 @@ find_versioned_jar() {
   find "${dir_to_search}" -name "${base_name}*" -type f -print -quit
 }
 
-CONFIGURE_GRADLE_ENTERPRISE_JAR="${LIB_DIR}/maven-libs/configure-gradle-enterprise-maven-extension-${SCRIPT_VERSION}-all.jar"
-GRADLE_ENTERPRISE_MAVEN_EXTENSION_JAR="$(find_versioned_jar "${SCRIPT_DIR}/lib/develocity" "gradle-enterprise-maven-extension")"
+CONFIGURE_DEVELOCITY_JAR="${LIB_DIR}/maven-libs/configure-develocity-maven-extension-${SCRIPT_VERSION}-all.jar"
+DEVELOCITY_MAVEN_EXTENSION_JAR="$(find_versioned_jar "${SCRIPT_DIR}/lib/develocity" "gradle-enterprise-maven-extension")"
 COMMON_CUSTOM_USER_DATA_MAVEN_EXTENSION_JAR="$(find_versioned_jar "${SCRIPT_DIR}/lib/third-party" "common-custom-user-data-maven-extension")"
-readonly CONFIGURE_GRADLE_ENTERPRISE_JAR GRADLE_ENTERPRISE_MAVEN_EXTENSION_JAR COMMON_CUSTOM_USER_DATA_MAVEN_EXTENSION_JAR
+readonly CONFIGURE_DEVELOCITY_JAR DEVELOCITY_MAVEN_EXTENSION_JAR COMMON_CUSTOM_USER_DATA_MAVEN_EXTENSION_JAR
 
 find_maven_executable() {
   if [ -f "./mvnw" ]; then
@@ -39,28 +39,28 @@ invoke_maven() {
   fi
 
   local extension_classpath
-  extension_classpath="${CONFIGURE_GRADLE_ENTERPRISE_JAR}"
+  extension_classpath="${CONFIGURE_DEVELOCITY_JAR}"
 
-  if [ "$enable_ge" == "on" ]; then
-    extension_classpath="${extension_classpath}:${GRADLE_ENTERPRISE_MAVEN_EXTENSION_JAR}:${COMMON_CUSTOM_USER_DATA_MAVEN_EXTENSION_JAR}"
+  if [ "$enable_develocity" == "on" ]; then
+    extension_classpath="${extension_classpath}:${DEVELOCITY_MAVEN_EXTENSION_JAR}:${COMMON_CUSTOM_USER_DATA_MAVEN_EXTENSION_JAR}"
   fi
 
-  if [ -n "${ge_server}" ]; then
+  if [ -n "${develocity_server}" ]; then
     args+=(
-      -Dgradle.enterprise.url="${ge_server}"
+      -Dgradle.enterprise.url="${develocity_server}"
       -Dgradle.enterprise.allowUntrustedServer=false
-      -Ddevelocity.url="${ge_server}"
+      -Ddevelocity.url="${develocity_server}"
       -Ddevelocity.allowUntrustedServer=false
     )
   fi
 
   args+=(
     -Dmaven.ext.class.path="${extension_classpath}"
-    -Dcom.gradle.enterprise.build-validation.expDir="${EXP_DIR}"
-    -Dcom.gradle.enterprise.build-validation.expId="${EXP_SCAN_TAG}"
-    -Dcom.gradle.enterprise.build-validation.runId="${RUN_ID}"
-    -Dcom.gradle.enterprise.build-validation.runNum="${run_num}"
-    -Dcom.gradle.enterprise.build-validation.scriptsVersion="${SCRIPT_VERSION}"
+    -Ddevelocity.build-validation.expDir="${EXP_DIR}"
+    -Ddevelocity.build-validation.expId="${EXP_SCAN_TAG}"
+    -Ddevelocity.build-validation.runId="${RUN_ID}"
+    -Ddevelocity.build-validation.runNum="${run_num}"
+    -Ddevelocity.build-validation.scriptsVersion="${SCRIPT_VERSION}"
     -Dgradle.scan.captureGoalInputFiles=true
     -Ddevelocity.scan.captureFileFingerprints=true
     -Dpts.enabled=false

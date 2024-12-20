@@ -35,8 +35,8 @@ git_branch=''
 project_dir=''
 tasks=''
 extra_args=''
-enable_ge=''
-ge_server=''
+enable_develocity=''
+develocity_server=''
 interactive_mode=''
 
 main() {

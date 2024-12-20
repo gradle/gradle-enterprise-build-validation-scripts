@@ -19,7 +19,7 @@ invoke_gradle() {
     -Ddevelocity.injection-enabled=true
   )
 
-  if [ "$enable_ge" == "on" ]; then
+  if [ "$enable_develocity" == "on" ]; then
     args+=(
       -Dgradle.plugin-repository.url=https://plugins.gradle.org/m2
       -Ddevelocity.plugin.version="3.14.1"
@@ -27,9 +27,9 @@ invoke_gradle() {
     )
   fi
 
-  if [ -n "${ge_server}" ]; then
+  if [ -n "${develocity_server}" ]; then
     args+=(
-      -Ddevelocity.url="${ge_server}"
+      -Ddevelocity.url="${develocity_server}"
       -Ddevelocity.enforce-url=true
       -Ddevelocity.allow-untrusted-server=false
     )

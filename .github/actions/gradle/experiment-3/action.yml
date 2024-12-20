@@ -83,19 +83,19 @@ runs:
         if [ ! -z "${{ inputs.args }}" ]; then
           ARG_ARGS="${{ inputs.args }}"
         fi
-        ARG_GE_URL=""
+        ARG_DEVELOCITY_URL=""
         if [ ! -z "${{ inputs.gradleEnterpriseUrl }}" ]; then
-          ARG_GE_URL="${{ inputs.gradleEnterpriseUrl }}"
+          ARG_DEVELOCITY_URL="${{ inputs.gradleEnterpriseUrl }}"
         fi
         if [ ! -z "${{ inputs.develocityUrl }}" ]; then
-          ARG_GE_URL="${{ inputs.develocityUrl }}"
+          ARG_DEVELOCITY_URL="${{ inputs.develocityUrl }}"
         fi
-        ARG_GE_ENABLE=""
+        ARG_DEVELOCITY_ENABLE=""
         if [ "${{ inputs.enableGradleEnterprise }}" == "true" ]; then
-          ARG_GE_ENABLE="${{ inputs.enableGradleEnterprise }}"
+          ARG_DEVELOCITY_ENABLE="${{ inputs.enableGradleEnterprise }}"
         fi
         if [ "${{ inputs.enableDeveocity }}" == "true" ]; then
-          ARG_GE_ENABLE="${{ inputs.enableDeveocity }}"
+          ARG_DEVELOCITY_ENABLE="${{ inputs.enableDeveocity }}"
         fi
         ARG_FAIL_IF_NOT_FULLY_CACHEABLE=""
         if [ "${{ inputs.failIfNotFullyCacheable }}" == "true" ]; then
@@ -114,8 +114,8 @@ runs:
           ${ARG_PROJECT_DIR:+"-p" "$ARG_PROJECT_DIR"} \
           ${ARG_TASKS:+"-t" "$ARG_TASKS"} \
           ${ARG_ARGS:+"-a" "$ARG_ARGS"} \
-          ${ARG_GE_URL:+"-s" "$ARG_GE_URL"} \
-          ${ARG_GE_ENABLE:+"-e"} \
+          ${ARG_DEVELOCITY_URL:+"-s" "$ARG_DEVELOCITY_URL"} \
+          ${ARG_DEVELOCITY_ENABLE:+"-e"} \
           ${ARG_FAIL_IF_NOT_FULLY_CACHEABLE:+"-f"} \
           ${RUNNER_DEBUG:+"--debug"}
 
